@@ -1,0 +1,66 @@
+name: Oakhaven nightly
+
+on:
+  schedule:
+    - cron: "7 5 * * *"        # 05:07 UTC = 11:07 pm Central in winter, 12:07 am in summer
+  workflow_dispatch:            # the "Run workflow" button on the Actions tab
+    inputs:
+      dry_run:
+        description: "Dry run: show what would happen, change nothing"
+        type: boolean
+        default: false
+  push:
+    branches: [main]            # any edit you make on GitHub goes live too
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: oakhaven
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Advance one day
+        run: python nightly.py
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+      - name: Save the new day
+        if: ${{ !inputs.dry_run }}
+        run: |
+          git config user.name "oakhaven-bot"
+          git config user.email "oakhaven-bot@users.noreply.github.com"
+          git add data.json report.md
+          git diff --cached --quiet || git commit -m "Day $(python -c 'import json; print(json.load(open("data.json"))["day"])')"
+          git push
+
+  deploy:
+    needs: update
+    if: ${{ always() && (needs.update.result == 'success' || needs.update.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+      - id: deploy
+        uses: actions/deploy-pages@v4
