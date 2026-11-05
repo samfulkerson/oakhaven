@@ -19,7 +19,7 @@ from collections import Counter
 # ---------------------------------------------------------------- settings you might want to change
 DATA_FILE = "data.json"
 REPORT_FILE = "report.md"
-GRAPH = os.environ.get("IG_GRAPH", "https://graph.instagram.com/v25.0")
+IG_ACCOUNT_ID = os.environ.get("IG_USER_ID") or "17841422748770654"   # @surviveoakhaven's Instagram account ID, shown on the Meta app page
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-haiku-5-5")
 MAX_NEW_PER_DAY = 25          # pacing: at most this many new survivors move in per day; the rest wait in line
 ROLES = ["Scavenger", "Medic", "Scout", "Sharpshooter", "Farmer", "Builder", "Radio Operator", "Mechanic", "Guard", "Cook", "Engineer"]
@@ -42,11 +42,23 @@ def log(*a):
 
 
 # ---------------------------------------------------------------- Instagram
+def ig_base():
+    """Instagram-login tokens (they start with IG) talk to graph.instagram.com; business tokens (EAA...) talk to graph.facebook.com."""
+    if os.environ.get("IG_GRAPH"):
+        return os.environ["IG_GRAPH"].rstrip("/")
+    return "https://graph.instagram.com/v25.0" if os.environ["IG_TOKEN"].strip().startswith("IG") else "https://graph.facebook.com/v25.0"
+
+
 def ig_get(url, **params):
     import requests
-    params["access_token"] = os.environ["IG_TOKEN"]
+    params["access_token"] = os.environ["IG_TOKEN"].strip()
     r = requests.get(url, params=params, timeout=30)
-    r.raise_for_status()
+    if r.status_code != 200:   # show Meta's own explanation, never the token
+        try:
+            err = r.json().get("error", {})
+        except ValueError:
+            err = {}
+        raise RuntimeError(f"Instagram API error {r.status_code} on {url.split('?')[0]}: {err.get('message', 'no message')} (type {err.get('type')}, code {err.get('code')})")
     return r.json()
 
 
@@ -55,7 +67,9 @@ def fetch_instagram():
     if not os.environ.get("IG_TOKEN"):
         log("No IG_TOKEN set: skipping Instagram (no vote count, no new survivors).")
         return None
-    uid = os.environ.get("IG_USER_ID") or "me"   # the token already knows whose account it is
+    GRAPH = ig_base()
+    uid = "me" if "graph.instagram.com" in GRAPH else IG_ACCOUNT_ID
+    log(f"Instagram API: {GRAPH.split('//')[1]} as {uid}")
     followers = ig_get(f"{GRAPH}/{uid}", fields="followers_count")["followers_count"]
     media = ig_get(f"{GRAPH}/{uid}/media", fields="id,media_type,media_product_type,permalink,timestamp", limit=15)["data"]
     reels = [m for m in media if m.get("media_product_type") == "REELS" or m.get("media_type") in ("VIDEO", "REELS")]
