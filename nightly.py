@@ -263,7 +263,7 @@ def read_joins(comments, skip):
         batch = "\n".join(f"@{u}: {' / '.join(t)}" for u, t in items[i:i + 40])
         msg = client.messages.create(model=MODEL, max_tokens=4000,
                                      messages=[{"role": "user", "content": PROMPT.format(roles=ROLES) + batch}])
-        text = msg.content[0].text
+        text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text")   # skip thinking blocks
         try:
             out += json.loads(text[text.index("["): text.rindex("]") + 1])
         except ValueError:
