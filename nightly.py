@@ -6,6 +6,7 @@ Runs once a night (GitHub Actions does it for you) and moves the world forward e
   3. heals survivors whose injuries are over
   4. adds new survivors from join comments (Claude reads them), up to a daily cap
   5. updates the follower count, advances the day, and writes data.json plus report.md (a recap to narrate from)
+  6. sets tomorrow's vote: picks three places the squad could go and has Claude word the question
 
 Secrets it reads from the environment (set them in GitHub under Settings > Secrets and variables > Actions):
   IG_TOKEN               Instagram access token from "API setup with Instagram login"  (optional: skipped if missing)
@@ -294,6 +295,82 @@ def add_survivors(data, parsed):
     return added
 
 
+# ---------------------------------------------------------------- 6. tomorrow's vote
+# the word people comment for each place (must be easy to type and not contain another option's word)
+LABELS = {"gunshop": "GUN SHOP", "port": "PIER", "firestation": "FIRE STATION", "cold": "COLD STORAGE", "airfreight": "AIR FREIGHT",
+          "showbarn": "SHOW BARN", "hunter": "CABIN", "harbor": "HARBOR", "storage": "STORAGE UNITS", "surplus": "SURPLUS"}
+UNLOCK = {"easy": 1, "medium": 2, "hard": 4, "deadly": 6}     # healthy survivors needed before a difficulty shows up in the vote
+
+VOTE_PROMPT = """You write the daily vote for Oakhaven, an Instagram zombie survival story told by a gravelly narrator.
+Tomorrow is Day {day}. Here is what happened today:
+{recap}
+
+The survivors can go to one of these places tomorrow (the word in capitals is what followers comment):
+{options}
+
+Write:
+  "q": the vote question, starting with "Day {day}." then one or two short, tense sentences that set up the choice from today's events. Under 140 characters.
+  "desc": for each option word, one short line (under 70 characters) on why it's tempting or what the risk is. Don't promise what they'll find.
+Reply with only JSON like {{"q": "...", "desc": {{"WORD": "..."}}}}."""
+
+
+def vote_options(data, new_day, rng):
+    healthy = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured") and s.get("joined", 1) <= new_day]
+    n = len(healthy)
+    ok = lambda diff: n >= UNLOCK.get(diff, 2)
+    runs = [r for r in data.get("runs", []) if ok(r.get("difficulty", "easy"))]
+    fresh = [r for r in runs if not r.get("done_day")]
+    again = sorted([r for r in runs if r.get("done_day")], key=lambda r: r["done_day"])   # longest since the last visit first
+    pool = [("run", r) for r in (fresh[:5] or again[:5])]
+    picks = rng.sample(pool, min(3, len(pool)))
+    missions = [m for m in data.get("missions", []) if m.get("status") != "done" and n >= SQUAD_SIZE.get(m.get("difficulty", "hard"), 4)]
+    if missions and picks and rng.random() < .5:
+        picks[-1] = ("mission", missions[0])
+    while len(picks) < 3 and again:
+        r = again.pop(0)
+        if all(it is not r for _, it in picks):
+            picks.append(("run", r))
+    out = []
+    for kind, it in picks:
+        key = it["poi"] if kind == "mission" else it["dest"]
+        label = LABELS.get(key, key.upper())
+        if any(label in o["label"] or o["label"] in label for o in out):
+            continue
+        out.append({"kind": kind, "key": key, "label": label, "place": place_name(kind, it), "difficulty": it.get("difficulty", "easy"),
+                    "hint": it.get("goal") if kind == "mission" else ("visited before" if it.get("done_day") else "never searched")})
+    return out
+
+
+def next_vote(data, new_day, rng, recap, problems):
+    active = next((m for m in data.get("missions", []) if m.get("status") == "active"), None)
+    if active:
+        left = active.get("days", 3) - active.get("days_done", 0)
+        return {"q": f"Day {new_day}. No vote today: the squad is still inside {place_name('mission', active)} ({left} more night{'s' if left != 1 else ''}).",
+                "opts": [], "how": "Comment your name and your job to move in."}
+    opts = vote_options(data, new_day, rng)
+    if len(opts) < 2:
+        return {"q": f"Day {new_day}. Nowhere left to vote on tonight.", "opts": [], "how": "Comment your name and your job to move in."}
+    q, desc = f"Day {new_day}. Where does the squad go next?", {}
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        try:
+            import anthropic
+            lines = "\n".join(f"- {o['label']}: {o['place']} ({o['difficulty']}{', a multi-night mission: ' + o['hint'] if o['kind'] == 'mission' else ', ' + o['hint']})" for o in opts)
+            msg = anthropic.Anthropic().messages.create(model=MODEL, max_tokens=800, messages=[{"role": "user", "content": VOTE_PROMPT.format(day=new_day, recap=recap, options=lines)}])
+            text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text")
+            got = json.loads(text[text.index("{"): text.rindex("}") + 1])
+            if str(got.get("q", "")).startswith(f"Day {new_day}"):
+                q = str(got["q"])[:200]
+            desc = {str(k).upper(): str(v)[:90] for k, v in (got.get("desc") or {}).items()}
+        except Exception as e:
+            log(f"!! Writing the vote failed, using plain wording: {e}")
+            problems.append(f"Vote wording: {e}")
+    fallback = {"easy": "A quick run. Low risk.", "medium": "Further out. More of them.", "hard": "Dangerous. Bring a medic.", "deadly": "Not everyone comes back."}
+    words = [o["label"] for o in opts]
+    return {"q": q,
+            "opts": [[o["label"], 0, desc.get(o["label"]) or fallback.get(o["difficulty"], ""), o["key"]] for o in opts],
+            "how": f"Comment {', '.join(words[:-1])} or {words[-1]} on the Day {new_day} Reel. One vote per account, your last comment counts."}
+
+
 # ---------------------------------------------------------------- main
 def main():
     data = json.load(open(DATA_FILE, encoding="utf-8"))
@@ -309,7 +386,8 @@ def main():
     comments = ig["comments"] if ig else []
 
     winner, tally = count_vote(data, comments)
-    outings = todays_outing(data, winner, rng)
+    keys = {o[0].upper(): o[3] for o in (data.get("vote") or {}).get("opts", []) if len(o) > 3}
+    outings = todays_outing(data, keys.get(winner, winner), rng)
     new_day = day + 1
     healed = heal(data, new_day)
 
@@ -358,6 +436,9 @@ def main():
     if data.get("waitlist"):
         lines.append(f"**Still waiting to get in:** {len(data['waitlist'])}")
     lines.append(f"**Followers:** {data.get('followers')}  |  **Tomorrow is Day {new_day}**")
+    data["vote"] = next_vote(data, new_day, rng, "\n".join(lines), problems)
+    v = data["vote"]
+    lines.append(f"**Tomorrow's vote:** {v['q']}" + (" " + " / ".join(f"{o[0]} ({o[2]})" for o in v["opts"]) if v["opts"] else ""))
     for p in problems:
         lines.append(f"**⚠ Problem:** {p}")
     report = "\n".join(lines) + "\n"
