@@ -108,6 +108,17 @@ canvas#world.dragging{cursor:grabbing}
 .ctrls button:hover{color:var(--fg);background:rgba(255,255,255,.06)}
 .ctrls button[aria-pressed="true"]{color:var(--accent-ink);background:var(--accent)}
 .ctrls button:disabled{opacity:.4;cursor:default}
+.screen.studio{position:fixed;inset:0;z-index:80;border:0;border-radius:0;background:#050607;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px}
+.screen.studio canvas#world{width:auto;height:calc(100vh - 96px);aspect-ratio:9/16;max-width:100%}
+.screen.studio .hud,.screen.studio .ctrls{display:none}
+.screen.studio.export{padding:0}
+.screen.studio.export canvas#world{height:100vh}
+.screen.studio.export .studiobar{display:none}
+.studiobar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;font-size:13px;color:var(--muted)}
+.studiobar label{font-family:var(--f-head);font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.studiobar select,.studiobar button,.studiobar .file{font-family:var(--f-head);font-weight:600;font-size:12px;letter-spacing:.06em;background:var(--panel-2);color:var(--fg);border:1px solid var(--line-2);border-radius:var(--r);padding:6px 10px;cursor:pointer}
+.studiobar .file input{display:block;font-size:11px;margin-top:2px;max-width:190px}
+.studiobar .rec{background:var(--bad);border-color:var(--bad);color:#fff}
 .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);padding:10px 16px;border-top:1px solid var(--line)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend kbd{font-family:var(--f-mono);font-size:11px;color:var(--fg);background:var(--panel-3);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;padding:0 5px}
@@ -303,7 +314,16 @@ footer a{color:var(--muted)}
                 <button type="button" id="tNight" aria-pressed="false">Night</button>
                 <button type="button" id="fxBtn" aria-pressed="true" title="Lighting and shader effects">FX</button>
                 <button type="button" id="scanBtn" aria-pressed="false" title="Scanlines when zoomed in">CRT</button>
+                <button type="button" id="studioOpen" hidden title="Episode studio: play and record scripted Reels">Studio</button>
               </div>
+            </div>
+            <div class="studiobar" id="studioBar" hidden>
+              <label for="stEp">Episode</label><select id="stEp"></select>
+              <label class="file" for="stAudio">Narration audio<input type="file" id="stAudio" accept="audio/*"></label>
+              <button type="button" id="stPlay">Play</button>
+              <button type="button" id="stRec" class="rec">Record</button>
+              <button type="button" id="stClose">Close</button>
+              <span id="stNote">Plays the episode in Reel shape. Add the narration file, then Record.</span>
             </div>
           </div>
         </div>
@@ -527,7 +547,10 @@ const FONT = {
   X: ['101', '101', '010', '101', '101'], Y: ['101', '101', '010', '010', '010'], '&': ['010', '101', '010', '101', '011'], '.': ['000', '000', '000', '000', '010'], '-': ['000', '000', '111', '000', '000'],
   '0': ['111', '101', '101', '101', '111'], '1': ['010', '110', '010', '010', '111'], '2': ['111', '001', '111', '100', '111'], '3': ['111', '001', '111', '001', '111'],
   '4': ['101', '101', '111', '001', '001'], '5': ['111', '100', '111', '001', '111'], '6': ['111', '100', '111', '101', '111'], '7': ['111', '001', '001', '001', '001'],
-  '8': ['111', '101', '111', '101', '111'], '9': ['111', '101', '111', '001', '111'], ' ': ['000', '000', '000', '000', '000']
+  '8': ['111', '101', '111', '101', '111'], '9': ['111', '101', '111', '001', '111'], ' ': ['000', '000', '000', '000', '000'],
+  J: ['001', '001', '001', '101', '111'], Q: ['111', '101', '101', '110', '011'], Z: ['111', '001', '010', '100', '111'], '+': ['000', '010', '111', '010', '000'],
+  '!': ['010', '010', '010', '000', '010'], '?': ['111', '001', '010', '000', '010'], ',': ['000', '000', '000', '010', '100'], ':': ['000', '010', '000', '010', '000'],
+  "'": ['010', '010', '000', '000', '000'], '/': ['001', '001', '010', '100', '100'], '@': ['111', '101', '111', '100', '111']
 };
 const textW = s => s.length * 4 - 1;
 function text(x, s, X, Y, col) { [...s].forEach((ch, i) => (FONT[ch] || FONT[' ']).forEach((row, r) => [...row].forEach((b, c) => { if (b === '1') P(x, X + i * 4 + c, Y + r, col); }))); }
@@ -2114,7 +2137,8 @@ const ZOOMS = [1600, 1024, 640, 400, 300, 220, 160];   // how many world pixels 
 let zi = 3, camX = 0, camY = 0;
 let dragging = false, downAt = null, follow = false, selected = null;
 let ASPECT = .75;   // screen height / width; 4:3 normally, whatever the screen is in full screen
-const vw = () => Math.min(ZOOMS[zi], W, H / ASPECT), vh = () => vw() * ASPECT;
+let CAM_W = 0, HOUR_OVR = null;   // set by the episode studio: a smooth zoom (world width) and a scripted hour of the day
+const vw = () => Math.min(CAM_W || ZOOMS[zi], W, H / ASPECT), vh = () => vw() * ASPECT;
 function clampCam() { camX = clamp(camX, 0, W - vw()); camY = clamp(camY, 0, H - vh()); }
 function centerOn(x, y) { camX = x - vw() / 2; camY = y - vh() / 2; clampCam(); }
 function setZoom(i, cx, cy) {
@@ -2234,6 +2258,7 @@ function radio(text) {
 let tStart = performance.now(), mode = 'auto';
 const CLOCK = (() => { try { return new Intl.DateTimeFormat('en-US', { timeZone: DATA.timezone, hour: 'numeric', minute: 'numeric', second: 'numeric', hourCycle: 'h23' }); } catch (e) { return null; } })();
 function hourNow() {
+  if (HOUR_OVR != null) return ((HOUR_OVR % 24) + 24) % 24;
   if (mode === 'day') return 13; if (mode === 'night') return 23;
   const now = new Date();
   if (CLOCK) { const p = {}; for (const { type, value } of CLOCK.formatToParts(now)) p[type] = +value; return (p.hour % 24) + p.minute / 60 + p.second / 3600; }
@@ -2862,10 +2887,162 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let last = 0;
 function loop(t) {
   requestAnimationFrame(loop);
-  if (reduce && t - last < 66) return;
-  last = t; update(); draw();
+  if (EPI.manual) return;
+  if (reduce && t - last < 66 && !EPI.on) return;
+  last = t; if (EPI.on) epPre(); update(); draw(); if (EPI.on) epPost();
 }
 requestAnimationFrame(loop);
+
+// ------------------------------------------------------------------ episode studio: scripted Reels played by the game itself (open the site with #studio)
+// An episode is a timeline: camera keys (world x, y and width), an hour-of-day curve, one-off events, and captions.
+// The studio plays it on a 9:16 canvas and can record it, optionally with a narration audio file, straight to a video.
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const lerp = (a, b, t) => a + (b - a) * t;
+const EPISODES = {
+  day1: {
+    title: 'Day 1 · One survivor', dur: 34,
+    // camera: [time, x, y, worldWidth] or [time, 'follow', name, worldWidth]
+    cam: [[0, 760, 600, 1500], [5, 640, 560, 1150], [10.5, 424, 492, 170], [12.5, 424, 492, 150], [13.2, 'follow', 'Sam', 190], [26, 'follow', 'Sam', 230], [29.5, 470, 470, 520], [34, 470, 470, 600]],
+    hour: [[0, 20.2], [10.5, 21.4], [12.6, 30.8], [34, 31.2]],
+    events: [[13, 'run', 'Sam', 'pharmacy']],
+    captions: [
+      [0.6, 5.2, 'title', 'OAKHAVEN', 'DAY 1'],
+      [4.2, 8.4, 'cap', "THE POWER'S GONE. THE DEAD WALK EVERY STREET."],
+      [8.6, 12.4, 'cap', 'ONE MAN IS STILL BREATHING. SAM. HOLED UP IN A LAUNDROMAT ON 3RD STREET.'],
+      [12.8, 17.4, 'cap', "EVERY MORNING HE GOES OUT FOR WHAT'S LEFT."],
+      [17.6, 21, 'cap', 'EVERY MORNING THE DEAD ARE WAITING.'],
+      [21.2, 28, 'vote', 'TWO DAYS OF FOOD LEFT. WHERE DOES HE GO?', ['DINER', 'PHARMACY', 'GAS']],
+      [28.2, 34, 'card', 'FOLLOW AND YOU FIND THE LAUNDROMAT TOO.', 'COMMENT YOUR NAME + JOB TO MOVE IN']
+    ],
+    narration: [
+      [0.5, 'Oakhaven. Day one.'],
+      [4.2, "The power's gone. The dead walk every street."],
+      [8.6, 'One man is still breathing. Sam. Holed up in a laundromat on Third Street.'],
+      [12.8, "Every morning, he goes out for what's left."],
+      [17.6, 'And every morning, the dead are waiting.'],
+      [21.2, "Today, he's down to two days of food. The diner, the pharmacy, or the gas station. You decide."],
+      [28.2, 'Follow, and you find the laundromat too. Comment your name and your job, and you’re in.']
+    ]
+  }
+};
+const EPI = { on: false, manual: false, t: 0, t0: 0, ep: null, fired: new Set(), rec: null };
+function keyAt(keys, t) { let i = 0; while (i < keys.length - 1 && keys[i + 1][0] <= t) i++; return [keys[i], keys[Math.min(i + 1, keys.length - 1)]]; }
+function camPoint(k) { if (k[1] === 'follow') { const e = byName[k[2]]; return e ? [e.x, e.y - 6, k[3]] : [HOME_CENTER[0], HOME_CENTER[1], k[3]]; } return [k[1], k[2], k[3]]; }
+function epStartRun(name, dest) {
+  const e = byName[name], d = POIS[dest]; if (!e || !d) return;
+  const r = DATA.runs.find(x => x.dest === dest) || { dest, squad: [name], status: 'queued' };
+  e.mode = 'run'; e.inside = false; e.hidden = false; e.x = HOME.door[0]; e.y = HOME.door[1] + 2; e.path = d.path; e.wp = 0; e.delay = 0; e.off = OFFS[0];
+  run = { r, d, members: [e], timer: 0 }; r.status = 'leaving'; renderRuns();
+}
+function epPre() {
+  const ep = EPI.ep, t = EPI.t;
+  const [a, b] = keyAt(ep.cam, t), span = Math.max(.001, b[0] - a[0]), u = ease(clamp((t - a[0]) / span, 0, 1));
+  const pa = camPoint(a), pb = camPoint(b);
+  CAM_W = Math.min(W, H / ASPECT, lerp(pa[2], pb[2], u));
+  centerOn(lerp(pa[0], pb[0], u), lerp(pa[1], pb[1], u));
+  const [ha, hb] = keyAt(ep.hour, t), hs = Math.max(.001, hb[0] - ha[0]);
+  HOUR_OVR = lerp(ha[1], hb[1], ease(clamp((t - ha[0]) / hs, 0, 1)));
+  for (const ev of ep.events) if (t >= ev[0] && !EPI.fired.has(ev)) { EPI.fired.add(ev); if (ev[1] === 'run') epStartRun(ev[2], ev[3]); }
+}
+// captions in the game's own pixel font, scaled up; with an ink outline so they read over any part of the map
+function capLine(c, s, cx, y, sc, col) {
+  const w = textW(s) * sc, x0 = Math.round(cx - w / 2);
+  const glyphs = (dx, dy, fill) => { c.fillStyle = fill; [...s].forEach((ch, i) => (FONT[ch] || FONT[' ']).forEach((row, r) => [...row].forEach((bit, k) => { if (bit === '1') c.fillRect(x0 + (i * 4 + k) * sc + dx, y + r * sc + dy, sc, sc); }))); };
+  const o = Math.max(2, sc >> 1);
+  for (const [dx, dy] of [[-o, 0], [o, 0], [0, -o], [0, o], [-o, -o], [o, o], [-o, o], [o, -o], [0, o * 2]]) glyphs(dx, dy, 'rgba(8,6,4,.92)');
+  glyphs(0, 0, col);
+}
+function wrap(s, max) { const out = []; let line = ''; for (const w of s.split(' ')) { if ((line + ' ' + w).trim().length > max) { out.push(line.trim()); line = w; } else line += ' ' + w; } if (line.trim()) out.push(line.trim()); return out; }
+function epPost() {
+  const c = vctx, Wc = view.width, Hc = view.height, t = EPI.t, ep = EPI.ep, u = Wc / 1080;
+  c.save(); c.imageSmoothingEnabled = false;
+  // a soft dark band behind the lower captions
+  for (const cap of ep.captions) {
+    const [t0, t1, kind] = cap; if (t < t0 || t > t1) continue;
+    const a = Math.min(1, (t - t0) / .35, (t1 - t) / .35); c.globalAlpha = clamp(a, 0, 1);
+    if (kind === 'title') {
+      const g = c.createLinearGradient(0, Hc * .18, 0, Hc * .5); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(.5, 'rgba(0,0,0,.45)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = g; c.fillRect(0, Hc * .18, Wc, Hc * .32);
+      capLine(c, cap[3], Wc / 2, Hc * .27, Math.round(30 * u), '#f2a93b');
+      if (t > t0 + .9) capLine(c, cap[4], Wc / 2, Hc * .27 + 190 * u, Math.round(13 * u), '#e7e9e4');
+    } else if (kind === 'cap') {
+      const lines = wrap(cap[3], 20), sc = Math.round(9 * u), lh = 7 * sc, y0 = Hc * .74 - (lines.length - 1) * lh / 2;
+      const g = c.createLinearGradient(0, y0 - 80 * u, 0, y0 + lines.length * lh + 80 * u); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(.3, 'rgba(0,0,0,.5)'); g.addColorStop(.7, 'rgba(0,0,0,.5)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = g; c.fillRect(0, y0 - 80 * u, Wc, lines.length * lh + 160 * u);
+      lines.forEach((ln, i) => capLine(c, ln, Wc / 2, y0 + i * lh, sc, '#e7e9e4'));
+    } else if (kind === 'vote') {
+      const lines = wrap(cap[3], 20), sc = Math.round(9 * u), lh = 7 * sc, top = Hc * .56;
+      c.fillStyle = 'rgba(10,13,15,.82)'; c.fillRect(60 * u, top - 50 * u, Wc - 120 * u, lines.length * lh + cap[4].length * 120 * u + 170 * u);
+      c.fillStyle = '#f2a93b'; c.fillRect(60 * u, top - 50 * u, Wc - 120 * u, 8 * u);
+      lines.forEach((ln, i) => capLine(c, ln, Wc / 2, top + i * lh, sc, '#e7e9e4'));
+      cap[4].forEach((opt, i) => {
+        const y = top + lines.length * lh + 40 * u + i * 120 * u, show = t > t0 + .6 + i * .45;
+        if (!show) return;
+        c.fillStyle = 'rgba(242,169,59,.16)'; c.fillRect(150 * u, y - 18 * u, Wc - 300 * u, 96 * u);
+        c.strokeStyle = '#f2a93b'; c.lineWidth = 4 * u; c.strokeRect(150 * u, y - 18 * u, Wc - 300 * u, 96 * u);
+        capLine(c, opt, Wc / 2, y, Math.round(12 * u), '#f2a93b');
+      });
+      if (t > t0 + 2.2) capLine(c, 'COMMENT YOUR PICK', Wc / 2, top + lines.length * lh + cap[4].length * 120 * u + 60 * u, Math.round(6 * u), '#8a979d');
+    } else if (kind === 'card') {
+      c.fillStyle = 'rgba(8,10,12,.78)'; c.fillRect(0, 0, Wc, Hc);
+      const sc = Math.round(9 * u), lh = 7 * sc; let y = Hc * .3;
+      wrap(cap[3], 20).forEach(ln => { capLine(c, ln, Wc / 2, y, sc, '#e7e9e4'); y += lh; });
+      y += 70 * u;
+      c.fillStyle = '#f2a93b'; c.fillRect(110 * u, y - 30 * u, Wc - 220 * u, 8 * u); y += 40 * u;
+      wrap(cap[4], 18).forEach(ln => { capLine(c, ln, Wc / 2, y, Math.round(10 * u), '#f2a93b'); y += 75 * u; });
+      y += 60 * u;
+      capLine(c, String(DATA.handle).toUpperCase(), Wc / 2, y, Math.round(11 * u), '#e7e9e4');
+      capLine(c, 'OAKHAVEN', Wc / 2, Hc * .86, Math.round(16 * u), '#f2a93b');
+    }
+  }
+  c.globalAlpha = 1;
+  // hazard tape along the top edge, the channel's signature
+  for (let x = -40 * u; x < Wc; x += 40 * u) { c.fillStyle = '#f2a93b'; c.beginPath(); c.moveTo(x, 0); c.lineTo(x + 20 * u, 0); c.lineTo(x + 32 * u, 12 * u); c.lineTo(x + 12 * u, 12 * u); c.fill(); }
+  c.restore();
+}
+// set the world up for an episode: its first hour, the dead settled, Sam home, camera on its first key
+function epPrepare(key) {
+  EPI.ep = EPISODES[key]; EPI.t = 0; EPI.fired = new Set(); follow = false; selected = null;
+  HOUR_OVR = EPI.ep.hour[0][1]; run = null; runWait = 1e9;
+  for (const e of people) { e.mode = 'wander'; e.inside = true; e.hidden = true; e.x = HOME.door[0]; e.y = HOME.door[1] + 1; }
+  for (let i = 0; i < 900; i++) update();
+  EPI.on = true; epPre();
+}
+function epEnd() { EPI.on = false; HOUR_OVR = null; CAM_W = 0; runWait = 240; setZoom(4, HOME_CENTER[0], HOME_CENTER[1]); }
+// manual stepping, used to render a video frame by frame
+window.oakEpisode = {
+  prepare(key) { EPI.manual = true; epPrepare(key); return EPI.ep.dur; },
+  frame(t, steps = 2) { EPI.t = t; epPre(); for (let i = 0; i < steps; i++) update(); draw(); epPost(); },
+  end() { EPI.manual = false; epEnd(); },
+  EPISODES
+};
+// the studio panel (only with #studio in the address)
+(function studio() {
+  const bar = $('studioBar'), screen = view.closest('.screen'); if (!bar) return;
+  const show = () => { const on = location.hash === '#studio'; $('studioOpen').hidden = !on; };
+  show(); window.addEventListener('hashchange', show);
+  const sel = $('stEp'); sel.innerHTML = Object.entries(EPISODES).map(([k, e]) => `<option value="${k}">${esc(e.title)}</option>`).join('');
+  const open = () => { screen.classList.add('studio'); bar.hidden = false; fit(); epPrepare(sel.value); EPI.t0 = performance.now(); };
+  const close = () => { stopRec(); screen.classList.remove('studio'); bar.hidden = true; epEnd(); fit(); };
+  let audio = null, recorder = null, chunks = [];
+  function stopRec() { if (recorder && recorder.state !== 'inactive') recorder.stop(); if (audio) audio.pause(); }
+  $('studioOpen').addEventListener('click', open);
+  $('stClose').addEventListener('click', close);
+  $('stPlay').addEventListener('click', () => { epPrepare(sel.value); EPI.t0 = performance.now(); if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); } });
+  $('stAudio').addEventListener('change', ev => { const f = ev.target.files[0]; if (!f) return; audio = new Audio(URL.createObjectURL(f)); $('stNote').textContent = `Narration: ${f.name}`; });
+  $('stRec').addEventListener('click', async () => {
+    const stream = view.captureStream(30);
+    if (audio) { const ac = new AudioContext(), src = ac.createMediaElementSource(audio), dst = ac.createMediaStreamDestination(); src.connect(dst); src.connect(ac.destination); dst.stream.getAudioTracks().forEach(tr => stream.addTrack(tr)); }
+    const type = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+    recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 8e6 }); chunks = [];
+    recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+    recorder.onstop = () => { const blob = new Blob(chunks, { type: type || 'video/webm' }), a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `oakhaven-${sel.value}.${type.includes('mp4') ? 'mp4' : 'webm'}`; a.click(); $('stNote').textContent = 'Saved to your downloads.'; };
+    epPrepare(sel.value); EPI.t0 = performance.now(); if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+    recorder.start(250); $('stNote').textContent = 'Recording…';
+  });
+  // real-time playback inside the normal game loop
+  setInterval(() => { if (!EPI.on || EPI.manual) return; EPI.t = (performance.now() - EPI.t0) / 1000; if (EPI.t > EPI.ep.dur) { EPI.t = EPI.ep.dur; if (recorder && recorder.state === 'recording') stopRec(); } }, 50);
+})();
 
 // ------------------------------------------------------------------ dashboard chrome: readouts, the squad in the field, links and the ops tabs
 (function () {
