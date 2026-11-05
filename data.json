@@ -1,0 +1,713 @@
+{
+ "handle": "@oakhaven",
+ "day": 1,
+ "followers": 1,
+ "timezone": "America/Chicago",
+ "vote": {
+  "q": "Day 1. Sam has two days of food left and the laundromat generator is dead. Where does he go first?",
+  "opts": [
+   [
+    "DINER",
+    0,
+    "Rosie's walk-in freezer might still have canned food."
+   ],
+   [
+    "PHARMACY",
+    0,
+    "Painkillers and bandages before anything goes wrong."
+   ],
+   [
+    "GAS",
+    0,
+    "Fuel for the generator, if the pumps aren't dry."
+   ]
+  ],
+  "how": "Comment DINER, PHARMACY or GAS on the Day 1 Reel. One vote per account, your last comment counts."
+ },
+ "outings": [],
+ "survivors": [
+  {
+   "name": "Sam",
+   "ig": "oakhaven",
+   "role": "Scavenger",
+   "protected": true,
+   "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
+   "joined": 1
+  }
+ ],
+ "runs": [
+  {
+   "dest": "pharmacy",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Painkillers and a roll of gauze from under the counter",
+   "place": "Pharmacy"
+  },
+  {
+   "dest": "diner",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Canned peaches and a tin of coffee from the walk-in",
+   "place": "Rosie’s Diner"
+  },
+  {
+   "dest": "gas",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Two jerry cans of fuel and a case of bottled water",
+   "place": "Gas station"
+  },
+  {
+   "dest": "market",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Six cans of beans from the stockroom",
+   "place": "Fresh Market"
+  },
+  {
+   "dest": "hardware",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Plywood, a crowbar and a box of screws",
+   "place": "Hardware store"
+  },
+  {
+   "dest": "gunshop",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Twelve rounds from behind the pawn counter",
+   "place": "Gun & Pawn"
+  },
+  {
+   "dest": "port",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A pallet of army rations from a split container",
+   "place": "Pier 9 warehouse"
+  },
+  {
+   "dest": "ranger",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A hunting rifle, a first aid kit and a trail map",
+   "place": "Ranger station"
+  },
+  {
+   "dest": "hangar",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A flare gun and a drum of aviation fuel",
+   "place": "Hangar 2"
+  },
+  {
+   "dest": "firestation",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Two axes, a fire blanket and an oxygen tank",
+   "place": "Fire Station 3"
+  },
+  {
+   "dest": "maple",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Canned soup and a shotgun with four shells",
+   "place": "Maple Court"
+  },
+  {
+   "dest": "storage",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Unit 14: camping gear and a generator repair manual",
+   "place": "U-Store-It units"
+  },
+  {
+   "dest": "mall",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Batteries and walkie-talkies from the electronics store",
+   "place": "Oakhaven Mall"
+  },
+  {
+   "dest": "freight",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A crate of canned tuna from a split boxcar",
+   "place": "Freight yard"
+  },
+  {
+   "dest": "farm",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Seed packets, a sack of feed corn and two very angry chickens",
+   "place": "Hollow Creek Farm"
+  },
+  {
+   "dest": "fair",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Candy, funnel cake mix and a megaphone",
+   "place": "Fairground"
+  },
+  {
+   "dest": "harbor",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A flare kit, binoculars and a harbor chart with the island marked",
+   "place": "Harbor Master"
+  },
+  {
+   "dest": "hunter",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A crossbow, a quiver of bolts and a strip of dried venison",
+   "place": "Hunter’s cabin"
+  },
+  {
+   "dest": "cold",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A pallet of salted fish and a case of canned coffee",
+   "place": "Cold Storage"
+  },
+  {
+   "dest": "greenhouse",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Seed trays, a sack of fertilizer and a hand pump",
+   "place": "Hollow Creek greenhouse"
+  },
+  {
+   "dest": "airfreight",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A crate of medical supplies addressed to Mercy Hospital",
+   "place": "Air Freight terminal"
+  },
+  {
+   "dest": "checkpoint",
+   "difficulty": "hard",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A radio log, two MREs and a box of 5.56 rounds under a cot",
+   "place": "Army checkpoint"
+  },
+  {
+   "dest": "surplus",
+   "difficulty": "easy",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A gas mask, wool blankets and a pair of boots that almost fit",
+   "place": "Army surplus store"
+  },
+  {
+   "dest": "funhouse",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A string of bulbs, a toolbox from the mirror maze and a scare he won’t talk about",
+   "place": "Fun House"
+  },
+  {
+   "dest": "arcade",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "A sack of quarters, a car battery and the prize counter’s candy",
+   "place": "Starlight Arcade"
+  },
+  {
+   "dest": "showbarn",
+   "difficulty": "medium",
+   "squad": [
+    "Sam"
+   ],
+   "loot": "Bags of feed, a stock trailer hitch and three goats that followed him home",
+   "place": "4-H show barn"
+  }
+ ],
+ "missions": [
+  {
+   "poi": "hospital",
+   "difficulty": "hard",
+   "goal": "Clear the ground floor and reach the basement generator.",
+   "crew": "6 fighters + 2 medics",
+   "reward": "Months of medicine and power for the hospital",
+   "name": "Mercy Hospital",
+   "area": "City"
+  },
+  {
+   "poi": "police",
+   "difficulty": "hard",
+   "goal": "Cut the chains and find out who locked themselves in.",
+   "crew": "Bolt cutters + 4 fighters",
+   "reward": "The basement armory",
+   "name": "Police station",
+   "area": "City"
+  },
+  {
+   "poi": "terminal",
+   "difficulty": "hard",
+   "goal": "Clear the terminal so the planes can be reached.",
+   "crew": "10 fighters",
+   "reward": "A way onto the airfield",
+   "name": "Airport terminal",
+   "area": "Airport"
+  },
+  {
+   "poi": "ship",
+   "difficulty": "deadly",
+   "goal": "Board the Mara and find what is moving in the hold.",
+   "crew": "6 fighters + 1 engineer",
+   "reward": "A working ship",
+   "name": "Cargo ship Mara",
+   "area": "Port"
+  },
+  {
+   "poi": "prison",
+   "difficulty": "deadly",
+   "goal": "Cross to the island and take Blackrock. Someone keeps a lantern lit in the guard tower.",
+   "crew": "A boat + 8 fighters",
+   "reward": "The safest walls in Oakhaven",
+   "name": "Blackrock Penitentiary",
+   "area": "The Bay"
+  },
+  {
+   "poi": "fort",
+   "difficulty": "deadly",
+   "goal": "Get through the gate of Fort Corran. Smoke has been rising from inside.",
+   "crew": "12 fighters + 1 mechanic",
+   "reward": "Military supplies and a helicopter",
+   "name": "Fort Corran",
+   "area": "Eastside"
+  },
+  {
+   "poi": "radio",
+   "difficulty": "medium",
+   "goal": "Power the KOAK tower and go on the air.",
+   "crew": "1 engineer + 1 radio operator + the tower generator",
+   "reward": "Find out who keeps saying three words on 88.1",
+   "name": "KOAK radio tower",
+   "area": "Eastside"
+  },
+  {
+   "name": "Clear the runway",
+   "difficulty": "medium",
+   "area": "Airport",
+   "at": [
+    744,
+    46
+   ],
+   "goal": "Drag the burned jet off runway 27 so a plane can take off.",
+   "crew": "4 mechanics + the airport tractor",
+   "reward": "A working runway"
+  },
+  {
+   "name": "Hollow Creek harvest",
+   "difficulty": "easy",
+   "area": "Farmland",
+   "at": [
+    304,
+    1092
+   ],
+   "goal": "Bring in the corn and wheat before the frost, with guards on the barn roof.",
+   "crew": "6 farmhands + 2 guards",
+   "reward": "A month of food for everyone"
+  },
+  {
+   "name": "The windmill pump",
+   "difficulty": "easy",
+   "area": "Farmland",
+   "at": [
+    24,
+    1100
+   ],
+   "goal": "Get the old windmill pumping and fill the troughs again.",
+   "crew": "1 mechanic + 1 farmhand",
+   "reward": "Clean water that needs no power"
+  },
+  {
+   "name": "Stray cattle",
+   "difficulty": "medium",
+   "area": "Farmland",
+   "at": [
+    30,
+    1168
+   ],
+   "goal": "Round up the cattle that broke through the fence and wandered into the woods.",
+   "crew": "3 scouts",
+   "reward": "Milk now, and meat for the winter"
+  },
+  {
+   "name": "Fort Corran armory",
+   "difficulty": "hard",
+   "area": "Fort Corran",
+   "at": [
+    1360,
+    300
+   ],
+   "goal": "Get through the inner fence and open the three ammo bunkers. One door is already hanging open.",
+   "crew": "6 fighters + bolt cutters",
+   "reward": "Rifles, ammunition and body armor for every runner"
+  },
+  {
+   "name": "The Black Hawk",
+   "difficulty": "hard",
+   "area": "Fort Corran",
+   "at": [
+    1556,
+    96
+   ],
+   "goal": "Refuel the helicopter on the east pad and get its rotor turning.",
+   "crew": "1 pilot + 2 mechanics + aviation fuel from the airport",
+   "reward": "Air scouting over the whole map"
+  },
+  {
+   "name": "Smoke inside the fort",
+   "difficulty": "medium",
+   "area": "Fort Corran",
+   "at": [
+    1552,
+    352
+   ],
+   "goal": "Somebody keeps a fire burning in the motor pool. Find out who before the horde does.",
+   "crew": "2 scouts",
+   "reward": "A new survivor, or a warning"
+  },
+  {
+   "name": "The big top",
+   "difficulty": "hard",
+   "area": "Fairground",
+   "at": [
+    1530,
+    808
+   ],
+   "goal": "Something is still alive in the circus wagons, and one cage is torn open. Search the big top.",
+   "crew": "4 fighters + someone good with animals",
+   "reward": "The tent as a shelter, and whatever was in the cage"
+  },
+  {
+   "name": "Light up the Ferris wheel",
+   "difficulty": "medium",
+   "area": "Fairground",
+   "at": [
+    1500,
+    600
+   ],
+   "goal": "Get the midway generator running and turn the wheel into a beacon every survivor in Oakhaven can see.",
+   "crew": "1 mechanic + 2 haulers + 4 guards",
+   "reward": "A signal that brings new survivors in"
+  },
+  {
+   "name": "Stuck at the top",
+   "difficulty": "medium",
+   "area": "Fairground",
+   "at": [
+    1500,
+    552
+   ],
+   "goal": "Something is moving in the top car of the Ferris wheel. Climb up or find a way to turn it.",
+   "crew": "1 climber + 2 fighters",
+   "reward": "Whoever, or whatever, is up there"
+  },
+  {
+   "name": "Interstate 9 pile-up",
+   "difficulty": "medium",
+   "area": "Southside",
+   "at": [
+    1170,
+    1040
+   ],
+   "goal": "Clear one lane through the pile-up east of the city.",
+   "crew": "2 mechanics + a tow truck",
+   "reward": "A road out of Oakhaven"
+  }
+ ],
+ "power": [
+  {
+   "id": "laundromat",
+   "name": "Laundromat generator",
+   "area": "Home",
+   "at": [
+    394,
+    497
+   ],
+   "status": "found",
+   "clue": "Sam dragged it home from the auto shop. The carburetor is shot.",
+   "crew": "1 mechanic",
+   "fuel": "10 L gasoline",
+   "powers": "A porch light and a floodlight over the yard"
+  },
+  {
+   "id": "gas",
+   "name": "Gas station standby",
+   "area": "City",
+   "at": [
+    606,
+    460
+   ],
+   "status": "rumor",
+   "clue": "The kiosk kept a standby generator out back to run the pumps.",
+   "crew": "1 mechanic + 2 haulers",
+   "fuel": "20 L gasoline",
+   "powers": "The pumps, canopy lights and price sign"
+  },
+  {
+   "id": "diner",
+   "name": "Rosie’s freezer generator",
+   "area": "City",
+   "at": [
+    592,
+    392
+   ],
+   "status": "rumor",
+   "clue": "Rosie ran the walk-in freezer off her own generator. Something in there still hums at night.",
+   "crew": "1 mechanic + 1 cook",
+   "fuel": "15 L gasoline",
+   "powers": "The neon sign, the kitchen and a working freezer"
+  },
+  {
+   "id": "port",
+   "name": "Quay crane generator",
+   "area": "Port",
+   "at": [
+    842,
+    446
+   ],
+   "status": "rumor",
+   "clue": "The cranes ran off a diesel set by the water.",
+   "crew": "1 engineer + 4 haulers",
+   "fuel": "100 L diesel",
+   "powers": "Quay floodlights, the cranes and Pier 9"
+  },
+  {
+   "id": "airport",
+   "name": "Hangar ground power unit",
+   "area": "Airport",
+   "at": [
+    334,
+    166
+   ],
+   "status": "rumor",
+   "clue": "Hangar 2 had a ground power cart for starting planes.",
+   "crew": "2 mechanics + 2 haulers",
+   "fuel": "Aviation fuel from the trucks",
+   "powers": "The control tower, runway lights and the terminal"
+  },
+  {
+   "id": "hospital",
+   "name": "Hospital emergency generator",
+   "area": "City",
+   "at": [
+    500,
+    254
+   ],
+   "status": "rumor",
+   "clue": "In the basement of Mercy Hospital, past the horde.",
+   "crew": "2 engineers + 6 fighters",
+   "fuel": "200 L diesel",
+   "powers": "Every floor of the hospital"
+  },
+  {
+   "id": "lighthouse",
+   "name": "Lighthouse generator",
+   "area": "Bay",
+   "at": [
+    1006,
+    74
+   ],
+   "status": "rumor",
+   "clue": "Out on the point. Only reachable by boat from the marina.",
+   "crew": "1 engineer + someone who can sail",
+   "fuel": "20 L diesel",
+   "powers": "The lighthouse beam, so ships can find the bay again"
+  },
+  {
+   "id": "mall",
+   "name": "Mall backup generator",
+   "area": "Southside",
+   "at": [
+    740,
+    1120
+   ],
+   "status": "rumor",
+   "clue": "The mall kept a backup generator by the loading dock for the food court freezers.",
+   "crew": "2 mechanics + 3 haulers",
+   "fuel": "80 L diesel",
+   "powers": "Mall lights, the food court freezers and the cinema"
+  },
+  {
+   "id": "radio",
+   "name": "Radio tower generator",
+   "area": "Eastside",
+   "at": [
+    1572,
+    1002
+   ],
+   "status": "rumor",
+   "clue": "KOAK 88.1 has a diesel generator in a cage at the foot of the tower.",
+   "crew": "1 engineer + 1 radio operator",
+   "fuel": "50 L diesel",
+   "powers": "The tower beacon and the transmitter. Oakhaven goes on the air."
+  },
+  {
+   "id": "fort",
+   "name": "Fort Corran field generator",
+   "area": "Eastside",
+   "at": [
+    1500,
+    362
+   ],
+   "status": "rumor",
+   "clue": "Army field generators sit on trailers in the motor pool. One of them still has fuel in it.",
+   "crew": "1 engineer + 2 mechanics + 6 guards",
+   "fuel": "60 L diesel",
+   "powers": "The mast beacon, the gate and parade-ground floodlights, the range lights and the mess hall"
+  },
+  {
+   "id": "fair",
+   "name": "Midway generator",
+   "area": "Fairground",
+   "at": [
+    1580,
+    716
+   ],
+   "status": "rumor",
+   "clue": "The carnival crew ran the rides off a trailer generator parked behind the bumper cars.",
+   "crew": "1 mechanic + 2 haulers",
+   "fuel": "40 L diesel",
+   "powers": "The Ferris wheel lights, the midway bulbs, the drop tower and the arcade"
+  },
+  {
+   "id": "substation",
+   "name": "City substation backup",
+   "area": "Forest edge",
+   "at": [
+    140,
+    748
+   ],
+   "status": "rumor",
+   "clue": "The substation by the woods has a diesel backup big enough for every street.",
+   "crew": "3 engineers + 4 mechanics + 10 guards",
+   "fuel": "500 L diesel",
+   "powers": "Every streetlight, the pharmacy cross and the motel sign"
+  }
+ ],
+ "stock": [
+  [
+   "Food",
+   2,
+   14,
+   "days"
+  ],
+  [
+   "Water",
+   3,
+   14,
+   "days"
+  ],
+  [
+   "Ammo",
+   12,
+   500,
+   "rds"
+  ],
+  [
+   "Scrap",
+   15,
+   200,
+   "units"
+  ],
+  [
+   "Barricades",
+   80,
+   100,
+   "%"
+  ]
+ ],
+ "milestones": [
+  [
+   2,
+   "A second survivor knocks on the laundromat door"
+  ],
+  [
+   5,
+   "Fix the laundromat generator: the first electric light in the city"
+  ],
+  [
+   25,
+   "A rooftop garden on the laundromat"
+  ],
+  [
+   50,
+   "Get the gas station pumps running"
+  ],
+  [
+   100,
+   "Wall off the whole block"
+  ],
+  [
+   150,
+   "Restart the substation and turn the streetlights back on"
+  ],
+  [
+   250,
+   "Get the cargo ship’s engines running"
+  ],
+  [
+   500,
+   "Fly a plane out of the airport"
+  ],
+  [
+   1000,
+   "Take Fort Corran"
+  ]
+ ],
+ "waitlist": [],
+ "log": []
+}
