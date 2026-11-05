@@ -1,5 +1,5 @@
 {
- "handle": "@oakhaven",
+ "handle": "@surviveoakhaven",
  "day": 1,
  "followers": 1,
  "timezone": "America/Chicago",
@@ -28,7 +28,7 @@
  "survivors": [
   {
    "name": "Sam",
-   "ig": "oakhaven",
+   "ig": "surviveoakhaven",
    "role": "Scavenger",
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
