@@ -2900,28 +2900,28 @@ const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
   day1: {
-    title: 'Day 1 · One survivor', dur: 34,
+    title: 'Day 1 · How it fell', dur: 58.5, audioOffset: 1.0,
     // camera: [time, x, y, worldWidth] or [time, 'follow', name, worldWidth]
-    cam: [[0, 760, 600, 1500], [5, 640, 560, 1150], [10.5, 424, 492, 170], [12.5, 424, 492, 150], [13.2, 'follow', 'Sam', 190], [26, 'follow', 'Sam', 230], [29.5, 470, 470, 520], [34, 470, 470, 600]],
-    hour: [[0, 20.2], [10.5, 21.4], [12.6, 30.8], [34, 31.2]],
-    events: [[13, 'run', 'Sam', 'pharmacy']],
+    cam: [[0, 800, 620, 1560], [3.6, 780, 600, 1300], [5.6, 930, 520, 330], [8.2, 925, 540, 300],
+          [9.6, 560, 250, 270], [12.2, 560, 245, 240], [13.6, 1240, 290, 320], [16.8, 1250, 280, 290],
+          [18.4, 744, 150, 330], [21.2, 744, 140, 300], [23.2, 760, 600, 1560], [26.2, 640, 560, 1000],
+          [28.6, 424, 492, 170], [31.0, 424, 492, 150], [31.6, 'follow', 'Sam', 190], [36.4, 'follow', 'Sam', 210],
+          [38.0, 1525, 960, 300], [41.6, 1525, 955, 270], [43.2, 470, 470, 520], [48.4, 470, 470, 560], [58.5, 470, 470, 640]],
+    hour: [[0, 17.6], [16, 19.2], [21.6, 20.0], [25.6, 22.6], [28.6, 29.6], [31.4, 30.6], [36.4, 31.0], [38.0, 44.4], [58.5, 45.0]],
+    events: [[31.2, 'run', 'Sam', 'pharmacy']],
     captions: [
-      [0.6, 5.2, 'title', 'OAKHAVEN', 'DAY 1'],
-      [4.2, 8.4, 'cap', "THE POWER'S GONE. THE DEAD WALK EVERY STREET."],
-      [8.6, 12.4, 'cap', 'ONE MAN IS STILL BREATHING. SAM. HOLED UP IN A LAUNDROMAT ON 3RD STREET.'],
-      [12.8, 17.4, 'cap', "EVERY MORNING HE GOES OUT FOR WHAT'S LEFT."],
-      [17.6, 21, 'cap', 'EVERY MORNING THE DEAD ARE WAITING.'],
-      [21.2, 28, 'vote', 'TWO DAYS OF FOOD LEFT. WHERE DOES HE GO?', ['DINER', 'PHARMACY', 'GAS']],
-      [28.2, 34, 'card', 'FOLLOW AND YOU FIND THE LAUNDROMAT TOO.', 'COMMENT YOUR NAME + JOB TO MOVE IN']
-    ],
-    narration: [
-      [0.5, 'Oakhaven. Day one.'],
-      [4.2, "The power's gone. The dead walk every street."],
-      [8.6, 'One man is still breathing. Sam. Holed up in a laundromat on Third Street.'],
-      [12.8, "Every morning, he goes out for what's left."],
-      [17.6, 'And every morning, the dead are waiting.'],
-      [21.2, "Today, he's down to two days of food. The diner, the pharmacy, or the gas station. You decide."],
-      [28.2, 'Follow, and you find the laundromat too. Comment your name and your job, and you’re in.']
+      [0.5, 4.3, 'title', 'OAKHAVEN', 'POP. 40,000'],
+      [4.6, 8.4, 'cap', 'SIX WEEKS AGO, A FEVER CAME IN ON A CARGO SHIP AT PIER 9.'],
+      [8.6, 12.4, 'cap', 'BY WEEK TWO, MERCY HOSPITAL STOPPED ANSWERING THE PHONES.'],
+      [12.6, 17.3, 'cap', 'THE ARMY TOLD EVERYONE TO RUN FOR THE AIRPORT.'],
+      [17.5, 21.3, 'cap', 'THE LAST FLIGHT OUT NEVER LEFT THE RUNWAY.'],
+      [21.6, 25.7, 'cap', 'THEN THE POWER WENT OUT. AND THE DEAD STOPPED STAYING DEAD.'],
+      [25.9, 31.1, 'cap', 'ONE MAN IS STILL BREATHING. SAM. HOLED UP IN A LAUNDROMAT ON 3RD STREET.'],
+      [31.35, 33.8, 'cap', "EVERY MORNING HE GOES OUT FOR WHAT'S LEFT."],
+      [33.95, 36.7, 'cap', 'EVERY MORNING THE DEAD ARE WAITING.'],
+      [36.9, 41.7, 'cap', "BUT HE'S NOT ALONE. EVERY NIGHT, THE SAME 3 WORDS ON 88.1"],
+      [41.9, 48.4, 'vote', 'TWO DAYS OF FOOD LEFT. WHERE DOES HE GO?', ['DINER', 'PHARMACY', 'GAS']],
+      [48.6, 58.5, 'card', 'FOLLOW AND YOU FIND THE LAUNDROMAT TOO.', 'COMMENT YOUR NAME + JOB TO MOVE IN']
     ]
   }
 };
@@ -3028,7 +3028,7 @@ window.oakEpisode = {
   function stopRec() { if (recorder && recorder.state !== 'inactive') recorder.stop(); if (audio) audio.pause(); }
   $('studioOpen').addEventListener('click', open);
   $('stClose').addEventListener('click', close);
-  $('stPlay').addEventListener('click', () => { epPrepare(sel.value); EPI.t0 = performance.now(); if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); } });
+  $('stPlay').addEventListener('click', () => { epPrepare(sel.value); EPI.t0 = performance.now(); if (audio) { audio.pause(); audio.currentTime = 0; setTimeout(() => audio.play().catch(() => {}), (EPISODES[sel.value].audioOffset || 0) * 1000); } });
   $('stAudio').addEventListener('change', ev => { const f = ev.target.files[0]; if (!f) return; audio = new Audio(URL.createObjectURL(f)); $('stNote').textContent = `Narration: ${f.name}`; });
   $('stRec').addEventListener('click', async () => {
     const stream = view.captureStream(30);
@@ -3037,7 +3037,7 @@ window.oakEpisode = {
     recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 8e6 }); chunks = [];
     recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
     recorder.onstop = () => { const blob = new Blob(chunks, { type: type || 'video/webm' }), a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `oakhaven-${sel.value}.${type.includes('mp4') ? 'mp4' : 'webm'}`; a.click(); $('stNote').textContent = 'Saved to your downloads.'; };
-    epPrepare(sel.value); EPI.t0 = performance.now(); if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+    epPrepare(sel.value); EPI.t0 = performance.now(); if (audio) { audio.pause(); audio.currentTime = 0; setTimeout(() => audio.play().catch(() => {}), (EPISODES[sel.value].audioOffset || 0) * 1000); }
     recorder.start(250); $('stNote').textContent = 'Recording…';
   });
   // real-time playback inside the normal game loop
