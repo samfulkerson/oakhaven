@@ -331,6 +331,7 @@ const DATA = {
 // live data: when the page is hosted next to data.json (GitHub Pages), the loader at the bottom of the page fetches it and the
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
+if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
 if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
