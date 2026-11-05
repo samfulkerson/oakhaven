@@ -1,6 +1,6 @@
 {
  "handle": "@surviveoakhaven",
- "day": 1,
+ "day": 2,
  "followers": 1,
  "timezone": "America/Chicago",
  "vote": {
@@ -24,7 +24,6 @@
   ],
   "how": "Comment DINER, PHARMACY or GAS on the Day 1 Reel. One vote per account, your last comment counts."
  },
- "outings": [],
  "survivors": [
   {
    "name": "Sam",
@@ -32,7 +31,8 @@
    "role": "Scavenger",
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
-   "joined": 1
+   "joined": 1,
+   "outings": 1
   }
  ],
  "runs": [
@@ -43,7 +43,8 @@
     "Sam"
    ],
    "loot": "Painkillers and a roll of gauze from under the counter",
-   "place": "Pharmacy"
+   "place": "Pharmacy",
+   "done_day": 1
   },
   {
    "dest": "diner",
@@ -709,5 +710,36 @@
   ]
  ],
  "waitlist": [],
- "log": []
+ "log": [
+  {
+   "day": 1,
+   "vote": {
+    "question": "Day 1. Sam has two days of food left and the laundromat generator is dead. Where does he go first?",
+    "results": {},
+    "winner": null,
+    "reel": null
+   },
+   "outings": [
+    {
+     "target": "Pharmacy",
+     "kind": "run",
+     "difficulty": "easy",
+     "squad": [
+      "Sam"
+     ],
+     "results": [
+      {
+       "name": "Sam",
+       "ig": "surviveoakhaven",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    }
+   ],
+   "healed": [],
+   "joined": [],
+   "waiting": 0
+  }
+ ]
 }
