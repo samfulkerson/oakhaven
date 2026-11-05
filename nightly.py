@@ -8,7 +8,7 @@ Runs once a night (GitHub Actions does it for you) and moves the world forward e
   5. updates the follower count, advances the day, and writes data.json plus report.md (a recap to narrate from)
 
 Secrets it reads from the environment (set them in GitHub under Settings > Secrets and variables > Actions):
-  IG_TOKEN, IG_USER_ID   Instagram Graph API token and Instagram business account ID   (optional: skipped if missing)
+  IG_TOKEN               Instagram access token from "API setup with Instagram login"  (optional: skipped if missing)
   ANTHROPIC_API_KEY      for reading join comments                                         (optional: skipped if missing)
 Options:
   DRY_RUN=1              print what would happen, change nothing
@@ -19,7 +19,7 @@ from collections import Counter
 # ---------------------------------------------------------------- settings you might want to change
 DATA_FILE = "data.json"
 REPORT_FILE = "report.md"
-GRAPH = os.environ.get("IG_GRAPH", "https://graph.facebook.com/v25.0")
+GRAPH = os.environ.get("IG_GRAPH", "https://graph.instagram.com/v25.0")
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-haiku-5-5")
 MAX_NEW_PER_DAY = 25          # pacing: at most this many new survivors move in per day; the rest wait in line
 ROLES = ["Scavenger", "Medic", "Scout", "Sharpshooter", "Farmer", "Builder", "Radio Operator", "Mechanic", "Guard", "Cook", "Engineer"]
@@ -52,10 +52,10 @@ def ig_get(url, **params):
 
 def fetch_instagram():
     """Follower count, newest Reel and every comment on it. Returns None if no Instagram credentials are set."""
-    if not (os.environ.get("IG_TOKEN") and os.environ.get("IG_USER_ID")):
-        log("No IG_TOKEN / IG_USER_ID set: skipping Instagram (no vote count, no new survivors).")
+    if not os.environ.get("IG_TOKEN"):
+        log("No IG_TOKEN set: skipping Instagram (no vote count, no new survivors).")
         return None
-    uid = os.environ["IG_USER_ID"]
+    uid = os.environ.get("IG_USER_ID") or "me"   # the token already knows whose account it is
     followers = ig_get(f"{GRAPH}/{uid}", fields="followers_count")["followers_count"]
     media = ig_get(f"{GRAPH}/{uid}/media", fields="id,media_type,media_product_type,permalink,timestamp", limit=15)["data"]
     reels = [m for m in media if m.get("media_product_type") == "REELS" or m.get("media_type") in ("VIDEO", "REELS")]
