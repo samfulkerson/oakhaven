@@ -24,8 +24,7 @@ Under **Settings > Secrets and variables > Actions > New repository secret**, ad
 
 | Secret | Where to get it |
 |---|---|
-| `IG_USER_ID` | Your Instagram professional account's ID, from Meta's developer tools (Graph API Explorer: `me/accounts`, then the page's `instagram_business_account`). |
-| `IG_TOKEN` | A long-lived access token with `instagram_basic`, `instagram_manage_comments` and `pages_read_engagement`. Long-lived tokens last about 60 days, so set a reminder to renew it. |
+| `IG_TOKEN` | The access token from your Meta app: **Instagram > API setup with Instagram login > Generate token**. It lasts about 60 days, so set a reminder to generate a new one and replace the secret. |
 | `ANTHROPIC_API_KEY` | console.anthropic.com > API keys. Reading join comments costs pennies a day. |
 
 Until those are added, the nightly run still works: it sends out the day's run and advances the day, but skips the vote count and new survivors.
