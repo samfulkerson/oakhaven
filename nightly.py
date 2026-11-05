@@ -95,7 +95,10 @@ def count_vote(data, comments):
     if not options:
         return None, {}
     ballots = {}
+    owner = str(data.get("handle", "")).lstrip("@").lower()
     for c in comments:
+        if c["username"].lower() == owner:                 # your own replies on the Reel don't count as votes
+            continue
         text = " " + re.sub(r"[^A-Z0-9 ]", " ", c.get("text", "").upper()) + " "
         pick = next((o for o in options if f" {o} " in text), None)
         if pick:
@@ -296,7 +299,13 @@ def main():
     data = json.load(open(DATA_FILE, encoding="utf-8"))
     day = data["day"]
     rng = random.Random(f"oakhaven-{day}-{os.environ.get('OAKHAVEN_SEED', '')}")
-    ig = fetch_instagram()
+    problems = []
+    try:
+        ig = fetch_instagram()
+    except Exception as e:                                 # an expired token shouldn't stop the story: the day still advances
+        log(f"!! Instagram failed: {e}")
+        problems.append(f"Instagram: {e}")
+        ig = None
     comments = ig["comments"] if ig else []
 
     winner, tally = count_vote(data, comments)
@@ -306,7 +315,17 @@ def main():
 
     living_ig = {s.get("ig", "").lower() for s in data["survivors"] if s.get("status") != "dead"}
     living_ig |= {str(p.get("ig", "")).lower() for p in data.get("waitlist", [])}
-    added = add_survivors(data, read_joins(comments, living_ig) if comments else [])
+    try:
+        parsed = read_joins(comments, living_ig) if comments else []
+        if DRY and not comments:
+            parsed_test = read_joins([{"username": "test_jake", "text": "Jake here, I'll be the mechanic. Scared of birds."},
+                                      {"username": "test_vote", "text": "DINER!!"}], set())
+            log(f"Claude self-test (not saved): {parsed_test}")
+    except Exception as e:
+        log(f"!! Reading join comments failed: {e}")
+        problems.append(f"Claude: {e}")
+        parsed = []
+    added = add_survivors(data, parsed)
 
     if ig:
         data["followers"] = ig["followers"]
@@ -329,7 +348,9 @@ def main():
                 lines.append(f"- † **{r['name']}** (@{r['ig']}) died. {r['detail']}")
             elif r["outcome"] == "injured":
                 lines.append(f"- {r['name']} (@{r['ig']}) was hurt: {r['detail']}")
-        if all(r["outcome"] == "ok" for r in o["results"]):
+        if o.get("note"):
+            lines.append(f"- {o['note']} The camp stayed behind the fence.")
+        elif all(r["outcome"] == "ok" for r in o["results"]):
             lines.append("- Everyone came back in one piece.")
     if healed:
         lines.append(f"**Back on their feet:** {', '.join(healed)}")
@@ -337,6 +358,8 @@ def main():
     if data.get("waitlist"):
         lines.append(f"**Still waiting to get in:** {len(data['waitlist'])}")
     lines.append(f"**Followers:** {data.get('followers')}  |  **Tomorrow is Day {new_day}**")
+    for p in problems:
+        lines.append(f"**⚠ Problem:** {p}")
     report = "\n".join(lines) + "\n"
     log("\n" + report)
 
