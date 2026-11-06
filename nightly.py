@@ -311,6 +311,7 @@ The survivors can go to one of these places tomorrow (the word in capitals is wh
 Write:
   "q": the vote question, starting with "Day {day}." then one or two short, tense sentences that set up the choice from today's events. Under 140 characters.
   "desc": for each option word, one short line (under 70 characters) on why it's tempting or what the risk is. Don't promise what they'll find.
+Only use facts from the recap above: don't invent what happened, who was there or what was found.
 Reply with only JSON like {{"q": "...", "desc": {{"WORD": "..."}}}}."""
 
 
@@ -355,7 +356,7 @@ def next_vote(data, new_day, rng, recap, problems):
         try:
             import anthropic
             lines = "\n".join(f"- {o['label']}: {o['place']} ({o['difficulty']}{', a multi-night mission: ' + o['hint'] if o['kind'] == 'mission' else ', ' + o['hint']})" for o in opts)
-            msg = anthropic.Anthropic().messages.create(model=MODEL, max_tokens=800, messages=[{"role": "user", "content": VOTE_PROMPT.format(day=new_day, recap=recap, options=lines)}])
+            msg = anthropic.Anthropic().messages.create(model=MODEL, max_tokens=4000, messages=[{"role": "user", "content": VOTE_PROMPT.format(day=new_day, recap=recap, options=lines)}])
             text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text")
             got = json.loads(text[text.index("{"): text.rindex("}") + 1])
             if str(got.get("q", "")).startswith(f"Day {new_day}"):
