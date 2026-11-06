@@ -224,19 +224,23 @@ canvas#world.dragging{cursor:grabbing}
 .toggle{display:inline-flex;gap:9px;align-items:center;font-size:13px;color:var(--fg);cursor:pointer;padding:7px 12px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--panel-2)}
 .toggle input{accent-color:var(--accent);width:16px;height:16px;margin:0}
 
-.find{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:16px;align-items:start}
-@media (max-width:760px){.find{grid-template-columns:minmax(0,1fr)}}
+.find{display:grid;gap:14px}
+.find .search{max-width:420px}
 .search{display:grid;gap:8px}
 .search label{font-family:var(--f-head);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
 .search input{font-size:16px;background:var(--bg);border:1px solid var(--line-2);border-radius:var(--r);color:var(--fg);padding:10px 12px;width:100%;box-sizing:border-box}
 .search input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
-.card{display:grid;grid-template-columns:66px minmax(0,1fr);gap:14px;align-items:start;padding:14px;background:var(--panel-2);border:1px solid var(--accent);border-radius:var(--r)}
+.card{display:grid;grid-template-columns:66px minmax(0,1fr);gap:14px;align-items:start;padding:14px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);cursor:pointer;text-align:left;min-width:0}
+.card:hover{border-color:var(--line-2)}
+.card.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card.fallen{opacity:.75}
+.card .tag{font-family:var(--f-head);font-weight:600;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--warn);margin-left:6px}
 .card canvas{width:66px;height:78px;image-rendering:pixelated;background:var(--bg);border:1px solid var(--line-2);border-radius:3px}
 .card h3{margin:0;font-family:var(--f-head);font-weight:700;font-size:20px;letter-spacing:.02em}
 .card .ig{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
 .card p{margin:4px 0 0;font-size:14px}
 .card .meta{font-size:12.5px;color:var(--muted);margin-top:6px}
-.roster{display:flex;flex-wrap:wrap;gap:6px;max-height:300px;overflow:auto;align-content:flex-start}
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px;max-height:900px;overflow:auto;align-items:start}
 .surv{font-size:13px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;color:var(--fg);padding:4px 11px;cursor:pointer;display:flex;gap:7px;align-items:baseline}
 .surv:hover{border-color:var(--line-2);background:var(--panel-3)}
 .surv span{font-family:var(--f-head);font-weight:600;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
@@ -2887,13 +2891,39 @@ $('voteHow').textContent = v.how;
 const nextM = (DATA.milestones.find(m => m[0] > DATA.followers) || [0])[0];
 $('miles').innerHTML = DATA.milestones.map(([n, t]) => `<li class="${n === nextM ? 'next' : ''}"><b>${n.toLocaleString()}</b><span>${esc(t)}${n === nextM ? ` <span class="togo">(${n - DATA.followers} to go)</span>` : ''}</span></li>`).join('');
 
+// what someone is doing at this moment in the world
+function whereOf(d) {
+  if (d.status === 'dead') return `Buried in the churchyard`;
+  const e = byName[d.name];
+  if ((d.joined || 1) > DATA.day) return `Arrives on Day ${d.joined}`;
+  const base = !e ? 'At the laundromat' : e.mode === 'run' ? `Out on the ${run ? run.d.name : ''} run` : e.inside ? 'Barricaded inside for the night' : 'In the laundromat yard';
+  return base + (d.status === 'injured' ? ` · injured${d.injury ? ` (${d.injury})` : ''}, resting${d.injured_until ? ` until Day ${d.injured_until}` : ''}` : '');
+}
+let pickedName = null;   // the card that's highlighted (living or fallen)
+function cardOf(d) {
+  const dead = d.status === 'dead';
+  const meta = dead
+    ? `${esc(d.role)} · arrived Day ${d.joined} · fell on Day ${d.died_day || '?'}${d.died_at ? ` at the ${esc(d.died_at)}` : ''}${d.cause ? `. ${esc(d.cause)}` : ''}`
+    : `${esc(d.role)} · arrived Day ${d.joined}`;
+  return `<article class="card${dead ? ' fallen' : ''}${pickedName === d.name ? ' sel' : ''}" data-name="${esc(d.name)}" tabindex="0" aria-label="${esc(d.name)}: show on the map">
+    <canvas width="${GW}" height="${GH}" data-portrait="${esc(d.name)}"${dead ? ' style="filter:grayscale(1) brightness(.7)"' : ''}></canvas><div>
+    <h3>${dead ? '\u2020 ' : ''}${esc(d.name)}${d.status === 'injured' ? '<span class="tag">Hurt</span>' : ''}</h3><div class="ig">@${esc(d.ig)}</div><p>${esc(d.bio)}</p>
+    <div class="meta">${meta}</div>
+    <div class="now"><b>Right now</b><span class="nowtxt">${esc(whereOf(d))}</span></div>${storyOf(d)}${shareBtn(d)}</div></article>`;
+}
 function renderRoster(q = '') {
   const s = q.trim().toLowerCase().replace(/^@/, '');
-  const list = DATA.survivors.filter(d => !s || d.name.toLowerCase().includes(s) || d.ig.toLowerCase().includes(s) || d.role.toLowerCase().includes(s));
+  const list = DATA.survivors.filter(d => !s || d.name.toLowerCase().includes(s) || d.ig.toLowerCase().includes(s) || d.role.toLowerCase().includes(s))
+    .sort((a, b) => (a.status === 'dead') - (b.status === 'dead'));            // the living first, the fallen after
   $('roster').innerHTML = list.length
-    ? list.map(d => `<button type="button" class="surv${d.status === 'dead' ? ' fallen' : d.status === 'injured' ? ' hurt' : ''}" data-name="${esc(d.name)}" aria-pressed="${!!(selected && selected.d === d)}">${d.status === 'dead' ? '\u2020 ' : ''}${esc(d.name)} <span>${esc(d.role)}</span></button>`).join('')
+    ? list.map(cardOf).join('')
     : `<p class="empty">No survivor by that name yet. Comment on the latest Reel to move in.</p>`;
+  for (const c of $('roster').querySelectorAll('canvas[data-portrait]')) {
+    const d = DATA.survivors.find(x => x.name === c.dataset.portrait), e = byName[c.dataset.portrait];
+    const pc = c.getContext('2d'); pc.imageSmoothingEnabled = false; pc.drawImage(sprite(e ? e.look : lookFor(d.ig, d.role), 'stand'), 0, 0);
+  }
 }
+setInterval(() => { for (const el of document.querySelectorAll('#roster .card')) { const d = DATA.survivors.find(x => x.name === el.dataset.name), t = el.querySelector('.nowtxt'); if (d && t) t.textContent = whereOf(d); } }, 1000);
 // everything the nightly log says about one survivor, newest first
 function storyOf(d) {
   const out = [];
@@ -2916,29 +2946,18 @@ function shareBtn(d) { return `<div class="acts"><button type="button" data-shar
 function showFallen(name) {
   const d = DATA.survivors.find(s => s.name === name && s.status === 'dead'); if (!d) return false;
   const g = GRAVES[name] || [420, 292]; selected = null; follow = false; setZoom(Math.max(zi, 5), g[0], g[1] - 6);
-  const card = $('card'); card.hidden = false;
-  card.innerHTML = `<div class="card"><canvas width="${GW}" height="${GH}" id="portrait" style="filter:grayscale(1) brightness(.7)"></canvas><div>
-    <h3>\u2020 ${esc(d.name)}</h3><div class="ig">@${esc(d.ig)}</div><p>${esc(d.bio)}</p>
-    <div class="meta">${esc(d.role)} · arrived Day ${d.joined} · fell on Day ${d.died_day || '?'}${d.died_at ? ` at the ${esc(d.died_at)}` : ''}${d.cause ? `. ${esc(d.cause)}` : ''} · buried in the churchyard</div>${storyOf(d)}${shareBtn(d)}</div></div>`;
-  const pc = $('portrait').getContext('2d'); pc.imageSmoothingEnabled = false; pc.drawImage(sprite(lookFor(d.ig, d.role), 'stand'), 0, 0);
-  renderRoster($('q').value); return true;
+  pickedName = name; $('card').hidden = true; renderRoster($('q').value); return true;
 }
 function select(name, jump = true) {
   const e = byName[name]; if (!e) { showFallen(name); return; }
   selected = e; const d = e.d;
   if (jump) { follow = true; setZoom(Math.max(zi, 4), e.inside ? HOME_CENTER[0] : e.x, e.inside ? HOME_CENTER[1] : e.y); }
-  const where = (e.mode === 'run' ? `Out on the ${run ? run.d.name : ''} run` : e.inside ? 'Barricaded inside for the night' : 'In the laundromat yard')
-    + (d.status === 'injured' ? ` · injured${d.injury ? ` (${d.injury})` : ''}, resting${d.injured_until ? ` until Day ${d.injured_until}` : ''}` : '');
-  const card = $('card'); card.hidden = false;
-  card.innerHTML = `<div class="card"><canvas width="${GW}" height="${GH}" id="portrait"></canvas><div>
-    <h3>${esc(d.name)}</h3><div class="ig">@${esc(d.ig)}</div><p>${esc(d.bio)}</p>
-    <div class="meta">${esc(d.role)} · arrived Day ${d.joined}</div>
-    <div class="now"><b>Right now</b>${esc(where)}</div>${storyOf(d)}${shareBtn(d)}</div></div>`;
-  const pc = $('portrait').getContext('2d'); pc.imageSmoothingEnabled = false; pc.drawImage(sprite(e.look, 'stand'), 0, 0);
+  pickedName = d.name; $('card').hidden = true;
   renderRoster($('q').value);
 }
 document.addEventListener('click', ev => {
-  const b = ev.target.closest('[data-name]'); if (b) { select(b.dataset.name); return; }
+  if (ev.target.closest('[data-share]')) return;
+  const b = ev.target.closest('[data-name]'); if (b) { select(b.dataset.name); if (b.classList.contains('card')) $('world').scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
   const p = ev.target.closest('[data-place]'); if (p) { flyTo(p.dataset.place); $('world').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
   const mi = ev.target.closest('[data-mission]'); if (mi) { const m = DATA.missions[+mi.dataset.mission], p = m.poi ? POIS[m.poi] : null; const [cx, cy] = p ? [p.box[0] + p.box[2] / 2, p.box[1] + p.box[3] / 2] : m.at; follow = false; setZoom(Math.max(zi, 3), cx, cy); $('world').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
   const g = ev.target.closest('[data-gen]'); if (g) { const gen = DATA.power[+g.dataset.gen]; follow = false; setZoom(Math.max(zi, 4), gen.at[0], gen.at[1] - 10); $('world').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
@@ -2949,6 +2968,7 @@ $('q').addEventListener('input', ev => {
   if (s.length > 2) { const m = d => d.ig.toLowerCase() === s || d.name.toLowerCase() === s; const hit = DATA.survivors.filter(alive).find(m) || DATA.survivors.find(m); if (hit) select(hit.name); }
 });
 renderRoster();
+$('roster').addEventListener('keydown', ev => { const c = ev.target.closest('.card'); if (c && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); c.click(); } });
 
 // ------------------------------------------------------------------ full screen: real full screen where the browser allows it, otherwise the map fills the window
 const screenEl = view.closest('.screen');
