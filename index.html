@@ -2849,8 +2849,8 @@ $('meters').innerHTML = DATA.stock.map(([name, v, max, unit]) => {
   const level = perHead ? Math.min(1, days / 7) : Math.min(1, v / (FULL[name] || max));   // a week of food and water counts as full
   const pct = Math.max(2, Math.round(level * 100)), cls = pct < 25 ? 'bad' : pct < 55 ? 'warn' : '';
   const ch = (DATA.stock_change || {})[name];
-  const sub = [perHead ? `${days} day${days === 1 ? '' : 's'} for ${HEADS}` : '', ch ? `<span class="${ch > 0 ? 'up' : 'down'}">${ch > 0 ? '+' : '\u2212'}${Math.abs(ch)} last night</span>` : ''].filter(Boolean).join(' · ');
-  return `<div class="meter${cls === 'bad' ? ' alarm' : ''}"><span class="lbl">${esc(name)}</span><span class="bar" role="img" aria-label="${esc(name)} ${v} ${esc(unit)}"><i class="${cls}" style="width:${pct}%"></i></span><span class="val">${v} ${esc(unit)}</span>${sub ? `<span class="sub">${sub}</span>` : ''}</div>`;
+  const sub = [perHead ? `${v} ration${v === 1 ? '' : 's'} for ${HEADS} ${HEADS === 1 ? 'person' : 'people'}` : '', ch ? `<span class="${ch > 0 ? 'up' : 'down'}">${ch > 0 ? '+' : '\u2212'}${Math.abs(ch)} last night</span>` : ''].filter(Boolean).join(' · ');
+  return `<div class="meter${cls === 'bad' ? ' alarm' : ''}"><span class="lbl">${esc(name)}</span><span class="bar" role="img" aria-label="${esc(name)} ${v} ${esc(unit)}"><i class="${cls}" style="width:${pct}%"></i></span><span class="val">${perHead ? `${days} day${days === 1 ? '' : 's'}` : `${v} ${esc(unit)}`}</span>${sub ? `<span class="sub">${sub}</span>` : ''}</div>`;
 }).join('');
 {
   const fd = stockDays('Food'), wd = stockDays('Water'), fence = (DATA.stock.find(s => s[0] === 'Barricades') || [0, 100])[1], ammo = (DATA.stock.find(s => s[0] === 'Ammo') || [0, 99])[1];
