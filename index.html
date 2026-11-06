@@ -3030,6 +3030,41 @@ requestAnimationFrame(loop);
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
+  day2: {
+    title: 'Day 2 · The Grid', dur: 81.5, audioOffset: 1.0,
+    cam: [[0, 800, 600, 1560], [2.9, 760, 560, 1100], [4.6, 409, 380, 250], [11.5, 409, 386, 180], [15.8, 409, 386, 170], [21.2, 700, 520, 1150],
+          [22.4, 680, 470, 800], [23.7, 592, 392, 240], [24.9, 600, 400, 300], [25.3, 842, 446, 280], [26.5, 820, 430, 320], [26.9, 500, 254, 280],
+          [28.0, 470, 300, 380], [28.5, 150, 748, 320], [30.4, 150, 748, 300], [31.9, 400, 497, 150], [36.5, 400, 497, 140], [38.8, 420, 490, 220],
+          [40.9, 600, 560, 900], [42.4, 800, 600, 1560], [43.9, 800, 600, 1560], [45.4, 440, 560, 260], [46.4, 'follow', 'Jaylozy', 170],
+          [49.2, 'follow', 'Jaylozy', 180], [50.4, 424, 500, 200], [50.9, 'follow', 'Jaylozy', 120], [52.4, 'follow', 'Jaylozy', 120],
+          [53.0, 'follow', 'Tanny', 120], [55.6, 'follow', 'Tanny', 120], [56.1, 'follow', 'Seth', 120], [57.9, 'follow', 'Seth', 120],
+          [58.4, 'follow', 'Gary Finklestein', 120], [62.6, 'follow', 'Gary Finklestein', 130], [64.4, 470, 470, 520], [71, 470, 470, 560], [81.5, 470, 470, 640]],
+    hour: [[0, 16.6], [30, 18.4], [37, 20.2], [49.2, 20.6], [50.8, 30.8], [81.5, 32]],
+    events: [[0, 'away', ['Jaylozy', 'Tanny', 'Seth', 'Gary Finklestein']], [40.9, 'preview', true], [43.9, 'preview', false],
+             [44.0, 'arrive', ['Jaylozy', 'Tanny', 'Seth', 'Gary Finklestein'], 'market'], [50.3, 'settle', ['Jaylozy', 'Tanny', 'Seth', 'Gary Finklestein']]],
+    captions: [
+      [1.0, 2.9, 'title', 'OAKHAVEN', 'DAY 2'],
+      [3.3, 7.6, 'cap', 'YOU VOTED: PHARMACY.'],
+      [7.9, 11.5, 'cap', 'HE MADE IT OUT. NOT CLEAN.'],
+      [11.9, 15.8, 'cap', 'PAINKILLERS. GAUZE. AND A NOTE.'],
+      [16.0, 22.1, 'cap', 'OAKHAVEN POWER & LIGHT: EVERY BACKUP GENERATOR IN THE CITY.'],
+      [22.4, 23.6, 'cap', '12 GENERATORS.'],
+      [23.7, 24.9, 'cap', "ROSIE'S FREEZER"],
+      [25.0, 26.5, 'cap', 'THE DOCK CRANES'],
+      [26.6, 28.0, 'cap', 'MERCY HOSPITAL'],
+      [28.1, 30.5, 'cap', 'THE SUBSTATION'],
+      [30.9, 36.5, 'cap', "SAM'S GENERATOR: DEAD CARBURETOR. EMPTY TANK."],
+      [36.9, 40.7, 'cap', 'GET IT RUNNING: THE FIRST LIGHT IN OAKHAVEN.'],
+      [41.0, 43.9, 'cap', 'GET THEM ALL RUNNING...'],
+      [44.3, 49.9, 'cap', 'LAST NIGHT, SOMEONE KNOCKED ON THE GATE.'],
+      [50.6, 52.5, 'cap', 'JAYLOZY · SHARPSHOOTER'],
+      [52.8, 55.6, 'cap', 'TANNY · SCOUT'],
+      [55.9, 57.9, 'cap', 'SETH · RADIO OPERATOR'],
+      [58.3, 62.7, 'cap', "GARY · SCAVENGER. WE DON'T ASK."],
+      [63.2, 70.8, 'vote', 'TODAY THEY GET READY. WHERE DO THEY GO?', ['GAS', 'GUN SHOP', 'MARKET']],
+      [71.1, 81.5, 'card', 'WE NEED A MECHANIC.', 'COMMENT YOUR NAME + JOB TO MOVE IN']
+    ]
+  },
   day1: {
     title: 'Day 1 · How it fell', dur: 58.5, audioOffset: 1.0,
     // camera: [time, x, y, worldWidth] or [time, 'follow', name, worldWidth]
@@ -3059,6 +3094,20 @@ const EPISODES = {
 const EPI = { on: false, manual: false, t: 0, t0: 0, ep: null, fired: new Set(), rec: null };
 function keyAt(keys, t) { let i = 0; while (i < keys.length - 1 && keys[i + 1][0] <= t) i++; return [keys[i], keys[Math.min(i + 1, keys.length - 1)]]; }
 function camPoint(k) { if (k[1] === 'follow') { const e = byName[k[2]]; return e ? [e.x, e.y - 6, k[3]] : [HOME_CENTER[0], HOME_CENTER[1], k[3]]; } return [k[1], k[2], k[3]]; }
+function epEvent(ev) {
+  const who = n => (Array.isArray(n) ? n : [n]).map(x => byName[x]).filter(Boolean);
+  if (ev[1] === 'run') epStartRun(ev[2], ev[3]);
+  else if (ev[1] === 'preview') preview = !!ev[2];
+  else if (ev[1] === 'away') who(ev[2]).forEach(e => { e.mode = 'away'; e.hidden = true; e.inside = false; });
+  else if (ev[1] === 'settle') who(ev[2]).forEach(e => { e.mode = 'wander'; e.inside = true; e.hidden = true; e.x = HOME.door[0]; e.y = HOME.door[1] + 1; });
+  else if (ev[1] === 'arrive') {
+    // walk in from up the road: the last stretch of the way home from ev[3], ending at the laundromat door
+    const full = POIS[ev[3]].path.slice().reverse(), seg = [full[full.length - 1]]; let len = 0;
+    for (let i = full.length - 2; i >= 0 && len < 180; i--) { len += Math.hypot(full[i][0] - seg[0][0], full[i][1] - seg[0][1]); seg.unshift(full[i]); }
+    seg.push([HOME.door[0], HOME.door[1] + 2]);
+    who(ev[2]).forEach((e, i) => { e.mode = 'run'; e.hidden = false; e.inside = false; [e.x, e.y] = seg[0]; e.path = seg; e.wp = 1; e.delay = i * 22; e.off = OFFS[i % 4]; });
+  }
+}
 function epStartRun(name, dest) {
   const e = byName[name], d = POIS[dest]; if (!e || !d) return;
   const r = DATA.runs.find(x => x.dest === dest) || { dest, squad: [name], status: 'queued' };
@@ -3073,7 +3122,7 @@ function epPre() {
   centerOn(lerp(pa[0], pb[0], u), lerp(pa[1], pb[1], u));
   const [ha, hb] = keyAt(ep.hour, t), hs = Math.max(.001, hb[0] - ha[0]);
   HOUR_OVR = lerp(ha[1], hb[1], ease(clamp((t - ha[0]) / hs, 0, 1)));
-  for (const ev of ep.events) if (t >= ev[0] && !EPI.fired.has(ev)) { EPI.fired.add(ev); if (ev[1] === 'run') epStartRun(ev[2], ev[3]); }
+  for (const ev of ep.events) if (t >= ev[0] && !EPI.fired.has(ev)) { EPI.fired.add(ev); epEvent(ev); }
 }
 // captions in a clean, heavy display face (Chakra Petch) with a dark outline and shadow so they read over any part of the map
 const CAP_FONT = '"Chakra Petch", "Barlow", "Helvetica Neue", Arial, sans-serif';
@@ -3143,7 +3192,7 @@ function epPrepare(key) {
   for (let i = 0; i < 900; i++) update();
   EPI.on = true; epPre();
 }
-function epEnd() { EPI.on = false; HOUR_OVR = null; CAM_W = 0; runWait = 240; setZoom(4, HOME_CENTER[0], HOME_CENTER[1]); }
+function epEnd() { EPI.on = false; preview = false; HOUR_OVR = null; CAM_W = 0; runWait = 240; setZoom(4, HOME_CENTER[0], HOME_CENTER[1]); }
 // manual stepping, used to render a video frame by frame
 window.oakEpisode = {
   prepare(key) { EPI.manual = true; epPrepare(key); return EPI.ep.dur; },
