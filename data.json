@@ -743,8 +743,10 @@
    "day": 1,
    "vote": {
     "question": "Day 1. Sam has two days of food left and the laundromat generator is dead. Where does he go first?",
-    "results": {},
-    "winner": null,
+    "results": {
+     "PHARMACY": 2
+    },
+    "winner": "PHARMACY",
     "reel": null
    },
    "outings": [
