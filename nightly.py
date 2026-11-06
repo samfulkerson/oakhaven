@@ -6,7 +6,8 @@ Runs once a night (GitHub Actions does it for you) and moves the world forward e
   3. heals survivors whose injuries are over
   4. adds new survivors from join comments (Claude reads them), up to a daily cap
   5. updates the follower count, advances the day, and writes data.json plus report.md (a recap to narrate from)
-  6. sets tomorrow's vote: picks three places the squad could go and has Claude word the question
+  6. moves the power project along: runs bring back fuel and parts, new arrivals bring skills, generators come back on
+  7. sets tomorrow's vote: picks three places the squad could go and has Claude word the question
 
 Secrets it reads from the environment (set them in GitHub under Settings > Secrets and variables > Actions):
   IG_TOKEN               Instagram access token from "API setup with Instagram login"  (optional: skipped if missing)
@@ -170,7 +171,7 @@ def resolve_outing(data, kind, item, rng):
     place = place_name(kind, item)
     squad = pick_squad(data, kind, item, rng)
     if not squad:
-        return {"target": place, "kind": kind, "difficulty": diff, "squad": [], "results": [], "note": "Nobody was fit to go."}
+        return {"target": place, "key": item.get("dest") or item.get("poi"), "kind": kind, "difficulty": diff, "squad": [], "results": [], "note": "Nobody was fit to go."}
     roles = {s["role"] for s in squad}
     inj, die = RISK.get(diff, RISK["medium"])
     if "Medic" in roles:
@@ -199,7 +200,7 @@ def resolve_outing(data, kind, item, rng):
         item["days"] = item.get("days") or MISSION_DAYS.get(diff, 3)
         item["days_done"] = item.get("days_done", 0) + 1
         item["status"] = "done" if item["days_done"] >= item["days"] else "active"
-    return {"target": place, "kind": kind, "difficulty": diff, "squad": [s["name"] for s in squad], "results": results,
+    return {"target": place, "key": item.get("dest") or item.get("poi"), "kind": kind, "difficulty": diff, "squad": [s["name"] for s in squad], "results": results,
             "mission_status": item.get("status") if kind == "mission" else None}
 
 
@@ -305,7 +306,54 @@ def add_survivors(data, parsed):
     return added
 
 
-# ---------------------------------------------------------------- 6. tomorrow's vote
+# ---------------------------------------------------------------- 6. the power project
+# Each generator in data.json "power" can list what it needs to run: things a run brings back ("dest"), a skill someone in
+# camp has ("role"), or enough people ("people"). Needs get ticked off as the story goes; when they're all met it runs.
+def power_progress(data, outings, new_day):
+    living = [s for s in data["survivors"] if s.get("status") != "dead" and s.get("joined", 1) <= new_day]
+    came_back = {o.get("key") for o in outings if o.get("results") and any(r["outcome"] != "dead" for r in o["results"])}
+    news, busy, lit = [], set(), False      # each skill works on one generator a night, and only one comes on per night
+    for g in data.get("power", []):
+        needs = g.get("needs") or []
+        if not needs or g.get("status") == "running":
+            continue
+        if g.get("status") == "rumor" and g.get("found_by") in came_back:
+            g["status"] = "found"
+            news.append(f"Found the {g['name']} during the {g['found_by']} run.")
+        if g.get("status") == "rumor":
+            continue
+        for n in needs:
+            if n.get("done"):
+                continue
+            hit = (n.get("dest") and n["dest"] in came_back) \
+                or (n.get("role") and n["role"] not in busy and any(s["role"] == n["role"] and s.get("status") != "injured" for s in living)) \
+                or (n.get("people") and len(living) >= n["people"])
+            if hit and n.get("role"):
+                busy.add(n["role"])
+            if hit:
+                n["done"], n["day"] = True, new_day - 1
+                news.append(f"{g['name']}: {n['label']} ✓")
+        done = sum(1 for n in needs if n.get("done"))
+        if done == len(needs) and not lit:
+            lit = True
+            g["status"], g["on_day"] = "running", new_day - 1
+            g.pop("progress", None)
+            news.append(f"⚡ The {g['name']} is RUNNING. {g.get('powers', '')}")
+        elif done:
+            g["status"], g["progress"] = "repairing", round(done / len(needs) * 100) if done < len(needs) else 99
+    return news
+
+
+def power_wants(data):
+    """Run destinations that would tick off an open power need, for the vote to favor."""
+    out = []
+    for g in data.get("power", []):
+        if g.get("status") in ("found", "repairing"):
+            out += [(n["dest"], g["name"], n["label"]) for n in g.get("needs", []) if n.get("dest") and not n.get("done")]
+    return out
+
+
+# ---------------------------------------------------------------- 7. tomorrow's vote
 # the word people comment for each place (must be easy to type and not contain another option's word)
 LABELS = {"gunshop": "GUN SHOP", "port": "PIER", "firestation": "FIRE STATION", "cold": "COLD STORAGE", "airfreight": "AIR FREIGHT",
           "showbarn": "SHOW BARN", "hunter": "CABIN", "harbor": "HARBOR", "storage": "STORAGE UNITS", "surplus": "SURPLUS"}
@@ -341,6 +389,13 @@ def vote_options(data, new_day, rng):
     missions = [m for m in data.get("missions", []) if m.get("status") != "done" and n >= SQUAD_SIZE.get(m.get("difficulty", "hard"), 4)]
     if missions and picks and rng.random() < .5:
         picks[-1] = ("mission", missions[0])
+    want = {}
+    for d, g, l in power_wants(data):
+        want.setdefault(d, (g, l))
+    if want and not any(it.get("dest") in want for _, it in picks):     # one option always moves the power project along
+        r = next((r for r in runs if r["dest"] in want), None)
+        if r:
+            picks = picks[:2] + [("run", r)]
     while len(picks) < 3 and again:
         r = again.pop(0)
         if all(it is not r for _, it in picks):
@@ -352,7 +407,7 @@ def vote_options(data, new_day, rng):
         if any(label in o["label"] or o["label"] in label for o in out):
             continue
         out.append({"kind": kind, "key": key, "label": label, "place": place_name(kind, it), "difficulty": it.get("difficulty", "easy"),
-                    "hint": it.get("goal") if kind == "mission" else ("visited before" if it.get("done_day") else "never searched")})
+                    "hint": it.get("goal") if kind == "mission" else (f"needed for the {want[key][0]}: {want[key][1]}" if key in want else ("visited before" if it.get("done_day") else "never searched"))})
     return out
 
 
@@ -419,13 +474,14 @@ def main():
         problems.append(f"Claude: {e}")
         parsed = []
     added = add_survivors(data, parsed)
+    power_news = power_progress(data, outings, new_day)
 
     if ig:
         data["followers"] = ig["followers"]
     data["day"] = new_day
     entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner,
                                   "reel": ig["reel"]["permalink"] if ig and ig.get("reel") else None},
-             "outings": outings, "healed": healed, "joined": [s["name"] for s in added], "waiting": len(data.get("waitlist", []))}
+             "outings": outings, "healed": healed, "joined": [s["name"] for s in added], "waiting": len(data.get("waitlist", [])), "power": power_news}
     data.setdefault("log", []).append(entry)
     data["log"] = data["log"][-60:]                      # keep the file small: the last two months
 
@@ -447,6 +503,8 @@ def main():
             lines.append("- Everyone came back in one piece.")
     if healed:
         lines.append(f"**Back on their feet:** {', '.join(healed)}")
+    for n in power_news:
+        lines.append(f"**Power:** {n}")
     lines.append(f"**New survivors ({len(added)}):** " + (", ".join(f"{s['name']} the {s['role']} (@{s['ig']})" for s in added) or "none"))
     if data.get("waitlist"):
         lines.append(f"**Still waiting to get in:** {len(data['waitlist'])}")
