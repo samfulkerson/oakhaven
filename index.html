@@ -63,6 +63,8 @@ button:focus-visible,input:focus-visible,a:focus-visible,.surv:focus-visible,.pl
 .card .acts button:hover{background:var(--accent-soft)}
 .notfound{padding:14px;background:var(--panel-2);border:1px dashed var(--line-2);border-radius:var(--r);font-size:14px}
 .notfound a{color:var(--accent)}
+.checklist{grid-column:1/-1;display:grid;gap:3px;font-size:13px;color:var(--muted);margin-top:4px}
+.checklist .got{color:var(--good,#7fc97a)}
 .pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:12px;letter-spacing:.04em;padding:5px 10px;border:1px solid var(--line-2);border-radius:999px;background:var(--panel);color:var(--fg);font-variant-numeric:tabular-nums;white-space:nowrap}
 .pill b{font-weight:500;color:var(--accent)}
 .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--bad);box-shadow:0 0 0 3px var(--bad-soft);animation:pulse 2s infinite}
@@ -2847,7 +2849,8 @@ function renderGens() {
     return `<div class="run ${cls}"><span><button type="button" class="place" data-gen="${i}">${esc(g.name)}</button><span class="area">${esc(g.area)}</span></span><span class="status">${st}</span>
       <span class="why">${esc(g.clue)}</span>
       <span class="needs"><span><b>Crew</b>${esc(g.crew)}</span><span><b>Fuel</b>${esc(g.fuel)}</span></span>
-      <span class="needs"><span><b>Lights up</b>${esc(g.powers)}</span></span></div>`;
+      <span class="needs"><span><b>Lights up</b>${esc(g.powers)}</span></span>${g.needs && g.status !== 'rumor' ? `
+      <span class="checklist">${g.needs.map(x => `<span class="${x.done ? 'got' : ''}">${x.done ? '\u2714' : '\u25cb'} ${esc(x.label)}</span>`).join('')}</span>` : ''}</div>`;
   }).join('');
 }
 renderGens();
