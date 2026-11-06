@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Oakhaven: a dead city, one survivor, and every Instagram follower moves in. Comment your name and job to join.">
 <meta property="og:title" content="Oakhaven">
-<meta property="og:description" content="A dead city. One survivor. Every follower moves in.">
+<meta property="og:description" content="A dead city. One survivor. Comment your name and you move in.">
 <title>Oakhaven</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -307,7 +307,7 @@ footer a{color:var(--muted)}
 
   <section class="tiles" aria-label="Camp readouts">
     <div class="tile amber"><span class="k">Day</span><span class="v" id="tDayN">1</span><span class="s" id="tDayS">The first day</span></div>
-    <div class="tile"><span class="k">Survivors</span><span class="v" id="tPop">1</span><span class="s"><span id="hNamed"></span> named · <span id="tFallen">0</span> fallen</span></div>
+    <div class="tile"><span class="k">Survivors</span><span class="v" id="tPop">1</span><span class="s"><span id="hNamed">0</span> injured · <span id="tFallen">0</span> fallen</span></div>
     <div class="tile hot"><span class="k">Undead in city</span><span class="v" id="tHorde">0</span><span class="s" id="tHordeS">Roaming the streets</span></div>
     <div class="tile"><span class="k">Power grid</span><span class="v" id="tPower">0<small>/12</small></span><span class="s" id="tPowerS">Every light is out</span></div>
     <div class="tile"><span class="k">Food left</span><span class="v" id="tFood">2<small>days</small></span><span class="s" id="tFoodS">Stockpile</span></div>
@@ -432,7 +432,7 @@ footer a{color:var(--muted)}
 
   <section class="card-f join" aria-label="How to join">
     <div>
-      <h2>Every follower is a <span>survivor</span>.</h2>
+      <h2>Every follower can be a <span>survivor</span>.</h2>
       <p>Sam has been alone in a dead city for weeks. The power is out, the dead own the streets, and the laundromat on 3rd Street is the only safe place left. Follow <strong id="handle"></strong> and you find the building too.</p>
       <a class="btn" id="joinBottom" href="https://www.instagram.com/surviveoakhaven/" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
@@ -440,7 +440,7 @@ footer a{color:var(--muted)}
       </a>
     </div>
     <ol class="steps">
-      <li><strong>Follow</strong>You reach the laundromat the same day and move in as an unnamed survivor.</li>
+      <li><strong>Follow</strong>Follow @surviveoakhaven so you catch every day's Reel and never miss a vote.</li>
       <li><strong>Comment</strong>Give a name, a job and something about you, like <code>Jake, mechanic, scared of birds</code>. You move in the next day with your own sprite and card.</li>
       <li><strong>Vote</strong>Comment the vote word on the day's Reel. One vote per account. The camp goes where the most people say.</li>
     </ol>
@@ -2198,7 +2198,7 @@ function yardSpot() {
 }
 DATA.survivors.forEach(d => { d.runsDone = 0; });
 const LIVING = DATA.survivors.filter(alive);
-const visible = Math.min(Math.max(DATA.followers, LIVING.length), 60);
+const visible = Math.min(LIVING.length, 60);
 for (let i = 0; i < visible; i++) {
   const d = LIVING[i] || null;
   const [x, y] = yardSpot();
@@ -2825,9 +2825,10 @@ view.addEventListener('wheel', ev => { ev.preventDefault(); const [x, y] = toWor
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 $('handle').textContent = DATA.handle;
 $('hDay').textContent = DATA.day;
-$('hPop').textContent = DATA.followers.toLocaleString();
-$('hPopWord').textContent = DATA.followers === 1 ? 'survivor' : 'survivors';
-$('hNamed').textContent = DATA.survivors.length;
+const POP = LIVING.length;   // survivors are the people who commented and moved in, not every follower
+$('hPop').textContent = POP.toLocaleString();
+$('hPopWord').textContent = POP === 1 ? 'survivor' : 'survivors';
+$('hNamed').textContent = LIVING.filter(d => d.status === 'injured').length;
 $('rosterCount').textContent = `${DATA.survivors.length} named`;
 
 $('meters').innerHTML = DATA.stock.map(([name, v, max, unit]) => {
@@ -3156,7 +3157,7 @@ window.oakEpisode = {
   // readouts that only change with the nightly update
   const on = DATA.power.filter(g => g.status === 'running').length, n = DATA.power.length;
   $('tDayN').textContent = DATA.day; $('tDayS').textContent = DATA.day <= 1 ? 'The first day' : `Week ${Math.ceil(DATA.day / 7)} since the fall`;
-  $('tPop').textContent = DATA.followers.toLocaleString();
+  $('tPop').textContent = LIVING.length.toLocaleString();
   $('tFallen').textContent = DATA.survivors.filter(s => s.status === 'dead').length;
   $('tPower').innerHTML = `${on}<small>/${n}</small>`; $('tPowerS').textContent = on ? `${on} generator${on > 1 ? 's' : ''} running` : 'Every light is out';
   const food = DATA.stock.find(s => s[0] === 'Food'), water = DATA.stock.find(s => s[0] === 'Water');
