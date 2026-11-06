@@ -516,7 +516,21 @@
    "clue": "Sam dragged it home from the auto shop. The carburetor is shot.",
    "crew": "1 mechanic",
    "fuel": "10 L gasoline",
-   "powers": "A porch light and a floodlight over the yard"
+   "powers": "A porch light and a floodlight over the yard",
+   "needs": [
+    {
+     "label": "10 L of gasoline from the gas station",
+     "dest": "gas"
+    },
+    {
+     "label": "A new carburetor from the hardware store",
+     "dest": "hardware"
+    },
+    {
+     "label": "A mechanic to put it back together",
+     "role": "Mechanic"
+    }
+   ]
   },
   {
    "id": "gas",
@@ -530,7 +544,22 @@
    "clue": "The kiosk kept a standby generator out back to run the pumps.",
    "crew": "1 mechanic + 2 haulers",
    "fuel": "20 L gasoline",
-   "powers": "The pumps, canopy lights and price sign"
+   "powers": "The pumps, canopy lights and price sign",
+   "found_by": "gas",
+   "needs": [
+    {
+     "label": "Hoses and a fan belt from the hardware store",
+     "dest": "hardware"
+    },
+    {
+     "label": "A mechanic",
+     "role": "Mechanic"
+    },
+    {
+     "label": "6 survivors to haul it and guard the pumps",
+     "people": 6
+    }
+   ]
   },
   {
    "id": "diner",
@@ -544,7 +573,22 @@
    "clue": "Rosie ran the walk-in freezer off her own generator. Something in there still hums at night.",
    "crew": "1 mechanic + 1 cook",
    "fuel": "15 L gasoline",
-   "powers": "The neon sign, the kitchen and a working freezer"
+   "powers": "The neon sign, the kitchen and a working freezer",
+   "found_by": "diner",
+   "needs": [
+    {
+     "label": "15 L of gasoline from the gas station",
+     "dest": "gas"
+    },
+    {
+     "label": "A mechanic",
+     "role": "Mechanic"
+    },
+    {
+     "label": "A cook to run the kitchen",
+     "role": "Cook"
+    }
+   ]
   },
   {
    "id": "port",
