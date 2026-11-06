@@ -2276,7 +2276,8 @@ function line(c, x0, y0, x1, y1, col) {
 const radioLines = [];
 function radio(text) {
   radioLines.push([clockText(), text]); if (radioLines.length > 6) radioLines.shift();
-  $('radio').innerHTML = radioLines.map(([t, s]) => `<div><time>${t}</time><span>${s}</span></div>`).join('');
+  const safe = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));   // names come from Instagram comments
+  $('radio').innerHTML = radioLines.map(([t, s]) => `<div><time>${t}</time><span>${safe(s)}</span></div>`).join('');
 }
 
 // ------------------------------------------------------------------ time of day: real time on one shared world clock (DATA.timezone), so every visitor sees the same sky; buttons can pin day or night
@@ -2308,17 +2309,29 @@ DATA.runs = DATA.runs.filter(r => r && POIS[r.dest] && Array.isArray(r.squad));
 DATA.runs.forEach(r => r.status = 'queued');
 let runIdx = 0, runWait = 240, run = null;
 const OFFS = [[0, 0], [3, 2], [-3, 2], [0, 4]];
-const solo = r => r.squad.length === 1;
+const crewOf = r => r.crew || [];
+const solo = r => crewOf(r).length === 1;
 const WALK = .55;
+// who can go out: alive, not injured, already moved in. Everyone takes turns; the ones who've been out least go first
+const fitToGo = d => !!d && d.status !== 'dead' && d.status !== 'injured' && (d.joined || 1) <= DATA.day;
+const CREW_N = { easy: 2, medium: 3, hard: 4, deadly: 5 };
+let nextCrew = null;
+function planCrew(r) {
+  const pool = people.filter(e => e.d && fitToGo(e.d) && e.mode !== 'run').sort((a, b) => (a.d.runsDone - b.d.runsDone) || (rand() - .5));
+  return pool.slice(0, Math.min(CREW_N[r.difficulty] || 2, pool.length));
+}
 function startRun() {
   const r = DATA.runs[runIdx], d = POIS[r.dest];
-  const members = r.squad.map(n => byName[n]).filter(m => m && m.d.status !== 'injured');
-  if (!members.length) { runIdx++; runWait = 60; return; }
-  members.forEach((m, i) => { m.mode = 'run'; m.inside = false; m.hidden = false; if (m.y < 494) { m.x = HOME.door[0]; m.y = HOME.door[1] + 2; } m.path = d.path; m.wp = 0; m.delay = i * 16; m.off = OFFS[i % 4]; });
+  const members = nextCrew && nextCrew.length && nextCrew.every(m => fitToGo(m.d) && m.mode !== 'run') ? nextCrew : planCrew(r);
+  nextCrew = null;
+  if (!members.length) { runWait = 900; return; }        // nobody is fit to go: wait and check again
+  members.forEach((m, i) => { m.mode = 'run'; m.inside = false; m.hidden = false; if (m.y < 494) { m.x = HOME.door[0]; m.y = HOME.door[1] + 2; } m.path = d.path; m.wait = 0; m.wp = 0; m.delay = i * 16; m.off = OFFS[i % 4]; });
   run = { r, d, members, timer: 0 };
-  r.status = 'leaving';
+  r.crew = members.map(m => m.d.name); r.status = 'leaving';
   const far = { Forest: ' Long walk through the woods.', Airport: ' All the way up to the airfield.', Port: ' Down to the docks.' }[d.area] || '';
-  radio(`${r.squad[0]}: Heading to the ${d.name.replace('’', "'")}.${far} Locking the gate behind me.`);
+  const with_ = members.length > 1 ? ` ${members.slice(1).map(m => m.d.name).join(' and ')} with me.` : '';
+  const nm = d.name.replace('’', "'"), the = /'s\b|^\d/.test(nm) ? '' : 'the ';
+  radio(`${r.crew[0]}: Heading to ${the}${nm}.${far}${with_} Lock the gate behind us.`);
   renderRuns();
 }
 function stepRun() {
@@ -2327,16 +2340,16 @@ function stepRun() {
   const arrived = members.every(m => m.wp >= m.path.length);
   if (r.status === 'leaving' && arrived) {
     r.status = 'searching'; run.timer = 360; members.forEach(m => m.hidden = true);
-    radio(`${r.squad[0]}: Inside. Going quiet.`); renderRuns();
+    radio(r.crew.length > 1 ? `${r.crew[1]}: We're in. I've got the door, ${r.crew[0]}.` : `${r.crew[0]}: Inside. Going quiet.`); renderRuns();
   } else if (r.status === 'searching' && --run.timer <= 0) {
     r.status = 'returning';
     const back = d.path.slice().reverse().concat([[424, 502]]);
     members.forEach((m, i) => { m.hidden = false; m.path = back; m.wp = 0; m.delay = i * 16; });
-    radio(`${r.squad[0]}: Got it. ${r.loot}. Heading home.`); renderRuns();
+    radio(`${r.crew[0]}: Got it. ${r.loot}. Heading home.`); renderRuns();
   } else if (r.status === 'returning' && arrived) {
     r.status = 'back';
     members.forEach(m => { m.mode = 'wander'; [m.tx, m.ty] = yardSpot(); m.wait = 30; if (m.d) m.d.runsDone++; });
-    radio(solo(r) ? `${r.squad[0]}: Back behind the fence. Gate's chained.` : `Gate's shut. ${r.squad.join(', ')} are back inside.`);
+    radio(solo(r) ? `${r.crew[0]}: Back behind the fence. Gate's chained.` : `Gate's shut. ${r.crew.slice(0, -1).join(', ')} and ${r.crew[r.crew.length - 1]} are back inside.`);
     run = null; runIdx++; runWait = 320; renderRuns();
   }
 }
@@ -2426,28 +2439,58 @@ function update() {
   for (let i = parts.length - 1; i >= 0; i--) { const p = parts[i]; p.x += p.vx; p.y += p.vy; if (--p.life <= 0) parts.splice(i, 1); }
   for (let i = shots.length - 1; i >= 0; i--) if (--shots[i].life <= 0) shots.splice(i, 1);
   stepRun();
-  if (frame % 1800 === 900) {
-    const siege = zombies.filter(z => z.state === 'siege' && !z.dying).length;
-    const lines = [
-      `Sam: Day 1. Still nobody. If anyone hears this, I'm in the laundromat on 3rd.`,
-      siege ? `Sam: ${siege} of them rattling the fence. It's holding.` : `Sam: Streets are quiet. Too quiet, honestly.`,
-      `Sam: That jet on the runway is still burning. It's the brightest thing in the city at night.`,
-      `Sam: Lighthouse is dark. First time in my life I've seen it dark.`,
-      `Sam: The generator in the yard just coughs. I need someone who knows engines.`,
-      `Sam: Something hums inside Rosie's at night. Generator or not, I'm not going in alone.`,
-      `Sam: Heard something on 88.1 again. Same three words.`,
-      `Sam: There's smoke coming from inside Fort Corran. Somebody's alive in there.`,
-      `Sam: Someone lights a lantern in the Blackrock guard tower every night. Every single night.`,
-      `Sam: Somebody spelled out three words in stones by the radio tower. WE HEAR YOU.`,
-      `Sam: There's a little plane down in the woods past the fire station. No sign of the pilot.`,
-      `Sam: Somebody hung a sheet in the Blackrock cell windows. STAY AWAY. That's new.`,
-      `Sam: The corn at Hollow Creek is still standing. If we had the people we could eat all winter.`,
-      `Sam: There's a Black Hawk sitting on a pad inside Fort Corran. Rotor tied down like they meant to come back.`,
-      `Sam: Something growled in the circus wagons behind the big top. One of the cages is bent wide open.`,
-      `Sam: The Ferris wheel creaks when the wind picks up. You can hear it across the bay.`
-    ];
-    radio(lines[(frame / 1800 | 0) % lines.length]);
+  if (frame % 1500 === 900) campChatter();
+}
+// the camp talks on the radio: whoever is around, in their own voice; injured people complain; Sam alone talks to himself
+const ROLE_TALK = {
+  Medic: ['Checked everyone for scratches. Keep your cuts clean or you lose the arm.', 'We need more gauze. Whoever hits the pharmacy next, grab all of it.'],
+  Sharpshooter: ['On the roof. I count {z} of them between here and Main.', "Got a clear line down 3rd. Nothing's getting to the gate today."],
+  Scout: ['Climbed the water tower. Smoke out past the fort again.', "Mapped a back way to the market through the alleys. Quieter than Main."],
+  'Radio Operator': ['Scanning the bands. Static, static... 88.1 again. Same three words.', "Rigged a better antenna on the roof. If anyone's out there, we'll hear them."],
+  Mechanic: ["That yard generator isn't dead, it's starving. Bring me fuel.", 'Found a van on 4th with half a tank. Battery is shot.'],
+  Scavenger: ["Made a list of every store we haven't hit yet. It's long.", 'Rule one: check the back room. Rule two: check it again.'],
+  Builder: ['East side of the fence needs another layer. Anyone seen plywood?', 'Reinforced the gate hinges. Should hold a crowd now.'],
+  Farmer: ["Planted beans in an old dryer drum. Don't laugh.", "If we get to Hollow Creek before the frost, we eat all winter."],
+  Guard: ['Gate watch. Quiet so far.', '{z} of them at the fence at last count. It holds.'],
+  Cook: ['Peaches again tonight. Nobody complain.', "Coffee's running low. This is now an emergency."],
+  Engineer: ['If we get the substation running, the whole block lights up.', 'Wired a lamp to a car battery. One room, one bulb. Still counts.']
+};
+const WORLD_TALK = [
+  'That jet on the runway is still burning. Brightest thing in the city at night.',
+  "Lighthouse is dark. First time in my life I've seen it dark.",
+  "Something hums inside Rosie's at night. Generator or not, nobody goes in alone.",
+  "There's smoke coming from inside Fort Corran. Somebody's alive in there.",
+  'Someone lights a lantern in the Blackrock guard tower every night. Every single night.',
+  'Somebody spelled out three words in stones by the radio tower. WE HEAR YOU.',
+  "There's a little plane down in the woods past the fire station. No sign of the pilot.",
+  'The corn at Hollow Creek is still standing. If we had the people we could eat all winter.',
+  'Something growled in the circus wagons behind the big top. One of the cages is bent wide open.',
+  'The Ferris wheel creaks when the wind picks up. You can hear it across the bay.'
+];
+let talkN = 0;
+function campChatter() {
+  const here = DATA.survivors.filter(d => d.status !== 'dead' && (d.joined || 1) <= DATA.day && !(run && crewOf(run.r).includes(d.name)));
+  if (!here.length) return;
+  const siege = zombies.filter(z => z.state === 'siege' && !z.dying).length, z = zombies.filter(q => !q.dying).length;
+  const hurt = here.filter(d => d.status === 'injured'), well = here.filter(d => d.status !== 'injured');
+  const pick = a => a[(rand() * a.length) | 0];
+  talkN++;
+  let who, line;
+  if (here.length === 1) {
+    who = here[0];
+    line = pick([`Day ${DATA.day}. Still nobody. If anyone hears this, I'm in the laundromat on 3rd.`, siege ? `${siege} of them rattling the fence. It's holding.` : 'Streets are quiet. Too quiet, honestly.', ...WORLD_TALK]);
+  } else if (hurt.length && talkN % 3 === 0) {
+    who = pick(hurt);
+    line = pick([`Still laid up with ${who.injury || 'this injury'}. Back on my feet by Day ${who.injured_until || DATA.day + 1}. Probably.`,
+      `Somebody else is going to have to do the run today. ${who.injury ? who.injury[0].toUpperCase() + who.injury.slice(1) : 'This leg'} says no.`]);
+  } else if (siege && talkN % 4 === 1) {
+    who = pick(well.length ? well : here); line = `${siege} of them rattling the fence. It's holding.`;
+  } else {
+    who = pick(well.length ? well : here);
+    const own = ROLE_TALK[who.role];
+    line = (own && rand() < .6 ? pick(own) : pick(WORLD_TALK)).replace('{z}', z);
   }
+  radio(`${who.name}: ${line}`);
 }
 
 // ------------------------------------------------------------------ drawing (only what is on screen)
@@ -2825,7 +2868,7 @@ function renderRuns() {
     const p = POIS[r.dest], cls = r.status === 'back' ? 'back' : r.status === 'queued' ? '' : 'active';
     const km = p.meters >= 1000 ? (p.meters / 1000).toFixed(1) + ' km' : p.meters + ' m';
     return `<div class="run ${cls}"><span><button type="button" class="place" data-place="${r.dest}">${esc(p.name)}</button><span class="area">${p.area} · ${km} each way</span>${diffTag(r.difficulty)}</span><span class="status">${STATUS_LABEL[r.status]}</span>
-      <span class="squad">${solo(r) ? 'Alone: ' : 'Squad: '}${r.squad.map(n => `<button type="button" class="namebtn" data-name="${esc(n)}">${esc(n)}</button>`).join(', ')}</span>
+      ${crewOf(r).length ? `<span class="squad">${solo(r) ? 'Alone: ' : 'Squad: '}${crewOf(r).map(n => `<button type="button" class="namebtn" data-name="${esc(n)}">${esc(n)}</button>`).join(', ')}</span>` : ''}
       ${r.status === 'back' ? `<span class="loot">Brought back: ${esc(r.loot)}</span>` : ''}</div>`;
   });
   $('runs').innerHTML = rows.join('');
@@ -2923,7 +2966,11 @@ $('fxBtn').addEventListener('click', () => { if (!FX.gl) return; FX.on = !FX.on;
 $('scanBtn').addEventListener('click', () => { FX.scan = !FX.scan; $('scanBtn').setAttribute('aria-pressed', String(FX.scan)); });
 
 // ------------------------------------------------------------------ boot
-radio('Sam: Day 1. Barricades are up on the laundromat. It’s just me.');
+(() => {
+  const here = DATA.survivors.filter(d => d.status !== 'dead' && (d.joined || 1) <= DATA.day), lead = here.find(d => d.protected) || here[0];
+  if (!lead) return;
+  radio(here.length > 1 ? `${lead.name}: Day ${DATA.day}. ${here.length} of us in the laundromat now. Barricades are holding.` : `${lead.name}: Day ${DATA.day}. Barricades are up on the laundromat. It’s just me.`);
+})();
 for (let i = 0; i < 88; i++) spawnZombie(false, false);
 for (let i = 0; i < 600; i++) update();   // let the world settle before the first frame
 fit();
@@ -2977,7 +3024,7 @@ function epStartRun(name, dest) {
   const e = byName[name], d = POIS[dest]; if (!e || !d) return;
   const r = DATA.runs.find(x => x.dest === dest) || { dest, squad: [name], status: 'queued' };
   e.mode = 'run'; e.inside = false; e.hidden = false; e.x = HOME.door[0]; e.y = HOME.door[1] + 2; e.path = d.path; e.wp = 0; e.delay = 0; e.off = OFFS[0];
-  run = { r, d, members: [e], timer: 0 }; r.status = 'leaving'; renderRuns();
+  run = { r, d, members: [e], timer: 0 }; r.crew = [name]; r.status = 'leaving'; renderRuns();
 }
 function epPre() {
   const ep = EPI.ep, t = EPI.t;
@@ -3169,14 +3216,19 @@ window.oakEpisode = {
     if (run) {
       const r = run.r, d = run.d;
       st.className = 'state go'; st.textContent = STATUS_LABEL[r.status] || 'Out';
-      who.textContent = r.squad.join(', ');
+      who.textContent = crewOf(r).join(', ');
       what.innerHTML = `${WHERE[r.status] || 'At'} <b>${esc(d.name)}</b> · ${esc(d.area)}`;
       $('fieldNote').textContent = DIFF[r.difficulty] ? DIFF[r.difficulty] + ' run' : '';
     } else {
       const nx = DATA.runs[runIdx % Math.max(1, DATA.runs.length)];
-      who.textContent = lead ? lead.name : 'Sam';
-      if (dk > .5) { st.className = 'state night'; st.textContent = 'Barricaded'; what.textContent = 'Inside the laundromat for the night. The dead are at the fence.'; }
-      else { st.className = 'state safe'; st.textContent = 'At camp'; what.innerHTML = nx ? `Getting ready. Next run: <b>${esc(POIS[nx.dest].name)}</b>` : 'Resting at the laundromat.'; }
+      if (nx && !nextCrew) nextCrew = planCrew(nx);
+      const crew = (nextCrew || []).map(m => m.d.name);
+      const hurt = DATA.survivors.filter(s => s.status === 'injured' && (s.joined || 1) <= DATA.day);
+      const hurtTxt = hurt.map(s => `${esc(s.name)} is laid up${s.injury ? ` with ${esc(s.injury)}` : ''}${s.injured_until ? ` until Day ${s.injured_until}` : ''}.`).join(' ');
+      who.textContent = crew.length ? crew.join(', ') : (hurt.length ? hurt.map(s => s.name).join(', ') : (lead ? lead.name : 'Sam'));
+      if (dk > .5) { st.className = 'state night'; st.textContent = 'Barricaded'; what.innerHTML = `Inside the laundromat for the night. The dead are at the fence.${hurtTxt ? ' ' + hurtTxt : ''}`; }
+      else if (!crew.length) { st.className = 'state night'; st.textContent = 'Resting'; what.innerHTML = hurtTxt ? `Nobody is fit to go out. ${hurtTxt}` : 'Resting at the laundromat.'; }
+      else { st.className = 'state safe'; st.textContent = 'At camp'; what.innerHTML = `Getting ready. Next run: <b>${esc(POIS[nx.dest].name)}</b>${hurtTxt ? `. ${hurtTxt}` : ''}`; }
       $('fieldNote').textContent = '';
     }
   }
