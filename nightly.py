@@ -95,13 +95,21 @@ def count_vote(data, comments):
     options = [o[0].upper() for o in vote.get("opts", [])]
     if not options:
         return None, {}
+    # each option can also be voted with its emoji (💊 for PHARMACY); variation selectors are ignored so ✈ and ✈️ both count
+    plain = lambda t: t.replace("\ufe0f", "")
+    emojis = {}
+    for o in vote["opts"]:
+        e = o[4] if len(o) > 4 and o[4] else EMOJI.get(o[3] if len(o) > 3 else o[0].lower()) or EMOJI.get(o[0].lower())
+        if e:
+            emojis[o[0].upper()] = plain(e)
     ballots = {}
     owner = str(data.get("handle", "")).lstrip("@").lower()
     for c in comments:
         if c["username"].lower() == owner:                 # your own replies on the Reel don't count as votes
             continue
         text = " " + re.sub(r"[^A-Z0-9 ]", " ", c.get("text", "").upper()) + " "
-        pick = next((o for o in options if f" {o} " in text), None)
+        pick = next((o for o in options if f" {o} " in text), None) \
+            or next((o for o in options if o in emojis and emojis[o] in plain(c.get("text", ""))), None)
         if pick:
             ballots[c["username"].lower()] = pick          # later comments overwrite earlier ones
     tally = Counter(ballots.values())
@@ -237,10 +245,12 @@ PROMPT = """These are Instagram comments on a zombie survival game. Some are peo
 (they give a name, a job, and maybe something about themselves). Others are votes, chatter, emoji or spam.
 For each real join request return an object with:
   "ig": the username exactly as given
-  "name": the character name they asked for (short, cleaned up, nothing offensive)
+  "name": the character name they asked for (short, cleaned up, nothing hateful)
   "role": the closest match from {roles}
   "bio": one short, fun third-person sentence built from what they said
-Skip anything that is not a join request, and anything hateful, sexual or harassing.
+Crude, sexual or joke answers still get in: pick the closest role and write a bio that roasts it with a wink
+(e.g. "Gary ran the adult shop on Main. The town pervert, and somehow still alive.") without getting graphic.
+Skip anything that is not a join request, and anything hateful, harassing or aimed at a real person.
 Reply with only a JSON array.
 
 Comments:
@@ -299,6 +309,10 @@ def add_survivors(data, parsed):
 # the word people comment for each place (must be easy to type and not contain another option's word)
 LABELS = {"gunshop": "GUN SHOP", "port": "PIER", "firestation": "FIRE STATION", "cold": "COLD STORAGE", "airfreight": "AIR FREIGHT",
           "showbarn": "SHOW BARN", "hunter": "CABIN", "harbor": "HARBOR", "storage": "STORAGE UNITS", "surplus": "SURPLUS"}
+EMOJI = {"pharmacy": "💊", "diner": "🍳", "gas": "⛽", "market": "🛒", "hardware": "🔨", "gunshop": "🔫", "port": "⚓", "ranger": "🌲",
+         "hangar": "🛩", "firestation": "🚒", "maple": "🏘", "storage": "📦", "mall": "🛍", "freight": "🚂", "farm": "🌾", "fair": "🎡",
+         "harbor": "⛵", "hunter": "🏕", "cold": "🧊", "greenhouse": "🌱", "airfreight": "🛫", "checkpoint": "🪖", "surplus": "🎒",
+         "funhouse": "🤡", "arcade": "🕹", "showbarn": "🐄", "hospital": "🏥", "police": "🚓", "terminal": "🛬"}
 UNLOCK = {"easy": 1, "medium": 2, "hard": 4, "deadly": 6}     # healthy survivors needed before a difficulty shows up in the vote
 
 VOTE_PROMPT = """You write the daily vote for Oakhaven, an Instagram zombie survival story told by a gravelly narrator.
@@ -368,8 +382,8 @@ def next_vote(data, new_day, rng, recap, problems):
     fallback = {"easy": "A quick run. Low risk.", "medium": "Further out. More of them.", "hard": "Dangerous. Bring a medic.", "deadly": "Not everyone comes back."}
     words = [o["label"] for o in opts]
     return {"q": q,
-            "opts": [[o["label"], 0, desc.get(o["label"]) or fallback.get(o["difficulty"], ""), o["key"]] for o in opts],
-            "how": f"Comment {', '.join(words[:-1])} or {words[-1]} on the Day {new_day} Reel. One vote per account, your last comment counts."}
+            "opts": [[o["label"], 0, desc.get(o["label"]) or fallback.get(o["difficulty"], ""), o["key"], EMOJI.get(o["key"], "")] for o in opts],
+            "how": f"Comment {', '.join(words[:-1])} or {words[-1]} (or its emoji) on the Day {new_day} Reel. One vote per account, your last comment counts."}
 
 
 # ---------------------------------------------------------------- main
@@ -439,7 +453,7 @@ def main():
     lines.append(f"**Followers:** {data.get('followers')}  |  **Tomorrow is Day {new_day}**")
     data["vote"] = next_vote(data, new_day, rng, "\n".join(lines), problems)
     v = data["vote"]
-    lines.append(f"**Tomorrow's vote:** {v['q']}" + (" " + " / ".join(f"{o[0]} ({o[2]})" for o in v["opts"]) if v["opts"] else ""))
+    lines.append(f"**Tomorrow's vote:** {v['q']}" + (" " + " / ".join(f"{(o[4] + ' ') if len(o) > 4 and o[4] else ''}{o[0]} ({o[2]})" for o in v["opts"]) if v["opts"] else ""))
     for p in problems:
         lines.append(f"**⚠ Problem:** {p}")
     report = "\n".join(lines) + "\n"
