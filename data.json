@@ -60,6 +60,13 @@
    "role": "Radio Operator",
    "bio": "Seth manages e-commerce by day and knows his way around IT, so he's ready to keep the radios humming.",
    "joined": 3
+  },
+  {
+   "name": "Gary Finklestein",
+   "ig": "jhurm",
+   "role": "Scavenger",
+   "bio": "Gary ran a very specialty shop downtown. He knows every back door on Main Street and won't say how.",
+   "joined": 3
   }
  ],
  "runs": [
