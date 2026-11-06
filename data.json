@@ -530,7 +530,8 @@
      "label": "A mechanic to put it back together",
      "role": "Mechanic"
     }
-   ]
+   ],
+   "burn": 2
   },
   {
    "id": "gas",
@@ -559,7 +560,8 @@
      "label": "6 survivors to haul it and guard the pumps",
      "people": 6
     }
-   ]
+   ],
+   "burn": 3
   },
   {
    "id": "diner",
@@ -588,7 +590,8 @@
      "label": "A cook to run the kitchen",
      "role": "Cook"
     }
-   ]
+   ],
+   "burn": 2
   },
   {
    "id": "port",
@@ -720,21 +723,33 @@
  "stock": [
   [
    "Food",
-   2,
-   14,
-   "days"
+   10,
+   200,
+   "rations"
   ],
   [
    "Water",
-   3,
-   14,
-   "days"
+   15,
+   200,
+   "rations"
+  ],
+  [
+   "Fuel",
+   0,
+   200,
+   "L"
   ],
   [
    "Ammo",
    12,
    500,
    "rds"
+  ],
+  [
+   "Medicine",
+   4,
+   50,
+   "doses"
   ],
   [
    "Scrap",
@@ -827,5 +842,6 @@
    ],
    "waiting": 0
   }
- ]
+ ],
+ "hungry_days": 0
 }
