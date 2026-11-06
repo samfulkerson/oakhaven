@@ -6,6 +6,7 @@ Runs once a night (GitHub Actions does it for you) and moves the world forward e
   3. heals survivors whose injuries are over
   4. adds new survivors from join comments (Claude reads them), up to a daily cap
   5. updates the follower count, advances the day, and writes data.json plus report.md (a recap to narrate from)
+  5b. keeps the stockpile: everyone eats and drinks, runs bring loot home, ammo gets spent, the fence wears down
   6. moves the power project along: runs bring back fuel and parts, new arrivals bring skills, generators come back on
   7. sets tomorrow's vote: picks three places the squad could go and has Claude word the question
 
@@ -167,17 +168,22 @@ def pick_squad(data, kind, item, rng):
 
 
 def resolve_outing(data, kind, item, rng):
+    first = not item.get("done_day")
     diff = item.get("difficulty", "medium")
     place = place_name(kind, item)
     squad = pick_squad(data, kind, item, rng)
     if not squad:
-        return {"target": place, "key": item.get("dest") or item.get("poi"), "kind": kind, "difficulty": diff, "squad": [], "results": [], "note": "Nobody was fit to go."}
+        return {"target": place, "key": item.get("dest") or item.get("poi"), "first": first, "kind": kind, "difficulty": diff, "squad": [], "results": [], "note": "Nobody was fit to go."}
     roles = {s["role"] for s in squad}
     inj, die = RISK.get(diff, RISK["medium"])
     if "Medic" in roles:
         die *= 0.5; inj *= 0.85
     if "Sharpshooter" in roles:
         die *= 0.75; inj *= 0.75
+    if stock_get(data, "Ammo") < AMMO_USE.get(diff, 6):       # out of bullets: everything is more dangerous
+        die *= 1.5; inj *= 1.4
+    if data.get("hungry_days", 0) > 0:                        # weak from hunger
+        inj *= 1.3
     results = []
     for s in squad:
         s["outings"] = s.get("outings", 0) + 1
@@ -200,7 +206,7 @@ def resolve_outing(data, kind, item, rng):
         item["days"] = item.get("days") or MISSION_DAYS.get(diff, 3)
         item["days_done"] = item.get("days_done", 0) + 1
         item["status"] = "done" if item["days_done"] >= item["days"] else "active"
-    return {"target": place, "key": item.get("dest") or item.get("poi"), "kind": kind, "difficulty": diff, "squad": [s["name"] for s in squad], "results": results,
+    return {"target": place, "key": item.get("dest") or item.get("poi"), "first": first, "kind": kind, "difficulty": diff, "squad": [s["name"] for s in squad], "results": results,
             "mission_status": item.get("status") if kind == "mission" else None}
 
 
@@ -306,6 +312,110 @@ def add_survivors(data, parsed):
     return added
 
 
+# ---------------------------------------------------------------- 5b. the stockpile
+# data.json "stock" rows are [name, amount, capacity, unit]. Food and water are rations: one per survivor per day.
+# What each place brings home on a first visit (half that when it's been picked over), give or take a quarter.
+LOOT = {"pharmacy": {"Medicine": 6, "Food": 2}, "diner": {"Food": 12, "Water": 6}, "gas": {"Fuel": 20, "Water": 8},
+        "market": {"Food": 18, "Water": 10}, "hardware": {"Scrap": 25}, "gunshop": {"Ammo": 40}, "port": {"Food": 30, "Scrap": 10},
+        "ranger": {"Ammo": 15, "Medicine": 4, "Food": 4}, "hangar": {"Fuel": 30, "Scrap": 10}, "firestation": {"Medicine": 6, "Scrap": 15, "Water": 10},
+        "maple": {"Food": 8, "Ammo": 4}, "storage": {"Scrap": 15, "Food": 4}, "mall": {"Scrap": 15, "Water": 10, "Food": 6},
+        "freight": {"Food": 25}, "farm": {"Food": 15, "Water": 6}, "fair": {"Food": 10, "Scrap": 8}, "harbor": {"Water": 10, "Food": 6},
+        "hunter": {"Ammo": 12, "Food": 8}, "cold": {"Food": 30}, "greenhouse": {"Food": 8, "Water": 4}, "airfreight": {"Medicine": 15},
+        "checkpoint": {"Ammo": 60, "Food": 6, "Medicine": 4}, "surplus": {"Water": 15, "Food": 6, "Medicine": 2},
+        "funhouse": {"Scrap": 12}, "arcade": {"Scrap": 10}, "showbarn": {"Food": 12}}
+AMMO_USE = {"easy": 2, "medium": 6, "hard": 15, "deadly": 30}     # rounds a squad burns on an outing
+FENCE_WEAR = 4                                                   # barricade % the dead tear down each night
+
+
+def stock_row(data, name):
+    return next((r for r in data.get("stock", []) if r[0] == name), None)
+
+
+def stock_get(data, name):
+    r = stock_row(data, name)
+    return r[1] if r else 0
+
+
+def keep_stockpile(data, outings, rng, new_day):
+    """Runs bring things home, everyone eats, generators burn fuel, the fence wears. Returns (ledger, notes)."""
+    ledger, notes = {}, []
+    def add(name, amt, why):
+        r = stock_row(data, name)
+        if not r or not amt:
+            return 0
+        before = r[1]
+        r[1] = max(0, min(r[2], r[1] + amt))
+        if r[1] != before:
+            ledger.setdefault(name, []).append((r[1] - before, why))
+        return r[1] - before
+    present = [s for s in data["survivors"] if s.get("status") != "dead" and s.get("joined", 1) <= data["day"]]
+
+    # loot and ammo from today's outings
+    for o in outings:
+        if not o.get("squad"):
+            continue
+        add("Ammo", -AMMO_USE.get(o.get("difficulty"), 6), f"{o['target']} run")
+        if o.get("kind") == "run" and any(r["outcome"] != "dead" for r in o["results"]):
+            for item, amt in LOOT.get(o.get("key"), {}).items():
+                add(item, round(amt * (1 if o.get("first") else .5) * rng.uniform(.75, 1.25)), o["target"])
+
+    # everyone eats and drinks
+    n = len(present)
+    short = stock_get(data, "Food") < n or stock_get(data, "Water") < n
+    add("Food", -n, "eaten"); add("Water", -n, "drunk")
+    data["hungry_days"] = data.get("hungry_days", 0) + 1 if short else 0
+    if short:
+        notes.append("The camp went to bed hungry." if data["hungry_days"] < 2 else f"Day {data['hungry_days']} without enough to eat.")
+    if data["hungry_days"] >= 2:
+        weak = [s for s in present if not s.get("protected") and s.get("status") != "injured"]
+        if weak:
+            s = rng.choice(weak)
+            s.update(status="injured", injury="collapsed from hunger", injured_until=new_day + 2)
+            notes.append(f"{s['name']} collapsed from hunger and is out until Day {s['injured_until']}.")
+
+    # medicine speeds healing: one dose a night takes a day off an injury
+    for s in present:
+        if s.get("status") == "injured" and s.get("injured_until", 0) > new_day and stock_get(data, "Medicine") >= 1:
+            add("Medicine", -1, f"{s['name']}'s injury")
+            s["injured_until"] -= 1
+
+    # running generators burn fuel; an empty tank means the lights go out until there's more
+    for g in data.get("power", []):
+        if g.get("status") != "running":
+            continue
+        burn = g.get("burn", 2)
+        if stock_get(data, "Fuel") >= burn:
+            add("Fuel", -burn, g["name"])
+            if g.pop("dry", None):
+                notes.append(f"The {g['name']} is back on.")
+        elif not g.get("dry"):
+            g["dry"] = True
+            notes.append(f"The {g['name']} ran out of fuel and went dark.")
+
+    # the dead wear the fence down; builders and scrap patch it up
+    add("Barricades", -FENCE_WEAR, "the dead at the fence")
+    builders = [s for s in present if s.get("role") == "Builder" and s.get("status") != "injured"]
+    for b in builders:
+        if stock_get(data, "Scrap") >= 3 and stock_get(data, "Barricades") < 100:
+            add("Scrap", -3, "fence repairs"); add("Barricades", 5, f"{b['name']} rebuilt a section")
+    if stock_get(data, "Barricades") < 70 and stock_get(data, "Scrap") >= 4:
+        add("Scrap", -4, "fence repairs"); add("Barricades", 4, "patched with scrap")
+    if stock_get(data, "Barricades") <= 0:
+        victims = [s for s in present if not s.get("protected") and s.get("status") != "dead"]
+        if victims:
+            s = rng.choice(victims)
+            s.update(status="injured", injury="caught when the fence gave way", injured_until=new_day + 3)
+            notes.append(f"The fence gave way in the night. {s['name']} was caught and is out until Day {s['injured_until']}.")
+        add("Barricades", 30, "emergency barricade")
+    data["stock_change"] = {k: sum(a for a, _ in v) for k, v in ledger.items()}
+    return ledger, notes
+
+
+def days_left(data, name):
+    n = max(1, len([s for s in data["survivors"] if s.get("status") != "dead" and s.get("joined", 1) <= data["day"]]))
+    return stock_get(data, name) // n
+
+
 # ---------------------------------------------------------------- 6. the power project
 # Each generator in data.json "power" can list what it needs to run: things a run brings back ("dest"), a skill someone in
 # camp has ("role"), or enough people ("people"). Needs get ticked off as the story goes; when they're all met it runs.
@@ -396,6 +506,10 @@ def vote_options(data, new_day, rng):
         r = next((r for r in runs if r["dest"] in want), None)
         if r:
             picks = picks[:2] + [("run", r)]
+    if days_left(data, "Food") < 3 and not any(LOOT.get(it.get("dest"), {}).get("Food", 0) >= 8 for k, it in picks if k == "run"):
+        r = next((r for r in fresh + again if LOOT.get(r["dest"], {}).get("Food", 0) >= 8), None)
+        if r and all(it is not r for _, it in picks):
+            picks = picks[:1] + [("run", r)] + picks[2:] if len(picks) > 1 else picks + [("run", r)]
     while len(picks) < 3 and again:
         r = again.pop(0)
         if all(it is not r for _, it in picks):
@@ -459,6 +573,7 @@ def main():
     keys = {o[0].upper(): o[3] for o in (data.get("vote") or {}).get("opts", []) if len(o) > 3}
     outings = todays_outing(data, keys.get(winner, winner), rng)
     new_day = day + 1
+    ledger, stock_notes = keep_stockpile(data, outings, rng, new_day)
     healed = heal(data, new_day)
 
     living_ig = {s.get("ig", "").lower() for s in data["survivors"] if s.get("status") != "dead"}
@@ -481,7 +596,8 @@ def main():
     data["day"] = new_day
     entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner,
                                   "reel": ig["reel"]["permalink"] if ig and ig.get("reel") else None},
-             "outings": outings, "healed": healed, "joined": [s["name"] for s in added], "waiting": len(data.get("waitlist", [])), "power": power_news}
+             "outings": outings, "healed": healed, "joined": [s["name"] for s in added], "waiting": len(data.get("waitlist", [])), "power": power_news,
+             "stock": data.get("stock_change", {}), "camp": stock_notes}
     data.setdefault("log", []).append(entry)
     data["log"] = data["log"][-60:]                      # keep the file small: the last two months
 
@@ -505,6 +621,15 @@ def main():
         lines.append(f"**Back on their feet:** {', '.join(healed)}")
     for n in power_news:
         lines.append(f"**Power:** {n}")
+    if ledger:
+        parts = []
+        for name, moves in ledger.items():
+            parts.append(f"{name} {stock_get(data, name)} (" + ", ".join(f"{a:+d} {why}" for a, why in moves) + ")")
+        lines.append("**Stockpile:** " + " · ".join(parts))
+    fd, wd = days_left(data, 'Food'), days_left(data, 'Water')
+    lines.append(f"**Supplies left:** food for {fd} day{'s' if fd != 1 else ''}, water for {wd} day{'s' if wd != 1 else ''}, {stock_get(data, 'Ammo')} rounds, fence at {stock_get(data, 'Barricades')}%")
+    for n in stock_notes:
+        lines.append(f"**Camp:** {n}")
     lines.append(f"**New survivors ({len(added)}):** " + (", ".join(f"{s['name']} the {s['role']} (@{s['ig']})" for s in added) or "none"))
     if data.get("waitlist"):
         lines.append(f"**Still waiting to get in:** {len(data['waitlist'])}")
