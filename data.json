@@ -1,10 +1,10 @@
 {
  "handle": "@surviveoakhaven",
- "day": 3,
+ "day": 2,
  "followers": 5,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 3. Where does the squad go next?",
+  "q": "Day 2. Where does the squad go next?",
   "opts": [
    [
     "GUN SHOP",
@@ -25,7 +25,7 @@
     "market"
    ]
   ],
-  "how": "Comment GUN SHOP, GAS or MARKET on the Day 3 Reel. One vote per account, your last comment counts."
+  "how": "Comment GUN SHOP, GAS or MARKET on the Day 2 Reel. One vote per account, your last comment counts."
  },
  "survivors": [
   {
@@ -35,38 +35,38 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 2,
+   "outings": 1,
    "status": "injured",
    "injury": "a bad fall",
-   "injured_until": 4
+   "injured_until": 3
   },
   {
    "name": "Jaylozy",
    "ig": "jaemos16",
    "role": "Sharpshooter",
    "bio": "Jaylozy joins as a Sharpshooter, ready to take the shot when the moment comes.",
-   "joined": 3
+   "joined": 2
   },
   {
    "name": "Tanny",
    "ig": "sir.tanny",
    "role": "Scout",
    "bio": "Tanny is a professional hiker who knows every trail, making them a natural Scout.",
-   "joined": 3
+   "joined": 2
   },
   {
    "name": "Seth",
    "ig": "uriahwilde",
    "role": "Radio Operator",
    "bio": "Seth manages e-commerce by day and knows his way around IT, so he's ready to keep the radios humming.",
-   "joined": 3
+   "joined": 2
   },
   {
    "name": "Gary Finklestein",
    "ig": "jhurm",
    "role": "Scavenger",
    "bio": "Gary ran a very specialty shop downtown. He knows every back door on Main Street and won't say how.",
-   "joined": 3
+   "joined": 2
   }
  ],
  "runs": [
@@ -87,8 +87,7 @@
     "Sam"
    ],
    "loot": "Canned peaches and a tin of coffee from the walk-in",
-   "place": "Rosie’s Diner",
-   "done_day": 2
+   "place": "Rosie’s Diner"
   },
   {
    "dest": "gas",
@@ -754,7 +753,7 @@
      "PHARMACY": 2
     },
     "winner": "PHARMACY",
-    "reel": null
+    "reel": "https://www.instagram.com/reel/DfX3yZ0yxJB/"
    },
    "outings": [
     {
@@ -768,38 +767,8 @@
       {
        "name": "Sam",
        "ig": "surviveoakhaven",
-       "outcome": "ok"
-      }
-     ],
-     "mission_status": null
-    }
-   ],
-   "healed": [],
-   "joined": [],
-   "waiting": 0
-  },
-  {
-   "day": 2,
-   "vote": {
-    "question": "Day 2. Sam came back from the pharmacy with empty hands and a full scare. Where do we send the squad next?",
-    "results": {},
-    "winner": null,
-    "reel": "https://www.instagram.com/reel/DfX3yZ0yxJB/"
-   },
-   "outings": [
-    {
-     "target": "Rosie’s Diner",
-     "kind": "run",
-     "difficulty": "easy",
-     "squad": [
-      "Sam"
-     ],
-     "results": [
-      {
-       "name": "Sam",
-       "ig": "surviveoakhaven",
        "outcome": "injured",
-       "detail": "a bad fall, out until Day 4"
+       "detail": "a bad fall, out until Day 3"
       }
      ],
      "mission_status": null
@@ -809,7 +778,8 @@
    "joined": [
     "Jaylozy",
     "Tanny",
-    "Seth"
+    "Seth",
+    "Gary Finklestein"
    ],
    "waiting": 0
   }
