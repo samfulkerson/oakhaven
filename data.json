@@ -1,31 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 2,
- "followers": 5,
+ "day": 3,
+ "followers": 10,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 2. Where does the squad go next?",
+  "q": "Day 3. Water's down to three days and the fence is at 76%. Where do we send them?",
   "opts": [
    [
-    "GUN SHOP",
+    "PIER",
     0,
-    "Further out. More of them.",
-    "gunshop"
+    "Medium risk and never searched. Harder run, and nobody knows what's inside.",
+    "port",
+    "⚓"
    ],
    [
-    "GAS",
+    "DINER",
     0,
-    "A quick run. Low risk.",
-    "gas"
+    "Easy run, never searched. Low risk, but no promises on what's left.",
+    "diner",
+    "🍳"
    ],
    [
-    "MARKET",
+    "HARDWARE",
     0,
-    "A quick run. Low risk.",
-    "market"
+    "Easy run. The Laundromat generator needs a carburetor from here.",
+    "hardware",
+    "🔨"
    ]
   ],
-  "how": "Comment GUN SHOP, GAS or MARKET on the Day 2 Reel. One vote per account, your last comment counts."
+  "how": "Comment PIER, DINER or HARDWARE (or its emoji) on the Day 3 Reel. One vote per account, your last comment counts."
  },
  "survivors": [
   {
@@ -35,10 +38,7 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 1,
-   "status": "injured",
-   "injury": "a bad fall",
-   "injured_until": 3
+   "outings": 1
   },
   {
    "name": "Jaylozy",
@@ -52,7 +52,8 @@
    "ig": "sir.tanny",
    "role": "Scout",
    "bio": "Tanny is a professional hiker who knows every trail, making them a natural Scout.",
-   "joined": 2
+   "joined": 2,
+   "outings": 1
   },
   {
    "name": "Seth",
@@ -102,10 +103,11 @@
    "dest": "market",
    "difficulty": "easy",
    "squad": [
-    "Sam"
+    "Tanny"
    ],
    "loot": "Six cans of beans from the stockroom",
-   "place": "Fresh Market"
+   "place": "Fresh Market",
+   "done_day": 2
   },
   {
    "dest": "hardware",
@@ -723,13 +725,13 @@
  "stock": [
   [
    "Food",
-   10,
+   27,
    200,
    "rations"
   ],
   [
    "Water",
-   15,
+   19,
    200,
    "rations"
   ],
@@ -741,7 +743,7 @@
   ],
   [
    "Ammo",
-   12,
+   10,
    500,
    "rds"
   ],
@@ -759,7 +761,7 @@
   ],
   [
    "Barricades",
-   80,
+   76,
    100,
    "%"
   ]
@@ -841,7 +843,58 @@
     "Gary Finklestein"
    ],
    "waiting": 0
+  },
+  {
+   "day": 2,
+   "vote": {
+    "question": "Day 2. Where does the squad go next?",
+    "results": {
+     "GUN SHOP": 1,
+     "MARKET": 2
+    },
+    "winner": "MARKET",
+    "reel": "https://www.instagram.com/reel/DfZ5ExiyhYX/"
+   },
+   "outings": [
+    {
+     "target": "Fresh Market",
+     "key": "market",
+     "first": true,
+     "kind": "run",
+     "difficulty": "easy",
+     "squad": [
+      "Tanny"
+     ],
+     "results": [
+      {
+       "name": "Tanny",
+       "ig": "sir.tanny",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    }
+   ],
+   "healed": [
+    "Sam"
+   ],
+   "joined": [],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Ammo": -2,
+    "Food": 17,
+    "Water": 4,
+    "Barricades": -4
+   },
+   "camp": []
   }
  ],
- "hungry_days": 0
+ "hungry_days": 0,
+ "stock_change": {
+  "Ammo": -2,
+  "Food": 17,
+  "Water": 4,
+  "Barricades": -4
+ }
 }
