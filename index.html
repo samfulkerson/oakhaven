@@ -3030,6 +3030,28 @@ requestAnimationFrame(loop);
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
+  day3: {
+    title: 'Day 3 · The Mechanic', dur: 64.5, audioOffset: 1.0,
+    cam: [[0, 800, 600, 1560], [3.0, 600, 560, 700], [4.2, 'follow', 'Tanny', 200], [10.8, 'follow', 'Tanny', 220], [12.2, 424, 505, 180], [17.4, 424, 505, 170],
+          [18.4, 'follow', 'Sam', 130], [21.2, 'follow', 'Sam', 130], [22.4, 470, 560, 280], [23.6, 'follow', 'Adam', 170], [26.9, 'follow', 'Adam', 150],
+          [27.6, 398, 497, 150], [34.9, 398, 497, 130], [35.8, 424, 515, 260], [41.6, 424, 515, 280], [42.4, 470, 470, 640], [43.6, 268, 660, 260],
+          [46.2, 268, 662, 240], [46.9, 554, 440, 260], [49.6, 554, 442, 240], [50.3, 826, 440, 280], [54.0, 826, 442, 260], [55.4, 470, 470, 560], [64.5, 470, 470, 640]],
+    hour: [[0, 7.4], [64.5, 10.2]],
+    events: [[0, 'away', ['Adam']], [3.2, 'run', 'Tanny', 'market'], [21.6, 'arrive', ['Adam'], 'market'], [27.4, 'settle', ['Adam']]],
+    captions: [
+      [1.0, 3.2, 'title', 'OAKHAVEN', 'DAY 3'],
+      [3.4, 11.0, 'cap', 'YOU VOTED: MARKET. TANNY WENT ALONE.'],
+      [11.9, 17.5, 'cap', '+22 FOOD. +9 WATER.'],
+      [18.3, 21.2, 'cap', 'SAM IS BACK ON HIS FEET.'],
+      [22.4, 26.9, 'cap', 'A NEW FACE AT THE GATE: ADAM · MECHANIC'],
+      [27.2, 31.5, 'cap', 'THE GENERATOR: DEAD CARBURETOR. EMPTY TANK.'],
+      [31.6, 35.2, 'cap', '"GET ME THE PARTS AND I\'LL GIVE YOU LIGHT."'],
+      [35.5, 39.0, 'cap', 'FENCE: 76%'],
+      [39.1, 41.8, 'cap', 'WATER: 3 DAYS LEFT'],
+      [42.0, 54.2, 'vote', 'WHERE TO TODAY?', ['HARDWARE', 'DINER', 'PIER 9']],
+      [55.4, 64.5, 'card', "WE'LL FIND YOU A PLACE.", 'COMMENT YOUR NAME + JOB TO MOVE IN']
+    ]
+  },
   day2: {
     title: 'Day 2 · The Grid', dur: 81.5, audioOffset: 1.0,
     cam: [[0, 800, 600, 1560], [2.9, 760, 560, 1100], [4.6, 409, 380, 250], [11.5, 409, 386, 180], [15.8, 409, 386, 170], [21.2, 700, 520, 1150],
