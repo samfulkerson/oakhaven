@@ -68,6 +68,13 @@
    "role": "Scavenger",
    "bio": "Gary ran a very specialty shop downtown. He knows every back door on Main Street and won't say how.",
    "joined": 2
+  },
+  {
+   "name": "Adam",
+   "ig": "adamfulk915",
+   "role": "Mechanic",
+   "bio": "Adam showed up at the gate with a toolbox and grease under his nails. First thing he asked was where the generator is.",
+   "joined": 3
   }
  ],
  "runs": [
