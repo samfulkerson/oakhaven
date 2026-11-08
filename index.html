@@ -3044,7 +3044,8 @@ const EPISODES = {
   victoria: {
     title: 'Day 4 · Victoria', dur: 47.5, audioOffset: 1.0,
     cam: [[0, 700, 700, 1560], [2.6, 430, 560, 360], [3.4, 'follow', 'Victoria', 170], [14.6, 'follow', 'Victoria', 150], [15.4, 424, 500, 200], [17.4, 424, 500, 190],
-          [17.9, 200, 1000, 400], [20.2, 230, 1000, 390], [20.4, 330, 1000, 400], [22.8, 330, 1000, 390], [23.0, 200, 1000, 380], [31.2, 200, 1000, 370], [31.6, 260, 900, 600], [34.4, 260, 900, 640],
+          [17.9, 128, 1100, 140], [20.2, 128, 1100, 120], [20.4, 305, 1095, 140], [22.8, 305, 1095, 120], [23.0, 30, 1100, 130], [26.4, 30, 1100, 112],
+          [26.6, 173, 1166, 130], [28.8, 173, 1166, 112], [29.0, 30, 1172, 130], [31.2, 30, 1172, 112], [31.6, 260, 900, 600], [34.4, 260, 900, 640],
           [35.4, 488, 700, 1100], [37.6, 488, 200, 520], [39.6, 488, 160, 480], [40.4, 470, 620, 900], [47.5, 470, 620, 1000]],
     hour: [[0, 15.6], [16, 16.6], [34, 17.4], [47.5, 18.2]],
     events: [[0, 'away', ['Victoria']], [2.6, 'arrive', ['Victoria'], 'farm'], [16.4, 'settle', ['Victoria']]],
@@ -3054,11 +3055,11 @@ const EPISODES = {
       [8.5, 11.4, 'cap', 'VICTORIA · CHEF'],
       [11.5, 15.0, 'cap', 'SHE WALKED IN FROM HOLLOW CREEK.'],
       [15.4, 17.6, 'cap', 'AND SHE HAD NEWS.'],
-      [17.9, 20.2, 'cap', 'HOLLOW CREEK FARM: STILL STANDING'],
-      [20.4, 22.8, 'cap', 'CORN, WAITING TO BE CUT'],
-      [23.0, 26.4, 'cap', 'A WINDMILL: CLEAN WATER, NO FUEL'],
-      [26.6, 28.8, 'cap', 'A GREENHOUSE FULL OF SEED TRAYS'],
-      [29.0, 31.2, 'cap', 'CATTLE, LOOSE IN THE WOODS'],
+      [17.9, 20.2, 'capTop', 'HOLLOW CREEK FARM: STILL STANDING'],
+      [20.4, 22.8, 'capTop', 'CORN, WAITING TO BE CUT'],
+      [23.0, 26.4, 'capTop', 'A WINDMILL: CLEAN WATER, NO FUEL'],
+      [26.6, 28.8, 'capTop', 'A GREENHOUSE FULL OF SEED TRAYS'],
+      [29.0, 31.2, 'capTop', 'CATTLE, LOOSE IN THE WOODS'],
       [31.6, 34.6, 'cap', 'ENOUGH TO FEED THE CAMP THROUGH THE WINTER'],
       [34.8, 36.8, 'cap', 'BUT THE FARM IS SOUTH.'],
       [37.0, 40.0, 'cap', 'AND THE HORDE IS COMING FROM THE NORTH.'],
@@ -3242,8 +3243,8 @@ function epPost() {
       band(Hc * .2, Hc * .3);
       capLine(c, cap[3], Wc / 2, Hc * .27, 170 * u, '#f2a93b');
       if (t > t0 + .9) capLine(c, cap[4], Wc / 2, Hc * .27 + 205 * u, 66 * u, '#f3f4f0', 600);
-    } else if (kind === 'cap') {
-      const px = 68 * u, lh = px * 1.18, lines = wrapPx(c, cap[3], px, Wc - 150 * u), y0 = Hc * .72 - (lines.length - 1) * lh / 2;
+    } else if (kind === 'cap' || kind === 'capTop') {
+      const px = 68 * u, lh = px * 1.18, lines = wrapPx(c, cap[3], px, Wc - 150 * u), y0 = Hc * (kind === 'capTop' ? .17 : .72) - (lines.length - 1) * lh / 2;
       band(y0 - 90 * u, lines.length * lh + 180 * u);
       lines.forEach((ln, i) => capLine(c, ln, Wc / 2, y0 + i * lh, px, '#f3f4f0'));
     } else if (kind === 'vote') {
