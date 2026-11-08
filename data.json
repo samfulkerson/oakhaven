@@ -1166,5 +1166,8 @@
  "milestones_hit": [
   2,
   5
- ]
+ ],
+ "undead": {
+  "count": 28400
+ }
 }
