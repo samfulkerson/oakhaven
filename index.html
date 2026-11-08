@@ -302,7 +302,7 @@ footer a{color:var(--muted)}
     <form class="tfind" id="tfind" role="search" autocomplete="off">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
       <label for="tq" class="sr">Find your survivor by Instagram username</label>
-      <input id="tq" type="search" list="handles" placeholder="Find your survivor: @you" enterkeyhint="search">
+      <input id="tq" type="search" autocomplete="off" list="handles" placeholder="Find your survivor: @you" enterkeyhint="search">
       <datalist id="handles"></datalist>
     </form>
     <a class="btn" id="joinTop" href="https://www.instagram.com/surviveoakhaven/" target="_blank" rel="noopener">
@@ -3368,7 +3368,7 @@ window.oakEpisode = {
     const part = d => d.ig.toLowerCase().startsWith(s) || d.name.toLowerCase().startsWith(s);
     const hit = DATA.survivors.filter(alive).find(exact) || DATA.survivors.find(exact) || (DATA.survivors.filter(part).length === 1 ? DATA.survivors.find(part) : null);
     show('people');
-    if (hit) { $('q').value = hit.ig ? '@' + hit.ig : hit.name; select(hit.name); try { history.replaceState(null, '', '#@' + (hit.ig || hit.name)); } catch (e) {} }
+    if (hit) { $('q').value = hit.ig ? '@' + hit.ig : hit.name; select(hit.name); }
     else {
       $('q').value = raw; renderRoster(raw);
       const card = $('card'); card.hidden = false;
@@ -3385,7 +3385,7 @@ window.oakEpisode = {
   });
   // a shared link like oakhaven/#@username opens straight on that survivor
   const deep = decodeURIComponent(location.hash || '');
-  if (deep.startsWith('#@')) setTimeout(() => findSurvivor(deep.slice(1)), 300);
+  if (deep.startsWith('#@')) setTimeout(() => { findSurvivor(deep.slice(1)); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }, 300);   // open the shared survivor once, then drop the #@ so a refresh starts clean
   document.addEventListener('click', e => { if (e.target.closest('.namebtn')) show('people'); });
   // live: the clock, the horde and whoever is out in the field
   const WHERE = { leaving: 'On the way to', searching: 'Searching', returning: 'Heading back from', back: 'Back from' };
