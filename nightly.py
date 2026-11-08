@@ -274,6 +274,10 @@ def run_schedule(data, new_day, rng):
             s.update(status="away", away_until=ev.get("until", new_day + 1), away_note=ev.get("note", "Out scouting"),
                      away_back=ev.get("back", ""), away_talk=ev.get("talk", []))
             news.append(f"{s['name']} left alone: {s['away_note']}. Back Day {s['away_until']}.")
+        elif do == "ballot":
+            data["ballot"] = {"day": new_day, "keys": ev.get("keys", [])}
+            if ev.get("note"):
+                news.append(ev["note"])
         elif do == "horde_warning":
             if not data.get("horde"):
                 data["horde"] = {"day": ev.get("horde_day", new_day + 2), "week": 1}
@@ -467,6 +471,19 @@ def keep_stockpile(data, outings, rng, new_day):
             for item, amt in LOOT.get(o.get("key"), {}).items():
                 add(item, round(amt * (1 if o.get("first") else .5) * rng.uniform(.75, 1.25)), o["target"])
 
+    # finished missions pay out once ("gain"), and some keep giving every night after ("income": the windmill, the milk cows)
+    for o in outings:
+        if o.get("kind") == "mission" and o.get("mission_status") == "done" and any(r["outcome"] != "dead" for r in o["results"]):
+            m = next((m for m in data.get("missions", []) if m.get("poi") == o.get("key")), {})
+            for item, amt in (m.get("gain") or {}).items():
+                add(item, amt, m.get("name", o["target"]))
+            for item, amt in (m.get("income") or {}).items():
+                data.setdefault("income", []).append({"item": item, "amt": amt, "why": m.get("name", o["target"])})
+            if m.get("done_note"):
+                notes.append(m["done_note"])
+    for inc in data.get("income", []):
+        add(inc["item"], inc["amt"], inc["why"])
+
     # everyone eats and drinks
     n = len(present)
     short = stock_get(data, "Food") < n or stock_get(data, "Water") < n
@@ -577,7 +594,7 @@ LABELS = {"gunshop": "GUN SHOP", "port": "PIER", "firestation": "FIRE STATION", 
           "showbarn": "SHOW BARN", "hunter": "CABIN", "harbor": "HARBOR", "storage": "STORAGE UNITS", "surplus": "SURPLUS"}
 EMOJI = {"pharmacy": "💊", "diner": "🍳", "gas": "⛽", "market": "🛒", "hardware": "🔨", "gunshop": "🔫", "port": "⚓", "ranger": "🌲",
          "hangar": "🛩", "firestation": "🚒", "maple": "🏘", "storage": "📦", "mall": "🛍", "freight": "🚂", "farm": "🌾", "fair": "🎡",
-         "harbor": "⛵", "hunter": "🏕", "cold": "🧊", "greenhouse": "🌱", "airfreight": "🛫", "checkpoint": "🪖", "surplus": "🎒",
+         "harbor": "⛵", "hunter": "🏕", "cold": "🧊", "greenhouse": "🌱", "airfreight": "🛫", "checkpoint": "🪖", "surplus": "🎒", "windmill": "💧", "harvest": "🌽", "cattle": "🐄", "fortify": "🧱",
          "funhouse": "🤡", "arcade": "🕹", "showbarn": "🐄", "hospital": "🏥", "police": "🚓", "terminal": "🛬"}
 UNLOCK = {"easy": 1, "medium": 2, "hard": 4, "deadly": 6}     # healthy survivors needed before a difficulty shows up in the vote
 
@@ -604,9 +621,9 @@ def vote_options(data, new_day, rng):
     again = sorted([r for r in runs if r.get("done_day")], key=lambda r: r["done_day"])   # longest since the last visit first
     pool = [("run", r) for r in (fresh[:5] or again[:5])]
     picks = rng.sample(pool, min(3, len(pool)))
-    missions = [m for m in data.get("missions", []) if m.get("status") != "done" and n >= SQUAD_SIZE.get(m.get("difficulty", "hard"), 4)]
+    missions = [m for m in data.get("missions", []) if m.get("poi") and m.get("status") != "done" and n >= SQUAD_SIZE.get(m.get("difficulty", "hard"), 4)]
     if missions and picks and rng.random() < .5:
-        picks[-1] = ("mission", missions[0])
+        picks[-1] = ("mission", rng.choice(missions))
     want = {}
     for d, g, l in power_wants(data):
         want.setdefault(d, (g, l))
@@ -633,20 +650,35 @@ def vote_options(data, new_day, rng):
     return out
 
 
+def ballot_options(data, ballot):
+    """A ballot set by a story beat: {"day": 5, "keys": ["gunshop", "fortify", "windmill", "harvest"]}."""
+    out = []
+    for k in ballot.get("keys", []):
+        t = find_target(data, k)
+        if not t or (t[0] == "mission" and t[1].get("status") == "done"):
+            continue
+        kind, it = t
+        key = it["poi"] if kind == "mission" else it["dest"]
+        out.append({"kind": kind, "key": key, "label": LABELS.get(key, key.upper()), "place": place_name(kind, it), "difficulty": it.get("difficulty", "easy"),
+                    "hint": it.get("goal") if kind == "mission" else ("visited before" if it.get("done_day") else "never searched")})
+    return out
+
+
 def next_vote(data, new_day, rng, recap, problems):
     active = next((m for m in data.get("missions", []) if m.get("status") == "active"), None)
     if active:
         left = active.get("days", 3) - active.get("days_done", 0)
         return {"q": f"Day {new_day}. No vote today: the squad is still inside {place_name('mission', active)} ({left} more night{'s' if left != 1 else ''}).",
                 "opts": [], "how": "Comment your name and your job to move in."}
-    opts = vote_options(data, new_day, rng)
+    ballot = data.get("ballot") if (data.get("ballot") or {}).get("day") == new_day else None
+    opts = ballot_options(data, ballot) if ballot else vote_options(data, new_day, rng)
     if len(opts) < 2:
         return {"q": f"Day {new_day}. Nowhere left to vote on tonight.", "opts": [], "how": "Comment your name and your job to move in."}
     q, desc = f"Day {new_day}. Where does the squad go next?", {}
     if os.environ.get("ANTHROPIC_API_KEY"):
         try:
             import anthropic
-            lines = "\n".join(f"- {o['label']}: {o['place']} ({o['difficulty']}{', a multi-night mission: ' + o['hint'] if o['kind'] == 'mission' else ', ' + o['hint']})" for o in opts)
+            lines = "\n".join(f"- {o['label']}: {o['place']} ({o['difficulty']}{', a mission: ' + o['hint'] if o['kind'] == 'mission' else ', ' + o['hint']})" for o in opts)
             msg = anthropic.Anthropic().messages.create(model=MODEL, max_tokens=4000, messages=[{"role": "user", "content": VOTE_PROMPT.format(day=new_day, recap=recap, options=lines)}])
             text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text")
             got = json.loads(text[text.index("{"): text.rindex("}") + 1])
