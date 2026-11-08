@@ -353,6 +353,96 @@ def horde_night(data, rng, day):
     return res
 
 
+# ---------------------------------------------------------------- 3d. small scavenging runs during the day
+# Each night plans tomorrow's small runs: who goes, where, when, and what they find. The site plays them at those times
+# (the same for every viewer), and the next night adds the finds to the stockpile. Small on purpose: about a quarter
+# of a day's food and water at most, so the vote still matters. Mostly safe: some scares, a rare one-day injury, never
+# a death, and no injuries the day of a horde night or the day before.
+NEAR = ["pharmacy", "diner", "gas", "market", "hardware", "gunshop", "maple", "storage", "harbor"]
+FINDS = {"pharmacy": ["Medicine", "Water", "Food"], "diner": ["Food", "Water", "Food"], "gas": ["Water", "Scrap", "Food"],
+         "market": ["Food", "Water", "Food"], "hardware": ["Scrap", "Scrap", "Water"], "gunshop": ["Ammo", "Ammo", "Scrap"],
+         "maple": ["Food", "Water", "Ammo"], "storage": ["Scrap", "Ammo", "Food"], "harbor": ["Water", "Food", "Scrap"]}
+DAY_CAP = {"Food": 3, "Water": 3, "Ammo": 8, "Scrap": 4, "Medicine": 1}
+FIND_AMT = {"Food": (1, 2), "Water": (1, 2), "Ammo": (2, 5), "Scrap": (1, 3), "Medicine": (1, 1)}
+FIND_LINES = {"Food": ["{n} cans of soup behind the counter", "{n} boxes of crackers nobody wanted", "{n} jars of peanut butter in a back room"],
+              "Water": ["{n} jugs of water under a sink", "{n} cases of bottled water in a stockroom", "{n} containers of rainwater worth boiling"],
+              "Ammo": ["{n} rounds in a glovebox", "{n} rounds rolling around a drawer", "a box with {n} rounds left in it"],
+              "Scrap": ["{n} loads of sheet metal and wire", "{n} armfuls of planks and bolts", "{n} car doors for the fence"],
+              "Medicine": ["a bottle of painkillers", "a first-aid kit, half full", "a dose of antibiotics in a cabinet"]}
+UNITS = {"Food": "food", "Water": "water", "Ammo": "rounds", "Scrap": "scrap", "Medicine": "medicine"}
+SCARES = ["One came out of the freezer aisle. We're fine. Heading back.", "Had to hide in a stairwell for ten minutes. They moved on.",
+          "Something knocked over a shelf in the back. We didn't wait to see what.", "Three of them at the door when we came out. Went out the back."]
+HURTS = ["a sprained ankle", "a cut hand", "a twisted knee", "a pulled shoulder"]
+DAY_TIMES = ["08:40", "10:15", "11:50", "13:30", "15:05"]
+
+
+def plan_day_runs(data, new_day, rng):
+    fit = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= new_day]
+    places = [r["dest"] for r in data.get("runs", []) if r["dest"] in NEAR]
+    if not fit or not places:
+        data.pop("day_runs", None)
+        return
+    h = data.get("horde") or {}
+    safe = h.get("day") is not None and 0 <= h["day"] - new_day <= 1          # no injuries right before a horde night
+    n = max(1, min(5, len(fit) // 3))
+    pool = sorted(fit, key=lambda s: (s.get("day_outings", 0), rng.random()))
+    used = {k: 0 for k in DAY_CAP}
+    runs = []
+    for i, t in enumerate(sorted(rng.sample(DAY_TIMES, n))):
+        crew = [pool.pop(0)["name"] for _ in range(2 if len(pool) >= 2 and len(fit) > 3 else 1) if pool]
+        if not crew:
+            break
+        dest = rng.choice(places)
+        run = {"time": t, "dest": dest, "crew": crew, "find": {}, "event": "ok"}
+        roll = rng.random()
+        if roll < .25:
+            run["line"] = f"{crew[0]}: Picked clean. Nothing worth carrying. Heading home."
+        else:
+            item = rng.choice(FINDS[dest])
+            amt = min(rng.randint(*FIND_AMT[item]), DAY_CAP[item] - used[item])
+            if amt <= 0:
+                run["line"] = f"{crew[0]}: Somebody beat us to it. Coming home empty."
+            else:
+                used[item] += amt
+                run["find"] = {item: amt}
+                run["line"] = f"{crew[0]}: Found " + rng.choice(FIND_LINES[item]).format(n=amt) + ". Heading home."
+        risk = rng.random()
+        if risk < .05 and not safe:
+            who = rng.choice(crew)
+            run.update(event="hurt", hurt=who, injury=rng.choice(HURTS))
+            run["scare"] = f"{crew[-1]}: {who} went down hard. {run['injury'].capitalize()}. We're coming back slow."
+        elif risk < .17:
+            run.update(event="scare", scare=f"{crew[-1]}: " + rng.choice(SCARES))
+        runs.append(run)
+    data["day_runs"] = {"day": new_day, "runs": runs}
+
+
+def settle_day_runs(data, day, rng):
+    """The day's small runs are over: their finds go into the stockpile and anyone hurt sits out tonight."""
+    dr = data.pop("day_runs", None)
+    if not dr or dr.get("day") != day:
+        return [], {}
+    total, lines = {}, []
+    for r in dr["runs"]:
+        for k, v in r.get("find", {}).items():
+            total[k] = total.get(k, 0) + v
+        what = ", ".join(f"+{v} {UNITS[k]}" for k, v in r.get("find", {}).items()) or "nothing"
+        place = next((place_name("run", x) for x in data.get("runs", []) if x["dest"] == r["dest"]), r["dest"].title())
+        lines.append(f"{' & '.join(r['crew'])} → {place} ({r['time']}): {what}" + (" (a close call)" if r["event"] == "scare" else ""))
+        for name in r["crew"]:
+            s = next((s for s in data["survivors"] if s["name"] == name), None)
+            if s:
+                s["day_outings"] = s.get("day_outings", 0) + 1
+        if r["event"] == "hurt":
+            s = next((s for s in data["survivors"] if s["name"] == r["hurt"] and s.get("status") not in ("dead", "away")), None)
+            if s and s.get("status") != "injured":
+                s.update(status="injured", injury=r["injury"], injured_until=day + 1)     # heals by morning: just misses tonight
+                lines.append(f"{s['name']} came back with {r['injury']} and sat out tonight.")
+    for k, v in total.items():
+        data.setdefault("camp_bonus", []).append({"item": k, "amt": v, "why": "small runs"})
+    return lines, total
+
+
 # ---------------------------------------------------------------- 4. new survivors
 PROMPT = """These are Instagram comments on a zombie survival game. Some are people asking to join
 (they give a name, a job, and maybe something about themselves). Others are votes, chatter, emoji or spam.
@@ -709,6 +799,7 @@ def main():
         ig = None
     comments = ig["comments"] if ig else []
 
+    day_lines, day_finds = settle_day_runs(data, day, rng)
     winner, tally = count_vote(data, comments)
     tiebreak = None
     if not winner and tally:                             # a tie: Sam's call if one is set in data.json vote "tiebreak", otherwise a coin flip
@@ -748,7 +839,7 @@ def main():
                                   "reel": ig["reel"]["permalink"] if ig and ig.get("reel") else None},
              "outings": outings, "healed": healed, "joined": [s["name"] for s in added], "waiting": len(data.get("waitlist", [])), "power": power_news,
              "stock": data.get("stock_change", {}), "camp": stock_notes,
-             "horde": horde, "returned": returned, "story": story}
+             "horde": horde, "returned": returned, "story": story, "day_runs": day_lines}
     data.setdefault("log", []).append(entry)
     data["log"] = data["log"][-60:]                      # keep the file small: the last two months
 
@@ -777,6 +868,8 @@ def main():
             lines.append(f"- † **{d_}** was pulled over the fence.")
         for h_ in horde["hurt"]:
             lines.append(f"- Hurt: {h_}")
+    if day_lines:
+        lines.append("**Small runs today:** " + " · ".join(day_lines))
     if healed:
         lines.append(f"**Back on their feet:** {', '.join(healed)}")
     for r_ in returned:
@@ -805,6 +898,7 @@ def main():
         lines.append(f"**Still waiting to get in:** {len(data['waitlist'])}")
     lines.append(f"**Followers:** {data.get('followers')}  |  **Tomorrow is Day {new_day}**")
     data["vote"] = next_vote(data, new_day, rng, "\n".join(lines), problems)
+    plan_day_runs(data, new_day, random.Random(f"oakhaven-day-{new_day}-{os.environ.get('OAKHAVEN_SEED', '')}"))
     v = data["vote"]
     lines.append(f"**Tomorrow's vote:** {v['q']}" + (" " + " / ".join(f"{(o[4] + ' ') if len(o) > 4 and o[4] else ''}{o[0]} ({o[2]})" for o in v["opts"]) if v["opts"] else ""))
     for p in problems:
