@@ -487,7 +487,11 @@
    "gain": {
     "Food": 60
    },
-   "done_note": "The harvest is in. Victoria's already planning the menu."
+   "done_note": "The harvest is in. Victoria's already planning the menu.",
+   "unlock_zombies": [
+    "crawler"
+   ],
+   "unlock_note": "Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them."
   },
   {
    "name": "The windmill pump",
@@ -513,7 +517,11 @@
    "income": {
     "Water": 4
    },
-   "done_note": "The old windmill is turning again. Clean water, every night, no fuel."
+   "done_note": "The old windmill is turning again. Clean water, every night, no fuel.",
+   "unlock_zombies": [
+    "crawler"
+   ],
+   "unlock_note": "Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them."
   },
   {
    "name": "Stray cattle",
@@ -535,7 +543,11 @@
    "income": {
     "Food": 2
    },
-   "done_note": "The cattle are penned behind the farmhouse. Milk every morning."
+   "done_note": "The cattle are penned behind the farmhouse. Milk every morning.",
+   "unlock_zombies": [
+    "crawler"
+   ],
+   "unlock_note": "Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them."
   },
   {
    "name": "Fort Corran armory",
@@ -1097,6 +1109,15 @@
     "harvest"
    ],
    "note": "The big choice: get ready for what's coming from the north (ammo from the Gun & Pawn, or fortify the fence), or stockpile at Victoria's farm (the windmill pump for water, or the harvest for food)."
+  },
+  {
+   "on_day": 7,
+   "do": "unlock",
+   "zombies": [
+    "runner",
+    "brute"
+   ],
+   "note": "The front of the Millbrook horde reaches the city: faster ones that turned recently, and dock brutes from the coast."
   }
  ],
  "broadcast": {
@@ -1129,5 +1150,8 @@
    "title": "Roof garden",
    "text": "Built a garden box on the laundromat roof from scrap wood. +2 food a night once it grows (from Day 7)."
   }
+ ],
+ "zombie_types": [
+  "walker"
  ]
 }
