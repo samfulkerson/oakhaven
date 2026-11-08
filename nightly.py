@@ -678,6 +678,13 @@ def main():
     comments = ig["comments"] if ig else []
 
     winner, tally = count_vote(data, comments)
+    tiebreak = None
+    if not winner and tally:                             # a tie: Sam's call if one is set in data.json vote "tiebreak", otherwise a coin flip
+        top = max(tally.values())
+        tied = sorted(k for k, v in tally.items() if v == top)
+        call = str((data.get("vote") or {}).get("tiebreak", "")).upper()
+        winner = call if call in tied else rng.choice(tied)
+        tiebreak = f"{' / '.join(tied)} tied. " + (f"Sam broke the tie: {winner}." if call in tied else f"A coin flip picked {winner}.")
     keys = {o[0].upper(): o[3] for o in (data.get("vote") or {}).get("opts", []) if len(o) > 3}
     outings = todays_outing(data, keys.get(winner, winner), rng)
     new_day = day + 1
@@ -705,7 +712,7 @@ def main():
     if ig:
         data["followers"] = ig["followers"]
     data["day"] = new_day
-    entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner,
+    entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner, "tiebreak": tiebreak,
                                   "reel": ig["reel"]["permalink"] if ig and ig.get("reel") else None},
              "outings": outings, "healed": healed, "joined": [s["name"] for s in added], "waiting": len(data.get("waitlist", [])), "power": power_news,
              "stock": data.get("stock_change", {}), "camp": stock_notes,
@@ -717,6 +724,8 @@ def main():
     lines = [f"# Oakhaven: Day {day} recap", ""]
     if tally:
         lines.append(f"**Vote:** {', '.join(f'{k} {v}' for k, v in tally.items())}. Winner: {winner or 'tie, no winner'}.")
+    if tiebreak:
+        lines.append(f"**Tie:** {tiebreak}")
     for o in outings:
         lines.append(f"**{o['kind'].title()}: {o['target']}** ({o['difficulty']}), squad: {', '.join(o['squad']) or 'nobody'}"
                      + (f" — mission {o['mission_status']}" if o.get("mission_status") else ""))
