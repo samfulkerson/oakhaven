@@ -485,6 +485,29 @@ def milestone_unlocks(data, new_day):
     return out
 
 
+# ---------------------------------------------------------------- 3f. the dead, counted
+# Oakhaven had 40,000 people. data.json "undead" keeps the city's running count: the runs thin it out, a few more turn
+# every night, and a horde brings thousands. The site's map only shows the ones near the camp.
+KILLS_PER = {"easy": (1, 3), "medium": (2, 4), "hard": (3, 6), "deadly": (4, 8)}
+
+
+def update_undead(data, outings, day_runs, horde, rng):
+    U = data.setdefault("undead", {"count": 28400})
+    killed = 0
+    for o in outings:
+        lo, hi = KILLS_PER.get(o.get("difficulty", "medium"), (2, 4))
+        killed += sum(rng.randint(lo, hi) for r in o.get("results", []) if r["outcome"] != "dead")
+    killed += sum(rng.randint(0, 2) for _ in range(day_runs))
+    turned = rng.randint(2, 9)
+    arrived = 0
+    if horde:
+        arrived = horde["strength"] * 40                     # the whole column, not just the ones that hit the fence
+        killed += int(min(horde["strength"], horde["defense"]) * 6)
+    U["count"] = max(0, U["count"] - killed + turned + arrived)
+    U["last"] = {"day": data["day"], "killed": killed, "turned": turned, "arrived": arrived}
+    return U
+
+
 # ---------------------------------------------------------------- 4. new survivors
 PROMPT = """These are Instagram comments on a zombie survival game. Some are people asking to join
 (they give a name, a job, and maybe something about themselves). Others are votes, chatter, emoji or spam.
@@ -883,6 +906,7 @@ def main():
     if ig:
         data["followers"] = ig["followers"]
     unlocked = milestone_unlocks(data, new_day)
+    undead = update_undead(data, outings, len(day_lines), horde, rng)
     data["day"] = new_day
     entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner, "tiebreak": tiebreak,
                                   "reel": ig["reel"]["permalink"] if ig and ig.get("reel") else None},
@@ -925,6 +949,9 @@ def main():
         lines.append(f"**Back from scouting:** {r_}")
     for n_ in story:
         lines.append(f"**Story:** {n_}")
+    L_ = undead["last"]
+    lines.append(f"**Undead in Oakhaven:** {undead['count']:,} (−{L_['killed']} killed, +{L_['turned']} newly turned"
+                 + (f", +{L_['arrived']:,} arrived with the horde" if L_["arrived"] else "") + ")")
     for u_ in unlocked:
         lines.append(f"**Milestone reached:** {u_} (shout out the new followers in the Reel!)")
     if data.get("broadcast", {}).get("day") == new_day:
