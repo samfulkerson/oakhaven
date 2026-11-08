@@ -2321,26 +2321,34 @@ function clockText() { const h = hourNow(); return String(Math.floor(h)).padStar
 const STATUS_LABEL = { queued: 'Queued', leaving: 'En route', searching: 'Searching', returning: 'Returning', back: 'Back' };
 DATA.runs = DATA.runs.filter(r => r && POIS[r.dest] && Array.isArray(r.squad));
 DATA.runs.forEach(r => r.status = 'queued');
-let runIdx = 0, runWait = 240, run = null;
+let runIdx = 0, runWait = 240, active = [];   // several small groups can be out at once
+const runOf = e => active.find(a => a.members.includes(e));
+// how many groups go out at once: one per few fit people, at most three, and someone always stays to hold the fence
+const maxGroups = () => { const fit = people.filter(e => e.d && fitToGo(e.d)).length; return Math.max(1, Math.min(3, Math.floor((fit - 1) / 3))); };
 const OFFS = [[0, 0], [3, 2], [-3, 2], [0, 4]];
 const crewOf = r => r.crew || [];
 const solo = r => crewOf(r).length === 1;
 const WALK = .55;
 // who can go out: alive, not injured, already moved in. Everyone takes turns; the ones who've been out least go first
 const fitToGo = d => !!d && d.status !== 'dead' && d.status !== 'injured' && d.status !== 'away' && (d.joined || 1) <= DATA.day;
-const CREW_N = { easy: 2, medium: 3, hard: 4, deadly: 5 };
+const CREW_N = { easy: 2, medium: 2, hard: 3, deadly: 4 };
 let nextCrew = null;
 function planCrew(r) {
   const pool = people.filter(e => e.d && fitToGo(e.d) && e.mode !== 'run').sort((a, b) => (a.d.runsDone - b.d.runsDone) || (rand() - .5));
   return pool.slice(0, Math.min(CREW_N[r.difficulty] || 2, pool.length));
 }
 function startRun() {
-  const r = DATA.runs[runIdx], d = POIS[r.dest];
+  if (!DATA.runs.length) return;
+  let r = null;
+  for (let k = 0; k < DATA.runs.length && !r; k++) { const c = DATA.runs[(runIdx + k) % DATA.runs.length]; if (!active.some(a => a.r === c)) { r = c; runIdx = (runIdx + k) % DATA.runs.length; } }
+  if (!r) return;
+  const d = POIS[r.dest];
   const members = nextCrew && nextCrew.length && nextCrew.every(m => fitToGo(m.d) && m.mode !== 'run') ? nextCrew : planCrew(r);
   nextCrew = null;
   if (!members.length) { runWait = 900; return; }        // nobody is fit to go: wait and check again
+  if (active.length && people.filter(e => e.d && fitToGo(e.d) && e.mode !== 'run').length - members.length < 1) { runWait = 600; return; }   // keep someone at the fence
   members.forEach((m, i) => { m.mode = 'run'; m.inside = false; m.hidden = false; if (m.y < 494) { m.x = HOME.door[0]; m.y = HOME.door[1] + 2; } m.path = d.path; m.wait = 0; m.wp = 0; m.delay = i * 16; m.off = OFFS[i % 4]; });
-  run = { r, d, members, timer: 0 };
+  active.push({ r, d, members, timer: 0 }); runIdx++;
   r.crew = members.map(m => m.d.name); r.status = 'leaving';
   const far = { Forest: ' Long walk through the woods.', Airport: ' All the way up to the airfield.', Port: ' Down to the docks.' }[d.area] || '';
   const with_ = members.length > 1 ? ` ${members.slice(1).map(m => m.d.name).join(' and ')} with me.` : '';
@@ -2349,7 +2357,13 @@ function startRun() {
   renderRuns();
 }
 function stepRun() {
-  if (!run) { if (--runWait <= 0) { if (runIdx >= DATA.runs.length) { DATA.runs.forEach(r => r.status = 'queued'); runIdx = 0; } startRun(); } return; }
+  if (active.length < maxGroups() && --runWait <= 0) {
+    if (runIdx >= DATA.runs.length) { DATA.runs.forEach(r => { if (!active.some(a => a.r === r)) r.status = 'queued'; }); runIdx = 0; }
+    runWait = 260 + (rand() * 260 | 0); startRun();
+  }
+  for (const run of [...active]) stepGroup(run);
+}
+function stepGroup(run) {
   const { r, d, members } = run;
   const arrived = members.every(m => m.wp >= m.path.length);
   if (r.status === 'leaving' && arrived) {
@@ -2364,7 +2378,7 @@ function stepRun() {
     r.status = 'back';
     members.forEach(m => { m.mode = 'wander'; [m.tx, m.ty] = yardSpot(); m.wait = 30; if (m.d) m.d.runsDone++; });
     radio(solo(r) ? `${r.crew[0]}: Back behind the fence. Gate's chained.` : `Gate's shut. ${r.crew.slice(0, -1).join(', ')} and ${r.crew[r.crew.length - 1]} are back inside.`);
-    run = null; runIdx++; runWait = 320; renderRuns();
+    active.splice(active.indexOf(run), 1); runWait = Math.max(runWait, 200); renderRuns();
   }
 }
 
@@ -2380,7 +2394,7 @@ function moveToward(e, tx, ty, spd) {
   e.x += dx / dist * spd; e.y += dy / dist * spd; if (Math.abs(dx) > .3) e.flip = dx < 0; e.step += spd; e.moving = true;
   return false;
 }
-function runnersOutside() { return run && run.r.status !== 'searching' ? run.members.filter(m => !m.hidden && !inFence(m.x, m.y)) : []; }
+function runnersOutside() { return active.flatMap(a => a.r.status !== 'searching' ? a.members.filter(m => !m.hidden && !inFence(m.x, m.y)) : []); }
 
 function update() {
   frame++;
@@ -2483,7 +2497,7 @@ const WORLD_TALK = [
 ];
 let talkN = 0;
 function campChatter() {
-  const here = DATA.survivors.filter(d => d.status !== 'dead' && d.status !== 'away' && (d.joined || 1) <= DATA.day && !(run && crewOf(run.r).includes(d.name)));
+  const here = DATA.survivors.filter(d => d.status !== 'dead' && d.status !== 'away' && (d.joined || 1) <= DATA.day && !active.some(a => crewOf(a.r).includes(d.name)));
   const away = DATA.survivors.filter(d => d.status === 'away' && (d.joined || 1) <= DATA.day);
   const bc = DATA.broadcast && DATA.broadcast.day >= DATA.day - 1 ? DATA.broadcast : null;
   if (bc && talkN % 4 === 1) { talkN++; radio(`88.1 · ${bc.from}: ${bc.text}`); return; }
@@ -2585,7 +2599,7 @@ function collectLights(inView) {
   }
   for (const s of shots) out.push([s.x1, s.y1, 15, 1, '255,220,140', true]);
   for (const e of people) if (!e.hidden && e.mode === 'run') out.push([e.x + (e.flip ? -6 : 6), e.y - 4, 13, .85, '235,235,215', false]);
-  if (run && run.r.status === 'searching' && frame % 40 < 30) { const w = run.d.win[(frame / 40 | 0) % 2]; out.push([w[0], w[1], 10, .9, '220,220,180', false]); }
+  for (const a of active) if (a.r.status === 'searching' && frame % 40 < 30) { const w = a.d.win[(frame / 40 | 0) % 2]; out.push([w[0], w[1], 10, .9, '220,220,180', false]); }
   return out.filter(L => inView(L[0], L[1], L[2]));
 }
 
@@ -2598,7 +2612,7 @@ function skyAt(h) {
 
 function draw() {
   const h = hourNow(), dark = darkness(h);
-  if (follow && selected && !dragging) { if (!selected.hidden) centerOn(selected.x, selected.y - 6); else if (selected.inside) centerOn(HOME_CENTER[0], HOME_CENTER[1]); else if (run && run.members.includes(selected)) centerOn(run.d.door[0], run.d.door[1] - 10); }
+  if (follow && selected && !dragging) { if (!selected.hidden) centerOn(selected.x, selected.y - 6); else if (selected.inside) centerOn(HOME_CENTER[0], HOME_CENTER[1]); else if (runOf(selected)) centerOn(runOf(selected).d.door[0], runOf(selected).d.door[1] - 10); }
   const VX = Math.floor(camX), VY = Math.floor(camY), VW = Math.min(W - VX, Math.ceil(vw()) + 2), VH = Math.min(H - VY, Math.ceil(vh()) + 2);
   const inView = (x, y, m = 20) => x > VX - m && x < VX + VW + m && y > VY - m && y < VY + VH + m;
   f.drawImage(BG, VX, VY, VW, VH, VX, VY, VW, VH);
@@ -2924,7 +2938,7 @@ function whereOf(d) {
   const e = byName[d.name];
   if ((d.joined || 1) > DATA.day) return `Arrives on Day ${d.joined}`;
   if (d.status === 'away') return `Out alone: ${d.away_note || 'scouting'}${d.away_until ? `. Back Day ${d.away_until}` : ''}`;
-  const base = !e ? 'At the laundromat' : e.mode === 'run' ? `Out on the ${run ? run.d.name : ''} run` : e.inside ? 'Barricaded inside for the night' : 'In the laundromat yard';
+  const base = !e ? 'At the laundromat' : e.mode === 'run' ? `Out on the ${runOf(e) ? runOf(e).d.name : ''} run` : e.inside ? 'Barricaded inside for the night' : 'In the laundromat yard';
   return base + (d.status === 'injured' ? ` · injured${d.injury ? ` (${d.injury})` : ''}, resting${d.injured_until ? ` until Day ${d.injured_until}` : ''}` : '');
 }
 let pickedName = null;   // the card that's highlighted (living or fallen)
@@ -3206,7 +3220,7 @@ function epStartRun(name, dest) {
   const e = byName[name], d = POIS[dest]; if (!e || !d) return;
   const r = DATA.runs.find(x => x.dest === dest) || { dest, squad: [name], status: 'queued' };
   e.mode = 'run'; e.inside = false; e.hidden = false; e.x = HOME.door[0]; e.y = HOME.door[1] + 2; e.path = d.path; e.wp = 0; e.delay = 0; e.off = OFFS[0];
-  run = { r, d, members: [e], timer: 0 }; r.crew = [name]; r.status = 'leaving'; renderRuns();
+  active.push({ r, d, members: [e], timer: 0 }); r.crew = [name]; r.status = 'leaving'; renderRuns();
 }
 function epPre() {
   const ep = EPI.ep, t = EPI.t;
@@ -3281,7 +3295,7 @@ function epPost() {
 // set the world up for an episode: its first hour, the dead settled, Sam home, camera on its first key
 function epPrepare(key) {
   EPI.ep = EPISODES[key]; EPI.t = 0; EPI.fired = new Set(); follow = false; selected = null;
-  HOUR_OVR = EPI.ep.hour[0][1]; run = null; runWait = 1e9;
+  HOUR_OVR = EPI.ep.hour[0][1]; active = []; runWait = 1e9;
   for (const e of people) { e.mode = 'wander'; e.inside = true; e.hidden = true; e.x = HOME.door[0]; e.y = HOME.door[1] + 1; }
   for (let i = 0; i < 900; i++) update();
   EPI.on = true; epPre();
@@ -3397,12 +3411,11 @@ window.oakEpisode = {
     const hd = DATA.horde, left = hd ? hd.day - DATA.day : -1, last = hd && hd.last && hd.last.day === DATA.day - 1 ? hd.last : null;
     $('tHordeS').textContent = left === 0 ? 'THE HORDE ARRIVES TONIGHT' : last ? `Last night the fence ${last.outcome}` : left > 0 ? `Horde in ${left} day${left === 1 ? '' : 's'}` : siege ? `${siege} at the laundromat fence` : 'Roaming the streets';
     const st = $('fieldState'), who = $('fieldWho'), what = $('fieldWhat');
-    if (run) {
-      const r = run.r, d = run.d;
-      st.className = 'state go'; st.textContent = STATUS_LABEL[r.status] || 'Out';
-      who.textContent = crewOf(r).join(', ');
-      what.innerHTML = `${WHERE[r.status] || 'At'} <b>${esc(d.name)}</b> · ${esc(d.area)}`;
-      $('fieldNote').textContent = DIFF[r.difficulty] ? DIFF[r.difficulty] + ' run' : '';
+    if (active.length) {
+      st.className = 'state go'; st.textContent = active.length > 1 ? `${active.length} groups out` : (STATUS_LABEL[active[0].r.status] || 'Out');
+      who.textContent = active.map(a => crewOf(a.r).join(' & ')).join(' · ');
+      what.innerHTML = active.map(a => `${WHERE[a.r.status] || 'At'} <b>${esc(a.d.name)}</b>${active.length > 1 ? ` (${esc(crewOf(a.r).join(' & '))})` : ` · ${esc(a.d.area)}`}`).join('<br>');
+      $('fieldNote').textContent = active.length === 1 && DIFF[active[0].r.difficulty] ? DIFF[active[0].r.difficulty] + ' run' : '';
     } else {
       const nx = DATA.runs[runIdx % Math.max(1, DATA.runs.length)];
       if (nx && !nextCrew) nextCrew = planCrew(nx);
