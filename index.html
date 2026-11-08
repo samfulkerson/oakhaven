@@ -90,6 +90,9 @@ main{display:grid;gap:18px;padding-block:18px 40px}
 .tile .v small{font-size:16px;color:var(--muted);margin-left:2px}
 .tile .s{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tile.hot .v{color:var(--bad)}
+.tile .s.wrap{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+.tile .track i.bad{background:var(--bad)}
+.tile .track i.ok{background:var(--ok, #7fbf6a)}
 .tile.amber .v{color:var(--accent)}
 .tile .track{height:4px;background:var(--bg);border-radius:2px;overflow:hidden;margin-top:6px}
 .tile .track i{display:block;height:100%;width:0;background:var(--accent);transition:width .6s}
@@ -261,6 +264,10 @@ canvas#world.dragging{cursor:grabbing}
 .miles li b::after{content:" followers";font-family:var(--f-head);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
 .miles li.next{border-color:var(--accent);background:linear-gradient(180deg,var(--accent-soft),var(--panel-2))}
 .miles li.next b{color:var(--accent)}
+.miles li.done{opacity:.72}
+.miles li.done b{color:var(--ok, #7fbf6a)}
+.miles li.done b::before{content:"\2713 "}
+.miles .fx{display:block;font-size:12.5px;color:var(--muted)}
 .miles .togo{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--accent);margin-top:2px}
 
 /* join strip */
@@ -323,7 +330,7 @@ footer a{color:var(--muted)}
     <div class="tile hot"><span class="k">Undead in city</span><span class="v" id="tHorde">0</span><span class="s" id="tHordeS">Roaming the streets</span></div>
     <div class="tile"><span class="k">Power grid</span><span class="v" id="tPower">0<small>/12</small></span><span class="s" id="tPowerS">Every light is out</span></div>
     <div class="tile"><span class="k">Food left</span><span class="v" id="tFood">2<small>days</small></span><span class="s" id="tFoodS">Stockpile</span></div>
-    <div class="tile"><span class="k">Next milestone</span><span class="v" id="tMile">2</span><span class="s" id="tMileS"></span><span class="track"><i id="tMileBar"></i></span></div>
+    <div class="tile" id="tMileT"><span class="k" id="tMileK">Next milestone</span><span class="v" id="tMile">2</span><span class="s wrap" id="tMileS"></span><span class="track"><i id="tMileBar"></i></span></div>
   </section>
 
   <div class="deck">
@@ -555,7 +562,7 @@ const DATA = {
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
 if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
-if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
+if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
@@ -1173,6 +1180,10 @@ function buildBG() {
     car(x, 230, 142, '#4a4f3a'); car(x, 136, 190, '#3a2a22', '#141210'); trash(x, 138, 116, 12, 7); trash(x, 228, 190, 10, 8);
     streetlight(x, 246, 198);
     // camp improvements from the spotlight posts
+    if ((DATA.features || []).some(f => f.id === 'lookout')) {          // lookout tower in the roof's back corner: legs, a plank platform, a tin roof
+      P(x, 205, 129, '#4a3420', 1, 10); P(x, 213, 129, '#4a3420', 1, 10); for (let i = 0; i < 8; i++) P(x, 206 + i, 130 + i, '#3b2c20');
+      P(x, 203, 126, '#7a5232', 13, 5); P(x, 203, 126, '#9a7242', 13, 1); P(x, 202, 123, '#6a6e72', 15, 3); P(x, 202, 123, '#8a8e92', 15, 1); P(x, 209, 120, '#5a4128', 1, 3); P(x, 210, 120, '#c03a2e', 3, 2);
+    }
     if ((DATA.features || []).some(f => f.id === 'roof_garden')) {      // Mateen's garden box on the roof, built from scrap wood
       P(x, 188, 130, '#6b4a2a', 13, 8); P(x, 189, 131, '#3a2a1a', 11, 6); P(x, 188, 130, '#8a6a44', 13, 1);
       for (let X = 190; X < 199; X += 2) for (let y = 132; y < 137; y += 2) { P(x, X, y, hash2(X, y, 77) > .5 ? '#6aa03a' : '#4f8a2e'); if (hash2(X, y, 78) > .6) P(x, X, y - 1, '#8cc45a'); }
@@ -3088,7 +3099,7 @@ $('voteOpts').innerHTML = v.opts.map(([w, n, t]) => { const pct = total ? Math.r
 $('voteHow').textContent = v.how;
 
 const nextM = (DATA.milestones.find(m => m[0] > DATA.followers) || [0])[0];
-$('miles').innerHTML = DATA.milestones.map(([n, t]) => `<li class="${n === nextM ? 'next' : ''}"><b>${n.toLocaleString()}</b><span>${esc(t)}${n === nextM ? ` <span class="togo">(${n - DATA.followers} to go)</span>` : ''}</span></li>`).join('');
+$('miles').innerHTML = DATA.milestones.map(([n, t, fx, what]) => `<li class="${n === nextM ? 'next' : n <= DATA.followers ? 'done' : ''}"><b>${n.toLocaleString()}</b><span>${esc(t)}${what ? `<span class="fx">${esc(what)}</span>` : ''}${n === nextM ? ` <span class="togo">${n - DATA.followers} more follower${n - DATA.followers === 1 ? '' : 's'} to go</span>` : ''}</span></li>`).join('');
 
 // what someone is doing at this moment in the world
 function whereOf(d) {
@@ -3518,10 +3529,25 @@ window.oakEpisode = {
   const food = DATA.stock.find(s => s[0] === 'Food'), water = DATA.stock.find(s => s[0] === 'Water');
   if (food) { const fd = stockDays('Food'); $('tFood').innerHTML = `${fd}<small>day${fd === 1 ? '' : 's'}</small>`; if (fd <= 2) $('tFood').parentElement.classList.add('hot'); }
   if (water) { const wd = stockDays('Water'); $('tFoodS').textContent = `Water: ${wd} day${wd === 1 ? '' : 's'}`; }
-  const next = DATA.milestones.find(m => m[0] > DATA.followers);
-  if (next) {
-    const prev = [...DATA.milestones].reverse().find(m => m[0] <= DATA.followers), base = prev ? prev[0] : 0;
-    $('tMile').textContent = next[0].toLocaleString(); $('tMileS').textContent = next[1];
+  // the sixth tile: the horde while one is coming (its countdown and the camp's odds), otherwise the next follower milestone
+  const hd = DATA.horde, next = DATA.milestones.find(m => m[0] > DATA.followers);
+  if (hd && hd.day >= DATA.day) {
+    const left = hd.day - DATA.day, stk = k => (DATA.stock.find(r => r[0] === k) || [0, 0])[1];
+    const fit = DATA.survivors.filter(d => !['dead', 'injured', 'away'].includes(d.status) && (d.joined || 1) <= DATA.day);
+    const role = r => fit.filter(d => d.role === r).length, gear = k => fit.filter(d => (d.gear || []).some(g => g.kind === k)).length;
+    const def = stk('Barricades') * .5 + Math.min(stk('Ammo'), 60) * .5 + fit.length * 6 + role('Sharpshooter') * 8 + role('Builder') * 5 + gear('weapon') * 2 + gear('armor')
+      + (DATA.features || []).reduce((a, f) => a + (f.defense || 0), 0);
+    const str = (70 + 15 * ((hd.week || 1) - 1) + Math.min(DATA.followers || 0, 80) * .5) * (on ? 1.15 : 1), odds = def / str;
+    $('tMileK').textContent = `Horde · week ${hd.week || 1}`;
+    $('tMile').innerHTML = left === 0 ? 'Tonight' : `${left}<small>day${left === 1 ? '' : 's'}</small>`;
+    $('tMileS').textContent = `Fence ${stk('Barricades')}% · ${stk('Ammo')} rounds · ${fit.length} fighters · odds ${odds >= 1.15 ? 'good' : odds >= .95 ? 'even' : 'bad'}`;
+    $('tMileBar').style.width = Math.round(Math.min(1, odds / 1.5) * 100) + '%'; $('tMileBar').className = odds >= 1.15 ? 'ok' : odds >= .95 ? '' : 'bad';
+    $('tMileT').classList.toggle('hot', left <= 1);
+  } else if (next) {
+    const prev = [...DATA.milestones].reverse().find(m => m[0] <= DATA.followers), base = prev ? prev[0] : 0, togo = next[0] - DATA.followers;
+    $('tMile').innerHTML = `${(DATA.followers || 0).toLocaleString()}<small>/${next[0].toLocaleString()}</small>`;
+    $('tMileS').textContent = `${togo} more follower${togo === 1 ? '' : 's'} to unlock: ${next[1]}`;
+    $('tMileS').title = next[3] || next[1];
     $('tMileBar').style.width = Math.round((DATA.followers - base) / Math.max(1, next[0] - base) * 100) + '%';
   } else { $('tMile').textContent = 'All'; $('tMileS').textContent = 'Every milestone reached'; $('tMileBar').style.width = '100%'; }
   $('nRuns').textContent = DATA.runs.length; $('nMissions').textContent = DATA.missions.length; $('nPower').textContent = `${on}/${n}`;
