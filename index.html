@@ -2012,6 +2012,60 @@ function buildBG() {
   LIGHTS.push([1500, 552, 28, .55, '255,220,160', 'steady', 'fair'], [1500, 648, 28, .55, '255,220,160', 'steady', 'fair'], [1452, 600, 22, .5, '255,200,140', 'steady', 'fair'], [1548, 600, 22, .5, '255,200,140', 'steady', 'fair'],
     [1376, 690, 34, .5, '255,225,170', 'steady', 'fair'], [1466, 690, 34, .5, '255,225,170', 'steady', 'fair'], [1556, 690, 30, .5, '255,225,170', 'steady', 'fair'],
     [1572, 562, 16, .8, '255,60,40', 'blink', 'fair'], [1350, 612, 22, .6, '255,210,90', 'flicker', 'fair'], [1341, 830, 22, .6, '230,110,200', 'steady', 'fair'], [1530, 720, 26, .5, '255,230,180', 'steady', 'fair']);
+  // ---- more of the fair: festive once, falling apart now. Peeling paint, dead bulbs, torn canvas, letters missing from the signs
+  const grime = (X0, Y0, w, h, seed, n) => { for (let i = 0; i < n; i++) { const a = hash2(i, seed, 401), b = hash2(i, seed, 402), c = hash2(i, seed, 403);
+    P(x, X0 + (a * w | 0), Y0 + (b * h | 0), c < .45 ? '#6a5a4a' : c < .75 ? '#4a3a2e' : c < .9 ? '#8a5a34' : '#2a2420', c > .8 ? 2 : 1, 1); } };
+  const awning = (X0, Y0, w, h, c1, c2, torn) => { for (let X = 0; X < w; X++) for (let y = 0; y < h; y++) if (!(torn && hash2(X0 + X, Y0 + y, 404) > .9 && y > 0)) P(x, X0 + X, Y0 + y, (X >> 2) % 2 ? c1 : c2);
+    for (let X = 0; X < w; X += 4) P(x, X0 + X + 1, Y0 + h, (X >> 2) % 2 ? c1 : c2, 2, 1); };
+  // cotton candy kiosk with a giant fiberglass cone on the roof (the cone's cracked)
+  P(x, 1321, 759, 'rgba(0,0,0,.4)', 24, 2); P(x, 1322, 746, '#f0d8e4', 22, 13); P(x, 1322, 746, '#ffffff', 22, 1);
+  awning(1321, 742, 24, 4, '#e86aa8', '#f8f0f4', true); P(x, 1325, 750, '#1a1214', 16, 4); P(x, 1325, 754, '#a87a5a', 16, 1);
+  for (let a = -5; a <= 5; a++) for (let b = -4; b <= 4; b++) if (a * a + b * b * 1.6 <= 25) P(x, 1333 + a, 733 + b, hash2(a, b, 405) > .3 ? '#f48ac0' : '#d86aa0');
+  for (let i = 0; i < 6; i++) P(x, 1333 - Math.round((6 - i) / 3), 737 + i, '#e8c48a', 1 + Math.round((6 - i) * .6), 1); P(x, 1335, 731, '#5a3a3a', 1, 3);
+  P(x, 1324, 761, '#1a1a1a', 20, 6); text(x, 'SWEETS', 1325, 761, '#f48ac0'); P(x, 1332, 761, '#1a1a1a', 4, 6); grime(1322, 746, 22, 13, 406, 14);
+  // lemonade stand: a lemon-slice sign, half the awning stripes gone, cups blown across the grass
+  P(x, 1351, 759, 'rgba(0,0,0,.4)', 26, 2); P(x, 1352, 748, '#e8dc8a', 24, 11); awning(1351, 744, 26, 4, '#e8c84a', '#f8f4e0', true);
+  P(x, 1355, 751, '#1a1a14', 18, 4); P(x, 1355, 755, '#8a6a44', 18, 1); P(x, 1357, 752, '#e8c84a', 2, 3); P(x, 1362, 752, '#e8c84a', 2, 3);
+  for (let a = -5; a <= 5; a++) for (let b = -5; b <= 5; b++) { const d = a * a + b * b; if (d <= 25) P(x, 1364 + a, 737 + b, d > 16 ? '#d9b02a' : (Math.floor((Math.atan2(b, a) + 3.15) / .78) % 2 ? '#f6e27a' : '#fff4b0')); }
+  P(x, 1363, 736, '#ffffff', 2, 2); P(x, 1367, 739, '#2a2420', 2, 2);
+  for (const [cx2, cy2] of [[1380, 762], [1386, 758], [1377, 768], [1391, 765]]) { P(x, cx2, cy2, '#f0ece2', 2, 2); P(x, cx2, cy2, '#e8c84a'); }
+  grime(1352, 748, 24, 11, 407, 12);
+  // helter skelter: a striped tower with a spiral slide around it, a section of slide fallen off
+  P(x, 1324, 806, 'rgba(0,0,0,.35)', 26, 5);
+  for (let a = -9; a <= 9; a++) for (let b = -9; b <= 9; b++) { const d = a * a + b * b; if (d <= 81) { const an = Math.atan2(b, a), ring = Math.sqrt(d);
+    let col = ring > 6.5 ? ((Math.floor((an + 3.15) / .52 + ring * .9) % 2) ? '#c03a2e' : '#e8c84a') : ((Math.floor((an + 3.15) / .78) % 2) ? '#2a6aa8' : '#e8e4da');
+    if (ring > 6.5 && an > .3 && an < 1.1) col = '#3e4a2c'; P(x, 1336 + a, 795 + b, col); } }
+  P(x, 1335, 784, '#7a7e80', 1, 3); P(x, 1336, 784, '#c03a2e', 3, 2); P(x, 1342, 803, '#c03a2e', 6, 2); P(x, 1344, 805, '#e8c84a', 4, 1);
+  P(x, 1324, 807, '#1a1a1a', 26, 6); text(x, 'HELTER', 1325, 807, '#e8c84a'); grime(1328, 788, 16, 14, 408, 8);
+  solid([1328, 787, 17, 17]);
+  // ghost train: a black facade with a grinning skull over the tunnel, a car derailed out front, the track running off into the dark
+  const gtY = 838;
+  P(x, 1376, gtY + 26, 'rgba(0,0,0,.45)', 68, 2);
+  for (let y = gtY; y < gtY + 26; y++) for (let X = 1376; X < 1444; X++) P(x, X, y, y < gtY + 10 ? (hash2(X, y, 409) > .5 ? '#2a2234' : '#241e2e') : (hash2(X, y, 410) > .5 ? '#1c1824' : '#18141e'));
+  for (let X = 1376; X < 1444; X += 6) { P(x, X, gtY - 3, '#3a2a4a', 4, 3); P(x, X + 1, gtY - 5, '#3a2a4a', 2, 2); }            // battlements
+  P(x, 1376, gtY, '#6a3a8a', 68, 1); P(x, 1376, gtY + 9, '#6a3a8a', 68, 1);
+  P(x, 1386, gtY + 1, '#100c14', 48, 7); text(x, 'GHOST TRAIN', 1388, gtY + 2, '#e8782e'); P(x, 1400, gtY + 2, '#100c14', 4, 5);   // a letter's fallen off
+  for (let a = -6; a <= 6; a++) for (let b = -5; b <= 5; b++) if (a * a + b * b * 1.4 <= 36) P(x, 1410 + a, gtY + 16 + b, '#e8e4da');
+  P(x, 1407, gtY + 14, '#1a1414', 2, 3); P(x, 1412, gtY + 14, '#1a1414', 2, 3); P(x, 1409, gtY + 18, '#1a1414', 4, 2); P(x, 1410, gtY + 18, '#e8e4da');
+  P(x, 1402, gtY + 21, '#0a080c', 16, 5);                                                                                   // the tunnel mouth under the skull
+  for (const gx of [1380, 1430]) { P(x, gx, gtY + 12, '#e8e4da', 6, 7); P(x, gx + 1, gtY + 14, '#1a1414', 1, 2); P(x, gx + 4, gtY + 14, '#1a1414', 1, 2); P(x, gx, gtY + 19, '#e8e4da', 1, 2); P(x, gx + 3, gtY + 19, '#e8e4da', 1, 2); }   // ghost cutouts
+  P(x, 1390, gtY + 14, '#2a5a3a', 1, 6); P(x, 1391, gtY + 13, '#3a7a4a', 3, 2);                                           // a fake cobweb tree
+  for (let X = 1396; X < 1426; X++) { P(x, X, gtY + 27, '#5a5e62'); P(x, X, gtY + 30, '#5a5e62'); if (X % 3 === 0) P(x, X, gtY + 26, '#4a3a2e', 1, 6); }
+  P(x, 1419, gtY + 28, '#6a3a8a', 9, 5); P(x, 1420, gtY + 29, '#1a1414', 7, 2); P(x, 1428, gtY + 30, '#3e4a2c', 2, 2);          // derailed car, nose in the grass
+  grime(1376, gtY, 68, 26, 411, 30);
+  solid([1376, gtY, 68, 26]);
+  // fortune teller's wagon in the corner: purple, gold trim, stars, a crystal ball still glowing in the window
+  const ftX = 1500, ftY = 514;
+  P(x, ftX, ftY + 18, 'rgba(0,0,0,.4)', 30, 3);
+  for (let y = 0; y < 16; y++) for (let X = 0; X < 28; X++) P(x, ftX + 1 + X, ftY + 2 + y, y < 3 ? '#5a2a7a' : (hash2(X, y, 412) > .5 ? '#6a3a8a' : '#62348a'));
+  P(x, ftX + 1, ftY + 2, '#d9b02a', 28, 1); P(x, ftX + 1, ftY + 17, '#d9b02a', 28, 1); P(x, ftX, ftY + 1, '#4a2a6a', 30, 2);
+  for (const [sx, sy] of [[4, 6], [10, 4], [22, 6], [26, 12], [6, 13]]) { P(x, ftX + sx, ftY + sy, '#f6d36a'); P(x, ftX + sx - 1, ftY + sy, '#c9a22a'); P(x, ftX + sx + 1, ftY + sy, '#c9a22a'); }
+  P(x, ftX + 12, ftY + 7, '#1a1028', 8, 6); P(x, ftX + 14, ftY + 9, '#8ad8e8', 4, 3); P(x, ftX + 15, ftY + 9, '#e8f8ff');
+  for (const wx of [ftX + 4, ftX + 22]) { for (let a = 0; a < 8; a++) P(x, wx + Math.round(Math.cos(a / 8 * 6.28) * 3), ftY + 18 + Math.round(Math.sin(a / 8 * 6.28) * 2), '#8a6a44'); P(x, wx, ftY + 18, '#5a4128'); }
+  P(x, ftX + 3, ftY - 6, '#1a1028', 25, 6); text(x, 'FORTUNES', ftX + 4, ftY - 6, '#f6d36a'); P(x, ftX + 20, ftY - 6, '#1a1028', 4, 6);   // the N is gone
+  grime(ftX + 1, ftY + 2, 28, 16, 413, 12);
+  solid([ftX + 1, ftY + 2, 28, 16]);
+  LIGHTS.push([ftX + 16, ftY + 10, 10, .7, '140,220,240', 'flicker', 'fair'], [1410, gtY + 16, 12, .5, '200,120,255', 'flicker', 'fair'], [1333, 733, 10, .5, '255,140,200', 'blink', 'fair']);
 
   // ---- Blackrock Penitentiary on the island
   for (let y = 300; y < 460; y++) for (let X = 1010; X < 1130; X++) P(x, X, y, hash2(X, y, 162) > .5 ? '#4a4a44' : '#45453f');
