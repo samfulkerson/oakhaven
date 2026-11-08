@@ -553,7 +553,7 @@ const DATA = {
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
 if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
-if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
+if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
@@ -2347,8 +2347,12 @@ function startRun() {
   nextCrew = null;
   if (!members.length) { runWait = 900; return; }        // nobody is fit to go: wait and check again
   if (active.length && people.filter(e => e.d && fitToGo(e.d) && e.mode !== 'run').length - members.length < 1) { runWait = 600; return; }   // keep someone at the fence
+  launch(r, members); runIdx++;
+}
+function launch(r, members, dr) {
+  const d = POIS[r.dest];
   members.forEach((m, i) => { m.mode = 'run'; m.inside = false; m.hidden = false; if (m.y < 494) { m.x = HOME.door[0]; m.y = HOME.door[1] + 2; } m.path = d.path; m.wait = 0; m.wp = 0; m.delay = i * 16; m.off = OFFS[i % 4]; });
-  active.push({ r, d, members, timer: 0 }); runIdx++;
+  active.push({ r, d, members, timer: 0, dr });
   r.crew = members.map(m => m.d.name); r.status = 'leaving';
   const far = { Forest: ' Long walk through the woods.', Airport: ' All the way up to the airfield.', Port: ' Down to the docks.' }[d.area] || '';
   const with_ = members.length > 1 ? ` ${members.slice(1).map(m => m.d.name).join(' and ')} with me.` : '';
@@ -2356,7 +2360,28 @@ function startRun() {
   radio(`${r.crew[0]}: Heading to ${the}${nm}.${far}${with_} Lock the gate behind us.`);
   renderRuns();
 }
+// the day's small runs, planned by the nightly update: the same for everyone watching, and what they find is real
+const FIND_UNIT = { Food: 'food', Water: 'water', Ammo: 'rounds', Scrap: 'scrap', Medicine: 'medicine' };
+const DAY_RUNS = (DATA.day_runs && DATA.day_runs.day === DATA.day ? DATA.day_runs.runs : []).map(x => ({ ...x, at: +x.time.slice(0, 2) + +x.time.slice(3) / 60, state: 'pending' }));
+const foundToday = {};
+let dayRunsSeen = false;
+const foundTxt = () => Object.entries(foundToday).map(([k, v]) => `+${v} ${FIND_UNIT[k] || k}`).join(' · ');
+function tallyFind(x) { for (const [k, v] of Object.entries(x.find || {})) foundToday[k] = (foundToday[k] || 0) + v; x.state = 'done'; }
+function stepDayRuns() {
+  if (runWait > 1e8) return;          // the episode studio is playing a scripted day
+  const h = hourNow();
+  for (const x of DAY_RUNS) {
+    if (x.state !== 'pending' || h < x.at) continue;
+    if (h - x.at > 1) { tallyFind(x); continue; }     // already over before this page opened
+    const r = DATA.runs.find(q => q.dest === x.dest), crew = x.crew.map(n => byName[n]).filter(Boolean);
+    if (!r || !crew.length) { tallyFind(x); continue; }
+    if (active.some(a => a.r === r) || crew.some(e => e.mode === 'run' || e.mode === 'away')) continue;    // wait until they're free
+    x.state = 'out'; launch(r, crew, x);
+  }
+  if (!dayRunsSeen) { dayRunsSeen = true; const t = foundTxt(); if (t) radio(`${DATA.survivors[0].name}: Small runs so far today: ${t}.`); }
+}
 function stepRun() {
+  stepDayRuns();
   if (active.length < maxGroups() && --runWait <= 0) {
     if (runIdx >= DATA.runs.length) { DATA.runs.forEach(r => { if (!active.some(a => a.r === r)) r.status = 'queued'; }); runIdx = 0; }
     runWait = 260 + (rand() * 260 | 0); startRun();
@@ -2368,16 +2393,17 @@ function stepGroup(run) {
   const arrived = members.every(m => m.wp >= m.path.length);
   if (r.status === 'leaving' && arrived) {
     r.status = 'searching'; run.timer = 360; members.forEach(m => m.hidden = true);
-    radio(r.crew.length > 1 ? `${r.crew[1]}: We're in. I've got the door, ${r.crew[0]}.` : `${r.crew[0]}: Inside. Going quiet.`); renderRuns();
+    radio(run.dr && run.dr.scare ? run.dr.scare : r.crew.length > 1 ? `${r.crew[1]}: We're in. I've got the door, ${r.crew[0]}.` : `${r.crew[0]}: Inside. Going quiet.`); renderRuns();
   } else if (r.status === 'searching' && --run.timer <= 0) {
     r.status = 'returning';
     const back = d.path.slice().reverse().concat([[424, 502]]);
     members.forEach((m, i) => { m.hidden = false; m.path = back; m.wp = 0; m.delay = i * 16; });
-    radio(`${r.crew[0]}: Got it. ${r.loot}. Heading home.`); renderRuns();
+    radio(run.dr ? run.dr.line : `${r.crew[0]}: ` + pick(rand, ['Picked over. Nothing new here. Heading home.', 'Nothing worth carrying. Coming back.', 'Somebody beat us to it. Heading home.', 'Empty shelves. We tried.'])); renderRuns();
   } else if (r.status === 'returning' && arrived) {
     r.status = 'back';
     members.forEach(m => { m.mode = 'wander'; [m.tx, m.ty] = yardSpot(); m.wait = 30; if (m.d) m.d.runsDone++; });
     radio(solo(r) ? `${r.crew[0]}: Back behind the fence. Gate's chained.` : `Gate's shut. ${r.crew.slice(0, -1).join(', ')} and ${r.crew[r.crew.length - 1]} are back inside.`);
+    if (run.dr) { tallyFind(run.dr); const t = foundTxt(); if (t) radio(`Found today: ${t}.`); }
     active.splice(active.indexOf(run), 1); runWait = Math.max(runWait, 200); renderRuns();
   }
 }
@@ -3415,7 +3441,7 @@ window.oakEpisode = {
       st.className = 'state go'; st.textContent = active.length > 1 ? `${active.length} groups out` : (STATUS_LABEL[active[0].r.status] || 'Out');
       who.textContent = active.map(a => crewOf(a.r).join(' & ')).join(' · ');
       what.innerHTML = active.map(a => `${WHERE[a.r.status] || 'At'} <b>${esc(a.d.name)}</b>${active.length > 1 ? ` (${esc(crewOf(a.r).join(' & '))})` : ` · ${esc(a.d.area)}`}`).join('<br>');
-      $('fieldNote').textContent = active.length === 1 && DIFF[active[0].r.difficulty] ? DIFF[active[0].r.difficulty] + ' run' : '';
+      $('fieldNote').textContent = foundTxt() ? 'Found today: ' + foundTxt() : active.length === 1 && DIFF[active[0].r.difficulty] ? DIFF[active[0].r.difficulty] + ' run' : '';
     } else {
       const nx = DATA.runs[runIdx % Math.max(1, DATA.runs.length)];
       if (nx && !nextCrew) nextCrew = planCrew(nx);
@@ -3427,7 +3453,7 @@ window.oakEpisode = {
       if (dk > .5) { st.className = 'state night'; st.textContent = 'Barricaded'; what.innerHTML = `Inside the laundromat for the night. The dead are at the fence.${hurtTxt ? ' ' + hurtTxt : ''}`; }
       else if (!crew.length) { st.className = 'state night'; st.textContent = 'Resting'; what.innerHTML = hurtTxt ? `Nobody is fit to go out. ${hurtTxt}` : 'Resting at the laundromat.'; }
       else { st.className = 'state safe'; st.textContent = 'At camp'; what.innerHTML = `Getting ready. Next run: <b>${esc(POIS[nx.dest].name)}</b>${hurtTxt ? `. ${hurtTxt}` : ''}`; }
-      $('fieldNote').textContent = '';
+      $('fieldNote').textContent = foundTxt() ? 'Found today: ' + foundTxt() : '';
     }
   }
   tick(); setInterval(tick, 500);
