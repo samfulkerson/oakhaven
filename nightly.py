@@ -330,7 +330,8 @@ def horde_night(data, rng, day):
         strength *= 1.15                                  # the light draws them in
     fence, ammo = stock_get(data, "Barricades"), stock_get(data, "Ammo")
     defense = fence * .5 + min(ammo, 60) * .5 + len(fit) * 6 + roles["Sharpshooter"] * 8 + roles["Builder"] * 5 \
-        + sum(2 for s in fit if has_gear(s, "weapon")) + sum(1 for s in fit if has_gear(s, "armor"))
+        + sum(2 for s in fit if has_gear(s, "weapon")) + sum(1 for s in fit if has_gear(s, "armor")) \
+        + sum(f.get("defense", 0) for f in data.get("features", []))
     margin = round(defense - strength)
     def hurt(n, why):
         pool = [s for s in fit if s.get("status") != "injured"]
@@ -461,6 +462,27 @@ def settle_day_runs(data, day, rng):
     for k, v in total.items():
         data.setdefault("camp_bonus", []).append({"item": k, "amt": v, "why": "small runs"})
     return lines, total
+
+
+# ---------------------------------------------------------------- 3e. follower milestones that change the world
+# data.json milestones: [followers, text, effect, what it does]. Reaching one builds it for real.
+def milestone_unlocks(data, new_day):
+    hit, out = data.setdefault("milestones_hit", []), []
+    for m in data.get("milestones", []):
+        if len(m) < 3 or m[0] in hit or (data.get("followers") or 0) < m[0]:
+            continue
+        fx = m[2]
+        hit.append(m[0])
+        feats = data.setdefault("features", [])
+        if fx == "lookout":
+            feats.append({"id": "lookout", "name": "Lookout tower", "day": new_day, "defense": 6})
+        elif fx == "pumps":
+            data.setdefault("income", []).append({"item": "Fuel", "amt": 2, "why": "gas station pumps"})
+        elif fx == "wall":
+            feats.append({"id": "wall", "name": "Block wall", "day": new_day, "defense": 10})
+            data.setdefault("camp_bonus", []).append({"item": "Barricades", "amt": 25, "why": "the block wall"})
+        out.append(f"{m[0]} followers: {m[1]}. {m[3] if len(m) > 3 else ''}".strip())
+    return out
 
 
 # ---------------------------------------------------------------- 4. new survivors
@@ -860,6 +882,7 @@ def main():
 
     if ig:
         data["followers"] = ig["followers"]
+    unlocked = milestone_unlocks(data, new_day)
     data["day"] = new_day
     entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner, "tiebreak": tiebreak,
                                   "reel": ig["reel"]["permalink"] if ig and ig.get("reel") else None},
@@ -902,6 +925,8 @@ def main():
         lines.append(f"**Back from scouting:** {r_}")
     for n_ in story:
         lines.append(f"**Story:** {n_}")
+    for u_ in unlocked:
+        lines.append(f"**Milestone reached:** {u_} (shout out the new followers in the Reel!)")
     if data.get("broadcast", {}).get("day") == new_day:
         lines.append(f"**On the radio ({data['broadcast']['from']}):** {data['broadcast']['text']}")
     for n in power_news:
