@@ -555,7 +555,7 @@ const DATA = {
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
 if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
-if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
+if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
@@ -2105,6 +2105,18 @@ const JACKET = ['#5b6b3a', '#6e4a33', '#3f5466', '#7a3b33', '#55525a', '#8a7a4a'
 const PANTS = ['#2f3540', '#3a3328', '#47402f', '#2b2b2b', '#3b3f2c'];
 const ZSKIN = ['#7d9268', '#6f8a6a', '#8b9a74'];
 const ZCLOTH = ['#4a4a44', '#53473c', '#3c4652', '#4d3b36', '#5a6a7a', '#3a4a3a'];
+// kinds of dead, unlocked as the story reaches them (data.json "zombie_types"); walkers use the random looks above
+const ZT = {
+  runner: { c: { h: '#3a2a1c', g: '#a8a08a', r: '#c02a1a', x: '#7a1a12', j: '#3f5466', p: '#2b2b2b', b: '#231c16' }, g: ['...........', '...hhh.....', '..hhhhh....', '..hgggg....', '...rgrg....', '...gxg.....', '..jjjjggg..', '..jxjj.....', '..jjjj.....', '...ppp.....', '..p...p....', '.bb...bb...', '...........'] },
+  bloater: { c: { h: '#4a4a3a', g: '#9aa060', r: '#3a1010', o: '#d6cc6a', j: '#8a8a7a', p: '#3a3328', b: '#231c16' }, g: ['...........', '....h.h....', '...hgggh...', '...ggggg...', '...grgrg...', '..ggggggg..', '.gjjjjjjjg.', '.gjjojjojg.', '..jjjjjjj..', '...jjojj...', '...pp.pp...', '..bbb.bbb..', '...........'] },
+  soldier: { c: { m: '#4a5a34', n: '#2e3820', g: '#76886a', r: '#3a1010', v: '#3d4a2c', k: '#1c1c1c', p: '#4f5a3a', b: '#1a1712' }, g: ['...........', '...mmmmm...', '..mmmmmmm..', '...nggggg..', '....rgrg...', '....ggg....', '...vvvgggk.', '...vvvv..k.', '...vv.v..k.', '....ppp....', '....p.p....', '...bb.bb...', '...........'] },
+  patient: { c: { h: '#5f5a50', g: '#8b9a74', r: '#3a1010', w: '#e6e2d6', j: '#9ab8c8', q: '#6f8ea0' }, g: ['...........', '....h......', '...hgggh...', '...ggggg...', '....rgrg...', '....ggg....', '...wjjggg..', '...jjqjj...', '...jjjjj...', '...jjqjj...', '....g.g....', '....g.g....', '...........'] },
+  brute: { c: { y: '#d9b02a', g: '#6f8a6a', r: '#3a1010', o: '#e07a2a', w: '#d8d8c8', p: '#2f3540', b: '#231c16' }, g: ['...yyyyy...', '..yyyyyyy..', '..ggggggg..', '..ggggggg..', '...rgggr...', '...ggggg...', '.ggooooogg.', '.gowwwwwog.', '.g.ooooo.g.', '...ppppp...', '...pp.pp...', '..bbb.bbb..', '...........'] },
+  crawler: { c: { h: '#2a2520', g: '#7d9268', r: '#3a1010', j: '#53473c', p: '#2f3540', x: '#5a1a12' }, g: ['...........', '...........', '...........', '...........', '...........', '...........', '...........', '...........', '..hh.......', '.hggjjjj...', '.grgjjjjjx.', '.ggg.g.g.x.', '..g........'] },
+  screamer: { c: { h: '#8a8a80', g: '#8b9a74', r: '#c02a1a', O: '#0a0606', j: '#5a4a5a', p: '#3a3328', b: '#231c16' }, g: ['.g.......g.', '.g.hhhhh.g.', '.gh.ggg.hg.', '..hgrgrgh..', '..hgOOOgh..', '..h.gOg.h..', '..jjjjjjj..', '...jjjjj...', '...jj.jj...', '....ppp....', '....p.p....', '...bb.bb...', '...........'] },
+};
+const ZONES_FOR = { soldier: [[1330, 60, 240, 340], [1200, 292, 90, 26]], patient: [[500, 270, 130, 34]], crawler: [[270, 1070, 80, 50], [244, 1066, 220, 120]] };
+const zUnlocked = t => (DATA.zombie_types || ['walker']).includes(t);
 const OX = 2, OY = 1, GW = 11, GH = 13;
 
 // what a survivor carries shows on their sprite: { kind: 'weapon', name: 'Machete', icon: 'blade' | 'club' | 'axe' } or { kind: 'armor', ... }
@@ -2119,7 +2131,7 @@ function lookFor(seed, role, zombie) {
 }
 const CACHE = new Map();
 function sprite(look, pose) {
-  const key = [look.zombie ? 'z' : 'h', look.skin, look.hair, look.jacket, look.pants, look.role || '', look.axe ? 'axe' : '', look.long ? 'long' : '', look.weapon || '', look.armor ? 'arm' : '', pose].join('|');
+  const key = [look.zombie ? 'z' + (look.ztype || '') : 'h', look.skin, look.hair, look.jacket, look.pants, look.role || '', look.axe ? 'axe' : '', look.long ? 'long' : '', look.weapon || '', look.armor ? 'arm' : '', pose].join('|');
   if (CACHE.has(key)) return CACHE.get(key);
   const g = Array.from({ length: GH }, () => Array(GW).fill(null));
   const set = (c, r, col) => { const X = c + OX, Y = r + OY; if (X >= 0 && X < GW && Y >= 0 && Y < GH) g[Y][X] = col; };
@@ -2128,8 +2140,8 @@ function sprite(look, pose) {
   if (role === 'Medic' || role === 'Chef') jacket = '#d8d3c8';
   if (role === 'Scout') { jacket = '#4d5a34'; hair = '#4d5a34'; }
   const map = { h: hair, s: look.skin, e: '#1a1412', j: jacket, p: look.pants, b: '#231c16', g: look.skin, r: '#3a1010' };
-  const rows = (look.zombie ? ZOMB : HUMAN).concat(LEGS[pose] || LEGS.stand);
-  rows.forEach((row, r) => [...row].forEach((ch, c) => { if (ch !== '.') set(c, r, map[ch]); }));
+  if (look.ztype && ZT[look.ztype]) { const t = ZT[look.ztype]; t.g.forEach((row, y) => [...row].forEach((ch, X) => { if (ch !== '.') g[y][X] = t.c[ch]; })); }
+  else (look.zombie ? ZOMB : HUMAN).concat(LEGS[pose] || LEGS.stand).forEach((row, r) => [...row].forEach((ch, c) => { if (ch !== '.') set(c, r, map[ch]); }));
   if (look.long && !look.zombie) for (let r = 2; r <= 5; r++) { set(1, r, hair); set(6, r, hair); }
   if (role === 'Scavenger' || role === 'Radio Operator') { set(-1, 5, '#5a4128'); set(-1, 6, '#6b4f30'); set(-1, 7, '#4a3420'); }
   if (role === 'Radio Operator') { set(-1, 2, '#9a9a9a'); set(-1, 3, '#9a9a9a'); set(-1, 4, '#9a9a9a'); set(-1, 1, '#d84a3a'); }
@@ -2253,7 +2265,25 @@ function retarget(z) {
 function spawnZombie(brute, nearOk) {
   const z = { kind: 'z', id: zId++, wait: 0, state: 'roam', spd: brute ? .06 : .06 + rand() * .06, step: rand() * 10, flip: false, hp: brute ? 3 : 1, brute, dying: 0, bang: 60 + rand() * 60, stuck: 0,
     look: lookFor('z' + zId + (brute ? 'b' : ''), '', true) };
-  if (rand() < .22) {
+  // which kind: dock brutes once they're in the story; otherwise mostly walkers, with the unlocked kinds mixed in
+  let t = brute && zUnlocked('brute') ? 'brute' : null;
+  if (!brute) {
+    const roll = rand();
+    if (zUnlocked('runner') && roll < .12) t = 'runner';
+    else if (zUnlocked('bloater') && roll < .18) t = 'bloater';
+    else if (zUnlocked('screamer') && roll < .2) t = 'screamer';
+    else if (zUnlocked('soldier') && roll < .27) t = 'soldier';
+    else if (zUnlocked('patient') && roll < .34) t = 'patient';
+    else if (zUnlocked('crawler') && roll < .4) t = 'crawler';
+  }
+  if (t) { z.look.ztype = t; z.ztype = t; }
+  if (t === 'runner') z.spd = .14 + rand() * .06;
+  if (t === 'bloater' || t === 'crawler') z.spd = .035;
+  if (t === 'soldier') z.hp = 2;
+  if (ZONES_FOR[t]) {                                  // soldiers stay by the fort, patients by Mercy, crawlers in the corn
+    z.free = pick(rand, ZONES_FOR[t]);
+    for (let i = 0; i < 20; i++) { z.x = z.free[0] + rand() * z.free[2]; z.y = z.free[1] + rand() * z.free[3]; if (!inSolid(z.x, z.y)) break; }
+  } else if (rand() < .22) {
     z.free = pick(rand, FREE_ZONES);
     for (let i = 0; i < 20; i++) { z.x = z.free[0] + rand() * z.free[2]; z.y = z.free[1] + rand() * z.free[3]; if (!inSolid(z.x, z.y)) break; }
   } else {
