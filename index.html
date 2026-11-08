@@ -552,7 +552,7 @@ const DATA = {
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
 if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
-if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
+if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
@@ -2213,6 +2213,7 @@ for (let i = 0; i < visible; i++) {
   const [x, y] = yardSpot();
   const e = { kind: 's', d, x, y, tx: x, ty: y, wait: rand() * 200 | 0, step: 0, flip: rand() < .5, spd: .12 + rand() * .08, mode: 'wander', cool: 0, inside: false,
     look: d ? lookFor(d.ig, d.role) : lookFor('anon' + i, '') };
+  if (d && d.status === 'away') { e.mode = 'away'; e.hidden = true; }   // out scouting: not in the yard
   people.push(e); if (d) byName[d.name] = e;
 }
 
@@ -2322,7 +2323,7 @@ const crewOf = r => r.crew || [];
 const solo = r => crewOf(r).length === 1;
 const WALK = .55;
 // who can go out: alive, not injured, already moved in. Everyone takes turns; the ones who've been out least go first
-const fitToGo = d => !!d && d.status !== 'dead' && d.status !== 'injured' && (d.joined || 1) <= DATA.day;
+const fitToGo = d => !!d && d.status !== 'dead' && d.status !== 'injured' && d.status !== 'away' && (d.joined || 1) <= DATA.day;
 const CREW_N = { easy: 2, medium: 3, hard: 4, deadly: 5 };
 let nextCrew = null;
 function planCrew(r) {
@@ -2478,7 +2479,14 @@ const WORLD_TALK = [
 ];
 let talkN = 0;
 function campChatter() {
-  const here = DATA.survivors.filter(d => d.status !== 'dead' && (d.joined || 1) <= DATA.day && !(run && crewOf(run.r).includes(d.name)));
+  const here = DATA.survivors.filter(d => d.status !== 'dead' && d.status !== 'away' && (d.joined || 1) <= DATA.day && !(run && crewOf(run.r).includes(d.name)));
+  const away = DATA.survivors.filter(d => d.status === 'away' && (d.joined || 1) <= DATA.day);
+  const bc = DATA.broadcast && DATA.broadcast.day >= DATA.day - 1 ? DATA.broadcast : null;
+  if (bc && talkN % 4 === 1) { talkN++; radio(`88.1 · ${bc.from}: ${bc.text}`); return; }
+  if (away.length && talkN % 4 === 3) {
+    talkN++; const a = away[(rand() * away.length) | 0], t = a.away_talk && a.away_talk.length ? a.away_talk : ['Checking in. Still out here.'];
+    radio(`${a.name} (on the radio): ${t[(rand() * t.length) | 0]}`); return;
+  }
   if (!here.length) return;
   const siege = zombies.filter(z => z.state === 'siege' && !z.dying).length, z = zombies.filter(q => !q.dying).length;
   const hurt = here.filter(d => d.status === 'injured'), well = here.filter(d => d.status !== 'injured');
@@ -2911,6 +2919,7 @@ function whereOf(d) {
   if (d.status === 'dead') return `Buried in the churchyard`;
   const e = byName[d.name];
   if ((d.joined || 1) > DATA.day) return `Arrives on Day ${d.joined}`;
+  if (d.status === 'away') return `Out alone: ${d.away_note || 'scouting'}${d.away_until ? `. Back Day ${d.away_until}` : ''}`;
   const base = !e ? 'At the laundromat' : e.mode === 'run' ? `Out on the ${run ? run.d.name : ''} run` : e.inside ? 'Barricaded inside for the night' : 'In the laundromat yard';
   return base + (d.status === 'injured' ? ` · injured${d.injury ? ` (${d.injury})` : ''}, resting${d.injured_until ? ` until Day ${d.injured_until}` : ''}` : '');
 }
@@ -2922,7 +2931,7 @@ function cardOf(d) {
     : `${esc(d.role)} · arrived Day ${d.joined}`;
   return `<article class="card${dead ? ' fallen' : ''}${pickedName === d.name ? ' sel' : ''}" data-name="${esc(d.name)}" tabindex="0" aria-label="${esc(d.name)}: show on the map">
     <canvas width="${GW}" height="${GH}" data-portrait="${esc(d.name)}"${dead ? ' style="filter:grayscale(1) brightness(.7)"' : ''}></canvas><div>
-    <h3>${dead ? '\u2020 ' : ''}${esc(d.name)}${d.status === 'injured' ? '<span class="tag">Hurt</span>' : ''}</h3><div class="ig">@${esc(d.ig)}</div><p>${esc(d.bio)}</p>
+    <h3>${dead ? '\u2020 ' : ''}${esc(d.name)}${d.status === 'injured' ? '<span class="tag">Hurt</span>' : d.status === 'away' ? '<span class="tag">Away</span>' : ''}</h3><div class="ig">@${esc(d.ig)}</div><p>${esc(d.bio)}</p>
     <div class="meta">${meta}</div>
     <div class="now"><b>Right now</b><span class="nowtxt">${esc(whereOf(d))}</span></div>${storyOf(d)}${shareBtn(d)}</div></article>`;
 }
@@ -2966,7 +2975,7 @@ function showFallen(name) {
 function select(name, jump = true) {
   const e = byName[name]; if (!e) { showFallen(name); return; }
   selected = e; const d = e.d;
-  if (jump) { follow = true; setZoom(Math.max(zi, 4), e.inside ? HOME_CENTER[0] : e.x, e.inside ? HOME_CENTER[1] : e.y); }
+  if (jump && !e.hidden) { follow = true; setZoom(Math.max(zi, 4), e.inside ? HOME_CENTER[0] : e.x, e.inside ? HOME_CENTER[1] : e.y); }
   pickedName = d.name; $('card').hidden = true;
   renderRoster($('q').value);
 }
@@ -3321,7 +3330,9 @@ window.oakEpisode = {
     const h = hourNow(), dk = darkness(h);
     $('clockPill').textContent = `${clockText()} · ${dk > .5 ? 'Night' : dk > 0 ? 'Dusk' : 'Day'}`;
     const z = zombies.filter(q => !q.dying), siege = z.filter(q => q.state === 'siege').length;
-    $('tHorde').textContent = z.length; $('tHordeS').textContent = siege ? `${siege} at the laundromat fence` : 'Roaming the streets';
+    $('tHorde').textContent = z.length;
+    const hd = DATA.horde, left = hd ? hd.day - DATA.day : -1, last = hd && hd.last && hd.last.day === DATA.day - 1 ? hd.last : null;
+    $('tHordeS').textContent = left === 0 ? 'THE HORDE ARRIVES TONIGHT' : last ? `Last night the fence ${last.outcome}` : left > 0 ? `Horde in ${left} day${left === 1 ? '' : 's'}` : siege ? `${siege} at the laundromat fence` : 'Roaming the streets';
     const st = $('fieldState'), who = $('fieldWho'), what = $('fieldWhat');
     if (run) {
       const r = run.r, d = run.d;
@@ -3334,7 +3345,8 @@ window.oakEpisode = {
       if (nx && !nextCrew) nextCrew = planCrew(nx);
       const crew = (nextCrew || []).map(m => m.d.name);
       const hurt = DATA.survivors.filter(s => s.status === 'injured' && (s.joined || 1) <= DATA.day);
-      const hurtTxt = hurt.map(s => `${esc(s.name)} is laid up${s.injury ? ` with ${esc(s.injury)}` : ''}${s.injured_until ? ` until Day ${s.injured_until}` : ''}.`).join(' ');
+      const hurtTxt = [...hurt.map(s => `${esc(s.name)} is laid up${s.injury ? ` with ${esc(s.injury)}` : ''}${s.injured_until ? ` until Day ${s.injured_until}` : ''}.`),
+        ...DATA.survivors.filter(s => s.status === 'away').map(s => `${esc(s.name)} is out alone, ${esc(s.away_note || 'scouting')}${s.away_until ? `, back Day ${s.away_until}` : ''}.`)].join(' ');
       who.textContent = crew.length ? crew.join(', ') : (hurt.length ? hurt.map(s => s.name).join(', ') : (lead ? lead.name : 'Sam'));
       if (dk > .5) { st.className = 'state night'; st.textContent = 'Barricaded'; what.innerHTML = `Inside the laundromat for the night. The dead are at the fence.${hurtTxt ? ' ' + hurtTxt : ''}`; }
       else if (!crew.length) { st.className = 'state night'; st.textContent = 'Resting'; what.innerHTML = hurtTxt ? `Nobody is fit to go out. ${hurtTxt}` : 'Resting at the laundromat.'; }
