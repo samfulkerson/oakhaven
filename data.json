@@ -910,19 +910,25 @@
   ],
   [
    5,
-   "Fix the laundromat generator: the first electric light in the city"
+   "Five survivors behind the fence"
   ],
   [
    25,
-   "A lookout tower on the laundromat roof"
+   "A lookout tower on the laundromat roof",
+   "lookout",
+   "Spots hordes sooner: +6 horde defense"
   ],
   [
    50,
-   "Get the gas station pumps running"
+   "Get the gas station pumps running",
+   "pumps",
+   "+2 fuel every night, no run needed"
   ],
   [
    100,
-   "Wall off the whole block"
+   "Wall off the whole block",
+   "wall",
+   "Fence +25% now, +10 horde defense for good"
   ],
   [
    150,
@@ -1156,5 +1162,9 @@
  ],
  "zombie_types": [
   "walker"
+ ],
+ "milestones_hit": [
+  2,
+  5
  ]
 }
