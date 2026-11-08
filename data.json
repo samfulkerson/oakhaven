@@ -1,34 +1,35 @@
 {
  "handle": "@surviveoakhaven",
- "day": 4,
- "followers": 23,
+ "day": 3,
+ "followers": 10,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 4. Water lasts two days, and Millbrook warns thousands are moving south toward the bay. Where do we go?",
+  "q": "Day 3. Water's down to three days and the fence is at 76%. Where do we send them?",
   "opts": [
    [
-    "RANGER",
+    "PIER",
     0,
-    "Medium risk, and it's never been searched. Anything could still be inside.",
-    "ranger",
-    "🌲"
+    "Medium risk and never searched. Harder run, and nobody knows what's inside.",
+    "port",
+    "⚓"
    ],
    [
-    "GAS",
+    "DINER",
     0,
-    "Easy run, and the Laundromat generator needs 10 L of gasoline from here.",
-    "gas",
-    "⛽"
+    "Easy run, never searched. Low risk, but no promises on what's left.",
+    "diner",
+    "🍳"
    ],
    [
-    "HOSPITAL",
+    "HARDWARE",
     0,
-    "Hard, multi-night: clear the ground floor, then reach the basement.",
-    "hospital",
-    "🏥"
+    "Easy run. The Laundromat generator needs a carburetor from here.",
+    "hardware",
+    "🔨"
    ]
   ],
-  "how": "Comment RANGER, GAS or HOSPITAL (or its emoji) on the Day 4 Reel. One vote per account, your last comment counts."
+  "how": "Comment PIER, DINER or HARDWARE (or its emoji) on the Day 3 Reel. One vote per account, your last comment counts.",
+  "tiebreak": "HARDWARE"
  },
  "survivors": [
   {
@@ -38,7 +39,7 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 2
+   "outings": 1
   },
   {
    "name": "Jaylozy",
@@ -53,17 +54,7 @@
    "role": "Scout",
    "bio": "Tanny is a professional hiker who knows every trail, making them a natural Scout.",
    "joined": 2,
-   "outings": 1,
-   "status": "away",
-   "away_until": 5,
-   "away_note": "scouting the north road toward Millbrook",
-   "away_back": "From the overpass he saw them: a column of the dead filling the highway, heading for the bay. Three days out, maybe less.",
-   "away_talk": [
-    "Tanny on the north road. Quiet so far.",
-    "Overpass at mile 12. Smoke on the horizon.",
-    "Seth, you copy? I can hear them before I see them.",
-    "Holy... there are so many. Heading back."
-   ]
+   "outings": 1
   },
   {
    "name": "Seth",
@@ -85,34 +76,6 @@
    "role": "Mechanic",
    "bio": "Adam showed up at the gate with a toolbox and grease under his nails. First thing he asked was where the generator is.",
    "joined": 3
-  },
-  {
-   "name": "Asa",
-   "ig": "asa_von_carstein",
-   "role": "Guard",
-   "bio": "Asa is a doomsday prepper who came armed with an axe, a full suit of armor, and a firm belief that the apocalypse was always coming.",
-   "joined": 4
-  },
-  {
-   "name": "Gabe",
-   "ig": "camp_counselor_dlc",
-   "role": "Medic",
-   "bio": "Gabe is a doctor who is ready to patch up the survivors, though he still hasn't figured out how to stop the zombies from bleeding on his clean floors.",
-   "joined": 4
-  },
-  {
-   "name": "Mateen",
-   "ig": "mateenegml",
-   "role": "Farmer",
-   "bio": "Mateen is a farmer and gardener who will keep everyone fed, provided the zombies don't trample the tomatoes first.",
-   "joined": 4
-  },
-  {
-   "name": "Jeremy",
-   "ig": "intrepid11",
-   "role": "Guard",
-   "bio": "Jeremy is a stranded soldier who has been waiting for orders for way too long and is ready to finally take charge of the perimeter.",
-   "joined": 4
   }
  ],
  "runs": [
@@ -133,8 +96,7 @@
     "Sam"
    ],
    "loot": "Canned peaches and a tin of coffee from the walk-in",
-   "place": "Rosie’s Diner",
-   "done_day": 3
+   "place": "Rosie’s Diner"
   },
   {
    "dest": "gas",
@@ -560,7 +522,7 @@
     394,
     497
    ],
-   "status": "repairing",
+   "status": "found",
    "clue": "Sam dragged it home from the auto shop. The carburetor is shot.",
    "crew": "1 mechanic",
    "fuel": "10 L gasoline",
@@ -576,13 +538,10 @@
     },
     {
      "label": "A mechanic to put it back together",
-     "role": "Mechanic",
-     "done": true,
-     "day": 3
+     "role": "Mechanic"
     }
    ],
-   "burn": 2,
-   "progress": 33
+   "burn": 2
   },
   {
    "id": "gas",
@@ -622,7 +581,7 @@
     592,
     392
    ],
-   "status": "found",
+   "status": "rumor",
    "clue": "Rosie ran the walk-in freezer off her own generator. Something in there still hums at night.",
    "crew": "1 mechanic + 1 cook",
    "fuel": "15 L gasoline",
@@ -774,13 +733,13 @@
  "stock": [
   [
    "Food",
-   42,
+   27,
    200,
    "rations"
   ],
   [
    "Water",
-   20,
+   19,
    200,
    "rations"
   ],
@@ -792,7 +751,7 @@
   ],
   [
    "Ammo",
-   8,
+   10,
    500,
    "rds"
   ],
@@ -810,7 +769,7 @@
   ],
   [
    "Barricades",
-   72,
+   76,
    100,
    "%"
   ]
@@ -937,84 +896,50 @@
     "Barricades": -4
    },
    "camp": []
-  },
-  {
-   "day": 3,
-   "vote": {
-    "question": "Day 3. Water's down to three days and the fence is at 76%. Where do we send them?",
-    "results": {
-     "HARDWARE": 2,
-     "PIER": 2
-    },
-    "winner": null,
-    "reel": "https://www.instagram.com/reel/Dfc2uqXSZDS/"
-   },
-   "outings": [
-    {
-     "target": "Rosie’s Diner",
-     "key": "diner",
-     "first": true,
-     "kind": "run",
-     "difficulty": "easy",
-     "squad": [
-      "Sam"
-     ],
-     "results": [
-      {
-       "name": "Sam",
-       "ig": "surviveoakhaven",
-       "outcome": "ok"
-      }
-     ],
-     "mission_status": null
-    }
-   ],
-   "healed": [],
-   "joined": [
-    "Asa",
-    "Gabe",
-    "Mateen",
-    "Jeremy"
-   ],
-   "waiting": 0,
-   "power": [
-    "Laundromat generator: A mechanic to put it back together ✓",
-    "Found the Rosie’s freezer generator during the diner run."
-   ],
-   "stock": {
-    "Food": 15,
-    "Ammo": -2,
-    "Water": 1,
-    "Barricades": -4
-   },
-   "camp": [
-    "Tanny dried the meat from the market run into jerky for everyone. Food that won't spoil."
-   ],
-   "horde": null,
-   "returned": [],
-   "story": [
-    "Tanny left alone: scouting the north road toward Millbrook. Back Day 5."
-   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": 15,
   "Ammo": -2,
-  "Water": 1,
+  "Food": 17,
+  "Water": 4,
   "Barricades": -4
  },
+ "camp_bonus": [
+  {
+   "item": "Food",
+   "amt": 8,
+   "why": "Tanny's jerky",
+   "note": "Tanny dried the meat from the market run into jerky for everyone. Food that won't spoil."
+  }
+ ],
  "schedule": [
+  {
+   "on_day": 4,
+   "do": "broadcast",
+   "from": "Millbrook, 60 miles north",
+   "text": "...this is Millbrook... they came through the valley three nights ago... thousands of them... moving south... toward the bay..."
+  },
+  {
+   "on_day": 4,
+   "do": "scout",
+   "who": "Tanny",
+   "role": "Scout",
+   "until": 5,
+   "note": "scouting the north road toward Millbrook",
+   "back": "From the overpass he saw them: a column of the dead filling the highway, heading for the bay. Three days out, maybe less.",
+   "talk": [
+    "Tanny on the north road. Quiet so far.",
+    "Overpass at mile 12. Smoke on the horizon.",
+    "Seth, you copy? I can hear them before I see them.",
+    "Holy... there are so many. Heading back."
+   ]
+  },
   {
    "on_day": 5,
    "do": "horde_warning",
    "horde_day": 7,
    "note": "Tanny's report changes everything: the horde reaches the laundromat on Day 7. Two days to shore up the fence and find ammo."
   }
- ],
- "broadcast": {
-  "day": 4,
-  "from": "Millbrook, 60 miles north",
-  "text": "...this is Millbrook... they came through the valley three nights ago... thousands of them... moving south... toward the bay..."
- }
+ ]
 }
