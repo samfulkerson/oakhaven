@@ -147,7 +147,7 @@ def place_name(kind, item):
 
 
 def pick_squad(data, kind, item, rng):
-    living = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured") and s.get("joined", 1) <= data["day"]]
+    living = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= data["day"]]
     by_name = {s["name"]: s for s in living}
     squad = [by_name[n] for n in item.get("squad", []) if n in by_name]
     want = SQUAD_SIZE.get(item.get("difficulty", "medium"), 2)
@@ -245,6 +245,108 @@ def heal(data, new_day):
                 s.pop(k, None)
             healed.append(s["name"])
     return healed
+
+
+# ---------------------------------------------------------------- 3b. story beats planned ahead
+# data.json "schedule" holds beats that fire on a given day, e.g.
+#   {"on_day": 4, "do": "scout", "who": "Tanny", "role": "Scout", "until": 5, "note": "...", "back": "...", "talk": ["..."]}
+#   {"on_day": 5, "do": "horde_warning", "horde_day": 7, "note": "..."}
+#   {"on_day": 4, "do": "broadcast", "text": "..."}            (a message on the radio for the site to show)
+def run_schedule(data, new_day, rng):
+    news, keep = [], []
+    for ev in data.get("schedule", []):
+        if ev.get("on_day", 0) > new_day:
+            keep.append(ev)
+            continue
+        do = ev.get("do")
+        if ev.get("broadcast"):
+            data["broadcast"] = {"day": new_day, "from": ev.get("from", "Unknown"), "text": ev["broadcast"]}
+        if do == "broadcast":
+            data["broadcast"] = {"day": new_day, "from": ev.get("from", "Unknown"), "text": ev.get("text", "")}
+        elif do == "scout":
+            fit = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= new_day]
+            s = next((s for s in fit if s["name"] == ev.get("who")), None) \
+                or next((s for s in fit if s.get("role") == ev.get("role", "Scout") and not s.get("protected")), None) \
+                or next((s for s in sorted(fit, key=lambda s: s.get("outings", 0)) if not s.get("protected")), None)
+            if not s:
+                news.append("Nobody was fit to go scouting.")
+                continue
+            s.update(status="away", away_until=ev.get("until", new_day + 1), away_note=ev.get("note", "Out scouting"),
+                     away_back=ev.get("back", ""), away_talk=ev.get("talk", []))
+            news.append(f"{s['name']} left alone: {s['away_note']}. Back Day {s['away_until']}.")
+        elif do == "horde_warning":
+            if not data.get("horde"):
+                data["horde"] = {"day": ev.get("horde_day", new_day + 2), "week": 1}
+            news.append(ev.get("note") or f"A horde is coming. It reaches Oakhaven on Day {data['horde']['day']}.")
+    data["schedule"] = keep
+    return news
+
+
+def come_home(data, new_day):
+    back = []
+    for s in data["survivors"]:
+        if s.get("status") == "away" and s.get("away_until", 0) <= new_day:
+            back.append(f"{s['name']} made it back. {s.get('away_back', '')}".strip())
+            for k in ("status", "away_until", "away_note", "away_back", "away_talk"):
+                s.pop(k, None)
+    return back
+
+
+# ---------------------------------------------------------------- 3c. horde nights
+# Once a week the dead come all at once. The fence, the ammo and the people standing at the wire decide how it goes.
+def horde_night(data, rng, day):
+    h = data.get("horde")
+    if not h or h.get("day") != day:
+        return None
+    home = [s for s in data["survivors"] if s.get("status") not in ("dead", "away") and s.get("joined", 1) <= day]
+    fit = [s for s in home if s.get("status") != "injured"]
+    roles = Counter(s.get("role") for s in fit)
+    lit = any(g.get("status") == "running" and not g.get("dry") for g in data.get("power", []))
+    strength = 70 + 15 * (h.get("week", 1) - 1) + min(data.get("followers") or 0, 80) * 0.5 + rng.uniform(-10, 10)
+    if lit:
+        strength *= 1.15                                  # the light draws them in
+    fence, ammo = stock_get(data, "Barricades"), stock_get(data, "Ammo")
+    defense = fence * .5 + min(ammo, 60) * .5 + len(fit) * 6 + roles["Sharpshooter"] * 8 + roles["Builder"] * 5
+    margin = round(defense - strength)
+    def hurt(n, why):
+        pool = [s for s in fit if s.get("status") != "injured"]
+        rng.shuffle(pool)
+        out = []
+        for s in pool[:n]:
+            s.update(status="injured", injury=why, injured_until=day + 1 + rng.randint(2, 3))
+            out.append(f"{s['name']} ({why}, out until Day {s['injured_until']})")
+        return out
+    def spend(name, amt):
+        r = stock_row(data, name)
+        if r:
+            r[1] = max(0, r[1] - amt)
+    hurt_list, dead = [], []
+    if margin >= 15:
+        outcome, fence_hit, ammo_hit = "held", 15, 20
+    elif margin >= 0:
+        outcome, fence_hit, ammo_hit = "barely held", 25, 30
+        if rng.random() < .5:
+            hurt_list = hurt(1, "clawed at the fence")
+    elif margin >= -20:
+        outcome, fence_hit, ammo_hit = "breached", 40, 35
+        hurt_list = hurt(rng.randint(1, 2), "bitten back from the breach")
+    else:
+        outcome, fence_hit, ammo_hit = "overrun", fence - 20, 40
+        victims = [s for s in fit if not s.get("protected")]
+        if len(home) > 2 and victims:                      # never wipes out the camp
+            s = rng.choice(victims)
+            s.update(status="dead", died_day=day, died_at="the laundromat fence", cause="Pulled over the fence when the horde broke through.")
+            dead.append(s["name"])
+        hurt_list = hurt(2, "hurt holding the laundromat")
+    spend("Barricades", max(0, fence_hit)); spend("Ammo", ammo_hit)
+    if stock_get(data, "Barricades") < 10:
+        stock_row(data, "Barricades")[1] = 10
+    res = {"day": day, "week": h.get("week", 1), "outcome": outcome, "strength": round(strength), "defense": round(defense),
+           "defenders": [s["name"] for s in fit], "hurt": hurt_list, "dead": dead, "lit": lit,
+           "fence": stock_get(data, "Barricades"), "ammo": stock_get(data, "Ammo")}
+    h["last"] = res
+    h["day"], h["week"] = day + 7, h.get("week", 1) + 1
+    return res
 
 
 # ---------------------------------------------------------------- 4. new survivors
@@ -373,7 +475,7 @@ def keep_stockpile(data, outings, rng, new_day):
     if short:
         notes.append("The camp went to bed hungry." if data["hungry_days"] < 2 else f"Day {data['hungry_days']} without enough to eat.")
     if data["hungry_days"] >= 2:
-        weak = [s for s in present if not s.get("protected") and s.get("status") != "injured"]
+        weak = [s for s in present if not s.get("protected") and s.get("status") not in ("injured", "away")]
         if weak:
             s = rng.choice(weak)
             s.update(status="injured", injury="collapsed from hunger", injured_until=new_day + 2)
@@ -400,14 +502,14 @@ def keep_stockpile(data, outings, rng, new_day):
 
     # the dead wear the fence down; builders and scrap patch it up
     add("Barricades", -FENCE_WEAR, "the dead at the fence")
-    builders = [s for s in present if s.get("role") == "Builder" and s.get("status") != "injured"]
+    builders = [s for s in present if s.get("role") == "Builder" and s.get("status") not in ("injured", "away")]
     for b in builders:
         if stock_get(data, "Scrap") >= 3 and stock_get(data, "Barricades") < 100:
             add("Scrap", -3, "fence repairs"); add("Barricades", 5, f"{b['name']} rebuilt a section")
     if stock_get(data, "Barricades") < 70 and stock_get(data, "Scrap") >= 4:
         add("Scrap", -4, "fence repairs"); add("Barricades", 4, "patched with scrap")
     if stock_get(data, "Barricades") <= 0:
-        victims = [s for s in present if not s.get("protected") and s.get("status") != "dead"]
+        victims = [s for s in present if not s.get("protected") and s.get("status") not in ("dead", "away")]
         if victims:
             s = rng.choice(victims)
             s.update(status="injured", injury="caught when the fence gave way", injured_until=new_day + 3)
@@ -442,7 +544,7 @@ def power_progress(data, outings, new_day):
             if n.get("done"):
                 continue
             hit = (n.get("dest") and n["dest"] in came_back) \
-                or (n.get("role") and n["role"] not in busy and any(s["role"] == n["role"] and s.get("status") != "injured" for s in living)) \
+                or (n.get("role") and n["role"] not in busy and any(s["role"] == n["role"] and s.get("status") not in ("injured", "away") for s in living)) \
                 or (n.get("people") and len(living) >= n["people"])
             if hit and n.get("role"):
                 busy.add(n["role"])
@@ -494,7 +596,7 @@ Reply with only JSON like {{"q": "...", "desc": {{"WORD": "..."}}}}."""
 
 
 def vote_options(data, new_day, rng):
-    healthy = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured") and s.get("joined", 1) <= new_day]
+    healthy = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= new_day]
     n = len(healthy)
     ok = lambda diff: n >= UNLOCK.get(diff, 2)
     runs = [r for r in data.get("runs", []) if ok(r.get("difficulty", "easy"))]
@@ -580,7 +682,10 @@ def main():
     outings = todays_outing(data, keys.get(winner, winner), rng)
     new_day = day + 1
     ledger, stock_notes = keep_stockpile(data, outings, rng, new_day)
+    horde = horde_night(data, rng, day)
     healed = heal(data, new_day)
+    returned = come_home(data, new_day)
+    story = run_schedule(data, new_day, rng)
 
     living_ig = {s.get("ig", "").lower() for s in data["survivors"] if s.get("status") != "dead"}
     living_ig |= {str(p.get("ig", "")).lower() for p in data.get("waitlist", [])}
@@ -603,7 +708,8 @@ def main():
     entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner,
                                   "reel": ig["reel"]["permalink"] if ig and ig.get("reel") else None},
              "outings": outings, "healed": healed, "joined": [s["name"] for s in added], "waiting": len(data.get("waitlist", [])), "power": power_news,
-             "stock": data.get("stock_change", {}), "camp": stock_notes}
+             "stock": data.get("stock_change", {}), "camp": stock_notes,
+             "horde": horde, "returned": returned, "story": story}
     data.setdefault("log", []).append(entry)
     data["log"] = data["log"][-60:]                      # keep the file small: the last two months
 
@@ -623,8 +729,21 @@ def main():
             lines.append(f"- {o['note']} The camp stayed behind the fence.")
         elif all(r["outcome"] == "ok" for r in o["results"]):
             lines.append("- Everyone came back in one piece.")
+    if horde:
+        lines.append(f"**Horde night (week {horde['week']}): the fence {horde['outcome'].upper()}.** {horde['strength']} of them against a defense of {horde['defense']}"
+                     + (" (the generator light drew more in)" if horde["lit"] else "") + f". Defenders: {', '.join(horde['defenders']) or 'nobody'}.")
+        for d_ in horde["dead"]:
+            lines.append(f"- † **{d_}** was pulled over the fence.")
+        for h_ in horde["hurt"]:
+            lines.append(f"- Hurt: {h_}")
     if healed:
         lines.append(f"**Back on their feet:** {', '.join(healed)}")
+    for r_ in returned:
+        lines.append(f"**Back from scouting:** {r_}")
+    for n_ in story:
+        lines.append(f"**Story:** {n_}")
+    if data.get("broadcast", {}).get("day") == new_day:
+        lines.append(f"**On the radio ({data['broadcast']['from']}):** {data['broadcast']['text']}")
     for n in power_news:
         lines.append(f"**Power:** {n}")
     if ledger:
@@ -636,6 +755,10 @@ def main():
     lines.append(f"**Supplies left:** food for {fd} day{'s' if fd != 1 else ''}, water for {wd} day{'s' if wd != 1 else ''}, {stock_get(data, 'Ammo')} rounds, fence at {stock_get(data, 'Barricades')}%")
     for n in stock_notes:
         lines.append(f"**Camp:** {n}")
+    if data.get("horde"):
+        left = data["horde"]["day"] - new_day
+        lines.append(f"**Horde:** " + ("arrives TONIGHT (Day %d). Fence %d%%, %d rounds." % (data["horde"]["day"], stock_get(data, "Barricades"), stock_get(data, "Ammo"))
+                                       if left == 0 else f"reaches the fence in {left} day{'s' if left != 1 else ''} (Day {data['horde']['day']})."))
     lines.append(f"**New survivors ({len(added)}):** " + (", ".join(f"{s['name']} the {s['role']} (@{s['ig']})" for s in added) or "none"))
     if data.get("waitlist"):
         lines.append(f"**Still waiting to get in:** {len(data['waitlist'])}")
