@@ -91,7 +91,10 @@
    "ig": "asa_von_carstein",
    "role": "Guard",
    "bio": "Asa is a doomsday prepper who swings an axe at the dead and suits up in full armor, because the apocalypse could use a little extra clank.",
-   "joined": 4
+   "joined": 4,
+   "look": {
+    "skin": "#f1c9a5"
+   }
   },
   {
    "name": "Gabe",
