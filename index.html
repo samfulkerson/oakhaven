@@ -58,8 +58,8 @@ button:focus-visible,input:focus-visible,a:focus-visible,.surv:focus-visible,.pl
 .story li.dead span{color:var(--fg)}
 .card .now{margin-top:8px;font-size:13.5px}
 .card .now b{font-family:var(--f-head);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:var(--muted);margin-right:6px}
-.card .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.card .acts button{font-family:var(--f-head);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:var(--r);padding:6px 10px;cursor:pointer}
+.card .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:12px}
+.card .acts button{font-family:var(--f-head);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:var(--r);padding:6px 10px;cursor:pointer;white-space:nowrap}
 .card .acts button:hover{background:var(--accent-soft)}
 .notfound{padding:14px;background:var(--panel-2);border:1px dashed var(--line-2);border-radius:var(--r);font-size:14px}
 .notfound a{color:var(--accent)}
@@ -243,7 +243,8 @@ canvas#world.dragging{cursor:grabbing}
 .card .ig{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
 .card p{margin:4px 0 0;font-size:14px}
 .card .meta{font-size:12.5px;color:var(--muted);margin-top:6px}
-.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px;max-height:900px;overflow:auto;align-items:start}
+.card>div{display:flex;flex-direction:column;align-self:stretch;min-width:0}
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px;max-height:900px;overflow:auto;align-items:stretch}
 .surv{font-size:13px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;color:var(--fg);padding:4px 11px;cursor:pointer;display:flex;gap:7px;align-items:baseline}
 .surv:hover{border-color:var(--line-2);background:var(--panel-3)}
 .surv span{font-family:var(--f-head);font-weight:600;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
@@ -2966,9 +2967,9 @@ function storyOf(d) {
     if ((e.healed || []).includes(d.name)) out.push(['', e.day + 1, 'Back on their feet.']);
   }
   out.push(['', d.joined, d.joined <= 1 ? 'The last man in Oakhaven.' : 'Moved into the laundromat.']);
-  return `<ul class="story">${out.slice(0, 8).map(([c, day, t]) => `<li class="${c}"><b>Day ${day}</b><span>${esc(t)}</span></li>`).join('')}</ul>`;
+  return `<ul class="story">${out.slice(0, 3).map(([c, day, t]) => `<li class="${c}"><b>Day ${day}</b><span>${esc(t)}</span></li>`).join('')}</ul>`;
 }
-function shareBtn(d) { return `<div class="acts"><button type="button" data-share="${esc(d.ig || d.name)}">Copy link to ${esc(d.name)}</button></div>`; }
+function shareBtn(d) { return `<div class="acts"><button type="button" data-share="${esc(d.ig || d.name)}" aria-label="Copy link to ${esc(d.name)}">Copy link</button></div>`; }
 function showFallen(name) {
   const d = DATA.survivors.find(s => s.name === name && s.status === 'dead'); if (!d) return false;
   const g = GRAVES[name] || [420, 292]; selected = null; follow = false; setZoom(Math.max(zi, 5), g[0], g[1] - 6);
