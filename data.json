@@ -911,5 +911,34 @@
    "why": "Tanny's jerky",
    "note": "Tanny dried the meat from the market run into jerky for everyone. Food that won't spoil."
   }
+ ],
+ "schedule": [
+  {
+   "on_day": 4,
+   "do": "broadcast",
+   "from": "Millbrook, 60 miles north",
+   "text": "...this is Millbrook... they came through the valley three nights ago... thousands of them... moving south... toward the bay..."
+  },
+  {
+   "on_day": 4,
+   "do": "scout",
+   "who": "Tanny",
+   "role": "Scout",
+   "until": 5,
+   "note": "scouting the north road toward Millbrook",
+   "back": "From the overpass she saw them: a column of the dead filling the highway, heading for the bay. Three days out, maybe less.",
+   "talk": [
+    "Tanny on the north road. Quiet so far.",
+    "Overpass at mile 12. Smoke on the horizon.",
+    "Seth, you copy? I can hear them before I see them.",
+    "Holy... there are so many. Heading back."
+   ]
+  },
+  {
+   "on_day": 5,
+   "do": "horde_warning",
+   "horde_day": 7,
+   "note": "Tanny's report changes everything: the horde reaches the laundromat on Day 7. Two days to shore up the fence and find ammo."
+  }
  ]
 }
