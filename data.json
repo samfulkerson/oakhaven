@@ -120,7 +120,11 @@
    "role": "Chef",
    "bio": "Victoria walked in alone from Hollow Creek with a cleaver on her belt. She can make a feast out of a can of beans, and she says the farm out there could feed everyone.",
    "joined": 4,
-   "story": true
+   "story": true,
+   "look": {
+    "hair": "#3b2416",
+    "long": 1
+   }
   }
  ],
  "runs": [
