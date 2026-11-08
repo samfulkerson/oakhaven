@@ -350,6 +350,12 @@ def keep_stockpile(data, outings, rng, new_day):
         return r[1] - before
     present = [s for s in data["survivors"] if s.get("status") != "dead" and s.get("joined", 1) <= data["day"]]
 
+    # one-off story bonuses set by hand in data.json, e.g. {"item": "Food", "amt": 8, "why": "Tanny's jerky", "note": "..."}
+    for b in data.pop("camp_bonus", []):
+        add(b["item"], b["amt"], b.get("why", "bonus"))
+        if b.get("note"):
+            notes.append(b["note"])
+
     # loot and ammo from today's outings
     for o in outings:
         if not o.get("squad"):
