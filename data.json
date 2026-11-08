@@ -899,7 +899,7 @@
   ],
   [
    25,
-   "A rooftop garden on the laundromat"
+   "A lookout tower on the laundromat roof"
   ],
   [
    50,
@@ -1103,5 +1103,31 @@
   "day": 4,
   "from": "Millbrook, 60 miles north",
   "text": "...this is Millbrook... they came through the valley three nights ago... thousands of them... moving south... toward the bay..."
- }
+ },
+ "features": [
+  {
+   "id": "roof_garden",
+   "name": "Roof garden",
+   "by": "Mateen",
+   "day": 4,
+   "note": "Mateen found scrap wood behind the laundromat and built a garden box on the roof. First greens in a few days."
+  }
+ ],
+ "income": [
+  {
+   "item": "Food",
+   "amt": 2,
+   "why": "Mateen's roof garden",
+   "from_day": 7
+  }
+ ],
+ "highlights": [
+  {
+   "day": 4,
+   "who": "Mateen",
+   "kind": "build",
+   "title": "Roof garden",
+   "text": "Built a garden box on the laundromat roof from scrap wood. +2 food a night once it grows (from Day 7)."
+  }
+ ]
 }
