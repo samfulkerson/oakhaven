@@ -903,5 +903,13 @@
   "Food": 17,
   "Water": 4,
   "Barricades": -4
- }
+ },
+ "camp_bonus": [
+  {
+   "item": "Food",
+   "amt": 8,
+   "why": "Tanny's jerky",
+   "note": "Tanny dried the meat from the market run into jerky for everyone. Food that won't spoil."
+  }
+ ]
 }
