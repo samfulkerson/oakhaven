@@ -793,7 +793,7 @@ function buildBG() {
   x.putImageData(id, 0, 0);
 
   // ================= FOREST (west) =================
-  const creek = [[150, 0], [126, 70], [162, 150], [112, 250], [144, 340], [150, 432], [118, 520], [168, 610], [92, 700], [110, 780], [76, 880], [120, 960], [100, 1016]];
+  const creek = [[150, 0], [126, 70], [162, 150], [112, 250], [144, 340], [150, 432], [118, 520], [158, 580], [146, 626], [134, 656], [104, 684], [94, 704], [92, 740], [96, 780], [76, 880], [120, 960], [100, 1016]];
   const creekMask = new Set();
   for (let i = 0; i < creek.length - 1; i++) {
     const [ax, ay] = creek[i], [bx, by] = creek[i + 1], n = Math.hypot(bx - ax, by - ay);
@@ -805,7 +805,7 @@ function buildBG() {
     }
   }
   P(x, 146, 423, '#6b5034', 12, 18); for (let i = 0; i < 18; i += 2) P(x, 146, 423 + i, '#5a4128', 12, 1); P(x, 145, 423, '#3b2c20', 1, 18); P(x, 158, 423, '#3b2c20', 1, 18);
-  const clear = (X, Y) => Y > 1016 || (X > 104 && Y > 682 && Y < 772) || Math.hypot((X - 140) / 36, (Y - 864) / 28) < 1 || Math.hypot((X - 44) / 32, (Y - 950) / 20) < 1 || (X > 132 && Math.abs(Y - 882) < 6) || (X <= 140 && X > 20 && Math.abs(Y - (882 + (140 - X) * .27)) < 6) || Math.hypot((X - 60) / 8, (Y - 812) / 12) < 1 || Math.hypot((X - 182) / 22, (Y - 804) / 8) < 1 || Math.hypot((X - 108) / 78, (Y - 414) / 46) < 1 || Math.hypot((X - 80) / 60, (Y - 640) / 44) < 1 || Math.abs(Y - 432) < 12;
+  const clear = (X, Y) => Y > 1016 || (X > 140 && X < 166 && Y > 592 && Y < 612) || (X > 12 && X < 42 && Y > 672 && Y < 698) || (X > 46 && X < 76 && Y > 360 && Y < 408) || (X > 104 && Y > 682 && Y < 772) || Math.hypot((X - 140) / 36, (Y - 864) / 28) < 1 || Math.hypot((X - 44) / 32, (Y - 950) / 20) < 1 || (X > 132 && Math.abs(Y - 882) < 6) || (X <= 140 && X > 20 && Math.abs(Y - (882 + (140 - X) * .27)) < 6) || Math.hypot((X - 60) / 8, (Y - 812) / 12) < 1 || Math.hypot((X - 182) / 22, (Y - 804) / 8) < 1 || Math.hypot((X - 108) / 78, (Y - 414) / 46) < 1 || Math.hypot((X - 80) / 60, (Y - 640) / 44) < 1 || Math.abs(Y - 432) < 12;
   for (let y = 360; y < 470; y++) for (let X = 20; X < 200; X++) if (Math.hypot((X - 108) / 78, (y - 414) / 46) < 1 && Math.abs(y - 432) > 8 && hash2(X, y, 91) > .3) P(x, X, y, hash2(X, y, 92) > .5 ? '#34422a' : '#3a4a2e');
   for (let y = 596; y < 686; y++) for (let X = 20; X < 142; X++) if (Math.hypot((X - 80) / 60, (y - 640) / 44) < 1 && hash2(X, y, 93) > .3) P(x, X, y, hash2(X, y, 94) > .5 ? '#34422a' : '#3a4a2e');
   const trees = [];
@@ -821,18 +821,50 @@ function buildBG() {
   P(x, 84, 405, '#3a2a1a', 28, 7); textC(x, 'RANGER', 98, 406, '#e8dcb0');
   win(x, 76, 412, 8, 4, 'boarded'); win(x, 112, 412, 8, 4, 'broken'); P(x, 95, 411, '#100f0d', 7, 7);
   P(x, 76, 388, '#4a6a4a', 44, 1); P(x, 112, 386, '#5a5a5a', 3, 6);
-  for (let i = 0; i < 24; i++) { P(x, 152 + (i % 2) * 10, 380 + i, '#5a4128'); P(x, 152 + (i % 3), 380 + i, '#4a3420'); }
-  for (let i = 0; i < 10; i++) { P(x, 152 + i, 382 + i * 2, '#3b2c20'); P(x, 162 - i, 382 + i * 2, '#3b2c20'); }
-  P(x, 148, 368, '#5a4128', 18, 12); P(x, 150, 371, '#22333b', 14, 4); P(x, 147, 366, '#3a5a3a', 20, 3);
+  // fire lookout tower, on the far side of the station from the creek
+  for (let i = 0; i < 24; i++) { P(x, 56 + (i % 2) * 10, 380 + i, '#5a4128'); P(x, 56 + (i % 3), 380 + i, '#4a3420'); }
+  for (let i = 0; i < 10; i++) { P(x, 56 + i, 382 + i * 2, '#3b2c20'); P(x, 66 - i, 382 + i * 2, '#3b2c20'); }
+  P(x, 52, 368, '#5a4128', 18, 12); P(x, 54, 371, '#22333b', 14, 4); P(x, 51, 366, '#3a5a3a', 20, 3);
   car(x, 128, 404, '#3a5a3a'); P(x, 133, 404, '#e8e4da', 5, 2);
   for (let i = 0; i < 6; i++) P(x, 60 + i * 2, 418 - (i % 2), '#7a5232', 2, 2); P(x, 58, 420, '#5a3e24', 14, 2);
   P(x, 40, 418, '#5a4128', 1, 10); P(x, 34, 414, '#6b5034', 13, 6); text(x, 'TRAIL', 35, 415, '#e8dcb0');
   P(x, 130, 392, '#8a8e90', 1, 14); P(x, 131, 392, '#b8302a', 4, 1); P(x, 131, 393, '#e8e4da', 4, 1);
-  // campground
-  for (const [tx, ty, col] of [[50, 630, '#c86a2a'], [70, 620, '#2a5a8a'], [56, 658, '#4a7a3a']]) for (let r = 0; r < 8; r++) P(x, tx - r, ty + r, r % 3 ? col : '#2a2a2a', 2 + r * 2, 1);
-  P(x, 92, 626, '#d8d6cc', 30, 12); P(x, 92, 631, '#6a8aa8', 30, 2); P(x, 96, 628, '#22333b', 6, 2); P(x, 112, 628, '#22333b', 6, 2); P(x, 95, 638, '#0b0b0b', 4, 2); P(x, 114, 638, '#0b0b0b', 4, 2);
-  for (let a = 0; a < 10; a++) P(x, 86 + Math.round(Math.cos(a / 10 * 6.28) * 4), 656 + Math.round(Math.sin(a / 10 * 6.28) * 3), '#57544e'); P(x, 85, 655, '#1a1614', 3, 2);
-  P(x, 100, 652, '#6b5034', 10, 3); P(x, 101, 655, '#3b2c20', 1, 2); P(x, 108, 655, '#3b2c20', 1, 2);
+  // campground: Pine Hollow, left in a hurry. Tents, a camper, a cold fire ring, a clothesline, an outhouse, a canoe by the creek
+  for (let y = 600; y < 684; y++) for (let X = 24; X < 132; X++) if (Math.hypot((X - 78) / 52, (y - 642) / 38) < 1 && hash2(X, y, 301) > .82) P(x, X, y, hash2(X, y, 302) > .5 ? '#4a4030' : '#43402e');   // trampled dirt
+  for (let t = 0; t < 70; t++) { const X = 24 + t, Y = 676 - Math.round(t * .45); for (let k = 0; k < 3; k++) if (hash2(X, k, 303) > .25) P(x, X, Y + k, '#55482f'); }                            // dirt track in from the south
+  const tent = (tx, ty, col, dark) => {
+    for (let r = 0; r < 10; r++) { P(x, tx - r, ty + r, dark, r + 1, 1); P(x, tx + 1, ty + r, col, r + 1, 1); }
+    P(x, tx - 9, ty + 10, 'rgba(0,0,0,.35)', 21, 1); P(x, tx, ty + 4, '#14110e', 2, 6); P(x, tx, ty - 1, '#3b2c20', 1, 2);
+    P(x, tx - 12, ty + 9, '#8a8e90'); P(x, tx - 11, ty + 8, '#8a8e90'); P(x, tx + 12, ty + 9, '#8a8e90'); P(x, tx + 11, ty + 8, '#8a8e90');
+  };
+  tent(46, 618, '#d8782e', '#a8561e'); tent(72, 608, '#3a6a9a', '#2a4e72'); tent(48, 654, '#5a8a3a', '#3e6a2a');
+  P(x, 58, 630, '#7a3a8a', 7, 3); P(x, 58, 630, '#5a2a6a', 2, 3);                                                   // a sleeping bag left outside
+  // the camper: dented, door hanging open, awning out
+  P(x, 90, 638, 'rgba(0,0,0,.35)', 34, 2); P(x, 90, 624, '#e2ded2', 32, 14); P(x, 90, 624, '#f0ece2', 32, 2); P(x, 90, 630, '#6a8aa8', 32, 2); P(x, 90, 633, '#b8302a', 32, 1);
+  P(x, 94, 626, '#22333b', 6, 3); P(x, 112, 626, '#22333b', 6, 3); P(x, 103, 627, '#14110e', 4, 9); P(x, 107, 628, '#cfcbbf', 1, 8);
+  P(x, 93, 637, '#0b0b0b', 4, 3); P(x, 114, 637, '#0b0b0b', 4, 3); P(x, 120, 628, '#9a968a', 2, 2);
+  for (let X = 90; X < 122; X += 2) P(x, X, 620, X % 4 ? '#3a8a7a' : '#e8e4da', 2, 3);                              // striped awning
+  // fire ring with log benches; the embers still glow at night
+  for (let a = 0; a < 12; a++) P(x, 82 + Math.round(Math.cos(a / 12 * 6.28) * 5), 660 + Math.round(Math.sin(a / 12 * 6.28) * 4), a % 2 ? '#6e6a62' : '#57544e');
+  P(x, 80, 659, '#1a1614', 5, 3); P(x, 80, 660, '#5a3e24', 5, 1); P(x, 81, 659, '#d8602a'); P(x, 83, 661, '#e8902a');
+  P(x, 70, 655, '#6b5034', 2, 9); P(x, 92, 655, '#6b5034', 2, 9); P(x, 77, 668, '#6b5034', 11, 2);
+  LIGHTS.push([82, 660, 12, .55, '255,110,40', 'fire']); SMOKE.push([82, 657, 1]);
+  // picnic table, cooler, lantern
+  P(x, 98, 650, '#7a5232', 14, 5); P(x, 98, 650, '#8a6242', 14, 1); P(x, 98, 648, '#5a3e24', 14, 1); P(x, 98, 656, '#5a3e24', 14, 1);
+  P(x, 114, 652, '#c03a2e', 6, 4); P(x, 114, 652, '#e8e4da', 6, 1); P(x, 102, 651, '#d9b02a', 2, 2); P(x, 107, 652, '#c8c6be', 2, 1);
+  // clothesline strung between two trees, laundry still hanging
+  P(x, 30, 600, '#3b2c20', 1, 12); P(x, 66, 596, '#3b2c20', 1, 12); for (let X = 30; X <= 66; X++) P(x, X, 600 - Math.round((X - 30) / 9), '#a8a49a');
+  for (const [X, c, w, h] of [[34, '#c03a2e', 4, 5], [40, '#3a6a9a', 3, 6], [46, '#e8e4da', 4, 4], [53, '#d9b02a', 3, 5], [59, '#5a8a3a', 4, 5]]) P(x, X, 600 - Math.round((X - 30) / 9) + 1, c, w, h);
+  // outhouse with a moon on the door, firewood stack, a bear box
+  P(x, 26, 632, '#6b5034', 9, 13); P(x, 25, 630, '#4a3420', 11, 3); P(x, 28, 635, '#5a4128', 5, 9); P(x, 30, 637, '#e8dcb0', 1, 2); P(x, 31, 636, '#e8dcb0');
+  for (let r2 = 0; r2 < 3; r2++) for (let i = 0; i < 4 - r2; i++) { P(x, 30 + i * 3 + r2, 676 - r2 * 2, '#7a5232', 3, 2); P(x, 31 + i * 3 + r2, 676 - r2 * 2, '#b88a5a'); }
+  P(x, 98, 604, '#4a5a4a', 8, 6); P(x, 98, 604, '#5a6a5a', 8, 1); P(x, 101, 606, '#8a8e90', 2, 1);
+  // a red canoe pulled up on the creek bank, paddle beside it
+  for (let i = 0; i < 16; i++) P(x, 96 + i, 671 + Math.round(i * .2), i === 0 || i === 15 ? '#8a2a20' : '#c03a2e', 1, 3); P(x, 99, 672, '#5a1a14', 10, 1); P(x, 97, 676, '#c8a06a', 9, 1);
+  // a footbridge over the creek on the way out, and the campground sign by the track
+  P(x, 144, 597, '#6b5034', 18, 6); for (let X = 144; X < 162; X += 2) P(x, X, 597, '#5a4128', 1, 6); P(x, 144, 596, '#3b2c20', 18, 1); P(x, 144, 603, '#3b2c20', 18, 1);
+  P(x, 22, 684, '#5a4128', 1, 8); P(x, 31, 684, '#5a4128', 1, 8); P(x, 18, 678, '#4a5a34', 18, 7); text(x, 'CAMP', 19, 679, '#e8dcb0');
+  trash(x, 60, 640, 8, 77); trash(x, 88, 668, 6, 78);
   // ---- the woods by the fire station: a trail to a hunter's cabin, a deer stand, an old well, a log pile, a crashed plane
   const trailPts = [[216, 882], [140, 882], [90, 894], [30, 912]];
   for (let i = 0; i < trailPts.length - 1; i++) { const [ax, ay] = trailPts[i], [bx, by] = trailPts[i + 1], n = Math.hypot(bx - ax, by - ay); for (let t = 0; t <= n; t++) { const X = Math.round(ax + (bx - ax) * t / n), Y = Math.round(ay + (by - ay) * t / n); for (let k2 = -2; k2 <= 2; k2++) if (hash2(X, Y + k2, 206) > .15) P(x, X, Y + k2, hash2(X, Y + k2, 207) > .5 ? '#5a4e3a' : '#4e4434'); } }
