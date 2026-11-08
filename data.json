@@ -113,6 +113,14 @@
    "role": "Sharpshooter",
    "bio": "Jeremy is a stranded soldier who has been waiting for orders for way too long and is ready to take the shot himself.",
    "joined": 4
+  },
+  {
+   "name": "Victoria",
+   "ig": "",
+   "role": "Chef",
+   "bio": "Victoria walked in alone from Hollow Creek with a cleaver on her belt. She can make a feast out of a can of beans, and she says the farm out there could feed everyone.",
+   "joined": 4,
+   "story": true
   }
  ],
  "runs": [
@@ -356,6 +364,29 @@
  ],
  "missions": [
   {
+   "poi": "fortify",
+   "name": "Fortify the laundromat",
+   "area": "Camp",
+   "at": [
+    424,
+    505
+   ],
+   "difficulty": "easy",
+   "status": "open",
+   "days": 1,
+   "squad": [
+    "Asa"
+   ],
+   "goal": "Spend the day at home: double the fence with scrap and car doors before the horde comes south.",
+   "crew": "Asa and anyone with two hands",
+   "reward": "Fence +25% (uses 12 scrap)",
+   "gain": {
+    "Barricades": 25,
+    "Scrap": -12
+   },
+   "done_note": "The fence is doubled with car doors and scrap. It won't stop thousands. It might slow them down."
+  },
+  {
    "poi": "hospital",
    "difficulty": "hard",
    "goal": "Clear the ground floor and reach the basement generator.",
@@ -439,8 +470,20 @@
     1092
    ],
    "goal": "Bring in the corn and wheat before the frost, with guards on the barn roof.",
-   "crew": "6 farmhands + 2 guards",
-   "reward": "A month of food for everyone"
+   "crew": "Mateen, Victoria and a guard on the barn roof",
+   "reward": "+60 food: enough to get through the winter",
+   "poi": "harvest",
+   "status": "open",
+   "days": 1,
+   "squad": [
+    "Mateen",
+    "Victoria",
+    "Asa"
+   ],
+   "gain": {
+    "Food": 60
+   },
+   "done_note": "The harvest is in. Victoria's already planning the menu."
   },
   {
    "name": "The windmill pump",
@@ -451,8 +494,22 @@
     1100
    ],
    "goal": "Get the old windmill pumping and fill the troughs again.",
-   "crew": "1 mechanic + 1 farmhand",
-   "reward": "Clean water that needs no power"
+   "crew": "Adam the mechanic and Mateen the farmer",
+   "reward": "+10 water now, then +4 clean water every night with no fuel",
+   "poi": "windmill",
+   "status": "open",
+   "days": 1,
+   "squad": [
+    "Adam",
+    "Mateen"
+   ],
+   "gain": {
+    "Water": 10
+   },
+   "income": {
+    "Water": 4
+   },
+   "done_note": "The old windmill is turning again. Clean water, every night, no fuel."
   },
   {
    "name": "Stray cattle",
@@ -464,7 +521,17 @@
    ],
    "goal": "Round up the cattle that broke through the fence and wandered into the woods.",
    "crew": "3 scouts",
-   "reward": "Milk now, and meat for the winter"
+   "reward": "+20 food now, then milk every night",
+   "poi": "cattle",
+   "status": "open",
+   "days": 1,
+   "gain": {
+    "Food": 20
+   },
+   "income": {
+    "Food": 2
+   },
+   "done_note": "The cattle are penned behind the farmhouse. Milk every morning."
   },
   {
    "name": "Fort Corran armory",
@@ -1015,6 +1082,17 @@
    "do": "horde_warning",
    "horde_day": 7,
    "note": "Tanny's report changes everything: the horde reaches the laundromat on Day 7. Two days to shore up the fence and find ammo."
+  },
+  {
+   "on_day": 5,
+   "do": "ballot",
+   "keys": [
+    "gunshop",
+    "fortify",
+    "windmill",
+    "harvest"
+   ],
+   "note": "The big choice: get ready for what's coming from the north (ammo from the Gun & Pawn, or fortify the fence), or stockpile at Victoria's farm (the windmill pump for water, or the harvest for food)."
   }
  ],
  "broadcast": {
