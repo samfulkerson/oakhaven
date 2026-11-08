@@ -288,6 +288,11 @@ def run_schedule(data, new_day, rng):
             s.update(status="away", away_until=ev.get("until", new_day + 1), away_note=ev.get("note", "Out scouting"),
                      away_back=ev.get("back", ""), away_talk=ev.get("talk", []))
             news.append(f"{s['name']} left alone: {s['away_note']}. Back Day {s['away_until']}.")
+        elif do == "unlock":                         # new kinds of dead join the map: runners, dock brutes, soldiers...
+            have = data.setdefault("zombie_types", ["walker"])
+            have += [z for z in ev.get("zombies", []) if z not in have]
+            if ev.get("note"):
+                news.append(ev["note"])
         elif do == "ballot":
             data["ballot"] = {"day": new_day, "keys": ev.get("keys", [])}
             if ev.get("note"):
@@ -586,6 +591,11 @@ def keep_stockpile(data, outings, rng, new_day):
                 data.setdefault("income", []).append({"item": item, "amt": amt, "why": m.get("name", o["target"])})
             if m.get("done_note"):
                 notes.append(m["done_note"])
+            have = data.setdefault("zombie_types", ["walker"])
+            for z in m.get("unlock_zombies", []):
+                if z not in have:
+                    have.append(z)
+                    notes.append(m.get("unlock_note") or f"Something new out there: {z}s.")
     for inc in data.get("income", []):          # the windmill, the milk cows, Mateen's roof garden once it grows...
         if new_day >= inc.get("from_day", 0):
             add(inc["item"], inc["amt"], inc["why"])
