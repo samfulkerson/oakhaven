@@ -167,6 +167,19 @@ def pick_squad(data, kind, item, rng):
     return squad
 
 
+def has_gear(s, kind):
+    return any(g.get("kind") == kind for g in s.get("gear", []))
+
+
+def gear_odds(s, die, inj):
+    """Gear found in the daily spotlight posts: armor takes the edge off injuries and deaths, a melee weapon helps a little."""
+    if has_gear(s, "armor"):
+        die *= .6; inj *= .6
+    if has_gear(s, "weapon"):
+        die *= .85; inj *= .9
+    return die, inj
+
+
 def resolve_outing(data, kind, item, rng):
     first = not item.get("done_day")
     diff = item.get("difficulty", "medium")
@@ -188,12 +201,13 @@ def resolve_outing(data, kind, item, rng):
     for s in squad:
         s["outings"] = s.get("outings", 0) + 1
         roll = rng.random()
-        if roll < die and not s.get("protected"):
+        die_s, inj_s = gear_odds(s, die, inj)
+        if roll < die_s and not s.get("protected"):
             s.update(status="dead", died_day=data["day"], died_at=place, cause=rng.choice(DEATHS).format(p=place))
             results.append({"name": s["name"], "ig": s.get("ig", ""), "outcome": "dead", "detail": s["cause"]})
-        elif roll < die + inj:       # an injury; a protected character (Sam) who rolls death gets the worst injury instead
+        elif roll < die_s + inj_s:       # an injury; a protected character (Sam) who rolls death gets the worst injury instead
             lo, hi = INJURY_DAYS.get(diff, (2, 4))
-            days = rng.randint(lo, hi) + (2 if roll < die else 0)
+            days = rng.randint(lo, hi) + (2 if roll < die_s else 0)
             s.update(status="injured", injury=rng.choice(INJURIES), injured_until=data["day"] + days)
             results.append({"name": s["name"], "ig": s.get("ig", ""), "outcome": "injured", "detail": f"{s['injury']}, out until Day {s['injured_until']}"})
         else:
@@ -310,7 +324,8 @@ def horde_night(data, rng, day):
     if lit:
         strength *= 1.15                                  # the light draws them in
     fence, ammo = stock_get(data, "Barricades"), stock_get(data, "Ammo")
-    defense = fence * .5 + min(ammo, 60) * .5 + len(fit) * 6 + roles["Sharpshooter"] * 8 + roles["Builder"] * 5
+    defense = fence * .5 + min(ammo, 60) * .5 + len(fit) * 6 + roles["Sharpshooter"] * 8 + roles["Builder"] * 5 \
+        + sum(2 for s in fit if has_gear(s, "weapon")) + sum(1 for s in fit if has_gear(s, "armor"))
     margin = round(defense - strength)
     def hurt(n, why):
         pool = [s for s in fit if s.get("status") != "injured"]
@@ -571,8 +586,9 @@ def keep_stockpile(data, outings, rng, new_day):
                 data.setdefault("income", []).append({"item": item, "amt": amt, "why": m.get("name", o["target"])})
             if m.get("done_note"):
                 notes.append(m["done_note"])
-    for inc in data.get("income", []):
-        add(inc["item"], inc["amt"], inc["why"])
+    for inc in data.get("income", []):          # the windmill, the milk cows, Mateen's roof garden once it grows...
+        if new_day >= inc.get("from_day", 0):
+            add(inc["item"], inc["amt"], inc["why"])
 
     # everyone eats and drinks
     n = len(present)
