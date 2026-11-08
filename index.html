@@ -1321,7 +1321,7 @@ function buildBG() {
   asphalt(500, 736, 112, 36, 156); asphalt(500, 684, 6, 52, 157); asphalt(606, 684, 6, 52, 158);  // bank lot
   asphalt(636, 750, 112, 22, 159);                                                   // the burned block
   // apartments (north-east)
-  const apartments =(b, wall, wall2, roof, seed, burned) => {
+  const apartments = (b, wall, wall2, roof, seed, burned) => {
     const ay = bldg(x, b, { roof, roof2: burned ? '#120e0c' : '#2e2b28', wall, wall2, trim: '#1e1a18', brick: !burned, face: 28 });
     for (let r = 0; r < 3; r++) for (let X = b[0] + 4; X < b[0] + b[2] - 6; X += 8) win(x, X, ay + 4 + r * 8, 4, 3, burned ? 'dark' : hash2(X, r, seed) > .7 ? 'boarded' : hash2(X, r, seed + 1) > .5 ? 'broken' : 'glass');
     for (const fx of [b[0] + 20, b[0] + b[2] - 28]) for (let r = 0; r < 3; r++) { P(x, fx, ay + 8 + r * 8, '#1a1a1a', 10, 1); for (let i = 0; i < 6; i++) P(x, fx + 2 + i, ay + 2 + r * 8 + i, '#1a1a1a'); }
@@ -1410,6 +1410,124 @@ function buildBG() {
   line([[744, 768], [730, 766], [724, 760], [714, 758], [706, 756]], '#9a2a22');
   for (let X = 638; X < 744; X++) if (X % 6 < 3) P(x, X, 771, '#d9b02a'); else P(x, X, 771, '#1a1a1a');
   for (const tx2 of [638, 690, 742]) P(x, tx2, 768, '#8a8a84', 1, 4);
+  // ---- the rest of downtown, block by block: what people left behind when they ran
+  const cracks = (X0, Y0, w, h, seed, k0 = 260) => { const r = rngOf(seed); for (let k = 0; k < Math.max(2, w * h / k0 | 0); k++) { let cx = X0 + (r() * w | 0), cy = Y0 + (r() * h | 0); for (let s = 0, n = 5 + (r() * 9 | 0); s < n; s++) { if (cx >= X0 && cx < X0 + w && cy >= Y0 && cy < Y0 + h) { P(x, cx, cy, '#19191a'); if (r() < .3) P(x, cx, cy, r() < .5 ? '#4a5a2a' : '#5e6e32'); } cx += r() < .7 ? 1 : 0; cy += r() < .5 ? 1 : r() < .5 ? -1 : 0; } } };
+  const tufts = (X0, Y0, w, h, n, seed) => { for (let i = 0; i < n; i++) { const a = X0 + (hash2(i, seed, 1) * w | 0), b = Y0 + (hash2(i, seed, 2) * h | 0); P(x, a, b, hash2(i, seed, 3) > .5 ? '#5a6a30' : '#6a5a2a', 1, 2); if (hash2(i, seed, 4) > .6) P(x, a + 1, b + 1, '#4a5a2a'); } };
+  const tape = (X0, X1, Y) => { for (let X = X0; X < X1; X++) P(x, X, Y, X % 6 < 3 ? '#d9b02a' : '#1a1a1a'); };
+  const tentS = (X, Y, col = '#5a6a3a', hi = '#6e7e4a') => { P(x, X, Y + 6, 'rgba(0,0,0,.35)', 13, 2); for (let i = 0; i < 6; i++) P(x, X + 5 - i, Y + i, i < 3 ? hi : col, 3 + i * 2, 1); P(x, X + 5, Y + 3, '#1a1a14', 3, 3); };
+  const holes = (X0, Y0, w, h, n, seed) => { for (let i = 0; i < n; i++) P(x, X0 + (hash2(i, seed, 1) * w | 0), Y0 + (hash2(i, seed, 2) * h | 0), '#0d0c0b'); };
+  const brass = (X0, Y0, w, h, n, seed) => { for (let i = 0; i < n; i++) P(x, X0 + (hash2(i, seed, 1) * w | 0), Y0 + (hash2(i, seed, 2) * h | 0), '#c9a24a'); };
+  const crate = (X, Y, fill) => { P(x, X, Y, '#8a6a3a', 5, 4); P(x, X, Y, '#a8824a', 5, 1); if (fill) P(x, X + 1, Y + 1, fill, 3, 1); };
+  const vanV = (X, Y, col, dark = '#0f0f10') => { P(x, X + 1, Y + 1, 'rgba(0,0,0,.4)', 10, 19); P(x, X, Y, col, 9, 18); P(x, X + 1, Y + 1, dark, 7, 3); P(x, X, Y + 5, 'rgba(255,255,255,.12)', 9, 1); for (const [a, b] of [[-1, 3], [9, 3], [-1, 13], [9, 13]]) P(x, X + a, Y + b, '#0b0b0b', 1, 3); };
+  // office tower: a window-washer cradle left hanging, a bedsheet ALIVE banner, soot over the burned floors, a water tank on the roof
+  P(x, 316, 238, 'rgba(0,0,0,.35)', 12, 10); P(x, 314, 234, '#6a4a32', 11, 9); for (let i = 0; i < 9; i += 3) P(x, 314, 235 + i, '#4a3220', 11, 1); P(x, 315, 233, '#8a6a4a', 9, 1); vent(240, 248); vent(290, 244); acUnit(282, 250);
+  P(x, 252, 262, '#9aa0a4', 1, 9); P(x, 263, 262, '#9aa0a4', 1, 6); line([[247, 271], [266, 268]], '#d9b02a'); line([[247, 272], [266, 269]], '#a8821a'); P(x, 250, 270, '#3a3a3a', 2, 2);
+  P(x, 301, 266, '#e8e4da', 23, 8); P(x, 301, 273, '#c8c4b8', 23, 1); text(x, 'ALIVE', 303, 267, '#b8302a'); P(x, 301, 266, '#9a958a', 1, 3); P(x, 323, 266, '#9a958a', 1, 3);
+  for (const [sx4, sy4] of [[262, 264], [244, 276], [318, 280]]) for (let i = 0; i < 8; i++) P(x, sx4 - (i >> 2), sy4 - i, 'rgba(10,8,6,.45)', 4 + (i >> 1), 1);
+  papers(228, 296, 112, 4, 16, 180, ['#a9c2ca', '#d8d0bc', '#86a0a8']); papers(228, 206, 8, 90, 10, 181, ['#a9c2ca', '#d8d0bc']); papers(332, 206, 8, 90, 10, 182, ['#a9c2ca', '#d8d0bc']);
+  // church: REPENT on the board, an iron fence, fresh-dug and toppled stones, candles at the door, the church van, holes in the roof
+  P(x, 368, 205, '#6e6c64', 1, 10); P(x, 393, 205, '#6e6c64', 1, 10); P(x, 366, 205, '#e8e4da', 30, 8); P(x, 366, 205, '#2a2a2e', 30, 1); text(x, 'REPENT', 369, 207, '#1a1a1a');
+  for (let X = 364; X < 476; X++) if (X < 413 || X > 427) { P(x, X, 300, '#1e1e20'); if (X % 3 === 0) P(x, X, 298, '#2a2a2e', 1, 2); }
+  P(x, 413, 297, '#2a2a2e', 1, 4); P(x, 427, 297, '#2a2a2e', 1, 4); line([[413, 300], [408, 296]], '#2a2a2e');
+  P(x, 372, 222, '#1a1410', 6, 3); P(x, 378, 221, '#5a4630', 4, 3); P(x, 379, 220, '#6a5638', 2, 1); P(x, 371, 219, '#d8d4c8', 1, 3);
+  for (const [gx4, gy4] of [[373, 246], [467, 250], [462, 264]]) { P(x, gx4, gy4, '#37422a', 2, 3); P(x, gx4 - 1, gy4 + 2, '#8a8a84', 3, 1); }
+  for (const [cx4, cy4] of [[414, 286], [417, 287], [424, 286], [426, 288], [420, 288]]) { P(x, cx4, cy4, '#e8e4da'); P(x, cx4, cy4 - 1, '#e8b84a'); } P(x, 411, 287, '#c03a5a', 2, 1); P(x, 428, 287, '#e8c84a', 2, 1);
+  P(x, 395, 236, '#141210', 7, 4); P(x, 395, 237, '#4a3220', 7, 1); P(x, 444, 232, '#141210', 6, 3); P(x, 444, 233, '#4a3220', 6, 1);
+  car(x, 440, 208, '#e8e4da', '#2a3a5a'); P(x, 442, 210, '#2a52c8', 10, 1); tufts(364, 204, 112, 96, 60, 183);
+  // hospital: triage tents in the lot, body bags lined up, a tipped gurney, a wheelchair, QUARANTINE tape strung across
+  tentS(512, 288, '#d8d6cc', '#e8e6de'); P(x, 517, 290, '#b8302a', 3, 1); P(x, 518, 289, '#b8302a', 1, 3);
+  tentS(538, 288, '#d8d6cc', '#e8e6de'); P(x, 543, 290, '#b8302a', 3, 1); P(x, 544, 289, '#b8302a', 1, 3);
+  for (let i = 0; i < 4; i++) { P(x, 556 + i * 4, 292, '#2a2e32', 3, 6); P(x, 557 + i * 4, 292, '#3a3e42', 1, 6); }
+  P(x, 600, 288, '#9aa0a4', 7, 2); P(x, 601, 290, '#5a5e60', 1, 2); P(x, 605, 290, '#5a5e60', 1, 2); P(x, 600, 287, '#e8e4da', 7, 1);
+  P(x, 594, 296, '#3a3a3a', 4, 1); P(x, 594, 293, '#3a3a3a', 1, 3); P(x, 593, 297, '#1a1a1a', 2, 2); P(x, 597, 297, '#1a1a1a', 2, 2);
+  P(x, 528, 278, '#c03a2e', 3, 3); P(x, 528, 278, '#e8e4da', 3, 1); acUnit(596, 236); acUnit(522, 238); vent(560, 242); vent(566, 242);
+  tape(508, 552, 299); tape(568, 612, 299); papers(510, 270, 100, 28, 18, 184, ['#e8e4da', '#a9c2ca', '#d8d0bc']);
+  // north-east apartments: a bedsheet rope out of a top window, a mattress that came down with it, deck chairs on the roof, cars that never left
+  for (let y = 258; y < 282; y++) P(x, 716, y, y % 4 < 2 ? '#e8e4da' : '#7a9ac8'); for (const ky of [264, 272]) P(x, 715, ky, '#c8c4b8', 3, 1);
+  P(x, 711, 287, '#d8d0c8', 10, 6); for (let i = 1; i < 6; i += 2) P(x, 711, 287 + i, '#b8a8a0', 10, 1); P(x, 711, 287, 'rgba(0,0,0,.2)', 1, 6);
+  for (const [dx4, dy4] of [[668, 210], [684, 212]]) { P(x, dx4, dy4, '#c8c8c0', 4, 3); P(x, dx4 + 1, dy4 + 1, '#8a8a84', 2, 1); }
+  for (const cx4 of [716, 724]) { P(x, cx4, 236, '#2a6aa8', 4, 6); for (let i = 0; i < 6; i += 2) P(x, cx4, 236 + i, '#e8e4da', 4, 1); } P(x, 730, 240, '#c03a2e', 4, 3); P(x, 730, 240, '#e8e4da', 4, 1);
+  acUnit(694, 228); vent(656, 240);
+  dumpster(642, 286, '#2a3a5a', '#3a4a6a'); bags(654, 288, 4, 185); carV(x, 672, 285, '#c9a22a'); carV(x, 690, 285, '#5a5a62'); P(x, 690, 290, '#a9c2ca'); cracks(636, 283, 112, 16, 186, 150);
+  // school: NO SCHOOL on the sign, hopscotch, backpacks dropped where kids ran, the pick-up line still waiting, a ball on the roof
+  P(x, 307, 411, '#6e6c64', 1, 6); P(x, 328, 411, '#6e6c64', 1, 6); P(x, 294, 404, '#2a4a7a', 43, 8); P(x, 295, 405, '#e8e4da', 41, 6); text(x, 'NO SCHOOL', 298, 405, '#b8302a');
+  for (let i = 0; i < 6; i++) rect(x, 274 + (i % 2) * 5, 400 - (i >> 1) * 5 - (i === 5 ? 0 : 0), 5, 5, 'rgba(232,228,218,.5)');
+  for (const [bx4, by4, col] of [[284, 380, '#c03a2e'], [290, 392, '#2a52c8'], [272, 414, '#e8c84a'], [326, 398, '#3a7a4a'], [262, 396, '#c86ab8']]) { P(x, bx4, by4, col, 3, 3); P(x, bx4 + 1, by4, 'rgba(0,0,0,.3)', 1, 1); }
+  car(x, 232, 404, '#3f5466'); P(x, 237, 403, '#3f5466', 3, 1); car(x, 252, 406, '#d8d6cc'); car(x, 272, 404, '#7a3b33'); P(x, 280, 403, '#7a3b33', 3, 1);
+  acUnit(250, 332); acUnit(310, 336); skylight(272, 334, true); skylight(292, 334, false); P(x, 326, 340, '#d84a2a', 2, 2); P(x, 326, 340, '#f07a4a');
+  cracks(228, 374, 112, 46, 187); papers(232, 376, 100, 40, 20, 188);
+  // pharmacy: a drive-thru lane with a car still in it, prescription bags, carts, the 24 HRS sign face-down
+  P(x, 453, 366, 'rgba(0,0,0,.35)', 16, 14); P(x, 452, 364, '#8e928f', 15, 12); P(x, 452, 364, '#a8aca9', 15, 1); P(x, 452, 375, '#2f7a6a', 15, 1); text(x, 'RX', 456, 367, '#2f7a6a');
+  P(x, 449, 370, '#100f0d', 3, 5); carV(x, 456, 380, '#4a4f3a'); for (let y = 398; y < 418; y += 4) P(x, 467, y, '#c8c4b8', 1, 2);
+  for (const [px4, py4] of [[466, 392], [471, 396], [462, 404]]) { P(x, px4, py4, '#e8e4da', 3, 3); P(x, px4 + 1, py4, '#2f7a6a', 1, 1); }
+  cart(380, 408); cart(388, 410); P(x, 366, 396, '#2a2a2a', 18, 4); P(x, 367, 397, '#e8c84a', 16, 2); text(x, '24', 368, 396, '#1a1a1a');
+  dumpster(366, 328); bags(380, 330, 3, 189); acUnit(398, 350); vent(422, 352); cracks(364, 392, 112, 28, 190); papers(374, 394, 70, 22, 16, 191, ['#e8e4da', '#d87a2a', '#a9c2ca']);
+  // diner: milk crates and the cook's chair at the back door, a delivery scooter, the patio umbrella blown over, a newspaper box
+  P(x, 572, 330, '#100f0d', 5, 6); for (const [cx4, cy4] of [[565, 331], [578, 332], [565, 327]]) { P(x, cx4, cy4, '#2a6aa8', 4, 3); P(x, cx4 + 1, cy4 + 1, '#1a3a68', 2, 1); } P(x, 584, 330, '#8a8e90', 3, 3); P(x, 584, 333, '#5a5e60', 1, 2);
+  dumpster(502, 326); P(x, 516, 327, '#4a4a3a', 4, 5); P(x, 521, 327, '#4a4a3a', 4, 5); P(x, 516, 327, '#5e5e4a', 9, 1);
+  P(x, 598, 388, '#c03a2e', 4, 7); P(x, 597, 386, '#d8d6cc', 6, 3); P(x, 598, 395, '#1a1a1a', 2, 2); P(x, 600, 395, '#1a1a1a', 2, 2);
+  for (let i = 0; i < 6; i++) P(x, 540 + i, 386 + (i >> 1), i % 2 ? '#e8e4da' : '#c03a2e', 1, 3 - (i >> 1)); P(x, 546, 389, '#6e6c64', 5, 1);
+  P(x, 504, 384, '#2a52c8', 4, 5); P(x, 504, 384, '#3a62d8', 4, 1); P(x, 505, 386, '#e8e4da', 2, 1);
+  for (const [gx4, gy4] of [[522, 392], [524, 393], [560, 388], [566, 396], [586, 392]]) P(x, gx4, gy4, '#3a7a4a'); cracks(500, 380, 112, 40, 192); papers(504, 382, 100, 36, 14, 193);
+  // Gun & Pawn: razor wire round the roof, an abandoned sniper nest, bullet holes, a van rammed into the side, pawned goods dumped in the lot
+  for (let X = 649; X < 721; X++) P(x, X, 351 + (X % 3 === 0 ? 1 : 0), X % 2 ? '#b4b8bc' : '#6a6e70'); for (let y = 352; y < 375; y++) { P(x, 649 + (y % 3 === 0 ? 1 : 0), y, y % 2 ? '#b4b8bc' : '#6a6e70'); P(x, 720 - (y % 3 === 0 ? 1 : 0), y, y % 2 ? '#b4b8bc' : '#6a6e70'); }
+  sandbags(x, 654, 356, 14); sandbags(x, 654, 364, 6); brass(656, 358, 12, 6, 8, 194);
+  holes(650, 386, 70, 6, 26, 195); holes(694, 377, 26, 6, 8, 196);
+  vanV(732, 372, '#d8d6cc'); P(x, 731, 372, '#a8a69e', 11, 2); P(x, 726, 374, '#5a5e60', 6, 2); papers(724, 366, 12, 14, 8, 197, ['#a9c2ca', '#d8d6cc']);
+  P(x, 662, 410, '#8a5a2a', 5, 4); P(x, 667, 411, '#5a3a1a', 6, 1); P(x, 672, 410, '#3a3a3a', 1, 3);
+  P(x, 680, 412, '#3a3c3e', 7, 5); P(x, 681, 413, '#1b272c', 5, 3); P(x, 682, 413, '#a9c2ca');
+  P(x, 640, 400, '#2a2a2a', 6, 1); P(x, 640, 400, '#2a2a2a', 1, 4); P(x, 645, 400, '#2a2a2a', 1, 4); P(x, 641, 404, '#c03a2e', 2, 1);
+  wreck(724, 404, 198); cracks(636, 393, 112, 27, 199);
+  // police station: a cruiser on its roof, a SWAT truck, dropped riot shields, a spike strip, tape across the front doors
+  P(x, 263, 503, 'rgba(0,0,0,.4)', 15, 8); P(x, 262, 502, '#1c1c1e', 13, 6); P(x, 264, 503, '#d8d8d4', 9, 4); for (const [a, b] of [[262, 501], [272, 501], [262, 507], [272, 507]]) P(x, a, b, '#0b0b0b', 3, 2); P(x, 266, 508, '#c8322a'); P(x, 268, 508, '#2a52c8');
+  vanV(326, 452, '#1a1a1e', '#2a3a44'); P(x, 327, 460, '#e8e4da', 7, 1); P(x, 327, 461, '#1a1a1e', 7, 2);
+  for (const [sx4, sy4] of [[246, 513], [292, 512], [318, 508], [270, 516]]) { P(x, sx4, sy4, '#a9c2ca', 3, 4); P(x, sx4, sy4, '#d8e4e8', 3, 1); P(x, sx4 + 1, sy4 + 1, '#1a1a1a', 1, 1); }
+  for (let X = 228; X < 252; X += 2) P(x, X, 520, '#9aa0a4'); P(x, 228, 521, '#3a3a3a', 24, 1);
+  tape(264, 300, 496); brass(240, 498, 80, 18, 18, 200); cracks(228, 495, 112, 25, 201); papers(232, 496, 100, 22, 10, 202);
+  // gas station: NO GAS signs on the pumps, red cans everywhere, a propane cage, a queue of cars that ran dry, a bike on its side
+  for (const px4 of [520, 540]) { P(x, px4, 470, '#e8e4da', 4, 3); P(x, px4 + 1, 471, '#1a1a1a', 2, 1); }
+  for (const [gx4, gy4] of [[528, 490], [533, 494], [548, 486], [556, 500], [510, 506]]) { P(x, gx4, gy4, '#c03a2e', 3, 3); P(x, gx4 + 1, gy4 - 1, '#2a2a2a', 1, 1); }
+  P(x, 604, 456, '#7a7e80', 7, 14); for (let y = 457; y < 470; y += 2) P(x, 605, y, '#5a5e60', 5, 1); for (const [a, b] of [[605, 458], [608, 458], [605, 463], [608, 463]]) P(x, a, b, '#e8e4da', 2, 4);
+  car(x, 524, 508, '#5a5a62'); P(x, 531, 506, '#5a5a62', 4, 1); car(x, 546, 512, '#c9a22a'); car(x, 568, 508, '#3f5466');
+  P(x, 586, 502, '#2a2a2a', 7, 1); P(x, 585, 501, '#1a1a1a', 2, 3); P(x, 592, 501, '#1a1a1a', 2, 3); P(x, 588, 501, '#b8302a', 2, 1);
+  P(x, 562, 492, '#3a3c3e', 3, 5); P(x, 563, 493, '#9aa0a4'); cracks(500, 444, 112, 80, 203, 220);
+  // motel: lounge chairs by the pool, a housekeeping cart, an ice machine, a mattress dragged out, a suitcase burst open
+  for (const cy4 of [498, 506]) { P(x, 682, cy4, '#e8e4da', 6, 3); P(x, 682, cy4 + 1, '#b8b4aa', 6, 1); } P(x, 712, 518, '#e8e4da', 3, 6); P(x, 712, 519, '#b8b4aa', 3, 1);
+  P(x, 684, 484, '#d8d6cc', 6, 5); P(x, 685, 485, '#7a9ac8', 4, 1); P(x, 685, 487, '#e8e4da', 4, 1); P(x, 684, 489, '#1a1a1a', 1, 1); P(x, 689, 489, '#1a1a1a', 1, 1);
+  P(x, 737, 468, '#c8ccd0', 6, 9); P(x, 737, 468, '#e8eef2', 6, 1); P(x, 738, 471, '#5a6a7a', 4, 2);
+  P(x, 694, 524, '#d8d0c8', 10, 6); for (let i = 1; i < 6; i += 2) P(x, 694, 524 + i, '#b8a8a0', 10, 1);
+  P(x, 648, 514, '#5a3a22', 6, 4); P(x, 648, 514, '#7a5a3a', 6, 1); for (const [a, b, c] of [[655, 515, '#c86ab8'], [656, 518, '#2a52c8'], [646, 519, '#e8e4da'], [652, 520, '#c9a22a']]) P(x, a, b, c, 2, 1);
+  cracks(636, 484, 112, 56, 204); tufts(688, 492, 44, 26, 20, 205);
+  // hardware store: a garden centre gone to seed, a pickup loaded with lumber, a forklift with a pallet still up, ladders against the wall
+  for (let y = 568; y < 610; y += 2) P(x, 337, y, (y % 4) ? '#7a7e80' : '#55585a'); for (let X = 314; X < 338; X += 2) P(x, X, 568, (X % 4) ? '#7a7e80' : '#55585a');
+  for (let i = 0; i < 12; i++) { const px4 = 316 + (i % 4) * 5, py4 = 572 + (i >> 2) * 9; P(x, px4, py4 + 2, '#7a4a2a', 3, 2); P(x, px4, py4, hash2(i, 1, 206) > .4 ? '#7a6a3a' : '#4a5a2a', 3, 2); P(x, px4 + 1, py4 - 1, '#6a5a2a'); }
+  P(x, 309, 586, '#c8c4b8', 1, 14); P(x, 312, 586, '#c8c4b8', 1, 14); for (let y = 588; y < 600; y += 3) P(x, 309, y, '#c8c4b8', 4, 1);
+  P(x, 241, 641, 'rgba(0,0,0,.4)', 22, 9); P(x, 240, 640, '#7a3b33', 21, 8); P(x, 254, 641, '#0f0f10', 4, 6); P(x, 241, 641, '#3a2a22', 12, 6); for (let i = 0; i < 5; i++) P(x, 238, 641 + i, i % 2 ? '#9a7a4a' : '#c8a46a', 16, 1);
+  for (const [a, b] of [[242, 647], [256, 647]]) P(x, a, b, '#0b0b0b', 3, 2);
+  P(x, 296, 640, '#d9b02a', 9, 7); P(x, 298, 641, '#2a2a2a', 4, 3); P(x, 294, 634, '#3a3a3a', 1, 13); P(x, 288, 637, '#8a6a3a', 6, 4); P(x, 288, 637, '#6a4a2a', 6, 1); P(x, 297, 647, '#0b0b0b', 2, 2); P(x, 302, 647, '#0b0b0b', 2, 2);
+  for (let i = 0; i < 3; i++) { P(x, 320, 620 + i * 2, '#9a7a4a', 10, 1); P(x, 320, 621 + i * 2, '#6a4a2a', 10, 1); }
+  cracks(228, 602, 112, 58, 207); papers(232, 604, 104, 54, 12, 208, ['#d8d0bc', '#c8a46a', '#5a5248']);
+  // the park: a missing-persons board, candles round the fountain, a tent camp, a picnic table, overflowing bins, a stroller, a kite stuck in a tree
+  P(x, 394, 570, '#5a4128', 1, 8); P(x, 407, 570, '#5a4128', 1, 8); P(x, 393, 566, '#8a6a3a', 16, 7); for (let i = 0; i < 9; i++) P(x, 394 + (hash2(i, 1, 209) * 13 | 0), 567 + (hash2(i, 2, 209) * 5 | 0), hash2(i, 3, 209) > .3 ? '#e8e4da' : '#e8c84a', 2, 2);
+  for (let a = 0; a < 14; a++) { const an = a / 14 * 6.28, px4 = Math.round(420 + Math.cos(an) * 16), py4 = Math.round(612 + Math.sin(an) * 12); P(x, px4, py4, '#e8e4da'); if (a % 2) P(x, px4, py4 - 1, '#e8b84a'); else P(x, px4 + 1, py4, a % 4 ? '#c03a5a' : '#e8c84a'); }
+  tentS(452, 640, '#2a52c8', '#3a62d8'); tentS(462, 646); P(x, 450, 652, '#6e6c64', 1, 5); P(x, 476 - 2, 652, '#6e6c64', 1, 5); P(x, 450, 652, '#a8a69e', 24, 1); P(x, 456, 653, '#c03a2e', 3, 2); P(x, 464, 653, '#e8e4da', 3, 2);
+  P(x, 380, 642, '#7a5a3a', 12, 4); P(x, 380, 642, '#8a6a44', 12, 1); P(x, 380, 640, '#6b5034', 12, 1); P(x, 380, 647, '#6b5034', 12, 1);
+  for (const [bx4, by4] of [[402, 600], [442, 624]]) { P(x, bx4, by4, '#3a5a3a', 4, 5); P(x, bx4, by4, '#4a6a4a', 4, 1); bags(bx4 - 3, by4 + 4, 3, bx4); }
+  P(x, 436, 596, '#3a3a5a', 5, 3); P(x, 437, 595, '#2a2a4a', 3, 1); P(x, 435, 599, '#1a1a1a', 1, 1); P(x, 440, 599, '#1a1a1a', 1, 1);
+  for (let i = 0; i < 4; i++) P(x, 470 - i, 578 + i, '#c03a2e', 1 + i * 2 > 5 ? 5 - (i - 2) * 2 : 1 + i * 2, 1); line([[470, 582], [467, 590], [468, 600]], 'rgba(232,228,218,.6)');
+  line([[426, 650], [438, 642]], '#3a3c3e'); P(x, 438, 641, '#5a5a52', 3, 2);
+  tufts(364, 564, 112, 96, 80, 210);
+  // Fresh Market: produce crates by the door, a cart corral, a car with its trunk open and bags still in it, the SALE sign blown down
+  for (const [cx4, cy4, f] of [[508, 602, '#c03a2e'], [514, 602, '#5a8a3a'], [508, 606, '#e8c84a'], [584, 602, '#c86a2a']]) crate(cx4, cy4, f);
+  rect(x, 592, 640, 16, 8, '#9aa0a4'); for (let i = 0; i < 3; i++) cart(594 + i * 4, 642);
+  P(x, 513, 646, '#5a2a22', 4, 1); P(x, 510, 650, '#e8e4da', 2, 2); P(x, 508, 652, '#e8c84a', 2, 1);
+  P(x, 570, 652, '#c03a2e', 14, 5); P(x, 571, 653, '#e8e4da', 12, 3); text(x, 'SALE', 571, 652, '#c03a2e');
+  cracks(500, 602, 112, 58, 211);
+  // parking garage roof deck: someone camped up top, a car through the barrier at the edge, P4 painted on the deck
+  tentS(654, 590, '#c86a2a', '#d87a3a'); P(x, 670, 596, '#6a6e70', 4, 3); P(x, 671, 597, '#1a1612', 2, 1); P(x, 676, 592, '#2a52c8', 8, 3);
+  bigText('P4', 650, 610, 'rgba(232,228,218,.35)', 2);
+  carV(x, 738, 590, '#7a6a4a'); P(x, 736, 588, '#b4b4ac', 3, 1); P(x, 744, 600, '#b4b4ac', 3, 1);
+  cracks(640, 566, 104, 60, 212, 200); papers(642, 568, 100, 56, 14, 213);
 
   // =====================================================================================================
   // SOUTHSIDE, SUBURBS, FARMLAND, FREIGHT YARD, INTERSTATE 9, EASTSIDE AND BLACKROCK ISLAND
@@ -1703,6 +1821,15 @@ function buildBG() {
   car(x, 510, 1162, '#7a3b33'); car(x, 676, 1160, '#3f5466'); car(x, 630, 1166, '#d8d6cc', '#1a1a1a'); carV(x, 724, 1132, '#c9a22a');
   for (let X = 540; X < 740; X += 50) { P(x, X, 1150, '#3a3c3e', 1, 10); P(x, X - 2, 1150, '#3a3c3e', 5, 1); }
 
+  // the mall: cart corrals, a shuttle bus, a security cart on its side, an emergency tent camp, boxes dragged out of Electronics
+  cracks(500, 1128, 250, 70, 214, 220);
+  for (const [qx, qy] of [[560, 1146], [690, 1168]]) { rect(x, qx, qy, 16, 8, '#9aa0a4'); cart(qx + 2, qy + 2); cart(qx + 7, qy + 2); }
+  P(x, 517, 1187, 'rgba(0,0,0,.4)', 36, 10); P(x, 516, 1185, '#c8862a', 34, 9); P(x, 516, 1185, '#d8963a', 34, 1); for (let X = 519; X < 546; X += 4) P(x, X, 1187, '#22333b', 3, 2); P(x, 548, 1187, '#22333b', 2, 4); P(x, 519, 1192, '#0b0b0b', 4, 2); P(x, 541, 1192, '#0b0b0b', 4, 2);
+  P(x, 600, 1131, '#e8e4da', 6, 9); P(x, 600, 1131, '#2a52c8', 6, 2); P(x, 599, 1132, '#0b0b0b', 1, 3); P(x, 599, 1137, '#0b0b0b', 1, 3);
+  tentS(704, 1184, '#d8d6cc', '#e8e6de'); tentS(720, 1186, '#d8d6cc', '#e8e6de'); P(x, 709, 1186, '#2a52c8', 2, 1); P(x, 725, 1188, '#2a52c8', 2, 1);
+  for (const [bx4, by4] of [[676, 1128], [684, 1130], [694, 1128], [702, 1131], [690, 1134]]) { P(x, bx4, by4, '#d8d6cc', 5, 3); P(x, bx4, by4, '#2a6aa8', 5, 1); }
+  papers(504, 1128, 240, 68, 40, 215, ['#d8d0bc', '#e8e4da', '#a9c2ca', '#c03a2e']); acUnit(560, 1090); acUnit(660, 1076); vent(590, 1096); vent(640, 1100);
+
   // ---- freight yard: ballast beds, a switch ladder, locomotives, boxcars, hoppers, tank cars, flatcars, a caboose,
   //      an engine house, a water tower, signals and a level crossing on the east road
   for (let y = 1062; y < 1198; y++) for (let X = 776; X < 1272; X++) { const n = hash2(X, y, 152); P(x, X, y, n < .5 ? '#4a463e' : n < .9 ? '#44403a' : '#3a3630'); }
@@ -1984,6 +2111,10 @@ function buildBG() {
   win(x, 1226, fsuY + 8, 10, 3, 'boarded'); win(x, 1256, fsuY + 8, 10, 3, 'broken');
   P(x, 1236, 362, '#5a4128', 6, 4); P(x, 1237, 361, '#3a2a1a', 1, 1); P(x, 1239, 361, '#2a2a22', 1, 1);
   car(x, 1222, 368, '#5a5a3e', '#2a2a22');
+  // army surplus lot: ammo cans, a camo net half pulled off a rack, cracks
+  for (const [ax, ay] of [[1250, 362], [1255, 362], [1252, 365]]) { P(x, ax, ay, '#4a5a34', 4, 3); P(x, ax, ay, '#5e6e44', 4, 1); }
+  for (let i = 0; i < 40; i++) P(x, 1258 + (hash2(i, 1, 216) * 12 | 0), 364 + (hash2(i, 2, 216) * 8 | 0), hash2(i, 3, 216) > .5 ? '#4a5a2a' : '#3a4422');
+  cracks(1218, 362, 54, 14, 217, 120);
   for (const [tx2, ty2] of [[1230, 252], [1262, 322], [1264, 392]]) leafTree(tx2, ty2, tx2 + ty2);
   LABELS.push(['EASTSIDE', 1440, 470, 'area']);
 
