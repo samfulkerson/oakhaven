@@ -2111,7 +2111,7 @@ function sprite(look, pose) {
   const set = (c, r, col) => { const X = c + OX, Y = r + OY; if (X >= 0 && X < GW && Y >= 0 && Y < GH) g[Y][X] = col; };
   const role = look.role || '';
   let jacket = look.jacket, hair = look.hair;
-  if (role === 'Medic') jacket = '#d8d3c8';
+  if (role === 'Medic' || role === 'Chef') jacket = '#d8d3c8';
   if (role === 'Scout') { jacket = '#4d5a34'; hair = '#4d5a34'; }
   const map = { h: hair, s: look.skin, e: '#1a1412', j: jacket, p: look.pants, b: '#231c16', g: look.skin, r: '#3a1010' };
   const rows = (look.zombie ? ZOMB : HUMAN).concat(LEGS[pose] || LEGS.stand);
@@ -2123,6 +2123,7 @@ function sprite(look, pose) {
   if (look.axe) { for (let r = 2; r <= 8; r++) set(7, r, '#6b4a2a'); set(8, 2, '#c4c8cc'); set(8, 3, '#c4c8cc'); set(8, 4, '#9aa0a4'); set(9, 3, '#e2e5e8'); set(6, 2, '#9aa0a4'); }
   if (role === 'Mechanic') { set(7, 6, '#9aa0a4'); set(7, 7, '#9aa0a4'); set(8, 6, '#9aa0a4'); for (let c = 1; c <= 5; c++) set(c, 0, '#3f5a7a'); set(6, 1, '#3f5a7a'); }
   if (role === 'Medic') { set(3, 5, '#b03a2e'); set(3, 6, '#b03a2e'); set(2, 6, '#b03a2e'); set(4, 6, '#b03a2e'); }
+  if (role === 'Chef') { for (let c = 1; c <= 5; c++) set(c, 0, '#f2efe8'); for (let c = 2; c <= 4; c++) set(c, -1, '#f2efe8'); set(7, 5, '#b8bcc0'); set(7, 6, '#b8bcc0'); set(8, 5, '#b8bcc0'); set(7, 7, '#4a3420'); }
   if (role === 'Farmer') { for (let c = 0; c <= 6; c++) set(c, 0, '#c9a24a'); set(-1, 1, '#c9a24a'); set(7, 1, '#c9a24a'); }
   if (role === 'Builder') { for (let c = 1; c <= 5; c++) { set(c, 0, '#d9b02a'); set(c, 1, '#d9b02a'); } set(0, 1, '#b08a1a'); set(6, 1, '#b08a1a'); }
   if (role === 'Cook') { for (let c = 2; c <= 4; c++) { set(c, -1, '#e8e4da'); set(c, 0, '#e8e4da'); } set(1, 0, '#e8e4da'); set(5, 0, '#e8e4da'); }
@@ -2213,7 +2214,7 @@ for (let i = 0; i < visible; i++) {
   const d = LIVING[i] || null;
   const [x, y] = yardSpot();
   const e = { kind: 's', d, x, y, tx: x, ty: y, wait: rand() * 200 | 0, step: 0, flip: rand() < .5, spd: .12 + rand() * .08, mode: 'wander', cool: 0, inside: false,
-    look: d ? { ...lookFor(d.ig, d.role), axe: /\baxe\b/i.test(d.bio || '') ? 1 : 0 } : lookFor('anon' + i, '') };
+    look: d ? { ...lookFor(d.ig || d.name, d.role), axe: /\baxe\b/i.test(d.bio || '') ? 1 : 0 } : lookFor('anon' + i, '') };
   if (d && d.status === 'away') { e.mode = 'away'; e.hidden = true; }   // out scouting: not in the yard
   people.push(e); if (d) byName[d.name] = e;
 }
@@ -2886,7 +2887,7 @@ $('preview').addEventListener('change', ev => { preview = ev.target.checked; if 
 
 function renderMissions() {
   $('missions').innerHTML = DATA.missions.map((m, i) => {
-    const p = m.poi ? POIS[m.poi] : m;
+    const p = (m.poi && POIS[m.poi]) || m;
     return `<div class="run ${m.status === 'done' ? 'back' : m.status === 'active' ? 'active' : 'locked'}"><span><button type="button" class="place" data-mission="${i}">${esc(p.name)}</button><span class="area">${esc(p.area)}</span>${diffTag(m.difficulty)}</span><span class="status">${m.status === 'done' ? 'Done' : m.status === 'active' ? `Night ${m.days_done || 0} of ${m.days || '?'}` : m.status === 'open' ? 'Open' : 'Locked'}</span>
       <span class="why">${esc(m.goal)}</span>
       <span class="needs"><span><b>Crew</b>${esc(m.crew)}</span><span><b>Reward</b>${esc(m.reward)}</span></span></div>`;
@@ -2932,7 +2933,7 @@ function cardOf(d) {
     : `${esc(d.role)} · arrived Day ${d.joined}`;
   return `<article class="card${dead ? ' fallen' : ''}${pickedName === d.name ? ' sel' : ''}" data-name="${esc(d.name)}" tabindex="0" aria-label="${esc(d.name)}: show on the map">
     <canvas width="${GW}" height="${GH}" data-portrait="${esc(d.name)}"${dead ? ' style="filter:grayscale(1) brightness(.7)"' : ''}></canvas><div>
-    <h3>${dead ? '\u2020 ' : ''}${esc(d.name)}${d.status === 'injured' ? '<span class="tag">Hurt</span>' : d.status === 'away' ? '<span class="tag">Away</span>' : ''}</h3><div class="ig">@${esc(d.ig)}</div><p>${esc(d.bio)}</p>
+    <h3>${dead ? '\u2020 ' : ''}${esc(d.name)}${d.status === 'injured' ? '<span class="tag">Hurt</span>' : d.status === 'away' ? '<span class="tag">Away</span>' : ''}</h3>${d.ig ? `<div class="ig">@${esc(d.ig)}</div>` : '<div class="ig">Story character</div>'}<p>${esc(d.bio)}</p>
     <div class="meta">${meta}</div>
     <div class="now"><b>Right now</b><span class="nowtxt">${esc(whereOf(d))}</span></div>${storyOf(d)}${shareBtn(d)}</div></article>`;
 }
@@ -2945,7 +2946,7 @@ function renderRoster(q = '') {
     : `<p class="empty">No survivor by that name yet. Comment on the latest Reel to move in.</p>`;
   for (const c of $('roster').querySelectorAll('canvas[data-portrait]')) {
     const d = DATA.survivors.find(x => x.name === c.dataset.portrait), e = byName[c.dataset.portrait];
-    const pc = c.getContext('2d'); pc.imageSmoothingEnabled = false; pc.drawImage(sprite(e ? e.look : lookFor(d.ig, d.role), 'stand'), 0, 0);
+    const pc = c.getContext('2d'); pc.imageSmoothingEnabled = false; pc.drawImage(sprite(e ? e.look : lookFor(d.ig || d.name, d.role), 'stand'), 0, 0);
   }
 }
 setInterval(() => { for (const el of document.querySelectorAll('#roster .card')) { const d = DATA.survivors.find(x => x.name === el.dataset.name), t = el.querySelector('.nowtxt'); if (d && t) t.textContent = whereOf(d); } }, 1000);
@@ -2967,7 +2968,7 @@ function storyOf(d) {
   out.push(['', d.joined, d.joined <= 1 ? 'The last man in Oakhaven.' : 'Moved into the laundromat.']);
   return `<ul class="story">${out.slice(0, 8).map(([c, day, t]) => `<li class="${c}"><b>Day ${day}</b><span>${esc(t)}</span></li>`).join('')}</ul>`;
 }
-function shareBtn(d) { return `<div class="acts"><button type="button" data-share="${esc(d.ig)}">Copy link to ${esc(d.name)}</button></div>`; }
+function shareBtn(d) { return `<div class="acts"><button type="button" data-share="${esc(d.ig || d.name)}">Copy link to ${esc(d.name)}</button></div>`; }
 function showFallen(name) {
   const d = DATA.survivors.find(s => s.name === name && s.status === 'dead'); if (!d) return false;
   const g = GRAVES[name] || [420, 292]; selected = null; follow = false; setZoom(Math.max(zi, 5), g[0], g[1] - 6);
@@ -3040,6 +3041,30 @@ requestAnimationFrame(loop);
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
+  victoria: {
+    title: 'Day 4 · Victoria', dur: 47.5, audioOffset: 1.0,
+    cam: [[0, 700, 700, 1560], [2.6, 430, 560, 360], [3.4, 'follow', 'Victoria', 170], [14.6, 'follow', 'Victoria', 150], [15.4, 424, 500, 200], [17.4, 424, 500, 190],
+          [17.9, 200, 1000, 400], [20.2, 230, 1000, 390], [20.4, 330, 1000, 400], [22.8, 330, 1000, 390], [23.0, 200, 1000, 380], [31.2, 200, 1000, 370], [31.6, 260, 900, 600], [34.4, 260, 900, 640],
+          [35.4, 488, 700, 1100], [37.6, 488, 200, 520], [39.6, 488, 160, 480], [40.4, 470, 620, 900], [47.5, 470, 620, 1000]],
+    hour: [[0, 15.6], [16, 16.6], [34, 17.4], [47.5, 18.2]],
+    events: [[0, 'away', ['Victoria']], [2.6, 'arrive', ['Victoria'], 'farm'], [16.4, 'settle', ['Victoria']]],
+    captions: [
+      [1.0, 3.2, 'title', 'OAKHAVEN', 'DAY 4 · LATE AFTERNOON'],
+      [3.6, 8.4, 'cap', 'SOMEONE ON THE SOUTH ROAD. ALONE.'],
+      [8.5, 11.4, 'cap', 'VICTORIA · CHEF'],
+      [11.5, 15.0, 'cap', 'SHE WALKED IN FROM HOLLOW CREEK.'],
+      [15.4, 17.6, 'cap', 'AND SHE HAD NEWS.'],
+      [17.9, 20.2, 'cap', 'HOLLOW CREEK FARM: STILL STANDING'],
+      [20.4, 22.8, 'cap', 'CORN, WAITING TO BE CUT'],
+      [23.0, 26.4, 'cap', 'A WINDMILL: CLEAN WATER, NO FUEL'],
+      [26.6, 28.8, 'cap', 'A GREENHOUSE FULL OF SEED TRAYS'],
+      [29.0, 31.2, 'cap', 'CATTLE, LOOSE IN THE WOODS'],
+      [31.6, 34.6, 'cap', 'ENOUGH TO FEED THE CAMP THROUGH THE WINTER'],
+      [34.8, 36.8, 'cap', 'BUT THE FARM IS SOUTH.'],
+      [37.0, 40.0, 'cap', 'AND THE HORDE IS COMING FROM THE NORTH.'],
+      [40.4, 47.5, 'card', 'TOMORROW YOU CHOOSE', 'GET READY FOR THE NORTH · OR STOCK UP AT THE FARM']
+    ]
+  },
   day4: {
     title: 'Day 4 · Millbrook', dur: 76.5, audioOffset: 1.0,
     cam: [[0, 800, 600, 1560], [2.6, 600, 600, 700], [3.6, 268, 660, 300], [8.6, 268, 640, 260], [9.6, 'follow', 'Sam', 150], [14.3, 'follow', 'Sam', 140],
@@ -3333,14 +3358,14 @@ window.oakEpisode = {
   try { const k = localStorage.getItem('oak-tab'); if (k && $('p-' + k)) show(k); } catch (e) {}
   $('q').addEventListener('focus', () => show('people'));
   // the topbar search: type your Instagram username, jump to your survivor on the map
-  $('handles').innerHTML = DATA.survivors.map(d => `<option value="@${esc(d.ig)}">${esc(d.name)}</option>`).join('');
+  $('handles').innerHTML = DATA.survivors.filter(d => d.ig).map(d => `<option value="@${esc(d.ig)}">${esc(d.name)}</option>`).join('');
   function findSurvivor(raw, scroll = true) {
     const s = String(raw || '').trim().toLowerCase().replace(/^@/, ''); if (!s) return;
     const exact = d => d.ig.toLowerCase() === s || d.name.toLowerCase() === s;
     const part = d => d.ig.toLowerCase().startsWith(s) || d.name.toLowerCase().startsWith(s);
     const hit = DATA.survivors.filter(alive).find(exact) || DATA.survivors.find(exact) || (DATA.survivors.filter(part).length === 1 ? DATA.survivors.find(part) : null);
     show('people');
-    if (hit) { $('q').value = '@' + hit.ig; select(hit.name); try { history.replaceState(null, '', '#@' + hit.ig); } catch (e) {} }
+    if (hit) { $('q').value = hit.ig ? '@' + hit.ig : hit.name; select(hit.name); try { history.replaceState(null, '', '#@' + (hit.ig || hit.name)); } catch (e) {} }
     else {
       $('q').value = raw; renderRoster(raw);
       const card = $('card'); card.hidden = false;
