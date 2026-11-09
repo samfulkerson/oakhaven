@@ -1104,6 +1104,33 @@
  "schedule": [
   {
    "on_day": 5,
+   "do": "trip",
+   "count": 2,
+   "place": "Hollow Creek Farm",
+   "why": "farm scouts",
+   "went": "walked south to Hollow Creek Farm to see if Victoria was right",
+   "gain": {
+    "Food": [
+     8,
+     12
+    ],
+    "Water": [
+     6,
+     10
+    ]
+   },
+   "report": [
+    "{crew} filled their packs from the farmhouse pantry and the rain barrels by the barn.",
+    "The crops: two fields of corn and one of wheat are still standing. Cut before the first frost, that's around 60 rations, enough to get the camp through the winter. But something has been moving low in the rows, and {a} didn't want to find out what.",
+    "The water pump: the windmill still turns in the wind, but the pump rod is seized and the troughs are dry. {b} thinks a good mechanic could free it in a day. That's 10 rations of water straight away, then 4 clean every night with no fuel.",
+    "Cattle tracks lead off through the broken fence into the woods. The greenhouse is full of seed trays. Victoria was right."
+   ],
+   "exclude": [
+    "Victoria"
+   ]
+  },
+  {
+   "on_day": 5,
    "do": "horde_warning",
    "horde_day": 7,
    "note": "Tanny's report changes everything: the horde reaches the laundromat on Day 7. Two days to shore up the fence and find ammo."
