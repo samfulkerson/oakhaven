@@ -1,34 +1,41 @@
 {
  "handle": "@surviveoakhaven",
- "day": 4,
- "followers": 23,
+ "day": 5,
+ "followers": 37,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 4. The generator needs 10 liters of gasoline, and the radio says the dead are moving south toward the bay. Where do we go?",
+  "q": "Day 5. The horde is two days out and the fence is at 72%. Ammo, walls, or the farm before the frost? Your call.",
   "opts": [
    [
-    "PIER",
+    "GUN SHOP",
     0,
-    "Medium run into a warehouse nobody has searched. Harder, and the unknown cuts both ways.",
-    "port",
-    "⚓"
+    "Six rounds won't hold a horde. The Gun & Pawn's never been searched.",
+    "gunshop",
+    "🔫"
    ],
    [
-    "DINER",
+    "FORTIFY",
     0,
-    "Easy run to a diner nobody has searched. Food is down to two days.",
-    "diner",
-    "🍳"
+    "Doubling the fence buys time, if the scrap and car doors hold.",
+    "fortify",
+    "🧱"
    ],
    [
-    "GAS",
+    "WINDMILL",
     0,
-    "Easy run. The gas station has the 10 liters of gasoline the generator needs.",
-    "gas",
-    "⛽"
+    "Water now and four clean a night, if the seized pump rod frees up.",
+    "windmill",
+    "💧"
+   ],
+   [
+    "HARVEST",
+    0,
+    "About 60 rations in the fields, but something moves low in the rows.",
+    "harvest",
+    "🌽"
    ]
   ],
-  "how": "Comment PIER, DINER or GAS (or its emoji) on the Day 4 Reel. One vote per account, your last comment counts."
+  "how": "Comment GUN SHOP, FORTIFY, WINDMILL or HARVEST (or its emoji) on the Day 5 Reel. One vote per account, your last comment counts."
  },
  "survivors": [
   {
@@ -38,7 +45,7 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 2
+   "outings": 3
   },
   {
    "name": "Jaylozy",
@@ -53,17 +60,7 @@
    "role": "Scout",
    "bio": "Tanny is a professional hiker who knows every trail, making them a natural Scout.",
    "joined": 2,
-   "outings": 1,
-   "status": "away",
-   "away_until": 5,
-   "away_note": "scouting the north road toward Millbrook",
-   "away_back": "From the overpass he saw them: a column of the dead filling the highway, heading for the bay. Three days out, maybe less.",
-   "away_talk": [
-    "Tanny on the north road. Quiet so far.",
-    "Overpass at mile 12. Smoke on the horizon.",
-    "Seth, you copy? I can hear them before I see them.",
-    "Holy... there are so many. Heading back."
-   ]
+   "outings": 1
   },
   {
    "name": "Seth",
@@ -77,7 +74,8 @@
    "ig": "jhurm",
    "role": "Scavenger",
    "bio": "Gary ran a very specialty shop downtown. He knows every back door on Main Street and won't say how.",
-   "joined": 2
+   "joined": 2,
+   "outings": 1
   },
   {
    "name": "Adam",
@@ -115,7 +113,8 @@
    "ig": "intrepid11",
    "role": "Sharpshooter",
    "bio": "Jeremy is a stranded soldier who has been waiting for orders for way too long and is ready to take the shot himself.",
-   "joined": 4
+   "joined": 4,
+   "outings": 1
   },
   {
    "name": "Victoria",
@@ -148,7 +147,8 @@
     "Sam"
    ],
    "loot": "Canned peaches and a tin of coffee from the walk-in",
-   "place": "Rosie’s Diner"
+   "place": "Rosie’s Diner",
+   "done_day": 4
   },
   {
    "dest": "gas",
@@ -710,7 +710,7 @@
     592,
     392
    ],
-   "status": "rumor",
+   "status": "repairing",
    "clue": "Rosie ran the walk-in freezer off her own generator. Something in there still hums at night.",
    "crew": "1 mechanic + 1 cook",
    "fuel": "15 L gasoline",
@@ -723,14 +723,17 @@
     },
     {
      "label": "A mechanic",
-     "role": "Mechanic"
+     "role": "Mechanic",
+     "done": true,
+     "day": 4
     },
     {
      "label": "A cook to run the kitchen",
      "role": "Cook"
     }
    ],
-   "burn": 2
+   "burn": 2,
+   "progress": 33
   },
   {
    "id": "port",
@@ -862,13 +865,13 @@
  "stock": [
   [
    "Food",
-   29,
+   42,
    200,
    "rations"
   ],
   [
    "Water",
-   13,
+   18,
    200,
    "rations"
   ],
@@ -880,7 +883,7 @@
   ],
   [
    "Ammo",
-   8,
+   6,
    500,
    "rds"
   ],
@@ -892,7 +895,7 @@
   ],
   [
    "Scrap",
-   42,
+   38,
    200,
    "units"
   ],
@@ -1091,61 +1094,76 @@
    "story": [
     "Tanny left alone: scouting the north road toward Millbrook. Back Day 5."
    ]
+  },
+  {
+   "day": 4,
+   "vote": {
+    "question": "Day 4. The generator needs 10 liters of gasoline, and the radio says the dead are moving south toward the bay. Where do we go?",
+    "results": {},
+    "winner": null,
+    "tiebreak": null,
+    "reel": "https://www.instagram.com/reel/Dffv4qAyvCI/"
+   },
+   "outings": [
+    {
+     "target": "Rosie’s Diner",
+     "key": "diner",
+     "first": true,
+     "kind": "run",
+     "difficulty": "easy",
+     "squad": [
+      "Sam"
+     ],
+     "results": [
+      {
+       "name": "Sam",
+       "ig": "surviveoakhaven",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    }
+   ],
+   "healed": [],
+   "joined": [],
+   "waiting": 0,
+   "power": [
+    "Found the Rosie’s freezer generator during the diner run.",
+    "Rosie’s freezer generator: A mechanic ✓"
+   ],
+   "stock": {
+    "Food": 13,
+    "Water": 5,
+    "Ammo": -2,
+    "Barricades": 0,
+    "Scrap": -4
+   },
+   "camp": [],
+   "horde": null,
+   "returned": [
+    "Tanny made it back. From the overpass he saw them: a column of the dead filling the highway, heading for the bay. Three days out, maybe less."
+   ],
+   "story": [
+    "Gary Finklestein and Jeremy walked south to Hollow Creek Farm to see if Victoria was right and came back with +9 food and +10 water.",
+    "Gary Finklestein and Jeremy filled their packs from the farmhouse pantry and the rain barrels by the barn.",
+    "The crops: two fields of corn and one of wheat are still standing. Cut before the first frost, that's around 60 rations, enough to get the camp through the winter. But something has been moving low in the rows, and Gary Finklestein didn't want to find out what.",
+    "The water pump: the windmill still turns in the wind, but the pump rod is seized and the troughs are dry. Jeremy thinks a good mechanic could free it in a day. That's 10 rations of water straight away, then 4 clean every night with no fuel.",
+    "Cattle tracks lead off through the broken fence into the woods. The greenhouse is full of seed trays. Victoria was right.",
+    "Tanny's report changes everything: the horde reaches the laundromat on Day 7. Two days to shore up the fence and find ammo.",
+    "The big choice: get ready for what's coming from the north (ammo from the Gun & Pawn, or fortify the fence), or stockpile at Victoria's farm (the windmill pump for water, or the harvest for food)."
+   ],
+   "day_runs": []
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": 2,
+  "Food": 13,
+  "Water": 5,
   "Ammo": -2,
-  "Scrap": 27,
-  "Water": -6,
-  "Barricades": -4
+  "Barricades": 0,
+  "Scrap": -4
  },
  "schedule": [
-  {
-   "on_day": 5,
-   "do": "trip",
-   "count": 2,
-   "place": "Hollow Creek Farm",
-   "why": "farm scouts",
-   "went": "walked south to Hollow Creek Farm to see if Victoria was right",
-   "gain": {
-    "Food": [
-     8,
-     12
-    ],
-    "Water": [
-     6,
-     10
-    ]
-   },
-   "report": [
-    "{crew} filled their packs from the farmhouse pantry and the rain barrels by the barn.",
-    "The crops: two fields of corn and one of wheat are still standing. Cut before the first frost, that's around 60 rations, enough to get the camp through the winter. But something has been moving low in the rows, and {a} didn't want to find out what.",
-    "The water pump: the windmill still turns in the wind, but the pump rod is seized and the troughs are dry. {b} thinks a good mechanic could free it in a day. That's 10 rations of water straight away, then 4 clean every night with no fuel.",
-    "Cattle tracks lead off through the broken fence into the woods. The greenhouse is full of seed trays. Victoria was right."
-   ],
-   "exclude": [
-    "Victoria"
-   ]
-  },
-  {
-   "on_day": 5,
-   "do": "horde_warning",
-   "horde_day": 7,
-   "note": "Tanny's report changes everything: the horde reaches the laundromat on Day 7. Two days to shore up the fence and find ammo."
-  },
-  {
-   "on_day": 5,
-   "do": "ballot",
-   "keys": [
-    "gunshop",
-    "fortify",
-    "windmill",
-    "harvest"
-   ],
-   "note": "The big choice: get ready for what's coming from the north (ammo from the Gun & Pawn, or fortify the fence), or stockpile at Victoria's farm (the windmill pump for water, or the harvest for food)."
-  },
   {
    "on_day": 7,
    "do": "unlock",
@@ -1168,6 +1186,12 @@
    "by": "Mateen",
    "day": 4,
    "note": "Mateen found scrap wood behind the laundromat and built a garden box on the roof. First greens in a few days."
+  },
+  {
+   "id": "lookout",
+   "name": "Lookout tower",
+   "day": 5,
+   "defense": 6
   }
  ],
  "income": [
@@ -1192,9 +1216,74 @@
  ],
  "milestones_hit": [
   2,
-  5
+  5,
+  25
  ],
  "undead": {
-  "count": 28400
- }
+  "count": 28403,
+  "last": {
+   "day": 4,
+   "killed": 1,
+   "turned": 4,
+   "arrived": 0
+  }
+ },
+ "horde": {
+  "day": 7,
+  "week": 1
+ },
+ "ballot": {
+  "day": 5,
+  "keys": [
+   "gunshop",
+   "fortify",
+   "windmill",
+   "harvest"
+  ]
+ },
+ "day_runs": {
+  "day": 5,
+  "runs": [
+   {
+    "time": "08:40",
+    "dest": "market",
+    "crew": [
+     "Gary Finklestein",
+     "Adam"
+    ],
+    "find": {
+     "Food": 1
+    },
+    "event": "ok",
+    "line": "Gary Finklestein: Found 1 jars of peanut butter in a back room. Heading home."
+   },
+   {
+    "time": "13:30",
+    "dest": "pharmacy",
+    "crew": [
+     "Seth",
+     "Jeremy"
+    ],
+    "find": {
+     "Medicine": 1
+    },
+    "event": "ok",
+    "line": "Seth: Found a dose of antibiotics in a cabinet. Heading home."
+   },
+   {
+    "time": "15:05",
+    "dest": "maple",
+    "crew": [
+     "Sam",
+     "Asa"
+    ],
+    "find": {
+     "Food": 2
+    },
+    "event": "ok",
+    "line": "Sam: Found 2 boxes of crackers nobody wanted. Heading home."
+   }
+  ]
+ },
+ "last_run": 1794224778
 }
