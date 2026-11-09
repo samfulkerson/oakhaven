@@ -305,6 +305,35 @@ def run_schedule(data, new_day, rng):
     return news
 
 
+def scout_trips(data, new_day, rng, outings):
+    """A side trip planned in data.json "schedule" ({"do": "trip", ...}): a few random people who weren't on today's run
+    walk out somewhere, bring a little back, and report what's still there. Goes in before the stockpile is counted."""
+    busy = {n for o in outings for n in o.get("squad", [])}
+    news, keep = [], []
+    for ev in data.get("schedule", []):
+        if ev.get("do") != "trip" or ev.get("on_day", 0) > new_day:
+            keep.append(ev)
+            continue
+        fit = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= data["day"]
+               and not s.get("protected") and s["name"] not in busy and s["name"] not in ev.get("exclude", [])]
+        crew = rng.sample(fit, min(ev.get("count", 2), len(fit)))
+        if not crew:
+            news.append(f"Nobody was free to go to {ev.get('place', 'scout')}.")
+            continue
+        names = " and ".join(s["name"] for s in crew)
+        got = {}
+        for item, (lo, hi) in (ev.get("gain") or {}).items():
+            got[item] = rng.randint(lo, hi)
+            data.setdefault("camp_bonus", []).append({"item": item, "amt": got[item], "why": ev.get("why", "scouts")})
+        for s in crew:
+            s["outings"] = s.get("outings", 0) + 1
+        what = " and ".join(f"+{v} {UNITS.get(k, k.lower())}" for k, v in got.items()) or "nothing"
+        news.append(f"{names} {ev.get('went', 'went scouting')} and came back with {what}.")
+        news += [r.replace("{crew}", names).replace("{a}", crew[0]["name"]).replace("{b}", crew[-1]["name"]) for r in ev.get("report", [])]
+    data["schedule"] = keep
+    return news
+
+
 def come_home(data, new_day):
     back = []
     for s in data["survivors"]:
@@ -882,11 +911,12 @@ def main():
     keys = {o[0].upper(): o[3] for o in (data.get("vote") or {}).get("opts", []) if len(o) > 3}
     outings = todays_outing(data, keys.get(winner, winner), rng)
     new_day = day + 1
+    trips = scout_trips(data, new_day, rng, outings)
     ledger, stock_notes = keep_stockpile(data, outings, rng, new_day)
     horde = horde_night(data, rng, day)
     healed = heal(data, new_day)
     returned = come_home(data, new_day)
-    story = run_schedule(data, new_day, rng)
+    story = trips + run_schedule(data, new_day, rng)
 
     living_ig = {s.get("ig", "").lower() for s in data["survivors"] if s.get("status") != "dead"}
     living_ig |= {str(p.get("ig", "")).lower() for p in data.get("waitlist", [])}
