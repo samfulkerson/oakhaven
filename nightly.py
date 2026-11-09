@@ -17,6 +17,7 @@ Options:
   DRY_RUN=1              print what would happen, change nothing
 """
 import os, re, json, random, time
+from datetime import datetime, timezone
 from collections import Counter
 
 # ---------------------------------------------------------------- settings you might want to change
@@ -65,8 +66,10 @@ def ig_get(url, **params):
     return r.json()
 
 
-def fetch_instagram():
-    """Follower count, newest Reel and every comment on it. Returns None if no Instagram credentials are set."""
+def fetch_instagram(since=None):
+    """Follower count, the day's vote Reel, and every comment left since the last run on ANY recent post.
+    Extra posts (a story video, a spotlight) don't hide the vote: people comment wherever they like.
+    Returns None if no Instagram credentials are set."""
     if not os.environ.get("IG_TOKEN"):
         log("No IG_TOKEN set: skipping Instagram (no vote count, no new survivors).")
         return None
@@ -74,20 +77,25 @@ def fetch_instagram():
     uid = "me" if "graph.instagram.com" in GRAPH else IG_ACCOUNT_ID
     log(f"Instagram API: {GRAPH.split('//')[1]} as {uid}")
     followers = ig_get(f"{GRAPH}/{uid}", fields="followers_count")["followers_count"]
-    media = ig_get(f"{GRAPH}/{uid}/media", fields="id,media_type,media_product_type,permalink,timestamp", limit=15)["data"]
-    reels = [m for m in media if m.get("media_product_type") == "REELS" or m.get("media_type") in ("VIDEO", "REELS")]
-    if not reels:
-        log("No Reel found yet.")
+    media = ig_get(f"{GRAPH}/{uid}/media", fields="id,caption,media_type,media_product_type,permalink,timestamp", limit=15)["data"]
+    if not media:
+        log("No posts yet.")
         return {"followers": followers, "reel": None, "comments": []}
-    reel = reels[0]
-    comments, url, params = [], f"{GRAPH}/{reel['id']}/comments", {"fields": "username,text,timestamp", "limit": 50}
-    while url:
-        page = ig_get(url, **params)
-        comments += page.get("data", [])
-        url, params = page.get("paging", {}).get("next"), {}
-    comments = [c for c in comments if c.get("username")]
+    since = since or time.time() - 36 * 3600
+    stamp = lambda t: datetime.strptime(t[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+    recent = [m for m in media if stamp(m["timestamp"]) > time.time() - 72 * 3600] or media[:1]
+    # the vote Reel: the newest recent post that asks for a pick; otherwise just the newest Reel
+    reels = [m for m in media if m.get("media_product_type") == "REELS" or m.get("media_type") in ("VIDEO", "REELS")]
+    reel = next((m for m in recent if "comment your pick" in (m.get("caption") or "").lower()), reels[0] if reels else media[0])
+    comments = []
+    for m in recent:
+        url, params = f"{GRAPH}/{m['id']}/comments", {"fields": "username,text,timestamp", "limit": 50}
+        while url:
+            page = ig_get(url, **params)
+            comments += [c for c in page.get("data", []) if c.get("username") and stamp(c.get("timestamp", "1970-01-01T00:00:00")) > since]
+            url, params = page.get("paging", {}).get("next"), {}
     comments.sort(key=lambda c: c.get("timestamp", ""))
-    log(f"Instagram: {followers} followers, {len(comments)} comments on {reel['permalink']}")
+    log(f"Instagram: {followers} followers, {len(comments)} comments on {len(recent)} recent post(s); vote Reel {reel['permalink']}")
     return {"followers": followers, "reel": reel, "comments": comments}
 
 
@@ -110,7 +118,7 @@ def count_vote(data, comments):
         if c["username"].lower() == owner:                 # your own replies on the Reel don't count as votes
             continue
         text = " " + re.sub(r"[^A-Z0-9 ]", " ", c.get("text", "").upper()) + " "
-        pick = next((o for o in options if f" {o} " in text), None) \
+        pick = next((o for o in options if re.search(rf"(?<![A-Z]){re.escape(o)}(?![A-Z])", text)), None) \
             or next((o for o in options if o in emojis and emojis[o] in plain(c.get("text", ""))), None)
         if pick:
             ballots[c["username"].lower()] = pick          # later comments overwrite earlier ones
@@ -897,7 +905,7 @@ def main():
     rng = random.Random(f"oakhaven-{day}-{os.environ.get('OAKHAVEN_SEED', '')}")
     problems = []
     try:
-        ig = fetch_instagram()
+        ig = fetch_instagram(data.get("last_run"))
     except Exception as e:                                 # an expired token shouldn't stop the story: the day still advances
         log(f"!! Instagram failed: {e}")
         problems.append(f"Instagram: {e}")
