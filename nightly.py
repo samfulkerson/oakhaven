@@ -16,7 +16,7 @@ Secrets it reads from the environment (set them in GitHub under Settings > Secre
 Options:
   DRY_RUN=1              print what would happen, change nothing
 """
-import os, re, json, random
+import os, re, json, random, time
 from collections import Counter
 
 # ---------------------------------------------------------------- settings you might want to change
@@ -888,6 +888,11 @@ def next_vote(data, new_day, rng, recap, problems):
 # ---------------------------------------------------------------- main
 def main():
     data = json.load(open(DATA_FILE, encoding="utf-8"))
+    # GitHub often starts the scheduled run hours late. If the day was already advanced by hand (the Run workflow button)
+    # in the last 12 hours, the late scheduled run skips, so a day is never advanced twice.
+    if os.environ.get("GITHUB_EVENT_NAME") == "schedule" and time.time() - data.get("last_run", 0) < 12 * 3600:
+        log("Already advanced in the last 12 hours (by hand). Skipping this scheduled run.")
+        return
     day = data["day"]
     rng = random.Random(f"oakhaven-{day}-{os.environ.get('OAKHAVEN_SEED', '')}")
     problems = []
@@ -1017,6 +1022,7 @@ def main():
     if DRY:
         log("DRY_RUN: nothing written.")
         return
+    data["last_run"] = int(time.time())
     json.dump(data, open(DATA_FILE, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     open(REPORT_FILE, "w", encoding="utf-8").write(report)
 
