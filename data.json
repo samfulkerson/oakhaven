@@ -1,34 +1,41 @@
 {
  "handle": "@surviveoakhaven",
- "day": 4,
- "followers": 23,
+ "day": 5,
+ "followers": 37,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 4. The generator needs 10 liters of gasoline, and the radio says the dead are moving south toward the bay. Where do we go?",
+  "q": "Day 5. Tanny saw the horde on the highway, three days out. The fence is at 72% and we have 2 rounds. Where do we go?",
   "opts": [
    [
-    "PIER",
+    "GUN SHOP",
     0,
-    "Medium run into a warehouse nobody has searched. Harder, and the unknown cuts both ways.",
-    "port",
-    "⚓"
+    "2 rounds left. The Gun & Pawn was never searched. Could be nothing.",
+    "gunshop",
+    "🔫"
    ],
    [
-    "DINER",
+    "FORTIFY",
     0,
-    "Easy run to a diner nobody has searched. Food is down to two days.",
-    "diner",
-    "🍳"
+    "Fence is at 72% with the horde two days out. No time to wait.",
+    "fortify",
+    "🧱"
    ],
    [
-    "GAS",
+    "WINDMILL",
     0,
-    "Easy run. The gas station has the 10 liters of gasoline the generator needs.",
-    "gas",
-    "⛽"
+    "Water is gone. Gary says a mechanic could free the pump in a day.",
+    "windmill",
+    "💧"
+   ],
+   [
+    "HARVEST",
+    0,
+    "About 60 rations in the fields, but something moves low in the rows.",
+    "harvest",
+    "🌽"
    ]
   ],
-  "how": "Comment PIER, DINER or GAS (or its emoji) on the Day 4 Reel. One vote per account, your last comment counts."
+  "how": "Comment GUN SHOP, FORTIFY, WINDMILL or HARVEST (or its emoji) on the Day 5 Reel. One vote per account, your last comment counts."
  },
  "survivors": [
   {
@@ -38,14 +45,15 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 2
+   "outings": 3
   },
   {
    "name": "Jaylozy",
    "ig": "jaemos16",
    "role": "Sharpshooter",
    "bio": "Jaylozy joins as a Sharpshooter, ready to take the shot when the moment comes.",
-   "joined": 2
+   "joined": 2,
+   "outings": 1
   },
   {
    "name": "Tanny",
@@ -53,17 +61,7 @@
    "role": "Scout",
    "bio": "Tanny is a professional hiker who knows every trail, making them a natural Scout.",
    "joined": 2,
-   "outings": 1,
-   "status": "away",
-   "away_until": 5,
-   "away_note": "scouting the north road toward Millbrook",
-   "away_back": "From the overpass he saw them: a column of the dead filling the highway, heading for the bay. Three days out, maybe less.",
-   "away_talk": [
-    "Tanny on the north road. Quiet so far.",
-    "Overpass at mile 12. Smoke on the horizon.",
-    "Seth, you copy? I can hear them before I see them.",
-    "Holy... there are so many. Heading back."
-   ]
+   "outings": 1
   },
   {
    "name": "Seth",
@@ -77,14 +75,16 @@
    "ig": "jhurm",
    "role": "Scavenger",
    "bio": "Gary ran a very specialty shop downtown. He knows every back door on Main Street and won't say how.",
-   "joined": 2
+   "joined": 2,
+   "outings": 1
   },
   {
    "name": "Adam",
    "ig": "adamfulk915",
    "role": "Mechanic",
    "bio": "Adam showed up at the gate with a toolbox and grease under his nails. First thing he asked was where the generator is.",
-   "joined": 3
+   "joined": 3,
+   "outings": 1
   },
   {
    "name": "Asa",
@@ -115,7 +115,8 @@
    "ig": "intrepid11",
    "role": "Sharpshooter",
    "bio": "Jeremy is a stranded soldier who has been waiting for orders for way too long and is ready to take the shot himself.",
-   "joined": 4
+   "joined": 4,
+   "outings": 1
   },
   {
    "name": "Victoria",
@@ -128,6 +129,13 @@
     "hair": "#3b2416",
     "long": 1
    }
+  },
+  {
+   "name": "Francis",
+   "ig": "ihateedison",
+   "role": "Builder",
+   "bio": "Francis is a carpenter who knows where the good tools are hiding, and he'll build you a fort before the sun goes down.",
+   "joined": 5
   }
  ],
  "runs": [
@@ -192,10 +200,13 @@
    "dest": "port",
    "difficulty": "medium",
    "squad": [
-    "Sam"
+    "Sam",
+    "Jeremy",
+    "Jaylozy"
    ],
    "loot": "A pallet of army rations from a split container",
-   "place": "Pier 9 warehouse"
+   "place": "Pier 9 warehouse",
+   "done_day": 4
   },
   {
    "dest": "ranger",
@@ -862,13 +873,13 @@
  "stock": [
   [
    "Food",
-   29,
+   62,
    200,
    "rations"
   ],
   [
    "Water",
-   13,
+   8,
    200,
    "rations"
   ],
@@ -880,7 +891,7 @@
   ],
   [
    "Ammo",
-   8,
+   2,
    500,
    "rds"
   ],
@@ -892,7 +903,7 @@
   ],
   [
    "Scrap",
-   42,
+   46,
    200,
    "units"
   ],
@@ -1091,61 +1102,90 @@
    "story": [
     "Tanny left alone: scouting the north road toward Millbrook. Back Day 5."
    ]
+  },
+  {
+   "day": 4,
+   "vote": {
+    "question": "Day 4. The generator needs 10 liters of gasoline, and the radio says the dead are moving south toward the bay. Where do we go?",
+    "results": {
+     "DINER": 3,
+     "PIER": 4
+    },
+    "winner": "PIER",
+    "tiebreak": null,
+    "reel": "https://www.instagram.com/reel/Dfe1d7EJ-1H/"
+   },
+   "outings": [
+    {
+     "target": "Pier 9 warehouse",
+     "key": "port",
+     "first": true,
+     "kind": "run",
+     "difficulty": "medium",
+     "squad": [
+      "Sam",
+      "Jeremy",
+      "Jaylozy"
+     ],
+     "results": [
+      {
+       "name": "Sam",
+       "ig": "surviveoakhaven",
+       "outcome": "ok"
+      },
+      {
+       "name": "Jeremy",
+       "ig": "intrepid11",
+       "outcome": "ok"
+      },
+      {
+       "name": "Jaylozy",
+       "ig": "jaemos16",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    }
+   ],
+   "healed": [],
+   "joined": [
+    "Francis"
+   ],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Food": 33,
+    "Water": -5,
+    "Ammo": -6,
+    "Scrap": 4,
+    "Barricades": 0
+   },
+   "camp": [],
+   "horde": null,
+   "returned": [
+    "Tanny made it back. From the overpass he saw them: a column of the dead filling the highway, heading for the bay. Three days out, maybe less."
+   ],
+   "story": [
+    "Adam and Gary Finklestein walked south to Hollow Creek Farm to see if Victoria was right and came back with +12 food and +6 water.",
+    "Adam and Gary Finklestein filled their packs from the farmhouse pantry and the rain barrels by the barn.",
+    "The crops: two fields of corn and one of wheat are still standing. Cut before the first frost, that's around 60 rations, enough to get the camp through the winter. But something has been moving low in the rows, and Adam didn't want to find out what.",
+    "The water pump: the windmill still turns in the wind, but the pump rod is seized and the troughs are dry. Gary Finklestein thinks a good mechanic could free it in a day. That's 10 rations of water straight away, then 4 clean every night with no fuel.",
+    "Cattle tracks lead off through the broken fence into the woods. The greenhouse is full of seed trays. Victoria was right.",
+    "Tanny's report changes everything: the horde reaches the laundromat on Day 7. Two days to shore up the fence and find ammo.",
+    "The big choice: get ready for what's coming from the north (ammo from the Gun & Pawn, or fortify the fence), or stockpile at Victoria's farm (the windmill pump for water, or the harvest for food)."
+   ],
+   "day_runs": []
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": 2,
-  "Ammo": -2,
-  "Scrap": 27,
-  "Water": -6,
-  "Barricades": -4
+  "Food": 33,
+  "Water": -5,
+  "Ammo": -6,
+  "Scrap": 4,
+  "Barricades": 0
  },
  "schedule": [
-  {
-   "on_day": 5,
-   "do": "trip",
-   "count": 2,
-   "place": "Hollow Creek Farm",
-   "why": "farm scouts",
-   "went": "walked south to Hollow Creek Farm to see if Victoria was right",
-   "gain": {
-    "Food": [
-     8,
-     12
-    ],
-    "Water": [
-     6,
-     10
-    ]
-   },
-   "report": [
-    "{crew} filled their packs from the farmhouse pantry and the rain barrels by the barn.",
-    "The crops: two fields of corn and one of wheat are still standing. Cut before the first frost, that's around 60 rations, enough to get the camp through the winter. But something has been moving low in the rows, and {a} didn't want to find out what.",
-    "The water pump: the windmill still turns in the wind, but the pump rod is seized and the troughs are dry. {b} thinks a good mechanic could free it in a day. That's 10 rations of water straight away, then 4 clean every night with no fuel.",
-    "Cattle tracks lead off through the broken fence into the woods. The greenhouse is full of seed trays. Victoria was right."
-   ],
-   "exclude": [
-    "Victoria"
-   ]
-  },
-  {
-   "on_day": 5,
-   "do": "horde_warning",
-   "horde_day": 7,
-   "note": "Tanny's report changes everything: the horde reaches the laundromat on Day 7. Two days to shore up the fence and find ammo."
-  },
-  {
-   "on_day": 5,
-   "do": "ballot",
-   "keys": [
-    "gunshop",
-    "fortify",
-    "windmill",
-    "harvest"
-   ],
-   "note": "The big choice: get ready for what's coming from the north (ammo from the Gun & Pawn, or fortify the fence), or stockpile at Victoria's farm (the windmill pump for water, or the harvest for food)."
-  },
   {
    "on_day": 7,
    "do": "unlock",
@@ -1168,6 +1208,12 @@
    "by": "Mateen",
    "day": 4,
    "note": "Mateen found scrap wood behind the laundromat and built a garden box on the roof. First greens in a few days."
+  },
+  {
+   "id": "lookout",
+   "name": "Lookout tower",
+   "day": 5,
+   "defense": 6
   }
  ],
  "income": [
@@ -1192,10 +1238,83 @@
  ],
  "milestones_hit": [
   2,
-  5
+  5,
+  25
  ],
  "undead": {
-  "count": 28400
+  "count": 28393,
+  "last": {
+   "day": 4,
+   "killed": 11,
+   "turned": 4,
+   "arrived": 0
+  }
  },
- "last_run": 1794138831
+ "last_run": 1794225033,
+ "horde": {
+  "day": 7,
+  "week": 1
+ },
+ "ballot": {
+  "day": 5,
+  "keys": [
+   "gunshop",
+   "fortify",
+   "windmill",
+   "harvest"
+  ]
+ },
+ "day_runs": {
+  "day": 5,
+  "runs": [
+   {
+    "time": "08:40",
+    "dest": "market",
+    "crew": [
+     "Gary Finklestein",
+     "Adam"
+    ],
+    "find": {},
+    "event": "ok",
+    "line": "Gary Finklestein: Picked clean. Nothing worth carrying. Heading home."
+   },
+   {
+    "time": "11:50",
+    "dest": "maple",
+    "crew": [
+     "Seth",
+     "Jeremy"
+    ],
+    "find": {},
+    "event": "ok",
+    "line": "Seth: Picked clean. Nothing worth carrying. Heading home."
+   },
+   {
+    "time": "13:30",
+    "dest": "diner",
+    "crew": [
+     "Sam",
+     "Asa"
+    ],
+    "find": {
+     "Water": 2
+    },
+    "event": "ok",
+    "line": "Sam: Found 2 cases of bottled water in a stockroom. Heading home."
+   },
+   {
+    "time": "15:05",
+    "dest": "gunshop",
+    "crew": [
+     "Tanny",
+     "Jaylozy"
+    ],
+    "find": {
+     "Scrap": 1
+    },
+    "event": "ok",
+    "line": "Tanny: Found 1 car doors for the fence. Heading home."
+   }
+  ]
+ }
 }
