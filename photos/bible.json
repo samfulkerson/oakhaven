@@ -9,18 +9,102 @@
  ],
  "stamp": "Added afterwards by camera.py, never by the image model: orange seven-segment date stamp in the lower right reading DAY nn and the time.",
  "characters": {
-  "Sam": "Scavenger and the camp's leader. Tan canvas work jacket, black jeans, gray knit beanie, big gray hiking backpack, a crowbar in one hand.",
-  "Jaylozy": "Sharpshooter. Slate-blue jacket, olive cargo pants, black hood up, a scoped hunting rifle slung over the shoulder.",
-  "Tanny": "Scout. Olive-green field jacket with the hood always up, a green shemagh scarf over the lower face, binoculars on a strap, a small handheld radio.",
-  "Seth": "Radio operator. Slate-blue jacket, olive pants, a backpack radio with a tall whip antenna (red tip), a headset around the neck.",
-  "Gary Finklestein": "Scavenger. Dark green jacket, navy pants, gray beanie, a brown leather satchel stuffed with finds.",
-  "Adam": "Mechanic. Brown leather work jacket, navy blue cap, tool belt, a big adjustable wrench in hand.",
-  "Asa": "Guard and prepper, light-skinned. Charcoal-gray hoodie, navy pants, never without a red-handled fire axe.",
-  "Gabe": "Medic. Cream-white jacket with a red cross patch on the shoulder, a red medical bag.",
-  "Mateen": "Farmer. Wide straw farmer's hat, gray jacket, black pants.",
-  "Jeremy": "Sharpshooter. Muted purple-gray jacket, olive pants, rifle on his back, carries a homemade spear: a rifle bayonet lashed to a mop handle with fence wire.",
-  "Victoria": "Chef. Long dark brown hair (seen from behind), white chef's jacket, a chef's knife.",
-  "Francis": "Carpenter. Yellow hard hat, olive-green work jacket, tool belt, a claw hammer."
+  "Sam": {
+   "role": "Scavenger, camp leader",
+   "skin": "medium-tan skin",
+   "hair": "gray hair, kept under a gray knit beanie",
+   "outfit": "tan canvas work jacket, black jeans, gray knit beanie",
+   "signature": "a big gray hiking backpack, a crowbar in hand",
+   "face": "out of frame by angle, shadow, or a shoulder-level crop — he's the photographer as often as he's in the shot"
+  },
+  "Jaylozy": {
+   "role": "Sharpshooter",
+   "skin": "fair skin",
+   "hair": "black hair, hidden under a hood",
+   "outfit": "slate-blue jacket, olive cargo pants, black hood up",
+   "signature": "a scoped hunting rifle slung over one shoulder",
+   "face": "hood up, shot from the side or behind"
+  },
+  "Tanny": {
+   "role": "Scout",
+   "skin": "dark brown skin",
+   "hair": "hidden — hood always up",
+   "outfit": "olive-green field jacket with the hood always up, a green shemagh scarf over the lower face",
+   "signature": "binoculars on a strap, a small handheld radio",
+   "face": "scarf and hood together — never seen, even in profile"
+  },
+  "Seth": {
+   "role": "Radio operator",
+   "skin": "dark brown skin",
+   "hair": "brown hair",
+   "outfit": "slate-blue jacket, olive pants",
+   "signature": "a backpack radio with a tall whip antenna (red tip), a headset around the neck",
+   "face": "angle and crop, headset strap crossing part of the face"
+  },
+  "Gary Finklestein": {
+   "role": "Scavenger",
+   "skin": "dark brown skin",
+   "hair": "gray hair, under a gray beanie",
+   "outfit": "dark green jacket, navy pants, gray beanie",
+   "signature": "a brown leather satchel stuffed with finds",
+   "face": "beanie brim plus angle"
+  },
+  "Adam": {
+   "role": "Mechanic",
+   "skin": "medium-brown skin",
+   "hair": "brown hair, under a navy blue cap",
+   "outfit": "brown leather work jacket, navy blue cap, dark pants, tool belt",
+   "signature": "a big adjustable wrench in hand",
+   "face": "cap brim plus angle, often bent over an engine"
+  },
+  "Asa": {
+   "role": "Guard",
+   "skin": "fair skin",
+   "hair": "near-black hair, under a hoodie",
+   "outfit": "charcoal-gray hoodie, navy pants",
+   "signature": "never without his red-handled fire axe",
+   "face": "hoodie up and in shadow"
+  },
+  "Gabe": {
+   "role": "Medic",
+   "skin": "medium-dark brown skin",
+   "hair": "gray hair",
+   "outfit": "cream-white jacket with a red cross patch on the shoulder",
+   "signature": "a red medical bag",
+   "face": "angle and crop, usually seen mid-task over a patient or supply crate"
+  },
+  "Mateen": {
+   "role": "Farmer",
+   "skin": "medium-dark brown skin",
+   "hair": "black hair, under a straw hat",
+   "outfit": "wide straw farmer's hat, charcoal-gray jacket, black pants",
+   "signature": "no fixed tool yet — usually shown mid-task with seed sacks or garden tools",
+   "face": "hat brim shadow"
+  },
+  "Jeremy": {
+   "role": "Sharpshooter",
+   "skin": "medium-brown skin",
+   "hair": "sandy, light-brown hair",
+   "outfit": "muted purple-gray jacket, olive pants, rifle on his back",
+   "signature": "a homemade bayonet spear — a rifle bayonet lashed to a mop handle with fence wire",
+   "face": "angle and crop"
+  },
+  "Victoria": {
+   "role": "Chef",
+   "skin": "medium-brown skin",
+   "hair": "long, dark brown hair",
+   "outfit": "white chef's jacket, navy pants",
+   "signature": "a chef's knife on her belt",
+   "face": "always shown from behind, hair covering where a face would be"
+  },
+  "Francis": {
+   "role": "Carpenter",
+   "skin": "fair skin",
+   "hair": "brown hair, under a hard hat",
+   "outfit": "yellow hard hat, olive-green work jacket, dark olive pants, tool belt",
+   "signature": "a claw hammer in hand",
+   "face": "hard hat brim shadow"
+  }
  },
  "places": {
   "laundromat": {
