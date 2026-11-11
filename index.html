@@ -1184,6 +1184,9 @@ function buildBG() {
       P(x, 205, 129, '#4a3420', 1, 10); P(x, 213, 129, '#4a3420', 1, 10); for (let i = 0; i < 8; i++) P(x, 206 + i, 130 + i, '#3b2c20');
       P(x, 203, 126, '#7a5232', 13, 5); P(x, 203, 126, '#9a7242', 13, 1); P(x, 202, 123, '#6a6e72', 15, 3); P(x, 202, 123, '#8a8e92', 15, 1); P(x, 209, 120, '#5a4128', 1, 3); P(x, 210, 120, '#c03a2e', 3, 2);
     }
+    if ((DATA.features || []).some(f => f.id === 'lookout')) {          // a ladder up the east wall to the roof, for whoever has the watch
+      P(x, 217, 132, '#7a7e80', 1, 18); P(x, 219, 132, '#7a7e80', 1, 18); for (let y = 133; y < 150; y += 2) P(x, 218, y, '#a6aaac');
+    }
     if ((DATA.features || []).some(f => f.id === 'roof_garden')) {      // Mateen's garden box on the roof, built from scrap wood
       P(x, 188, 130, '#6b4a2a', 13, 8); P(x, 189, 131, '#3a2a1a', 11, 6); P(x, 188, 130, '#8a6a44', 13, 1);
       for (let X = 190; X < 199; X += 2) for (let y = 132; y < 137; y += 2) { P(x, X, y, hash2(X, y, 77) > .5 ? '#6aa03a' : '#4f8a2e'); if (hash2(X, y, 78) > .6) P(x, X, y - 1, '#8cc45a'); }
@@ -2741,7 +2744,7 @@ const fitToGo = d => !!d && d.status !== 'dead' && d.status !== 'injured' && d.s
 const CREW_N = { easy: 2, medium: 2, hard: 3, deadly: 4 };
 let nextCrew = null;
 function planCrew(r) {
-  const pool = people.filter(e => e.d && fitToGo(e.d) && e.mode !== 'run').sort((a, b) => (a.d.runsDone - b.d.runsDone) || (rand() - .5));
+  const pool = people.filter(e => e.d && fitToGo(e.d) && e.mode !== 'run' && e.mode !== 'watch').sort((a, b) => (a.d.runsDone - b.d.runsDone) || (rand() - .5));
   return pool.slice(0, Math.min(CREW_N[r.difficulty] || 2, pool.length));
 }
 function startRun() {
@@ -2750,7 +2753,7 @@ function startRun() {
   for (let k = 0; k < DATA.runs.length && !r; k++) { const c = DATA.runs[(runIdx + k) % DATA.runs.length]; if (!active.some(a => a.r === c)) { r = c; runIdx = (runIdx + k) % DATA.runs.length; } }
   if (!r) return;
   const d = POIS[r.dest];
-  const members = nextCrew && nextCrew.length && nextCrew.every(m => fitToGo(m.d) && m.mode !== 'run') ? nextCrew : planCrew(r);
+  const members = nextCrew && nextCrew.length && nextCrew.every(m => fitToGo(m.d) && m.mode !== 'run' && m.mode !== 'watch') ? nextCrew : planCrew(r);
   nextCrew = null;
   if (!members.length) { runWait = 900; return; }        // nobody is fit to go: wait and check again
   if (active.length && people.filter(e => e.d && fitToGo(e.d) && e.mode !== 'run').length - members.length < 1) { runWait = 600; return; }   // keep someone at the fence
@@ -2782,7 +2785,7 @@ function stepDayRuns() {
     if (h - x.at > 1) { tallyFind(x); continue; }     // already over before this page opened
     const r = DATA.runs.find(q => q.dest === x.dest), crew = x.crew.map(n => byName[n]).filter(Boolean);
     if (!r || !crew.length) { tallyFind(x); continue; }
-    if (active.some(a => a.r === r) || crew.some(e => e.mode === 'run' || e.mode === 'away')) continue;    // wait until they're free
+    if (active.some(a => a.r === r) || crew.some(e => e.mode === 'run' || e.mode === 'away' || e.mode === 'watch')) continue;    // wait until they're free
     x.state = 'out'; launch(r, crew, x);
   }
   if (!dayRunsSeen) { dayRunsSeen = true; const t = foundTxt(); if (t) radio(`${DATA.survivors[0].name}: Small runs so far today: ${t}.`); }
@@ -2827,6 +2830,37 @@ function moveToward(e, tx, ty, spd) {
   e.x += dx / dist * spd; e.y += dy / dist * spd; if (Math.abs(dx) > .3) e.flip = dx < 0; e.step += spd; e.moving = true;
   return false;
 }
+// the lookout tower: one person at a time takes a 3-4 minute shift on the roof, then climbs down and someone else goes up
+const LOOK_UP = [[453, 500], [453, 482], [452, 470], [449, 462], [444, 459], [441, 457]], LOOK_CLIMB = 3;   // around the side, up the ladder, onto the platform
+const look = { e: null, phase: '', wp: 0, until: 0, next: performance.now() + 6000 };
+function stepLookout() {
+  if (!(DATA.features || []).some(f => f.id === 'lookout') || runWait > 1e8) return;   // not while the studio plays a scripted day
+  const now = performance.now(), e = look.e;
+  if (!e) {
+    if (now < look.next) return;
+    let pool = people.filter(p => p.d && fitToGo(p.d) && p.mode === 'wander');
+    if (pool.length > 1) pool = pool.filter(p => p.d.name !== look.last);          // never the same person twice in a row
+    if (!pool.length) { look.next = now + 20000; return; }
+    const w = pool[rand() * pool.length | 0];
+    if (w.inside) { w.inside = false; w.hidden = false; w.x = HOME.door[0]; w.y = HOME.door[1] + 2; }
+    w.mode = 'watch'; Object.assign(look, { e: w, phase: 'up', wp: 0, last: w.d.name });
+    return;
+  }
+  if (e.mode !== 'watch') { look.e = null; look.next = now + 8000; return; }      // called away (a run, a story beat)
+  const spd = i => i >= LOOK_CLIMB ? .1 : e.spd + .03;                               // slow on the ladder
+  if (look.phase === 'up') {
+    if (moveToward(e, LOOK_UP[look.wp][0], LOOK_UP[look.wp][1], spd(look.wp)) && ++look.wp >= LOOK_UP.length) {
+      look.phase = 'on'; look.until = now + (180 + rand() * 60) * 1000; e.flip = rand() < .5;
+    }
+  } else if (look.phase === 'on') {
+    if (frame % 400 === 0) e.flip = !e.flip;                                         // scanning one way, then the other
+    if (now > look.until) { look.phase = 'down'; look.wp = LOOK_UP.length - 2; }
+  } else if (look.phase === 'down') {
+    if (moveToward(e, LOOK_UP[look.wp][0], LOOK_UP[look.wp][1], spd(look.wp + 1)) && --look.wp < 0) {
+      e.mode = 'wander'; e.wait = 60; [e.tx, e.ty] = yardSpot(); look.e = null; look.next = now + (4 + rand() * 6) * 1000;
+    }
+  }
+}
 function runnersOutside() { return active.flatMap(a => a.r.status !== 'searching' ? a.members.filter(m => !m.hidden && !inFence(m.x, m.y)) : []); }
 
 function update() {
@@ -2848,6 +2882,7 @@ function update() {
       }
     }
   }
+  stepLookout();
   const outside = runnersOutside();
   for (const m of outside) {
     if (--m.cool > 0) continue;
@@ -3377,7 +3412,7 @@ function whereOf(d) {
   const e = byName[d.name];
   if ((d.joined || 1) > DATA.day) return `Arrives on Day ${d.joined}`;
   if (d.status === 'away') return `Out alone: ${d.away_note || 'scouting'}${d.away_until ? `. Back Day ${d.away_until}` : ''}`;
-  const base = !e ? 'At the laundromat' : e.mode === 'run' ? `Out on the ${runOf(e) ? runOf(e).d.name : ''} run` : e.inside ? 'Barricaded inside for the night' : 'In the laundromat yard';
+  const base = !e ? 'At the laundromat' : e.mode === 'run' ? `Out on the ${runOf(e) ? runOf(e).d.name : ''} run` : e.mode === 'watch' ? 'On watch in the lookout tower' : e.inside ? 'Barricaded inside for the night' : 'In the laundromat yard';
   return base + (d.status === 'injured' ? ` · injured${d.injury ? ` (${d.injury})` : ''}, resting${d.injured_until ? ` until Day ${d.injured_until}` : ''}` : '');
 }
 let pickedName = null;   // the card that's highlighted (living or fallen)
