@@ -2608,7 +2608,7 @@ function retarget(z) {
 }
 // is a point on the camera right now (with a margin)? used so the dead never pop in or vanish where someone is looking
 const onScreen = (x, y, m = 40) => x > camX - m && x < camX + vw() + m && y > camY - m && y < camY + vh() + m;
-const CORPSE = 5400;   // frames a body stays on the street (about 90 seconds)
+const CORPSE = 3600;   // frames a body stays on the street (about a minute), fading out over the last 10 seconds
 function spawnZombie(brute, nearOk, edge) {
   const z = { kind: 'z', id: zId++, wait: 0, state: 'roam', spd: brute ? .06 : .06 + rand() * .06, step: rand() * 10, flip: false, hp: brute ? 3 : 1, brute, dying: 0, bang: 60 + rand() * 60, stuck: 0,
     look: lookFor('z' + zId + (brute ? 'b' : ''), '', true) };
@@ -3089,7 +3089,7 @@ function draw() {
   for (const a of actors) {
     if (a.kind === 'z') {
       const img = sprite(a.look, a.dying ? 'stand' : poseOf(a));
-      if (a.dying) drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1, a.dying < CORPSE - 900 ? .9 : Math.max(0, (CORPSE - a.dying) / 1000), true);   // bodies lie where they fell, then fade
+      if (a.dying) drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1, a.dying < CORPSE - 600 ? .9 : Math.max(0, (CORPSE - a.dying) / 667), true);   // bodies lie where they fell, then fade
       else drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1);
     } else drawSprite(sprite(a.look, poseOf(a)), a.x, a.y, a.flip);
   }
