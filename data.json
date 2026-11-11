@@ -285,7 +285,8 @@
     "Sam"
    ],
    "loot": "Seed packets, a sack of feed corn and two very angry chickens",
-   "place": "Hollow Creek Farm"
+   "place": "Hollow Creek Farm",
+   "scouted": 4
   },
   {
    "dest": "fair",
