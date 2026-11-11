@@ -2462,7 +2462,7 @@ const ZONES_FOR = { soldier: [[1330, 60, 240, 340], [1200, 292, 90, 26]], patien
 const zUnlocked = t => (DATA.zombie_types || ['walker']).includes(t);
 const OX = 2, OY = 1, GW = 11, GH = 13;
 
-// what a survivor carries shows on their sprite: { kind: 'weapon', name: 'Machete', icon: 'blade' | 'club' | 'axe' } or { kind: 'armor', ... }
+// what a survivor carries shows on their sprite: { kind: 'weapon', name: 'Machete', icon: 'blade' | 'club' | 'axe' | 'spear' } or { kind: 'armor', ... }
 function gearLook(d) {
   const g = d.gear || [], w = g.find(x => x.kind === 'weapon');
   return { ...(w ? { weapon: w.icon || 'club' } : {}), ...(g.some(x => x.kind === 'armor') ? { armor: 1 } : {}) };
@@ -2492,6 +2492,7 @@ function sprite(look, pose) {
   if (role === 'Guard') { for (let r = 3; r <= 7; r++) set(7, r, '#8a6a40'); set(7, 2, '#9a7a4a'); }
   if (look.armor) { set(1, 5, '#8a8e92'); set(5, 5, '#8a8e92'); set(2, 6, '#6e7276'); set(3, 6, '#7a7e82'); set(4, 6, '#6e7276'); }
   if (look.weapon === 'blade') { for (let r = 3; r <= 6; r++) set(7, r, '#c4c8cc'); set(7, 2, '#e2e5e8'); set(7, 7, '#3a2a1a'); set(6, 7, '#5a5e62'); set(8, 7, '#5a5e62'); }
+  if (look.weapon === 'spear') { for (let r = 1; r <= 9; r++) set(7, r, '#8a6234'); set(7, -1, '#f2f4f6'); set(7, 0, '#c4c8cc'); set(8, 0, '#9aa0a4'); set(7, 2, '#b4b8bc'); set(7, 3, '#b4b8bc'); }   // a bayonet lashed to a pole, taller than him
   if (look.weapon === 'club') { for (let r = 4; r <= 8; r++) set(7, r, '#7a5a34'); set(7, 2, '#5a3e22'); set(7, 3, '#5a3e22'); set(8, 2, '#5a3e22'); set(8, 3, '#9aa0a4'); }
   if (look.axe || look.weapon === 'axe') { for (let r = 2; r <= 8; r++) set(7, r, '#6b4a2a'); set(8, 2, '#c4c8cc'); set(8, 3, '#c4c8cc'); set(8, 4, '#9aa0a4'); set(9, 3, '#e2e5e8'); set(6, 2, '#9aa0a4'); }
   if (role === 'Mechanic') { set(7, 6, '#9aa0a4'); set(7, 7, '#9aa0a4'); set(8, 6, '#9aa0a4'); for (let c = 1; c <= 5; c++) set(c, 0, '#3f5a7a'); set(6, 1, '#3f5a7a'); }
