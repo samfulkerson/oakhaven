@@ -2680,6 +2680,13 @@ function shoot(from, target, hitChance) {
   shots.push({ x1: from.x + (from.flip ? -3 : 3), y1: from.y - 7, x2: target.x + (hit ? 0 : (rand() - .5) * 10), y2: ty + (hit ? 0 : (rand() - .5) * 8), life: 5 });
   if (hit && --target.hp <= 0) target.dying = 1;
 }
+// the small groups out on the map save the camp's few rounds: they fight up close with whatever they carry
+const swings = [];
+function melee(from, target, hitChance) {
+  from.flip = target.x < from.x;
+  swings.push({ x: from.x, y: from.y, dir: from.flip ? -1 : 1, life: 7 });
+  if (rand() < hitChance && --target.hp <= 0) target.dying = 1;
+}
 function line(c, x0, y0, x1, y1, col) {
   x0 |= 0; y0 |= 0; x1 |= 0; y1 |= 0;
   const dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1, dy = -Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1; let err = dx + dy;
@@ -2844,8 +2851,8 @@ function update() {
   const outside = runnersOutside();
   for (const m of outside) {
     if (--m.cool > 0) continue;
-    const z = zombies.find(z => !z.dying && Math.abs(z.x - m.x) < 22 && Math.hypot(z.x - m.x, z.y - m.y) < 22);
-    if (z) { m.cool = 45; shoot(m, z, .75); }
+    const z = zombies.find(z => !z.dying && Math.abs(z.x - m.x) < 11 && Math.hypot(z.x - m.x, z.y - m.y) < 11);
+    if (z) { m.cool = 32; melee(m, z, .6); }
   }
   for (const z of zombies) {
     z.moving = false;
@@ -2896,6 +2903,7 @@ function update() {
   for (const [sx, sy, rate] of SMOKE) if (frame % Math.max(2, 9 - rate * 2) === 0) parts.push({ x: sx + (rand() - .5) * 3, y: sy, vx: (rand() - .5) * .1 + .03, vy: -.2 - rate * .03, life: 50 + rate * 15, col: rate > 2 ? '#3a3836' : '#6d6a63' });
   for (let i = parts.length - 1; i >= 0; i--) { const p = parts[i]; p.x += p.vx; p.y += p.vy; if (--p.life <= 0) parts.splice(i, 1); }
   for (let i = shots.length - 1; i >= 0; i--) if (--shots[i].life <= 0) shots.splice(i, 1);
+  for (let i = swings.length - 1; i >= 0; i--) if (--swings[i].life <= 0) swings.splice(i, 1);
   stepRun();
   if (frame % 1500 === 900) campChatter();
 }
@@ -3001,6 +3009,7 @@ function drawEmissive(c, dark, inView, part) {
       P(c, gx + 1, gy - 3 + j, on ? (frame % 30 < 20 ? '#5aff6a' : '#2a7a3a') : '#a83a2a');
     }
     for (const s of shots) line(c, s.x1, s.y1, s.x2, s.y2, s.life > 3 ? '#fff1b0' : '#d8a640');
+    for (const s of swings) { const k = 7 - s.life; for (let i = 0; i < 4; i++) P(c, s.x + s.dir * (3 + i + (k >> 1)), s.y - 11 + i * 2 + (k >> 1), s.life > 3 ? '#eef2f4' : '#9aa0a4'); }   // a swing, no muzzle flash
   }
   if (part !== 'early') {
     if (dark > .4) for (const z of zombies) {
