@@ -2728,10 +2728,10 @@ function clockText() { const h = hourNow(); return String(Math.floor(h)).padStar
 const STATUS_LABEL = { queued: 'Queued', leaving: 'En route', searching: 'Searching', returning: 'Returning', back: 'Back' };
 DATA.runs = DATA.runs.filter(r => r && POIS[r.dest] && Array.isArray(r.squad));
 DATA.runs.forEach(r => r.status = 'queued');
-let runIdx = 0, runWait = 240, active = [];   // several small groups can be out at once
+let runIdx = 0, runWait = 1500, active = [];   // up to two small groups out at once, with long gaps between them
 const runOf = e => active.find(a => a.members.includes(e));
-// how many groups go out at once: one per few fit people, at most three, and someone always stays to hold the fence
-const maxGroups = () => { const fit = people.filter(e => e.d && fitToGo(e.d)).length; return Math.max(1, Math.min(3, Math.floor((fit - 1) / 3))); };
+// how many groups go out at once: one per few fit people, at most two, and someone always stays to hold the fence
+const maxGroups = () => { const fit = people.filter(e => e.d && fitToGo(e.d)).length; return Math.max(1, Math.min(2, Math.floor((fit - 1) / 4))); };
 const OFFS = [[0, 0], [3, 2], [-3, 2], [0, 4]];
 const crewOf = r => r.crew || [];
 const solo = r => crewOf(r).length === 1;
@@ -2791,7 +2791,7 @@ function stepRun() {
   stepDayRuns();
   if (active.length < maxGroups() && --runWait <= 0) {
     if (runIdx >= DATA.runs.length) { DATA.runs.forEach(r => { if (!active.some(a => a.r === r)) r.status = 'queued'; }); runIdx = 0; }
-    runWait = 260 + (rand() * 260 | 0); startRun();
+    runWait = 2400 + (rand() * 2400 | 0); startRun();          // 40-80 seconds between groups heading out
   }
   for (const run of [...active]) stepGroup(run);
 }
