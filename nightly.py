@@ -442,7 +442,7 @@ def plan_day_runs(data, new_day, rng):
         return
     h = data.get("horde") or {}
     safe = h.get("day") is not None and 0 <= h["day"] - new_day <= 1          # no injuries right before a horde night
-    n = max(1, min(5, len(fit) // 3))
+    n = max(1, min(3, len(fit) // 4))          # a few small runs a day, not a constant stream
     pool = sorted(fit, key=lambda s: (s.get("day_outings", 0), rng.random()))
     used = {k: 0 for k in DAY_CAP}
     runs = []
