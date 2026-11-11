@@ -337,6 +337,9 @@ def scout_trips(data, new_day, rng, outings):
             s["outings"] = s.get("outings", 0) + 1
         what = " and ".join(f"+{v} {UNITS.get(k, k.lower())}" for k, v in got.items()) or "nothing"
         news.append(f"{names} {ev.get('went', 'went scouting')} and came back with {what}.")
+        for r in data.get("runs", []):            # the place now counts as visited, so small runs can go there
+            if ev.get("dest") and r["dest"] == ev["dest"]:
+                r.setdefault("scouted", new_day - 1)
         news += [r.replace("{crew}", names).replace("{a}", crew[0]["name"]).replace("{b}", crew[-1]["name"]) for r in ev.get("report", [])]
     data["schedule"] = keep
     return news
@@ -416,10 +419,11 @@ def horde_night(data, rng, day):
 # (the same for every viewer), and the next night adds the finds to the stockpile. Small on purpose: about a quarter
 # of a day's food and water at most, so the vote still matters. Mostly safe: some scares, a rare one-day injury, never
 # a death, and no injuries the day of a horde night or the day before.
-NEAR = ["pharmacy", "diner", "gas", "market", "hardware", "gunshop", "maple", "storage", "harbor"]
 FINDS = {"pharmacy": ["Medicine", "Water", "Food"], "diner": ["Food", "Water", "Food"], "gas": ["Water", "Scrap", "Food"],
          "market": ["Food", "Water", "Food"], "hardware": ["Scrap", "Scrap", "Water"], "gunshop": ["Ammo", "Ammo", "Scrap"],
-         "maple": ["Food", "Water", "Ammo"], "storage": ["Scrap", "Ammo", "Food"], "harbor": ["Water", "Food", "Scrap"]}
+         "maple": ["Food", "Water", "Ammo"], "storage": ["Scrap", "Ammo", "Food"], "harbor": ["Water", "Food", "Scrap"],
+         "port": ["Food", "Scrap", "Food"], "farm": ["Food", "Water", "Food"]}
+DEFAULT_FINDS = ["Food", "Water", "Scrap"]
 DAY_CAP = {"Food": 3, "Water": 3, "Ammo": 8, "Scrap": 4, "Medicine": 1}
 FIND_AMT = {"Food": (1, 2), "Water": (1, 2), "Ammo": (2, 5), "Scrap": (1, 3), "Medicine": (1, 1)}
 FIND_LINES = {"Food": ["{n} cans of soup behind the counter", "{n} boxes of crackers nobody wanted", "{n} jars of peanut butter in a back room"],
@@ -436,7 +440,8 @@ DAY_TIMES = ["08:40", "10:15", "11:50", "13:30", "15:05"]
 
 def plan_day_runs(data, new_day, rng):
     fit = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= new_day]
-    places = [r["dest"] for r in data.get("runs", []) if r["dest"] in NEAR]
+    # only places the story has already been: a voted mission (done_day) or survivors in a daily post (scouted)
+    places = [r["dest"] for r in data.get("runs", []) if r.get("done_day") or r.get("scouted")]
     if not fit or not places:
         data.pop("day_runs", None)
         return
@@ -456,7 +461,7 @@ def plan_day_runs(data, new_day, rng):
         if roll < .25:
             run["line"] = f"{crew[0]}: Picked clean. Nothing worth carrying. Heading home."
         else:
-            item = rng.choice(FINDS[dest])
+            item = rng.choice(FINDS.get(dest, DEFAULT_FINDS))
             amt = min(rng.randint(*FIND_AMT[item]), DAY_CAP[item] - used[item])
             if amt <= 0:
                 run["line"] = f"{crew[0]}: Somebody beat us to it. Coming home empty."
