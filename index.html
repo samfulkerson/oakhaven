@@ -2731,6 +2731,8 @@ function clockText() { const h = hourNow(); return String(Math.floor(h)).padStar
 const STATUS_LABEL = { queued: 'Queued', leaving: 'En route', searching: 'Searching', returning: 'Returning', back: 'Back' };
 DATA.runs = DATA.runs.filter(r => r && POIS[r.dest] && Array.isArray(r.squad));
 DATA.runs.forEach(r => r.status = 'queued');
+// small runs only go where the story has already been: voted missions (done_day) and places survivors reached in the daily posts (scouted)
+const ROAM = DATA.runs.filter(r => r.done_day || r.scouted);
 let runIdx = 0, runWait = 1500, active = [];   // up to two small groups out at once, with long gaps between them
 const runOf = e => active.find(a => a.members.includes(e));
 // how many groups go out at once: one per few fit people, at most two, and someone always stays to hold the fence
@@ -2748,9 +2750,9 @@ function planCrew(r) {
   return pool.slice(0, Math.min(CREW_N[r.difficulty] || 2, pool.length));
 }
 function startRun() {
-  if (!DATA.runs.length) return;
+  if (!ROAM.length) return;
   let r = null;
-  for (let k = 0; k < DATA.runs.length && !r; k++) { const c = DATA.runs[(runIdx + k) % DATA.runs.length]; if (!active.some(a => a.r === c)) { r = c; runIdx = (runIdx + k) % DATA.runs.length; } }
+  for (let k = 0; k < ROAM.length && !r; k++) { const c = ROAM[(runIdx + k) % ROAM.length]; if (!active.some(a => a.r === c)) { r = c; runIdx = (runIdx + k) % ROAM.length; } }
   if (!r) return;
   const d = POIS[r.dest];
   const members = nextCrew && nextCrew.length && nextCrew.every(m => fitToGo(m.d) && m.mode !== 'run' && m.mode !== 'watch') ? nextCrew : planCrew(r);
@@ -2793,7 +2795,7 @@ function stepDayRuns() {
 function stepRun() {
   stepDayRuns();
   if (active.length < maxGroups() && --runWait <= 0) {
-    if (runIdx >= DATA.runs.length) { DATA.runs.forEach(r => { if (!active.some(a => a.r === r)) r.status = 'queued'; }); runIdx = 0; }
+    if (runIdx >= ROAM.length) { DATA.runs.forEach(r => { if (!active.some(a => a.r === r)) r.status = 'queued'; }); runIdx = 0; }
     runWait = 2400 + (rand() * 2400 | 0); startRun();          // 40-80 seconds between groups heading out
   }
   for (const run of [...active]) stepGroup(run);
@@ -3944,7 +3946,7 @@ window.oakEpisode = {
       what.innerHTML = active.map(a => `${WHERE[a.r.status] || 'At'} <b>${esc(a.d.name)}</b>${active.length > 1 ? ` (${esc(crewOf(a.r).join(' & '))})` : ` · ${esc(a.d.area)}`}`).join('<br>');
       $('fieldNote').textContent = foundTxt() ? 'Found today: ' + foundTxt() : active.length === 1 && DIFF[active[0].r.difficulty] ? DIFF[active[0].r.difficulty] + ' run' : '';
     } else {
-      const nx = DATA.runs[runIdx % Math.max(1, DATA.runs.length)];
+      const nx = ROAM[runIdx % Math.max(1, ROAM.length)];
       if (nx && !nextCrew) nextCrew = planCrew(nx);
       const crew = (nextCrew || []).map(m => m.d.name);
       const hurt = DATA.survivors.filter(s => s.status === 'injured' && (s.joined || 1) <= DATA.day);
