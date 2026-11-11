@@ -1,34 +1,41 @@
 {
  "handle": "@surviveoakhaven",
- "day": 7,
- "followers": 39,
+ "day": 5,
+ "followers": 37,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 7. The horde reaches Oakhaven tonight. Water is gone, the fence is at 74%, and we have 3 rounds. Where do we send them? RANGER, HANGAR, or HARDWARE?",
+  "q": "Day 5. Tanny saw the horde on the highway, three days out. The fence is at 72% and we have 2 rounds. Where do we go?",
   "opts": [
    [
-    "RANGER",
+    "GUN SHOP",
     0,
-    "Never searched, medium risk. Anything could be inside, or nothing at all.",
-    "ranger",
-    "🌲"
+    "2 rounds left. The Gun & Pawn was never searched. Could be nothing.",
+    "gunshop",
+    "🔫"
    ],
    [
-    "HANGAR",
+    "FORTIFY",
     0,
-    "Never searched, medium risk. A big unknown with the horde closing in tonight.",
-    "hangar",
-    "🛩"
+    "Fence is at 72% with the horde two days out. No time to wait.",
+    "fortify",
+    "🧱"
    ],
    [
-    "HARDWARE",
+    "WINDMILL",
     0,
-    "Easy run, and the gas station standby needs its hoses and fan belt.",
-    "hardware",
-    "🔨"
+    "Water is gone. Gary says a mechanic could free the pump in a day.",
+    "windmill",
+    "💧"
+   ],
+   [
+    "HARVEST",
+    0,
+    "About 60 rations in the fields, but something moves low in the rows.",
+    "harvest",
+    "🌽"
    ]
   ],
-  "how": "Comment RANGER, HANGAR or HARDWARE (or its emoji) on the Day 7 Reel. One vote per account, your last comment counts."
+  "how": "Comment GUN SHOP, FORTIFY, WINDMILL or HARVEST (or its emoji) on the Day 5 Reel. One vote per account, your last comment counts."
  },
  "survivors": [
   {
@@ -38,8 +45,7 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 5,
-   "day_outings": 2
+   "outings": 3
   },
   {
    "name": "Jaylozy",
@@ -47,8 +53,7 @@
    "role": "Sharpshooter",
    "bio": "Jaylozy joins as a Sharpshooter, ready to take the shot when the moment comes.",
    "joined": 2,
-   "outings": 1,
-   "day_outings": 2
+   "outings": 1
   },
   {
    "name": "Tanny",
@@ -56,16 +61,14 @@
    "role": "Scout",
    "bio": "Tanny is a professional hiker who knows every trail, making them a natural Scout.",
    "joined": 2,
-   "outings": 1,
-   "day_outings": 2
+   "outings": 1
   },
   {
    "name": "Seth",
    "ig": "uriahwilde",
    "role": "Radio Operator",
    "bio": "Seth manages e-commerce by day and knows his way around IT, so he's ready to keep the radios humming.",
-   "joined": 2,
-   "day_outings": 1
+   "joined": 2
   },
   {
    "name": "Gary Finklestein",
@@ -73,8 +76,7 @@
    "role": "Scavenger",
    "bio": "Gary ran a very specialty shop downtown. He knows every back door on Main Street and won't say how.",
    "joined": 2,
-   "outings": 1,
-   "day_outings": 1
+   "outings": 1
   },
   {
    "name": "Adam",
@@ -82,8 +84,7 @@
    "role": "Mechanic",
    "bio": "Adam showed up at the gate with a toolbox and grease under his nails. First thing he asked was where the generator is.",
    "joined": 3,
-   "outings": 1,
-   "day_outings": 1
+   "outings": 1
   },
   {
    "name": "Asa",
@@ -93,24 +94,21 @@
    "joined": 4,
    "look": {
     "skin": "#f1c9a5"
-   },
-   "day_outings": 2
+   }
   },
   {
    "name": "Gabe",
    "ig": "camp_counselor_dlc",
    "role": "Medic",
    "bio": "Gabe is a doctor who plans to keep the whole camp patched up, since the apocalypse is just a bad case of Monday.",
-   "joined": 4,
-   "day_outings": 1
+   "joined": 4
   },
   {
    "name": "Mateen",
    "ig": "mateenegml",
    "role": "Farmer",
    "bio": "Mateen swapped spreadsheets for seed packets and intends to keep the entire camp fed and green.",
-   "joined": 4,
-   "day_outings": 1
+   "joined": 4
   },
   {
    "name": "Jeremy",
@@ -118,8 +116,7 @@
    "role": "Sharpshooter",
    "bio": "Jeremy is a stranded soldier who has been waiting for orders for way too long and is ready to take the shot himself.",
    "joined": 4,
-   "outings": 1,
-   "day_outings": 1
+   "outings": 1
   },
   {
    "name": "Victoria",
@@ -131,16 +128,14 @@
    "look": {
     "hair": "#3b2416",
     "long": 1
-   },
-   "day_outings": 1
+   }
   },
   {
    "name": "Francis",
    "ig": "ihateedison",
    "role": "Builder",
    "bio": "Francis is a carpenter who knows where the good tools are hiding, and he'll build you a fort before the sun goes down.",
-   "joined": 5,
-   "day_outings": 1
+   "joined": 5
   }
  ],
  "runs": [
@@ -161,8 +156,7 @@
     "Sam"
    ],
    "loot": "Canned peaches and a tin of coffee from the walk-in",
-   "place": "Rosie’s Diner",
-   "done_day": 5
+   "place": "Rosie’s Diner"
   },
   {
    "dest": "gas",
@@ -171,8 +165,7 @@
     "Sam"
    ],
    "loot": "Two jerry cans of fuel and a case of bottled water",
-   "place": "Gas station",
-   "done_day": 6
+   "place": "Gas station"
   },
   {
    "dest": "market",
@@ -664,7 +657,7 @@
     394,
     497
    ],
-   "status": "running",
+   "status": "repairing",
    "clue": "Sam dragged it home from the auto shop. The carburetor is shot.",
    "crew": "1 mechanic",
    "fuel": "10 L gasoline",
@@ -672,9 +665,7 @@
    "needs": [
     {
      "label": "10 L of gasoline from the gas station",
-     "dest": "gas",
-     "done": true,
-     "day": 6
+     "dest": "gas"
     },
     {
      "label": "A new carburetor from the hardware store",
@@ -690,7 +681,7 @@
     }
    ],
    "burn": 2,
-   "on_day": 6
+   "progress": 67
   },
   {
    "id": "gas",
@@ -700,7 +691,7 @@
     606,
     460
    ],
-   "status": "repairing",
+   "status": "rumor",
    "clue": "The kiosk kept a standby generator out back to run the pumps.",
    "crew": "1 mechanic + 2 haulers",
    "fuel": "20 L gasoline",
@@ -713,19 +704,14 @@
     },
     {
      "label": "A mechanic",
-     "role": "Mechanic",
-     "done": true,
-     "day": 6
+     "role": "Mechanic"
     },
     {
      "label": "6 survivors to haul it and guard the pumps",
-     "people": 6,
-     "done": true,
-     "day": 6
+     "people": 6
     }
    ],
-   "burn": 3,
-   "progress": 67
+   "burn": 3
   },
   {
    "id": "diner",
@@ -735,7 +721,7 @@
     592,
     392
    ],
-   "status": "repairing",
+   "status": "rumor",
    "clue": "Rosie ran the walk-in freezer off her own generator. Something in there still hums at night.",
    "crew": "1 mechanic + 1 cook",
    "fuel": "15 L gasoline",
@@ -744,23 +730,18 @@
    "needs": [
     {
      "label": "15 L of gasoline from the gas station",
-     "dest": "gas",
-     "done": true,
-     "day": 6
+     "dest": "gas"
     },
     {
      "label": "A mechanic",
-     "role": "Mechanic",
-     "done": true,
-     "day": 5
+     "role": "Mechanic"
     },
     {
      "label": "A cook to run the kitchen",
      "role": "Cook"
     }
    ],
-   "burn": 2,
-   "progress": 67
+   "burn": 2
   },
   {
    "id": "port",
@@ -892,43 +873,43 @@
  "stock": [
   [
    "Food",
-   53,
+   62,
    200,
    "rations"
   ],
   [
    "Water",
-   0,
+   8,
    200,
    "rations"
   ],
   [
    "Fuel",
-   16,
+   0,
    200,
    "L"
   ],
   [
    "Ammo",
-   3,
+   2,
    500,
    "rds"
   ],
   [
    "Medicine",
-   3,
+   4,
    50,
    "doses"
   ],
   [
    "Scrap",
-   42,
+   46,
    200,
    "units"
   ],
   [
    "Barricades",
-   74,
+   72,
    100,
    "%"
   ]
@@ -1194,138 +1175,27 @@
     "The big choice: get ready for what's coming from the north (ammo from the Gun & Pawn, or fortify the fence), or stockpile at Victoria's farm (the windmill pump for water, or the harvest for food)."
    ],
    "day_runs": []
-  },
-  {
-   "day": 5,
-   "vote": {
-    "question": "Day 5. Tanny saw the horde on the highway, three days out. The fence is at 72% and we have 2 rounds. Where do we go?",
-    "results": {},
-    "winner": null,
-    "tiebreak": null,
-    "reel": "https://www.instagram.com/reel/Dfe1d7EJ-1H/"
-   },
-   "outings": [
-    {
-     "target": "Rosie’s Diner",
-     "key": "diner",
-     "first": true,
-     "kind": "run",
-     "difficulty": "easy",
-     "squad": [
-      "Sam"
-     ],
-     "results": [
-      {
-       "name": "Sam",
-       "ig": "surviveoakhaven",
-       "outcome": "ok"
-      }
-     ],
-     "mission_status": null
-    }
-   ],
-   "healed": [],
-   "joined": [],
-   "waiting": 0,
-   "power": [
-    "Found the Rosie’s freezer generator during the diner run.",
-    "Rosie’s freezer generator: A mechanic ✓"
-   ],
-   "stock": {
-    "Water": -4,
-    "Scrap": -2,
-    "Ammo": -2,
-    "Food": -2,
-    "Barricades": 1
-   },
-   "camp": [],
-   "horde": null,
-   "returned": [],
-   "story": [],
-   "day_runs": [
-    "Gary Finklestein & Adam → Fresh Market (08:40): nothing",
-    "Seth & Jeremy → Maple Court (11:50): nothing",
-    "Sam & Asa → Rosie’s Diner (13:30): +2 water",
-    "Tanny & Jaylozy → Gun & Pawn (15:05): +1 scrap"
-   ]
-  },
-  {
-   "day": 6,
-   "vote": {
-    "question": "Day 6. Water is out, ammo is at zero, and the horde reaches the fence in a day. Where do we send the squad?",
-    "results": {},
-    "winner": null,
-    "tiebreak": null,
-    "reel": "https://www.instagram.com/reel/Dfe1d7EJ-1H/"
-   },
-   "outings": [
-    {
-     "target": "Gas station",
-     "key": "gas",
-     "first": true,
-     "kind": "run",
-     "difficulty": "easy",
-     "squad": [
-      "Sam"
-     ],
-     "results": [
-      {
-       "name": "Sam",
-       "ig": "surviveoakhaven",
-       "outcome": "injured",
-       "detail": "cracked ribs, out until Day 8"
-      }
-     ],
-     "mission_status": null
-    }
-   ],
-   "healed": [
-    "Sam"
-   ],
-   "joined": [],
-   "waiting": 0,
-   "power": [
-    "Laundromat generator: 10 L of gasoline from the gas station ✓",
-    "⚡ The Laundromat generator is RUNNING. A porch light and a floodlight over the yard",
-    "Found the Gas station standby during the gas run.",
-    "Gas station standby: A mechanic ✓",
-    "Gas station standby: 6 survivors to haul it and guard the pumps ✓",
-    "Rosie’s freezer generator: 15 L of gasoline from the gas station ✓"
-   ],
-   "stock": {
-    "Food": -7,
-    "Scrap": -2,
-    "Ammo": 3,
-    "Fuel": 16,
-    "Water": -4,
-    "Medicine": -1,
-    "Barricades": 1
-   },
-   "camp": [],
-   "horde": null,
-   "returned": [],
-   "story": [
-    "The front of the Millbrook horde reaches the city: faster ones that turned recently, and dock brutes from the coast."
-   ],
-   "day_runs": [
-    "Francis & Victoria → Harbor Master (10:15): +2 food",
-    "Gabe & Mateen → U-Store-It units (11:50): +1 scrap",
-    "Tanny & Sam → Gas station (13:30): +1 food",
-    "Asa & Jaylozy → Maple Court (15:05): +5 rounds (a close call)"
-   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": -7,
-  "Scrap": -2,
-  "Ammo": 3,
-  "Fuel": 16,
-  "Water": -4,
-  "Medicine": -1,
-  "Barricades": 1
+  "Food": 33,
+  "Water": -5,
+  "Ammo": -6,
+  "Scrap": 4,
+  "Barricades": 0
  },
- "schedule": [],
+ "schedule": [
+  {
+   "on_day": 7,
+   "do": "unlock",
+   "zombies": [
+    "runner",
+    "brute"
+   ],
+   "note": "The front of the Millbrook horde reaches the city: faster ones that turned recently, and dock brutes from the coast."
+  }
+ ],
  "broadcast": {
   "day": 4,
   "from": "Millbrook, 60 miles north",
@@ -1364,9 +1234,7 @@
   }
  ],
  "zombie_types": [
-  "walker",
-  "runner",
-  "brute"
+  "walker"
  ],
  "milestones_hit": [
   2,
@@ -1374,11 +1242,11 @@
   25
  ],
  "undead": {
-  "count": 28403,
+  "count": 28393,
   "last": {
-   "day": 6,
-   "killed": 6,
-   "turned": 9,
+   "day": 4,
+   "killed": 11,
+   "turned": 4,
    "arrived": 0
   }
  },
@@ -1397,60 +1265,55 @@
   ]
  },
  "day_runs": {
-  "day": 7,
+  "day": 5,
   "runs": [
    {
-    "time": "10:15",
-    "dest": "gunshop",
+    "time": "08:40",
+    "dest": "market",
     "crew": [
-     "Seth",
+     "Gary Finklestein",
      "Adam"
     ],
-    "find": {
-     "Ammo": 5
-    },
-    "event": "scare",
-    "line": "Seth: Found 5 rounds rolling around a drawer. Heading home.",
-    "scare": "Adam: Three of them at the door when we came out. Went out the back."
+    "find": {},
+    "event": "ok",
+    "line": "Gary Finklestein: Picked clean. Nothing worth carrying. Heading home."
    },
    {
     "time": "11:50",
-    "dest": "market",
+    "dest": "maple",
     "crew": [
-     "Gabe",
-     "Gary Finklestein"
+     "Seth",
+     "Jeremy"
     ],
-    "find": {
-     "Water": 2
-    },
+    "find": {},
     "event": "ok",
-    "line": "Gabe: Found 2 containers of rainwater worth boiling. Heading home."
+    "line": "Seth: Picked clean. Nothing worth carrying. Heading home."
    },
    {
     "time": "13:30",
     "dest": "diner",
     "crew": [
-     "Jeremy",
-     "Francis"
+     "Sam",
+     "Asa"
     ],
     "find": {
-     "Food": 1
+     "Water": 2
     },
     "event": "ok",
-    "line": "Jeremy: Found 1 cans of soup behind the counter. Heading home."
+    "line": "Sam: Found 2 cases of bottled water in a stockroom. Heading home."
    },
    {
     "time": "15:05",
-    "dest": "market",
+    "dest": "gunshop",
     "crew": [
-     "Mateen",
-     "Victoria"
+     "Tanny",
+     "Jaylozy"
     ],
     "find": {
-     "Food": 2
+     "Scrap": 1
     },
     "event": "ok",
-    "line": "Mateen: Found 2 cans of soup behind the counter. Heading home."
+    "line": "Tanny: Found 1 car doors for the fence. Heading home."
    }
   ]
  }
