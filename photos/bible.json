@@ -1,0 +1,131 @@
+{
+ "about": "The Oakhaven camera roll. One cheap digital camera, found on a run, documents every mission. This file keeps the people and places looking the same from one day's photos to the next. refs/ holds the approved reference images for each place.",
+ "style": "A candid snapshot taken on a cheap mid-2000s compact digital camera (a 7-megapixel point-and-shoot with a small CCD sensor). Harsh direct on-camera flash indoors with hard flash shadows and fast falloff into darkness; flat overcast late-autumn Midwest daylight outdoors. Slightly blown highlights, noisy shadows, a little chromatic aberration, slightly soft focus, imperfect amateur framing, sometimes a touch of motion blur. Photorealistic, unglamorous, not cinematic, no color grading. A small American city a few weeks after a zombie outbreak: dust, leaves, broken glass, abandoned cars, overturned things. No text overlays, no watermark, no date stamp, no borders.",
+ "rules": [
+  "Never show any survivor's face clearly. Show them from behind, from the side with a hood up, with a bandana or respirator over the face, in shadow, cropped at the shoulders, or motion-blurred. The photographer is one of them, so a gloved hand or boots can appear in frame.",
+  "Survivors always wear work gloves. Recognize them only by their outfit and the item they carry (see characters).",
+  "The dead: gray-green mottled skin, cloudy eyes, torn dirty clothes, shambling. Creepy, not gory: no exposed organs, no heavy blood.",
+  "Keep everything consistent with the place's description and its history below. If something was taken, broken or marked on an earlier visit, it stays that way."
+ ],
+ "stamp": "Added afterwards by camera.py, never by the image model: orange seven-segment date stamp in the lower right reading DAY nn and the time.",
+ "characters": {
+  "Sam": "Scavenger and the camp's leader. Tan canvas work jacket, black jeans, gray knit beanie, big gray hiking backpack, a crowbar in one hand.",
+  "Jaylozy": "Sharpshooter. Slate-blue jacket, olive cargo pants, black hood up, a scoped hunting rifle slung over the shoulder.",
+  "Tanny": "Scout. Olive-green field jacket with the hood always up, a green shemagh scarf over the lower face, binoculars on a strap, a small handheld radio.",
+  "Seth": "Radio operator. Slate-blue jacket, olive pants, a backpack radio with a tall whip antenna (red tip), a headset around the neck.",
+  "Gary Finklestein": "Scavenger. Dark green jacket, navy pants, gray beanie, a brown leather satchel stuffed with finds.",
+  "Adam": "Mechanic. Brown leather work jacket, navy blue cap, tool belt, a big adjustable wrench in hand.",
+  "Asa": "Guard and prepper, light-skinned. Charcoal-gray hoodie, navy pants, never without a red-handled fire axe.",
+  "Gabe": "Medic. Cream-white jacket with a red cross patch on the shoulder, a red medical bag.",
+  "Mateen": "Farmer. Wide straw farmer's hat, gray jacket, black pants.",
+  "Jeremy": "Sharpshooter. Muted purple-gray jacket, olive pants, rifle on his back, carries a homemade spear: a rifle bayonet lashed to a mop handle with fence wire.",
+  "Victoria": "Chef. Long dark brown hair (seen from behind), white chef's jacket, a chef's knife.",
+  "Francis": "Carpenter. Yellow hard hat, olive-green work jacket, tool belt, a claw hammer."
+ },
+ "places": {
+  "laundromat": {
+   "name": "The laundromat (home)",
+   "exterior": "A small one-story red-brick laundromat with a faded blue sign reading LAUNDROMAT over a storefront boarded with plywood, sandbags stacked by the door. A chain-link fence around a dirt yard: a rusty burn barrel with a fire, a blue tarp over supplies, folding lawn chairs, plastic water jugs, a stripped car wreck by the fence. On the flat roof: a homemade wooden lookout tower with a tin roof at the right-hand corner, a steel ladder up the right side wall, and a wooden garden box with green plants.",
+   "interior": "Rows of old washers and dryers pushed against the windows as barricades, sleeping bags and camp cots between them, a folding table with a radio and a map of Oakhaven, candles, lanterns, jugs of water.",
+   "angles": [
+    "the yard from the gate",
+    "inside among the washers at night, by lantern light",
+    "on the roof by the lookout tower"
+   ],
+   "history": [
+    "Day 3: Adam rebuilt the generator with the carburetor from the hardware store. It still needs gasoline.",
+    "Day 4: Mateen built a garden box on the roof from scrap wood.",
+    "Day 4: 25 followers. The lookout tower went up on the roof."
+   ],
+   "masters": [
+    "refs/master_laundromat_1.jpg"
+   ],
+   "map": "refs/map_laundromat.png"
+  },
+  "pharmacy": {
+   "name": "Pharmacy",
+   "exterior": "A one-story white-brick pharmacy with a weathered teal sign band reading FAMILY PHARMACY over smashed glass double doors, and a separate square white Rx sign box on a tall pole at the corner of the lot. An abandoned white ambulance with a red cross parked crooked beside the building. Orange pill bottles and white paper prescription bags scattered across the cracked sidewalk and lot. A 24 HRS sign lying on the sidewalk. Boarded-up storefronts across the side street.",
+   "interior": "A dead fluorescent drop ceiling with missing tiles, white shelving aisles knocked over like dominoes, the pharmacy counter at the back under a hanging Rx sign, empty drawers pulled out, pill bottles and prescription bags all over the floor.",
+   "angles": [
+    "the front lot with the ambulance",
+    "down a knocked-over aisle toward the counter, by flash",
+    "behind the pharmacy counter"
+   ],
+   "history": [
+    "Day 1: Sam went in alone and came back empty-handed and badly scared. Something was behind the counter."
+   ],
+   "masters": [
+    "refs/master_pharmacy_1.jpg"
+   ],
+   "map": "refs/map_pharmacy.png"
+  },
+  "market": {
+   "name": "Fresh Market",
+   "exterior": "A wide one-story supermarket with a tan stucco front and green letters reading FRESH MARKET, a red-and-white striped awning over the entrance, dusty front windows. A huge cracked parking lot with a raised curb island, weeds, dead leaves, shopping carts tipped and scattered everywhere, and a white box truck with a green FM logo parked crooked in the lot.",
+   "interior": "Long dark aisles with half-empty shelves, a produce section gone black and rotten, dead coolers with fogged doors, checkout lanes with conveyor belts and toppled candy racks.",
+   "angles": [
+    "the parking lot with the FM truck",
+    "the checkout lanes",
+    "a dark aisle by flash"
+   ],
+   "history": [
+    "Day 2: Tanny went alone and came back with 22 rations of food and 9 of water. He used 2 rounds getting out."
+   ],
+   "masters": [
+    "refs/master_market_1.jpg"
+   ],
+   "map": "refs/map_market.png"
+  },
+  "hardware": {
+   "name": "Hardware store",
+   "exterior": "A one-story tan-brick hardware store with a big orange sign band reading HARDWARE in white, tall dusty front windows and an open door. Lumber stacked under torn blue tarps, a pallet of red bricks, a tipped wheelbarrow and a white PROPANE exchange cage out front; a chain-link garden center on the side full of dead brown potted plants. Small white houses behind.",
+   "interior": "Tall orange steel racking, aisles of tools, hoses and paint cans, a forklift parked in the main aisle, sawdust on the floor, the small-engine parts counter at the back.",
+   "angles": [
+    "the front lot with the lumber stacks",
+    "a tool aisle under the orange racking",
+    "the small-engine parts counter"
+   ],
+   "history": [
+    "Day 3: Sam went alone and found the carburetor that got the laundromat generator rebuilt."
+   ],
+   "masters": [
+    "refs/master_hardware_1.jpg"
+   ],
+   "map": "refs/map_hardware.png"
+  },
+  "port": {
+   "name": "Pier 9 warehouse",
+   "exterior": "A big gray corrugated-metal warehouse with a gable roof, weathered gray wooden plank skirting along the bottom and a blue sign reading PIER 9 above a large dark open loading door, right on a long concrete pier. Gray bay water alongside, rusty mooring bollards, coiled rope, puddles, rusty shipping containers stacked further down the pier and a white gantry crane in the distance.",
+   "interior": "A dim cavernous warehouse lit by gaps in the roof, rows of wooden crates and shrink-wrapped pallets, a yellow forklift, loading chains, puddles on concrete.",
+   "angles": [
+    "the dock outside with the bay and containers",
+    "an aisle of crates inside, by flash",
+    "the big loading door from inside, light behind"
+   ],
+   "history": [
+    "Day 4: Sam, Jeremy and Jaylozy cleared it. They came back with 32 rations of food and scrap, and fired 6 of the camp's last 8 rounds. Jeremy took a bayonet from a broken crate."
+   ],
+   "masters": [
+    "refs/master_port_1.jpg"
+   ],
+   "map": "refs/map_port.png"
+  },
+  "farm": {
+   "name": "Hollow Creek Farm",
+   "exterior": "A red gambrel-roof barn with HOLLOW and CREEK painted in white on two lines across the front and white X-braced doors, a tall gray corrugated grain silo beside it, a small weathered white farmhouse to the right, a small old windmill water pump beside a rusty empty stock trough, scattered square hay bales, a broken wooden fence. Tall unharvested brown corn and golden wheat behind, woods at the edges.",
+   "interior": "The farmhouse pantry with mason jars and canned goods on wooden shelves; the barn with hay, tack and old machinery.",
+   "angles": [
+    "the barnyard with the barn and silo",
+    "the edge of the corn rows",
+    "the windmill over the dry trough"
+   ],
+   "history": [
+    "Day 4: Adam and Gary scouted it. They filled their packs from the farmhouse pantry and the rain barrels by the barn. Something was moving low in the corn rows. The windmill turns but the pump rod is seized. Cattle tracks lead through the broken fence into the woods."
+   ],
+   "masters": [
+    "refs/master_farm_1.jpg"
+   ],
+   "map": "refs/map_farm.png"
+  }
+ }
+}
