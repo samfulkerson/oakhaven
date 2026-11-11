@@ -116,7 +116,14 @@
    "role": "Sharpshooter",
    "bio": "Jeremy is a stranded soldier who has been waiting for orders for way too long and is ready to take the shot himself.",
    "joined": 4,
-   "outings": 1
+   "outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Bayonet spear",
+     "icon": "spear"
+    }
+   ]
   },
   {
    "name": "Victoria",
@@ -1231,6 +1238,13 @@
    "kind": "build",
    "title": "Roof garden",
    "text": "Built a garden box on the laundromat roof from scrap wood. +2 food a night once it grows (from Day 7)."
+  },
+  {
+   "day": 5,
+   "who": "Jeremy",
+   "kind": "weapon",
+   "title": "Bayonet spear",
+   "text": "Down to 2 rounds, Jeremy took a bayonet from a crate at Pier 9 and lashed it to a mop handle with fence wire. Now he can hold the fence without firing a shot. +2 horde defense."
   }
  ],
  "zombie_types": [
