@@ -29,7 +29,7 @@ MAX_NEW_PER_DAY = 25          # pacing: at most this many new survivors move in 
 PACK = {"Food": 2, "Water": 2}  # what each new survivor carries in; counted the next night, when they start eating
 ROLES = ["Scavenger", "Medic", "EMT", "Scout", "Sharpshooter", "Gunsmith", "Farmer", "Builder", "Radio Operator", "Mechanic", "Guard", "Cook", "Engineer"]
 ACTS_AS = {"EMT": "Medic"}     # roles that do another role's job in the game: an EMT patches people up like a medic
-def kind(s):
+def role_of(s):
     r = s.get("role", "")
     return ACTS_AS.get(r, r)
 
@@ -169,10 +169,10 @@ def pick_squad(data, kind, item, rng):
     rest = [s for s in living if s not in squad]
     rng.shuffle(rest)
     rest.sort(key=lambda s: s.get("outings", 0))          # spread the work: people who've been out least go first
-    roles_have = {kind(s) for s in squad}
+    roles_have = {role_of(s) for s in squad}
     for need in ("Medic", "Sharpshooter"):                 # on hard and deadly outings, try to bring a medic and a shooter
         if item.get("difficulty") in ("hard", "deadly") and need not in roles_have:
-            pro = next((s for s in rest if kind(s) == need), None)
+            pro = next((s for s in rest if role_of(s) == need), None)
             if pro and len(squad) < want:
                 squad.append(pro); rest.remove(pro); roles_have.add(need)
     while len(squad) < want and rest:
@@ -200,7 +200,7 @@ def resolve_outing(data, kind, item, rng):
     squad = pick_squad(data, kind, item, rng)
     if not squad:
         return {"target": place, "key": item.get("dest") or item.get("poi"), "first": first, "kind": kind, "difficulty": diff, "squad": [], "results": [], "note": "Nobody was fit to go."}
-    roles = {kind(s) for s in squad}
+    roles = {role_of(s) for s in squad}
     inj, die = RISK.get(diff, RISK["medium"])
     if "Medic" in roles:
         die *= 0.5; inj *= 0.85
@@ -368,7 +368,7 @@ def horde_night(data, rng, day):
         return None
     home = [s for s in data["survivors"] if s.get("status") not in ("dead", "away") and s.get("joined", 1) <= day]
     fit = [s for s in home if s.get("status") != "injured"]
-    roles = Counter(kind(s) for s in fit)
+    roles = Counter(role_of(s) for s in fit)
     lit = any(g.get("status") == "running" and not g.get("dry") for g in data.get("power", []))
     strength = 70 + 15 * (h.get("week", 1) - 1) + min(data.get("followers") or 0, 80) * 0.5 + rng.uniform(-10, 10)
     if lit:
@@ -647,6 +647,28 @@ def stock_get(data, name):
     return r[1] if r else 0
 
 
+GUN_FIRST = ["Gunsmith", "Guard", "Scout", "Sharpshooter"]   # who the camp trusts with a gun first
+
+
+def hand_out(data, gear, squad, present):
+    """Give found weapons to people who have none: guns to the gunsmith, guards and scouts first, blades and axes to the squad
+    that found them first. Returns [(name, item)]."""
+    given = []
+    for g in gear:
+        unarmed = [s for s in present if not has_gear(s, "weapon") and s.get("status") != "dead"]
+        if not unarmed:
+            break
+        gun = g.get("icon") in ("rifle", "pistol")
+        def rank(s):
+            role = s.get("role", "")
+            return ((GUN_FIRST.index(role) if role in GUN_FIRST else len(GUN_FIRST)) if gun else 0,
+                    0 if s["name"] in squad else 1, present.index(s))
+        who = min(unarmed, key=rank)
+        who.setdefault("gear", []).insert(0, dict(g))
+        given.append((who["name"], g))
+    return given
+
+
 def keep_stockpile(data, outings, rng, new_day):
     """Runs bring things home, everyone eats, generators burn fuel, the fence wears. Returns (ledger, notes)."""
     ledger, notes = {}, []
@@ -675,6 +697,17 @@ def keep_stockpile(data, outings, rng, new_day):
         if o.get("kind") == "run" and any(r["outcome"] != "dead" for r in o["results"]):
             for item, amt in LOOT.get(o.get("key"), {}).items():
                 add(item, round(amt * (1 if o.get("first") else .5) * rng.uniform(.75, 1.25)), o["target"])
+            run = next((r for r in data.get("runs", []) if r["dest"] == o.get("key")), {})
+            haul = run.get("haul")
+            if haul and o.get("first") and not run.get("haul_taken"):      # a one-time find set by hand in data.json (a locked gun locker...)
+                run["haul_taken"] = new_day
+                for item, amt in haul.get("stock", {}).items():
+                    add(item, amt, haul.get("why", o["target"]))
+                if haul.get("note"):
+                    notes.append(haul["note"])
+                given = hand_out(data, haul.get("gear", []), [r["name"] for r in o["results"] if r["outcome"] != "dead"], present)
+                if given:
+                    notes.append("Handed out: " + ", ".join(f"{n} gets the {g['name'].lower()}" for n, g in given) + ".")
 
     # finished missions pay out once ("gain"), and some keep giving every night after ("income": the windmill, the milk cows)
     for o in outings:
