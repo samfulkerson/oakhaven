@@ -26,6 +26,7 @@ REPORT_FILE = "report.md"
 IG_ACCOUNT_ID = os.environ.get("IG_USER_ID") or "17841422748770654"   # @surviveoakhaven's Instagram account ID, shown on the Meta app page
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-haiku-5-5")
 MAX_NEW_PER_DAY = 25          # pacing: at most this many new survivors move in per day; the rest wait in line
+PACK = {"Food": 2, "Water": 2}  # what each new survivor carries in; counted the next night, when they start eating
 ROLES = ["Scavenger", "Medic", "Scout", "Sharpshooter", "Farmer", "Builder", "Radio Operator", "Mechanic", "Guard", "Cook", "Engineer"]
 
 # chance of an injury / a death for each person on an outing, by difficulty
@@ -612,6 +613,9 @@ def add_survivors(data, parsed):
         data["survivors"].append(s)
         taken.add(name.lower()); living_ig.add(ig.lower()); added.append(s)
     data["waitlist"] = wait
+    for item, amt in PACK.items():               # everyone who moves in brings a pack, so growth pays for part of itself
+        if added:
+            data.setdefault("camp_bonus", []).append({"item": item, "amt": amt * len(added), "why": "new survivors' packs"})
     return added
 
 
@@ -1019,7 +1023,8 @@ def main():
         left = data["horde"]["day"] - new_day
         lines.append(f"**Horde:** " + ("arrives TONIGHT (Day %d). Fence %d%%, %d rounds." % (data["horde"]["day"], stock_get(data, "Barricades"), stock_get(data, "Ammo"))
                                        if left == 0 else f"reaches the fence in {left} day{'s' if left != 1 else ''} (Day {data['horde']['day']})."))
-    lines.append(f"**New survivors ({len(added)}):** " + (", ".join(f"{s['name']} the {s['role']} (@{s['ig']})" for s in added) or "none"))
+    lines.append(f"**New survivors ({len(added)}):** " + (", ".join(f"{s['name']} the {s['role']} (@{s['ig']})" for s in added) or "none")
+                 + (" (each brought a pack: " + ", ".join(f"+{v} {k.lower()}" for k, v in PACK.items()) + ")" if added else ""))
     if data.get("waitlist"):
         lines.append(f"**Still waiting to get in:** {len(data['waitlist'])}")
     lines.append(f"**Followers:** {data.get('followers')}  |  **Tomorrow is Day {new_day}**")
