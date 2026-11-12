@@ -3057,6 +3057,7 @@ function drawEmissive(c, dark, inView, part) {
       if (z.dying || !inView(z.x, z.y)) continue;
       const zx = Math.round(z.x), zy = Math.round(z.y), fx = z.flip ? -1 : 1;
       if (z.brute) { P(c, zx - 3, zy - 17, '#ff3b2a', 2, 1); P(c, zx + 2, zy - 17, '#ff3b2a', 2, 1); }
+      else if (z.ztype === 'crawler') P(c, fx > 0 ? zx - 3 : zx + 2, zy - 2, '#ff3b2a');     // low to the ground, at the front of the body
       else { P(c, zx - fx, zy - 8, '#ff3b2a'); P(c, zx + fx, zy - 8, '#ff3b2a'); }
     }
     if (selected && !selected.hidden && frame % 40 < 30) {
