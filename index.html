@@ -2624,7 +2624,7 @@ function spawnZombie(brute, nearOk, edge) {
     else if (zUnlocked('screamer') && roll < .2) t = 'screamer';
     else if (zUnlocked('soldier') && roll < .27) t = 'soldier';
     else if (zUnlocked('patient') && roll < .34) t = 'patient';
-    else if (zUnlocked('crawler') && roll < .4) t = 'crawler';
+    else if (zUnlocked('crawler') && roll < .4 && rand() < .5) t = 'crawler';      // half of what the roll gives them: the corn is creepy, not crowded
   }
   if (t) { z.look.ztype = t; z.ztype = t; }
   if (t === 'runner') z.spd = .14 + rand() * .06;
