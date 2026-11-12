@@ -2475,13 +2475,14 @@ function lookFor(seed, role, zombie) {
   if (zombie) return { zombie: 1, skin: pick(r, ZSKIN), hair: pick(r, ['#2a2520', '#4a3a2a', '#5f5a50']), jacket: pick(r, ZCLOTH), pants: pick(r, PANTS) };
   return { skin: pick(r, SKIN), hair: pick(r, HAIR), jacket: pick(r, JACKET), pants: pick(r, PANTS), role: role || '' };
 }
+const ROLE_AS = { EMT: 'Medic' };     // roles that look and work like another: an EMT is a medic in the field
 const CACHE = new Map();
 function sprite(look, pose) {
   const key = [look.zombie ? 'z' + (look.ztype || '') : 'h', look.skin, look.hair, look.jacket, look.pants, look.role || '', look.axe ? 'axe' : '', look.long ? 'long' : '', look.weapon || '', look.armor ? 'arm' : '', pose].join('|');
   if (CACHE.has(key)) return CACHE.get(key);
   const g = Array.from({ length: GH }, () => Array(GW).fill(null));
   const set = (c, r, col) => { const X = c + OX, Y = r + OY; if (X >= 0 && X < GW && Y >= 0 && Y < GH) g[Y][X] = col; };
-  const role = look.role || '';
+  const role = ROLE_AS[look.role] || look.role || '';           // an EMT looks the part of a medic
   let jacket = look.jacket, hair = look.hair;
   if (role === 'Medic' || role === 'Chef') jacket = '#d8d3c8';
   if (role === 'Scout') { jacket = '#4d5a34'; hair = '#4d5a34'; }
@@ -2498,6 +2499,7 @@ function sprite(look, pose) {
   if (look.weapon === 'spear') { for (let r = 1; r <= 9; r++) set(7, r, '#8a6234'); set(7, -1, '#f2f4f6'); set(7, 0, '#c4c8cc'); set(8, 0, '#9aa0a4'); set(7, 2, '#b4b8bc'); set(7, 3, '#b4b8bc'); }   // a bayonet lashed to a pole, taller than him
   if (look.weapon === 'club') { for (let r = 4; r <= 8; r++) set(7, r, '#7a5a34'); set(7, 2, '#5a3e22'); set(7, 3, '#5a3e22'); set(8, 2, '#5a3e22'); set(8, 3, '#9aa0a4'); }
   if (look.axe || look.weapon === 'axe') { for (let r = 2; r <= 8; r++) set(7, r, '#6b4a2a'); set(8, 2, '#c4c8cc'); set(8, 3, '#c4c8cc'); set(8, 4, '#9aa0a4'); set(9, 3, '#e2e5e8'); set(6, 2, '#9aa0a4'); }
+  if (role === 'Gunsmith') { for (let r = 5; r <= 8; r++) set(7, r, '#6b4a2a'); set(6, 4, '#8a8e92'); set(7, 4, '#9aa0a4'); set(8, 4, '#8a8e92'); for (let c = 2; c <= 4; c++) { set(c, 6, '#4a3424'); set(c, 7, '#4a3424'); } }   // a hammer and a leather apron
   if (role === 'Mechanic') { set(7, 6, '#9aa0a4'); set(7, 7, '#9aa0a4'); set(8, 6, '#9aa0a4'); for (let c = 1; c <= 5; c++) set(c, 0, '#3f5a7a'); set(6, 1, '#3f5a7a'); }
   if (role === 'Medic') { set(3, 5, '#b03a2e'); set(3, 6, '#b03a2e'); set(2, 6, '#b03a2e'); set(4, 6, '#b03a2e'); }
   if (role === 'Chef') { for (let c = 1; c <= 5; c++) set(c, 0, '#f2efe8'); for (let c = 2; c <= 4; c++) set(c, -1, '#f2efe8'); set(7, 5, '#b8bcc0'); set(7, 6, '#b8bcc0'); set(8, 5, '#b8bcc0'); set(7, 7, '#4a3420'); }
@@ -2956,7 +2958,9 @@ const ROLE_TALK = {
   Farmer: ["Planted beans in an old dryer drum. Don't laugh.", "If we get to Hollow Creek before the frost, we eat all winter."],
   Guard: ['Gate watch. Quiet so far.', '{z} of them at the fence at last count. It holds.'],
   Cook: ['Peaches again tonight. Nobody complain.', "Coffee's running low. This is now an emergency."],
-  Engineer: ['If we get the substation running, the whole block lights up.', 'Wired a lamp to a car battery. One room, one bulb. Still counts.']
+  Engineer: ['If we get the substation running, the whole block lights up.', 'Wired a lamp to a car battery. One room, one bulb. Still counts.'],
+  EMT: ['Ran a triage drill. If the fence breaks, the hurt go to the back by the dryers.', "I've worked worse scenes than this. Not many, but some."],
+  Gunsmith: ['Took apart every gun we own. Cleaned, oiled, back together. Now we just need rounds.', "Give me a pipe, a spring and a quiet afternoon and I'll make you something that hurts."]
 };
 const WORLD_TALK = [
   'That jet on the runway is still burning. Brightest thing in the city at night.',
