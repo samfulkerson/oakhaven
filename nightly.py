@@ -27,7 +27,11 @@ IG_ACCOUNT_ID = os.environ.get("IG_USER_ID") or "17841422748770654"   # @survive
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-haiku-5-5")
 MAX_NEW_PER_DAY = 25          # pacing: at most this many new survivors move in per day; the rest wait in line
 PACK = {"Food": 2, "Water": 2}  # what each new survivor carries in; counted the next night, when they start eating
-ROLES = ["Scavenger", "Medic", "Scout", "Sharpshooter", "Farmer", "Builder", "Radio Operator", "Mechanic", "Guard", "Cook", "Engineer"]
+ROLES = ["Scavenger", "Medic", "EMT", "Scout", "Sharpshooter", "Gunsmith", "Farmer", "Builder", "Radio Operator", "Mechanic", "Guard", "Cook", "Engineer"]
+ACTS_AS = {"EMT": "Medic"}     # roles that do another role's job in the game: an EMT patches people up like a medic
+def kind(s):
+    r = s.get("role", "")
+    return ACTS_AS.get(r, r)
 
 # chance of an injury / a death for each person on an outing, by difficulty
 RISK = {"easy": (0.06, 0.005), "medium": (0.12, 0.02), "hard": (0.20, 0.05), "deadly": (0.30, 0.12)}
@@ -165,10 +169,10 @@ def pick_squad(data, kind, item, rng):
     rest = [s for s in living if s not in squad]
     rng.shuffle(rest)
     rest.sort(key=lambda s: s.get("outings", 0))          # spread the work: people who've been out least go first
-    roles_have = {s["role"] for s in squad}
+    roles_have = {kind(s) for s in squad}
     for need in ("Medic", "Sharpshooter"):                 # on hard and deadly outings, try to bring a medic and a shooter
         if item.get("difficulty") in ("hard", "deadly") and need not in roles_have:
-            pro = next((s for s in rest if s["role"] == need), None)
+            pro = next((s for s in rest if kind(s) == need), None)
             if pro and len(squad) < want:
                 squad.append(pro); rest.remove(pro); roles_have.add(need)
     while len(squad) < want and rest:
@@ -196,7 +200,7 @@ def resolve_outing(data, kind, item, rng):
     squad = pick_squad(data, kind, item, rng)
     if not squad:
         return {"target": place, "key": item.get("dest") or item.get("poi"), "first": first, "kind": kind, "difficulty": diff, "squad": [], "results": [], "note": "Nobody was fit to go."}
-    roles = {s["role"] for s in squad}
+    roles = {kind(s) for s in squad}
     inj, die = RISK.get(diff, RISK["medium"])
     if "Medic" in roles:
         die *= 0.5; inj *= 0.85
@@ -364,7 +368,7 @@ def horde_night(data, rng, day):
         return None
     home = [s for s in data["survivors"] if s.get("status") not in ("dead", "away") and s.get("joined", 1) <= day]
     fit = [s for s in home if s.get("status") != "injured"]
-    roles = Counter(s.get("role") for s in fit)
+    roles = Counter(kind(s) for s in fit)
     lit = any(g.get("status") == "running" and not g.get("dry") for g in data.get("power", []))
     strength = 70 + 15 * (h.get("week", 1) - 1) + min(data.get("followers") or 0, 80) * 0.5 + rng.uniform(-10, 10)
     if lit:
