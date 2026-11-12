@@ -149,15 +149,15 @@
   {
    "name": "Jack",
    "ig": "rebelforce35",
-   "role": "Sharpshooter",
-   "bio": "Jack hammers out blades by day and gunslings by night, so the undead get a close look at his work before they go down.",
+   "role": "Gunsmith",
+   "bio": "Jack is a gunsmith who hammers out blades by day and fixes up guns by night, so the undead get a close look at his work before they go down.",
    "joined": 6
   },
   {
    "name": "Carl",
    "ig": "prinz_carl062",
-   "role": "Medic",
-   "bio": "Carl is a Rettungssanitäter who has seen every kind of disaster, and he's ready to patch up the survivors who are left.",
+   "role": "EMT",
+   "bio": "Carl is an EMT (a Rettungssanitäter back home) who has seen every kind of disaster, and he's ready to patch up the survivors who are left.",
    "joined": 6
   }
  ],
