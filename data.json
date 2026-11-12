@@ -541,7 +541,7 @@
    ],
    "goal": "Get the old windmill pumping and fill the troughs again.",
    "crew": "Adam the mechanic and Mateen the farmer",
-   "reward": "+10 water now, then +4 clean water every night with no fuel",
+   "reward": "+15 water now, then +4 clean water every night with no fuel",
    "poi": "windmill",
    "status": "done",
    "days": 1,
@@ -550,7 +550,7 @@
     "Mateen"
    ],
    "gain": {
-    "Water": 10
+    "Water": 15
    },
    "income": {
     "Water": 4
@@ -904,7 +904,7 @@
   ],
   [
    "Water",
-   12,
+   17,
    200,
    "rations"
   ],
@@ -1246,7 +1246,7 @@
    "waiting": 0,
    "power": [],
    "stock": {
-    "Water": 4,
+    "Water": 9,
     "Scrap": -2,
     "Ammo": -2,
     "Food": -12,
@@ -1269,7 +1269,7 @@
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Water": 4,
+  "Water": 9,
   "Scrap": -2,
   "Ammo": -2,
   "Food": -12,
