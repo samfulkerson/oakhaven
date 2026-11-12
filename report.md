@@ -10,6 +10,6 @@
 **Camp:** The old windmill is turning again. Clean water, every night, no fuel.
 **Camp:** Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them.
 **Horde:** reaches the fence in 1 day (Day 7).
-**New survivors (2):** Jack the Sharpshooter (@rebelforce35), Carl the Medic (@prinz_carl062)
+**New survivors (2):** Jack the Gunsmith (@rebelforce35), Carl the EMT (@prinz_carl062)
 **Followers:** 43  |  **Tomorrow is Day 6**
 **Tomorrow's vote:** Day 6. Water is down to zero days and the horde reaches the fence tomorrow. We have no rounds left. Where do we go? 🌲 RANGER (Never searched, medium risk. We have zero rounds, so anything useful matters.) / ⛽ GAS (Easy run. The Laundromat generator needs 10 L of gasoline from this station.) / 🏥 HOSPITAL (Hard mission. Clear the ground floor first, then reach the basement generator.)
