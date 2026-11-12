@@ -1,41 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 5,
- "followers": 37,
+ "day": 6,
+ "followers": 43,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 5. Tanny saw the horde on the highway, three days out. The fence is at 72% and we have 2 rounds. Where do we go?",
+  "q": "Day 6. Water is down to zero days and the horde reaches the fence tomorrow. We have no rounds left. Where do we go?",
   "opts": [
    [
-    "GUN SHOP",
+    "RANGER",
     0,
-    "2 rounds left. The Gun & Pawn was never searched. Could be nothing.",
-    "gunshop",
-    "🔫"
+    "Never searched, medium risk. We have zero rounds, so anything useful matters.",
+    "ranger",
+    "🌲"
    ],
    [
-    "FORTIFY",
+    "GAS",
     0,
-    "Fence is at 72% with the horde two days out. No time to wait.",
-    "fortify",
-    "🧱"
+    "Easy run. The Laundromat generator needs 10 L of gasoline from this station.",
+    "gas",
+    "⛽"
    ],
    [
-    "WINDMILL",
+    "HOSPITAL",
     0,
-    "Water is gone. Gary says a mechanic could free the pump in a day.",
-    "windmill",
-    "💧"
-   ],
-   [
-    "HARVEST",
-    0,
-    "About 60 rations in the fields, but something moves low in the rows.",
-    "harvest",
-    "🌽"
+    "Hard mission. Clear the ground floor first, then reach the basement generator.",
+    "hospital",
+    "🏥"
    ]
   ],
-  "how": "Comment GUN SHOP, FORTIFY, WINDMILL or HARVEST (or its emoji) on the Day 5 Reel. One vote per account, your last comment counts."
+  "how": "Comment RANGER, GAS or HOSPITAL (or its emoji) on the Day 6 Reel. One vote per account, your last comment counts."
  },
  "survivors": [
   {
@@ -45,7 +38,8 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 3
+   "outings": 3,
+   "day_outings": 1
   },
   {
    "name": "Jaylozy",
@@ -53,7 +47,8 @@
    "role": "Sharpshooter",
    "bio": "Jaylozy joins as a Sharpshooter, ready to take the shot when the moment comes.",
    "joined": 2,
-   "outings": 1
+   "outings": 1,
+   "day_outings": 1
   },
   {
    "name": "Tanny",
@@ -61,14 +56,16 @@
    "role": "Scout",
    "bio": "Tanny is a professional hiker who knows every trail, making them a natural Scout.",
    "joined": 2,
-   "outings": 1
+   "outings": 1,
+   "day_outings": 1
   },
   {
    "name": "Seth",
    "ig": "uriahwilde",
    "role": "Radio Operator",
    "bio": "Seth manages e-commerce by day and knows his way around IT, so he's ready to keep the radios humming.",
-   "joined": 2
+   "joined": 2,
+   "day_outings": 1
   },
   {
    "name": "Gary Finklestein",
@@ -76,7 +73,8 @@
    "role": "Scavenger",
    "bio": "Gary ran a very specialty shop downtown. He knows every back door on Main Street and won't say how.",
    "joined": 2,
-   "outings": 1
+   "outings": 1,
+   "day_outings": 1
   },
   {
    "name": "Adam",
@@ -84,7 +82,8 @@
    "role": "Mechanic",
    "bio": "Adam showed up at the gate with a toolbox and grease under his nails. First thing he asked was where the generator is.",
    "joined": 3,
-   "outings": 1
+   "outings": 2,
+   "day_outings": 1
   },
   {
    "name": "Asa",
@@ -94,7 +93,8 @@
    "joined": 4,
    "look": {
     "skin": "#f1c9a5"
-   }
+   },
+   "day_outings": 1
   },
   {
    "name": "Gabe",
@@ -108,7 +108,8 @@
    "ig": "mateenegml",
    "role": "Farmer",
    "bio": "Mateen swapped spreadsheets for seed packets and intends to keep the entire camp fed and green.",
-   "joined": 4
+   "joined": 4,
+   "outings": 1
   },
   {
    "name": "Jeremy",
@@ -123,7 +124,8 @@
      "name": "Bayonet spear",
      "icon": "spear"
     }
-   ]
+   ],
+   "day_outings": 1
   },
   {
    "name": "Victoria",
@@ -143,6 +145,20 @@
    "role": "Builder",
    "bio": "Francis is a carpenter who knows where the good tools are hiding, and he'll build you a fort before the sun goes down.",
    "joined": 5
+  },
+  {
+   "name": "Jack",
+   "ig": "rebelforce35",
+   "role": "Sharpshooter",
+   "bio": "Jack hammers out blades by day and gunslings by night, so the undead get a close look at his work before they go down.",
+   "joined": 6
+  },
+  {
+   "name": "Carl",
+   "ig": "prinz_carl062",
+   "role": "Medic",
+   "bio": "Carl is a Rettungssanitäter who has seen every kind of disaster, and he's ready to patch up the survivors who are left.",
+   "joined": 6
   }
  ],
  "runs": [
@@ -527,7 +543,7 @@
    "crew": "Adam the mechanic and Mateen the farmer",
    "reward": "+10 water now, then +4 clean water every night with no fuel",
    "poi": "windmill",
-   "status": "open",
+   "status": "done",
    "days": 1,
    "squad": [
     "Adam",
@@ -543,7 +559,8 @@
    "unlock_zombies": [
     "crawler"
    ],
-   "unlock_note": "Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them."
+   "unlock_note": "Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them.",
+   "days_done": 1
   },
   {
    "name": "Stray cattle",
@@ -881,13 +898,13 @@
  "stock": [
   [
    "Food",
-   62,
+   50,
    200,
    "rations"
   ],
   [
    "Water",
-   8,
+   12,
    200,
    "rations"
   ],
@@ -899,7 +916,7 @@
   ],
   [
    "Ammo",
-   2,
+   0,
    500,
    "rds"
   ],
@@ -911,13 +928,13 @@
   ],
   [
    "Scrap",
-   46,
+   44,
    200,
    "units"
   ],
   [
    "Barricades",
-   72,
+   73,
    100,
    "%"
   ]
@@ -1183,15 +1200,80 @@
     "The big choice: get ready for what's coming from the north (ammo from the Gun & Pawn, or fortify the fence), or stockpile at Victoria's farm (the windmill pump for water, or the harvest for food)."
    ],
    "day_runs": []
+  },
+  {
+   "day": 5,
+   "vote": {
+    "question": "Day 5. Tanny saw the horde on the highway, three days out. The fence is at 72% and we have 2 rounds. Where do we go?",
+    "results": {
+     "WINDMILL": 4
+    },
+    "winner": "WINDMILL",
+    "tiebreak": null,
+    "reel": "https://www.instagram.com/reel/DfmvXVOyWqS/"
+   },
+   "outings": [
+    {
+     "target": "The windmill pump",
+     "key": "windmill",
+     "first": true,
+     "kind": "mission",
+     "difficulty": "easy",
+     "squad": [
+      "Adam",
+      "Mateen"
+     ],
+     "results": [
+      {
+       "name": "Adam",
+       "ig": "adamfulk915",
+       "outcome": "ok"
+      },
+      {
+       "name": "Mateen",
+       "ig": "mateenegml",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": "done"
+    }
+   ],
+   "healed": [],
+   "joined": [
+    "Jack",
+    "Carl"
+   ],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Water": 4,
+    "Scrap": -2,
+    "Ammo": -2,
+    "Food": -12,
+    "Barricades": 1
+   },
+   "camp": [
+    "The old windmill is turning again. Clean water, every night, no fuel.",
+    "Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them."
+   ],
+   "horde": null,
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Gary Finklestein & Adam → Fresh Market (08:40): nothing",
+    "Seth & Jeremy → Maple Court (11:50): nothing",
+    "Sam & Asa → Rosie’s Diner (13:30): +2 water",
+    "Tanny & Jaylozy → Gun & Pawn (15:05): +1 scrap"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": 33,
-  "Water": -5,
-  "Ammo": -6,
-  "Scrap": 4,
-  "Barricades": 0
+  "Water": 4,
+  "Scrap": -2,
+  "Ammo": -2,
+  "Food": -12,
+  "Barricades": 1
  },
  "schedule": [
   {
@@ -1230,6 +1312,11 @@
    "amt": 2,
    "why": "Mateen's roof garden",
    "from_day": 7
+  },
+  {
+   "item": "Water",
+   "amt": 4,
+   "why": "The windmill pump"
   }
  ],
  "highlights": [
@@ -1249,7 +1336,8 @@
   }
  ],
  "zombie_types": [
-  "walker"
+  "walker",
+  "crawler"
  ],
  "milestones_hit": [
   2,
@@ -1257,15 +1345,15 @@
   25
  ],
  "undead": {
-  "count": 28393,
+  "count": 28391,
   "last": {
-   "day": 4,
-   "killed": 11,
-   "turned": 4,
+   "day": 5,
+   "killed": 4,
+   "turned": 2,
    "arrived": 0
   }
  },
- "last_run": 1794400846,
+ "last_run": 1794481089,
  "horde": {
   "day": 7,
   "week": 1
@@ -1280,55 +1368,46 @@
   ]
  },
  "day_runs": {
-  "day": 5,
+  "day": 6,
   "runs": [
    {
-    "time": "08:40",
-    "dest": "market",
-    "crew": [
-     "Gary Finklestein",
-     "Adam"
-    ],
-    "find": {},
-    "event": "ok",
-    "line": "Gary Finklestein: Picked clean. Nothing worth carrying. Heading home."
-   },
-   {
     "time": "11:50",
-    "dest": "maple",
+    "dest": "port",
     "crew": [
-     "Seth",
-     "Jeremy"
+     "Francis",
+     "Victoria"
     ],
-    "find": {},
+    "find": {
+     "Scrap": 2
+    },
     "event": "ok",
-    "line": "Seth: Picked clean. Nothing worth carrying. Heading home."
+    "line": "Francis: Found 2 car doors for the fence. Heading home."
    },
    {
     "time": "13:30",
-    "dest": "diner",
+    "dest": "farm",
     "crew": [
-     "Sam",
-     "Asa"
+     "Jack",
+     "Carl"
     ],
     "find": {
-     "Water": 2
+     "Food": 1
     },
     "event": "ok",
-    "line": "Sam: Found 2 cases of bottled water in a stockroom. Heading home."
+    "line": "Jack: Found 1 jars of peanut butter in a back room. Heading home."
    },
    {
     "time": "15:05",
-    "dest": "gunshop",
+    "dest": "market",
     "crew": [
-     "Tanny",
-     "Jaylozy"
+     "Gabe",
+     "Mateen"
     ],
     "find": {
-     "Scrap": 1
+     "Food": 2
     },
     "event": "ok",
-    "line": "Tanny: Found 1 car doors for the fence. Heading home."
+    "line": "Gabe: Found 2 cans of soup behind the counter. Heading home."
    }
   ]
  }
