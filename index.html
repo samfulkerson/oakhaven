@@ -735,6 +735,16 @@ function deadTree(x, X, Y) {
   P(x, X, Y - 10, c, 1, 10); P(x, X - 1, Y - 1, c, 3, 1);
   P(x, X - 3, Y - 8, c, 3, 1); P(x, X - 3, Y - 10, c, 1, 2); P(x, X + 1, Y - 6, c, 3, 1); P(x, X + 3, Y - 8, c, 1, 2); P(x, X - 2, Y - 12, c, 1, 2); P(x, X + 1, Y - 13, c, 1, 3);
 }
+// leafy trees in late fall: rust, orange, gold, red and the last yellow-green. Evergreens (pine) stay green.
+const FALL_LEAVES = [['#5a2a14', '#8a3a1a', '#b85a2a'], ['#5a4a14', '#8a7a24', '#b8a03a'], ['#6a4a12', '#a8782a', '#d0a03a'], ['#4a1e14', '#7a2a1a', '#a8402a'], ['#3a4a1a', '#5a6a24', '#7a8a34']];
+function fallTree(x, X, Y, seed) {
+  const r = rngOf(seed); if (r() < .12) { deadTree(x, X, Y + 3); return; }
+  const pal = pick(r, FALL_LEAVES);
+  const R = 4 + (r() * 3 | 0), cy = Y - R;
+  for (let a = -R; a <= R + 1; a++) for (let b = -R; b <= R; b++) if (a * a + b * b * 1.4 <= R * R) P(x, X + a + 3, cy + b + 4, 'rgba(0,0,0,.25)');
+  P(x, X, cy, '#3b2c20', 1, R + 3);
+  for (let a = -R; a <= R; a++) for (let b = -R; b <= R; b++) { if (a * a + b * b > R * R + hash2(a, b, seed) * 5) continue; const lit = a + b < -R * .6 ? 2 : a + b > R * .5 ? 0 : 1; P(x, X + a, cy + b, pal[hash2(a, b, seed + 1) > .85 ? Math.max(0, lit - 1) : lit]); }
+}
 function pine(x, X, Y, s, seed) {
   P(x, X - 3, Y, 'rgba(0,0,0,.35)', 7, 2);
   for (let r = 0; r < s; r++) { const w = 1 + Math.floor(r * .9) * 2 - (r % 3 === 2 ? 2 : 0); const n = hash2(r, seed, 5); P(x, X - (Math.max(1, w) >> 1), Y - s - 2 + r, r < 2 ? '#3c6a3a' : n < .35 ? '#2e5230' : n < .8 ? '#24422a' : '#1a3220', Math.max(1, w), 1); }
@@ -915,7 +925,7 @@ function buildBG() {
   bldg(x, [168, 738, 30, 24], { roof: '#6a6a64', roof2: '#5a5a54', wall: '#8a8a84', wall2: '#7a7a74', trim: '#2a2a2a', face: 12 });
   P(x, 179, 754, '#100f0d', 6, 8); P(x, 171, 752, '#d9b02a', 5, 5); P(x, 173, 753, '#1a1a1a', 1, 3);
   P(x, 136, 684, '#c9a22a', 43, 7); text(x, 'SUBSTATION', 138, 685, '#1a1a1a');
-    trees.sort((a, b) => a[1] - b[1]).forEach(([px, py, s]) => (hash2(px, py, 98) > .93 ? deadTree(x, px, py) : pine(x, px, py, s, px + py)));
+    trees.sort((a, b) => a[1] - b[1]).forEach(([px, py, s]) => (hash2(px, py, 98) > .93 ? deadTree(x, px, py) : hash2(px, py, 99) > .55 ? fallTree(x, px, py, px * 7 + py) : pine(x, px, py, s, px + py)));
   LABELS.push(['FOREST', 100, 160, 'area']);
 
   // ================= AIRPORT (north) =================
@@ -1541,15 +1551,7 @@ function buildBG() {
   const SHUT = ['#2e4a6a', '#3a5a3a', '#6a2a2a', '#2a2a2a', '#5a4a3a'];
   const CARC = ['#7a3b33', '#3f5466', '#5a5a62', '#d8d6cc', '#4a4f3a', '#c9a22a', '#2e5a8a'];
   const lawn = (X0, Y0, w, h, seed) => { for (let y = Y0; y < Y0 + h; y++) for (let X = X0; X < X0 + w; X++) { const n = hash2(X, y, seed), m = hash2(X >> 2, y >> 2, seed + 1); P(x, X, y, m > .8 ? (n > .5 ? '#5a5a34' : '#525230') : n > .94 ? '#2a4022' : ((X >> 1) % 2 ? '#3e5a2c' : '#42602f')); } };
-  const leafTree = (X, Y, seed) => {
-    const r = rngOf(seed); if (r() < .12) { deadTree(x, X, Y + 3); return; }
-    const pal = pick(r, [['#5a2a14', '#8a3a1a', '#b85a2a'], ['#2a4a22', '#3a5a2a', '#527a3a'], ['#6a4a12', '#a8782a', '#d0a03a'], ['#4a1e14', '#7a2a1a', '#a8402a'], ['#3a4a1a', '#5a6a24', '#7a8a34']]);
-    const R = 4 + (r() * 3 | 0), cy = Y - R;
-    for (let a = -R; a <= R + 1; a++) for (let b = -R; b <= R; b++) if (a * a + b * b * 1.4 <= R * R) P(x, X + a + 3, cy + b + 4, 'rgba(0,0,0,.25)');
-    P(x, X, cy, '#3b2c20', 1, R + 3);
-    for (let a = -R; a <= R; a++) for (let b = -R; b <= R; b++) { if (a * a + b * b > R * R + hash2(a, b, seed) * 5) continue; const lit = a + b < -R * .6 ? 2 : a + b > R * .5 ? 0 : 1; P(x, X + a, cy + b, pal[hash2(a, b, seed + 1) > .85 ? Math.max(0, lit - 1) : lit]); }
-    for (let i = 0; i < 7; i++) P(x, X + (r() * (R * 3) | 0) - R, Y + (r() * 3 | 0), pal[1 + (i % 2)]);
-  };
+  const leafTree = (X, Y, seed) => fallTree(x, X, Y, seed);
   const home = (LX, LY, seed, back = false, LW = 40) => {
     const r = rngOf(seed);
     lawn(LX, LY, LW, 36, seed);
@@ -1957,7 +1959,7 @@ function buildBG() {
     wtrees.push([px, py]);
   }
   for (let i = 0; i < 30; i++) P(x, 1290 + (hash2(i, 1, 203) * 300 | 0), 1060 + (hash2(i, 2, 203) * 38 | 0), '#2e5a2e', 2, 1);
-  wtrees.sort((a, b) => a[1] - b[1]).forEach(([px, py], i) => (hash2(px, py, 204) > .78 ? leafTree(px, py, px * 3 + py) : pine(x, px, py, 7 + (hash2(px, py, 205) * 5 | 0), px + py)));
+  wtrees.sort((a, b) => a[1] - b[1]).forEach(([px, py], i) => (hash2(px, py, 204) > .5 ? leafTree(px, py, px * 3 + py) : pine(x, px, py, 7 + (hash2(px, py, 205) * 5 | 0), px + py)));
 
   // ---- KOAK 88.1 radio tower on the hill
   town(155, 1288, 920, 312, 104);
@@ -2438,34 +2440,9 @@ function buildBG() {
   solid([FENCE.x0, FENCE.y0, FENCE.x1 - FENCE.x0 + 1, FENCE.y1 - FENCE.y0 + 1]);
   for (const [lx, ly] of STREETLIGHTS) LIGHTS.push([lx, ly + 2, 20, .65, '255,225,160', 'flicker', 'substation']);
   LIGHTS.push([150, 722, 20, .6, '230,235,255', 'steady', 'substation']);
-  if (SEASON === 'fall') autumn(x);
   return c;
 }
 
-// ------------------------------------------------------------------ the season
-// Late fall in Oakhaven: the grass goes to straw, the fields to khaki, leaves pile up on lawns and in the gutters.
-// The pines and dark hedges stay mostly green, the way evergreens do.
-const SEASON = 'fall';
-const LEAF_COLS = ['#b85a2a', '#d0a03a', '#8a3a1a', '#a8402a', '#c9822a', '#7a4a1a'];
-function autumn(x) {
-  const img = x.getImageData(0, 0, W, H), d = img.data;
-  const leaf = LEAF_COLS.map(h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
-  for (let Y = 0; Y < H; Y++) for (let X = 0; X < W; X++) {
-    const i = (Y * W + X) * 4, r = d[i], g = d[i + 1], b = d[i + 2];
-    const dom = g - Math.max(r, b), lum = (r + g + b) / 3;
-    if (dom > 4 && dom < 45) {                                                           // anything green (but not the bright green street signs)
-      const warm = hash2(X >> 3, Y >> 3, 811) > .7 ? 1 : 0;                             // patches that turned rust
-      const t = Math.min(1, dom / 40) * (lum < 45 ? .35 : .78);                         // evergreens and dark hedges change less
-      d[i] = r + (g * 1.05 + 8 + warm * 14 - r) * t;
-      d[i + 1] = g - g * (.12 + warm * .06) * t;
-      d[i + 2] = b - b * .2 * t;
-      if (lum >= 45 && hash2(X, Y, 777) < .02) { const c = leaf[hash2(X, Y, 778) * leaf.length | 0]; d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; }   // leaves on the grass
-    } else if (Math.abs(r - g) < 12 && Math.abs(g - b) < 14 && lum > 40 && lum < 150 && hash2(X, Y, 779) < .006) {     // a few blown onto streets and sidewalks
-      const c = leaf[hash2(X, Y, 780) * leaf.length | 0]; d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2];
-    }
-  }
-  x.putImageData(img, 0, 0);
-}
 
 // ------------------------------------------------------------------ sprites: 7x11 bodies drawn from text grids, cached per look+pose
 const HUMAN = ['..hhh..', '.hhhhh.', '.hssss.', '..eses.', '..sss..', '.jjjjj.', 'sjjjjjs', 's.jjj.s'];
@@ -2967,7 +2944,6 @@ function update() {
   if (frame % 200 === 0 && alive < want) spawnZombie(dark > .5 && rand() < .07, false, surge && rand() < .6 ? 2 : 1);
   if (frame % 200 === 100 && alive > want + 6) { const off = zombies.find(z => !z.dying && z.state === 'roam' && !onScreen(z.x, z.y)); if (off) zombies.splice(zombies.indexOf(off), 1); }
   for (const [sx, sy, rate] of SMOKE) if (frame % Math.max(2, 9 - rate * 2) === 0) parts.push({ x: sx + (rand() - .5) * 3, y: sy, vx: (rand() - .5) * .1 + .03, vy: -.2 - rate * .03, life: 50 + rate * 15, col: rate > 2 ? '#3a3836' : '#6d6a63' });
-  if (SEASON === 'fall' && frame % 18 === 0) { const hh = hourNow(); if (hh > 7 && hh < 19) parts.push({ x: camX + rand() * vw(), y: camY + rand() * vh() * .6, vx: .1 + rand() * .2, vy: .12 + rand() * .1, life: 120 + (rand() * 80 | 0), col: LEAF_COLS[rand() * LEAF_COLS.length | 0] }); }   // a leaf drifting down now and then
   for (let i = parts.length - 1; i >= 0; i--) { const p = parts[i]; p.x += p.vx; p.y += p.vy; if (--p.life <= 0) parts.splice(i, 1); }
   for (let i = shots.length - 1; i >= 0; i--) if (--shots[i].life <= 0) shots.splice(i, 1);
   for (let i = swings.length - 1; i >= 0; i--) if (--swings[i].life <= 0) swings.splice(i, 1);
