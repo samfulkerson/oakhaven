@@ -1,5 +1,5 @@
 {
- "about": "The Oakhaven camera roll. One cheap digital camera, found on a run, documents every mission. This file keeps the people and places looking the same from one day's photos to the next. refs/ holds the approved reference images for each place.",
+ "about": "The Oakhaven camera roll. One cheap digital camera, found by Francis in a dead dockworker's bag at Pier 9 on Day 6, documents every mission from Day 7 on. This file keeps the people and places looking the same from one day's photos to the next. refs/ holds the approved reference images for each place.",
  "style": "A candid snapshot taken on a cheap mid-2000s compact digital camera (a 7-megapixel point-and-shoot with a small CCD sensor). Harsh direct on-camera flash indoors with hard flash shadows and fast falloff into darkness; flat overcast late-autumn Midwest daylight outdoors. Slightly blown highlights, noisy shadows, a little chromatic aberration, slightly soft focus, imperfect amateur framing, sometimes a touch of motion blur. Photorealistic, unglamorous, not cinematic, no color grading. A small American city a few weeks after a zombie outbreak: dust, leaves, broken glass, abandoned cars, overturned things. No text overlays, no watermark, no date stamp, no borders.",
  "rules": [
   "Never show any survivor's face clearly. Show them from behind, from the side with a hood up, with a bandana or respirator over the face, in shadow, cropped at the shoulders, or motion-blurred. The photographer is one of them, so a gloved hand or boots can appear in frame.",
@@ -102,7 +102,7 @@
    "skin": "fair skin",
    "hair": "brown hair, under a hard hat",
    "outfit": "yellow hard hat, olive-green work jacket, dark olive pants, tool belt",
-   "signature": "a claw hammer in hand",
+   "signature": "a claw hammer on his belt and a boat hook (a long wooden pole with a steel spike and a curled hook) in hand",
    "face": "hard hat brim shadow"
   }
  },
@@ -187,7 +187,8 @@
     "the big loading door from inside, light behind"
    ],
    "history": [
-    "Day 4: Sam, Jeremy and Jaylozy cleared it. They came back with 32 rations of food and scrap, and fired 6 of the camp's last 8 rounds. Jeremy took a bayonet from a broken crate."
+    "Day 4: Sam, Jeremy and Jaylozy cleared it. They came back with 32 rations of food and scrap, and fired 6 of the camp's last 8 rounds. Jeremy took a bayonet from a broken crate.",
+    "Day 6: Francis and Victoria went back for car doors for the fence. Francis found the camp's digital camera in a dockworker's bag and took a boat hook off the warehouse wall."
    ],
    "masters": [
     "refs/master_port_1.jpg"
