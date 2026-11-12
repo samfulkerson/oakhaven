@@ -248,8 +248,52 @@
    "squad": [
     "Sam"
    ],
-   "loot": "A hunting rifle, a first aid kit and a trail map",
-   "place": "Ranger station"
+   "loot": "The rangers' gun locker: rifles, a shotgun, a revolver, blades and boxes of ammo",
+   "place": "Ranger station",
+   "haul": {
+    "why": "the ranger station's gun locker",
+    "stock": {
+     "Ammo": 45
+    },
+    "note": "The ranger station's gun locker was still locked. Nobody had made it out here. Three guns, four blades and axes, and boxes of ammo.",
+    "gear": [
+     {
+      "kind": "weapon",
+      "name": "Hunting rifle",
+      "icon": "rifle"
+     },
+     {
+      "kind": "weapon",
+      "name": "Pump shotgun",
+      "icon": "rifle"
+     },
+     {
+      "kind": "weapon",
+      "name": "Revolver",
+      "icon": "pistol"
+     },
+     {
+      "kind": "weapon",
+      "name": "Machete",
+      "icon": "blade"
+     },
+     {
+      "kind": "weapon",
+      "name": "Hatchet",
+      "icon": "axe"
+     },
+     {
+      "kind": "weapon",
+      "name": "Pulaski fire axe",
+      "icon": "axe"
+     },
+     {
+      "kind": "weapon",
+      "name": "Splitting maul",
+      "icon": "club"
+     }
+    ]
+   }
   },
   {
    "dest": "hangar",
