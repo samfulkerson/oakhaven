@@ -144,7 +144,18 @@
    "ig": "ihateedison",
    "role": "Builder",
    "bio": "Francis is a carpenter who knows where the good tools are hiding, and he'll build you a fort before the sun goes down.",
-   "joined": 5
+   "joined": 5,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Boat hook",
+     "icon": "hook"
+    },
+    {
+     "kind": "item",
+     "name": "Digital camera"
+    }
+   ]
   },
   {
    "name": "Jack",
@@ -1333,6 +1344,13 @@
    "kind": "weapon",
    "title": "Bayonet spear",
    "text": "Down to 2 rounds, Jeremy took a bayonet from a crate at Pier 9 and lashed it to a mop handle with fence wire. Now he can hold the fence without firing a shot. +2 horde defense."
+  },
+  {
+   "day": 6,
+   "who": "Francis",
+   "kind": "weapon",
+   "title": "Boat hook and a camera",
+   "text": "On the Pier 9 run for fence parts, Francis found a dockworker's bag with a working digital camera in it, and pulled a boat hook off the warehouse wall. Reach without a bullet. +2 horde defense, and the camp starts photographing every run."
   }
  ],
  "zombie_types": [
