@@ -3546,6 +3546,47 @@ requestAnimationFrame(loop);
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
+  day7: {
+    title: 'Day 7 · The Gun Locker', dur: 66.5, audioOffset: 1.0,
+    cam: [[0, 800, 600, 1560], [2.6, 220, 520, 700], [3.4, 98, 430, 240], [6.4, 98, 430, 220], [6.6, 'follow', 'Gabe', 150], [9.5, 'follow', 'Gabe', 140],
+          [10.2, 100, 424, 140], [13.5, 100, 424, 128], [14.0, 100, 426, 120], [17.9, 100, 426, 112], [18.5, 100, 428, 110], [22.4, 100, 428, 100],
+          [22.6, 100, 429, 92], [25.9, 100, 429, 86], [26.4, 'follow', 'Sam', 150], [28.7, 'follow', 'Sam', 140],
+          [28.9, 'follow', 'Jack', 120], [30.7, 'follow', 'Jack', 110], [30.9, 'follow', 'Asa', 110], [32.4, 'follow', 'Asa', 104], [32.5, 'follow', 'Tanny', 110], [34.0, 'follow', 'Tanny', 104],
+          [34.2, 450, 520, 200], [36.0, 450, 520, 180], [36.1, 'follow', 'Javier', 130], [37.8, 'follow', 'Javier', 120], [37.9, 'follow', 'Quinn', 130], [39.8, 'follow', 'Quinn', 120],
+          [40.0, 424, 500, 240], [44.9, 424, 500, 270], [45.1, 424, 488, 190], [47.4, 424, 488, 165], [47.5, 424, 498, 150], [49.8, 424, 498, 140],
+          [49.9, 300, 520, 700], [51.6, 584, 565, 260], [53.6, 584, 560, 240], [53.8, 554, 455, 260], [55.6, 554, 450, 240], [55.8, 276, 570, 280], [58.6, 276, 565, 260],
+          [58.8, 424, 494, 280], [59.6, 424, 494, 260], [59.8, 470, 700, 1200], [66.5, 470, 700, 1300]],
+    hour: [[0, 10], [26, 14], [40, 16.5], [45, 18.3], [66.5, 18.8]],
+    events: [[0, 'away', ['Sam', 'Gabe', 'Jack', 'Javier', 'Quinn']],
+             [5.9, 'walk', 'Gabe', [[170, 434], [118, 434], [104, 433]]], [6.1, 'walk', 'Sam', [[164, 432], [110, 432], [94, 432]]], [6.3, 'walk', 'Jack', [[176, 431], [126, 431], [112, 429]]],
+             [18.4, 'brute', [98, 419], [99, 429]], [22.8, 'hit', 'Sam'], [24.2, 'hit', 'Gabe'], [25.4, 'hit', 'Sam'],
+             [26.2, 'arrive', ['Sam', 'Gabe', 'Jack'], 'ranger'], [40.0, 'settle', ['Sam', 'Gabe']],
+             [30.7, 'walk', 'Asa', [[441, 502], [441, 503]]], [32.3, 'walk', 'Tanny', [[409, 501], [409, 502]]],
+             [33.2, 'walk', 'Javier', [[488, 640], [488, 520], [424, 520], [427, 497]]], [33.7, 'walk', 'Quinn', [[488, 690], [488, 520], [424, 520], [421, 497]]],
+             [44.0, 'settle', ['Javier', 'Quinn']]],
+    captions: [
+      [1.0, 3.1, 'title', 'OAKHAVEN', 'DAY 7'],
+      [3.2, 6.4, 'capTop', 'THE VOTE: RANGER 6 · GAS 1'],
+      [6.6, 9.5, 'cap', 'SAM, GABE + JACK · 0 ROUNDS'],
+      [10.2, 13.6, 'capTop', 'THE GUN LOCKER WAS STILL LOCKED'],
+      [14.0, 17.9, 'capTop', '3 GUNS · 4 BLADES + AXES · 60 ROUNDS'],
+      [18.5, 22.4, 'capTop', 'THEN A BRUTE CAME THROUGH THE DOOR'],
+      [22.6, 25.9, 'capTop', 'SAM’S MACHETE. GABE’S HATCHET.'],
+      [26.4, 28.7, 'cap', 'SAM + GABE: CRACKED RIBS'],
+      [28.9, 30.7, 'cap', 'JACK · HUNTING RIFLE'],
+      [30.9, 32.4, 'cap', 'ASA · SHOTGUN'],
+      [32.5, 34.0, 'cap', 'TANNY · REVOLVER'],
+      [34.2, 36.0, 'cap', 'TWO MORE AT THE GATE'],
+      [36.1, 37.8, 'cap', 'JAVIER · GUARD'],
+      [37.9, 39.8, 'cap', 'QUINN · SHARPSHOOTER'],
+      [40.0, 41.5, 'cap', '16 SURVIVORS'],
+      [41.6, 44.9, 'cap', 'FOOD: 2 DAYS · WATER: ALMOST GONE'],
+      [45.1, 47.4, 'cap', 'THE HORDE HITS THE FENCE TONIGHT'],
+      [47.5, 49.8, 'cap', 'THIS TIME WE SHOOT BACK · 60 ROUNDS'],
+      [49.9, 59.6, 'vote', 'WHERE DO WE GO TOMORROW?', ['GAS', 'DINER', 'POLICE']],
+      [59.8, 66.5, 'card', 'THE HORDE HITS TONIGHT.', 'COMMENT YOUR NAME + JOB TO MOVE IN']
+    ]
+  },
   day6: {
     title: 'Day 6 · The Windmill', dur: 66.5, audioOffset: 1.0,
     cam: [[0, 800, 600, 1560], [2.6, 300, 900, 700], [3.4, 30, 1104, 260], [7.8, 30, 1104, 230], [8.0, 'follow', 'Adam', 150], [10.9, 'follow', 'Adam', 140],
@@ -3768,6 +3809,11 @@ function epEvent(ev) {
   else if (ev[1] === 'away') who(ev[2]).forEach(e => { e.mode = 'away'; e.hidden = true; e.inside = false; });
   else if (ev[1] === 'settle') who(ev[2]).forEach(e => { e.mode = 'wander'; e.inside = true; e.hidden = true; e.x = HOME.door[0]; e.y = HOME.door[1] + 1; });
   else if (ev[1] === 'walk') who(ev[2]).forEach(e => { e.mode = 'run'; e.hidden = false; e.inside = false; [e.x, e.y] = ev[3][0]; e.path = ev[3]; e.wp = 1; e.delay = 0; e.off = [0, 0]; });
+  else if (ev[1] === 'brute') {                      // a dock brute shambles from ev[2] toward ev[3] (a scripted fight)
+    spawnZombie(true, true); const z = zombies[zombies.length - 1];
+    [z.x, z.y] = ev[2]; z.street = null; z.free = [ev[3][0] - 1, ev[3][1] - 1, 2, 2]; z.tx = ev[3][0]; z.ty = ev[3][1]; z.spd = .09; EPI.brute = z;
+  }
+  else if (ev[1] === 'hit') who(ev[2]).forEach(e => { const z = EPI.brute; if (z && !z.dying) melee(e, z, 1); });   // a sure blow with whatever they carry
   else if (ev[1] === 'arrive') {
     // walk in from up the road: the last stretch of the way home from ev[3], ending at the laundromat door
     const full = POIS[ev[3]].path.slice().reverse(), seg = [full[full.length - 1]]; let len = 0;
