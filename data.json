@@ -244,13 +244,6 @@
    "joined": 7
   },
   {
-   "name": "Ranger",
-   "ig": "idkwhattoputhereeeee_",
-   "role": "Scout",
-   "bio": "The Ranger gave no name and no backstory, only a job title, and still somehow found the safest trail out of town.",
-   "joined": 7
-  },
-  {
    "name": "Quinn",
    "ig": "qlyle50",
    "role": "Sharpshooter",
@@ -1592,12 +1585,12 @@
  "camp_bonus": [
   {
    "item": "Food",
-   "amt": 6,
+   "amt": 4,
    "why": "new survivors' packs"
   },
   {
    "item": "Water",
-   "amt": 6,
+   "amt": 4,
    "why": "new survivors' packs"
   }
  ],
