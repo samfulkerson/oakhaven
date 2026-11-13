@@ -12,6 +12,6 @@
 **Camp:** The ranger station's gun locker was still locked. Nobody had made it out here. Three guns, four blades and axes, and boxes of ammo.
 **Camp:** Handed out: Jack gets the hunting rifle, Asa gets the pump shotgun, Tanny gets the revolver, Sam gets the machete, Gabe gets the hatchet, Jaylozy gets the pulaski fire axe, Seth gets the splitting maul.
 **Horde:** arrives TONIGHT (Day 7). Fence 74%, 60 rounds.
-**New survivors (3):** Javier the Guard (@javimty97), Ranger the Scout (@idkwhattoputhereeeee_), Quinn the Sharpshooter (@qlyle50) (each brought a pack: +2 food, +2 water)
+**New survivors (2):** Javier the Guard (@javimty97), Quinn the Sharpshooter (@qlyle50) (each brought a pack: +2 food, +2 water)
 **Followers:** 48  |  **Tomorrow is Day 7**
 **Tomorrow's vote:** Day 7. The horde hits tonight, the water is gone, and the fence is at 74%. Where do we send the squad? ⛽ GAS (Easy run. The generator needs 10 L of gasoline from here.) / 🍳 DINER (Never searched. Easy run, but nobody knows what's inside.) / 🚓 POLICE (Hard mission: cut the chains and find who locked themselves in.)
