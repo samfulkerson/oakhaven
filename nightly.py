@@ -221,7 +221,7 @@ def resolve_outing(data, kind, item, rng):
         elif roll < die_s + inj_s:       # an injury; a protected character (Sam) who rolls death gets the worst injury instead
             lo, hi = INJURY_DAYS.get(diff, (2, 4))
             days = rng.randint(lo, hi) + (2 if roll < die_s else 0)
-            s.update(status="injured", injury=rng.choice(INJURIES), injured_until=data["day"] + days)
+            s.update(status="injured", injury=rng.choice(INJURIES), injured_until=data["day"] + days, injured_on=data["day"])
             results.append({"name": s["name"], "ig": s.get("ig", ""), "outcome": "injured", "detail": f"{s['injury']}, out until Day {s['injured_until']}"})
         else:
             results.append({"name": s["name"], "ig": s.get("ig", ""), "outcome": "ok"})
@@ -268,7 +268,7 @@ def heal(data, new_day):
     healed = []
     for s in data["survivors"]:
         if s.get("status") == "injured" and s.get("injured_until", 0) <= new_day:
-            for k in ("status", "injury", "injured_until"):
+            for k in ("status", "injury", "injured_until", "injured_on"):
                 s.pop(k, None)
             healed.append(s["name"])
     return healed
@@ -744,7 +744,7 @@ def keep_stockpile(data, outings, rng, new_day):
 
     # medicine speeds healing: one dose a night takes a day off an injury
     for s in present:
-        if s.get("status") == "injured" and s.get("injured_until", 0) > new_day and stock_get(data, "Medicine") >= 1:
+        if s.get("status") == "injured" and s.get("injured_until", 0) > new_day and s.get("injured_on") != data["day"] and stock_get(data, "Medicine") >= 1:   # starts the night after
             add("Medicine", -1, f"{s['name']}'s injury")
             s["injured_until"] -= 1
 
