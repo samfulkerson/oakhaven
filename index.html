@@ -2558,7 +2558,7 @@ const ZOOMS = [1600, 1024, 640, 400, 300, 220, 160];   // how many world pixels 
 let zi = 3, camX = 0, camY = 0;
 let dragging = false, downAt = null, follow = false, selected = null;
 let ASPECT = .75;   // screen height / width; 4:3 normally, whatever the screen is in full screen
-let CAM_W = 0, HOUR_OVR = null;   // set by the episode studio: a smooth zoom (world width) and a scripted hour of the day
+let CAM_W = 0, HOUR_OVR = null, EPI_BRUTE = null;   // set by the episode studio: a smooth zoom (world width), a scripted hour of the day, and a scripted brute only the script's blows can fell
 const vw = () => Math.min(CAM_W || ZOOMS[zi], W, H / ASPECT), vh = () => vw() * ASPECT;
 function clampCam() { camX = clamp(camX, 0, W - vw()); camY = clamp(camY, 0, H - vh()); }
 function centerOn(x, y) { camX = x - vw() / 2; camY = y - vh() / 2; clampCam(); }
@@ -2871,7 +2871,12 @@ function stepLookout() {
     }
   }
 }
-function runnersOutside() { return active.flatMap(a => a.r.status !== 'searching' ? a.members.filter(m => !m.hidden && !inFence(m.x, m.y)) : []); }
+function runnersOutside() {
+  const out = active.flatMap(a => a.r.status !== 'searching' ? a.members.filter(m => !m.hidden && !inFence(m.x, m.y)) : []);
+  // in the studio, people walked on by the script fight whatever comes near them, just like a live run
+  if (runWait > 1e8) for (const e of people) if (e.mode === 'run' && !e.hidden && !inFence(e.x, e.y) && !out.includes(e)) out.push(e);
+  return out;
+}
 
 function update() {
   frame++;
@@ -2896,7 +2901,7 @@ function update() {
   const outside = runnersOutside();
   for (const m of outside) {
     if (--m.cool > 0) continue;
-    const z = zombies.find(z => !z.dying && Math.abs(z.x - m.x) < 11 && Math.hypot(z.x - m.x, z.y - m.y) < 11);
+    const z = zombies.find(z => !z.dying && z !== EPI_BRUTE && Math.abs(z.x - m.x) < 11 && Math.hypot(z.x - m.x, z.y - m.y) < 11);   // a scripted brute is fought by the script's own blows
     if (z) { m.cool = 32; melee(m, z, .6); }
   }
   for (const z of zombies) {
@@ -2904,7 +2909,7 @@ function update() {
     if (z.dying) { z.dying++; continue; }
     const px = z.x, py = z.y;
     let target = null, td = 50;
-    for (const m of outside) { const dd = Math.hypot(m.x - z.x, m.y - z.y); if (dd < td) { td = dd; target = m; } }
+    if (z !== EPI_BRUTE) for (const m of outside) { const dd = Math.hypot(m.x - z.x, m.y - z.y); if (dd < td) { td = dd; target = m; } }
     const nearHome = !z.free && Math.abs(z.x - HOME_CENTER[0]) + Math.abs(z.y - HOME_CENTER[1]) < 340;
     if (target) { moveToward(z, target.x, target.y, z.spd * 1.6); z.state = 'chase'; }
     else if (dark > .45 && nearHome) {
@@ -3811,9 +3816,9 @@ function epEvent(ev) {
   else if (ev[1] === 'walk') who(ev[2]).forEach(e => { e.mode = 'run'; e.hidden = false; e.inside = false; [e.x, e.y] = ev[3][0]; e.path = ev[3]; e.wp = 1; e.delay = 0; e.off = [0, 0]; });
   else if (ev[1] === 'brute') {                      // a dock brute shambles from ev[2] toward ev[3] (a scripted fight)
     spawnZombie(true, true); const z = zombies[zombies.length - 1];
-    [z.x, z.y] = ev[2]; z.street = null; z.free = [ev[3][0] - 1, ev[3][1] - 1, 2, 2]; z.tx = ev[3][0]; z.ty = ev[3][1]; z.spd = .09; EPI.brute = z;
+    [z.x, z.y] = ev[2]; z.street = null; z.free = [ev[3][0] - 1, ev[3][1] - 1, 2, 2]; z.tx = ev[3][0]; z.ty = ev[3][1]; z.spd = .09; EPI_BRUTE = z;
   }
-  else if (ev[1] === 'hit') who(ev[2]).forEach(e => { const z = EPI.brute; if (z && !z.dying) melee(e, z, 1); });   // a sure blow with whatever they carry
+  else if (ev[1] === 'hit') who(ev[2]).forEach(e => { const z = EPI_BRUTE; if (z && !z.dying) melee(e, z, 1); });   // a sure blow with whatever they carry
   else if (ev[1] === 'arrive') {
     // walk in from up the road: the last stretch of the way home from ev[3], ending at the laundromat door
     const full = POIS[ev[3]].path.slice().reverse(), seg = [full[full.length - 1]]; let len = 0;
@@ -3900,7 +3905,7 @@ function epPost() {
 }
 // set the world up for an episode: its first hour, the dead settled, Sam home, camera on its first key
 function epPrepare(key) {
-  EPI.ep = EPISODES[key]; EPI.t = 0; EPI.fired = new Set(); follow = false; selected = null;
+  EPI.ep = EPISODES[key]; EPI.t = 0; EPI.fired = new Set(); EPI_BRUTE = null; follow = false; selected = null;
   HOUR_OVR = EPI.ep.hour[0][1]; active = []; runWait = 1e9;
   for (const e of people) { e.mode = 'wander'; e.inside = true; e.hidden = true; e.x = HOME.door[0]; e.y = HOME.door[1] + 1; }
   for (let i = 0; i < 900; i++) update();
