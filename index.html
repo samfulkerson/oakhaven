@@ -259,16 +259,16 @@ canvas#world.dragging{cursor:grabbing}
 .empty{color:var(--muted);font-size:13px;margin:0}
 
 .miles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:0;padding:0;list-style:none}
-.miles li{display:grid;gap:4px;font-size:14px;padding:12px 13px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r)}
+.miles li{display:grid;gap:6px;font-size:15px;line-height:1.35;font-weight:500;color:var(--fg);padding:12px 13px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r)}
 .miles li b{font-family:var(--f-pixel);font-weight:700;font-size:20px;color:var(--dim);font-variant-numeric:tabular-nums}
-.miles li b::after{content:" followers";font-family:var(--f-head);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.miles li b::after{content:" followers";font-family:var(--f-head);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--muted)}
 .miles li.next{border-color:var(--accent);background:linear-gradient(180deg,var(--accent-soft),var(--panel-2))}
 .miles li.next b{color:var(--accent)}
-.miles li.done{opacity:.72}
+.miles li.done{border-color:rgba(127,176,105,.35)}
 .miles li.done b{color:var(--ok, #7fbf6a)}
 .miles li.done b::before{content:"\2713 "}
-.miles .fx{display:block;font-size:12.5px;color:var(--muted)}
-.miles .togo{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--accent);margin-top:2px}
+.miles .fx{display:block;font-size:13.5px;font-weight:400;color:#b6c1c5;margin-top:3px}
+.miles .togo{display:block;font-family:var(--f-mono);font-size:12.5px;color:var(--accent);margin-top:4px}
 
 /* join strip */
 .join{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,2fr);gap:20px;align-items:center;padding:20px}
