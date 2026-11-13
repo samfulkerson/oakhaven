@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 6,
- "followers": 43,
+ "day": 7,
+ "followers": 48,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 6. Water for one more day, no rounds left, and the horde reaches the fence tomorrow night. Where do we go?",
+  "q": "Day 7. The horde hits tonight, the water is gone, and the fence is at 74%. Where do we send the squad?",
   "opts": [
-   [
-    "RANGER",
-    0,
-    "Never searched, medium risk. We have zero rounds, so anything useful matters.",
-    "ranger",
-    "🌲"
-   ],
    [
     "GAS",
     0,
-    "Easy run. The Laundromat generator needs 10 L of gasoline from this station.",
+    "Easy run. The generator needs 10 L of gasoline from here.",
     "gas",
     "⛽"
    ],
    [
-    "HOSPITAL",
+    "DINER",
     0,
-    "Hard mission. Clear the ground floor first, then reach the basement generator.",
-    "hospital",
-    "🏥"
+    "Never searched. Easy run, but nobody knows what's inside.",
+    "diner",
+    "🍳"
+   ],
+   [
+    "POLICE",
+    0,
+    "Hard mission: cut the chains and find who locked themselves in.",
+    "police",
+    "🚓"
    ]
   ],
-  "how": "Comment RANGER, GAS or HOSPITAL (or its emoji) on the Day 6 Reel. One vote per account, your last comment counts."
+  "how": "Comment GAS, DINER or POLICE (or its emoji) on the Day 7 Reel. One vote per account, your last comment counts."
  },
  "survivors": [
   {
@@ -38,8 +38,19 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 3,
-   "day_outings": 1
+   "outings": 4,
+   "day_outings": 1,
+   "status": "injured",
+   "injury": "cracked ribs",
+   "injured_until": 8,
+   "injured_on": 6,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Machete",
+     "icon": "blade"
+    }
+   ]
   },
   {
    "name": "Jaylozy",
@@ -48,7 +59,14 @@
    "bio": "Jaylozy joins as a Sharpshooter, ready to take the shot when the moment comes.",
    "joined": 2,
    "outings": 1,
-   "day_outings": 1
+   "day_outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Pulaski fire axe",
+     "icon": "axe"
+    }
+   ]
   },
   {
    "name": "Tanny",
@@ -57,7 +75,14 @@
    "bio": "Tanny is a professional hiker who knows every trail, making them a natural Scout.",
    "joined": 2,
    "outings": 1,
-   "day_outings": 1
+   "day_outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Revolver",
+     "icon": "pistol"
+    }
+   ]
   },
   {
    "name": "Seth",
@@ -65,7 +90,14 @@
    "role": "Radio Operator",
    "bio": "Seth manages e-commerce by day and knows his way around IT, so he's ready to keep the radios humming.",
    "joined": 2,
-   "day_outings": 1
+   "day_outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Splitting maul",
+     "icon": "club"
+    }
+   ]
   },
   {
    "name": "Gary Finklestein",
@@ -94,14 +126,34 @@
    "look": {
     "skin": "#f1c9a5"
    },
-   "day_outings": 1
+   "day_outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Pump shotgun",
+     "icon": "rifle"
+    }
+   ]
   },
   {
    "name": "Gabe",
    "ig": "camp_counselor_dlc",
    "role": "Medic",
    "bio": "Gabe is a doctor who plans to keep the whole camp patched up, since the apocalypse is just a bad case of Monday.",
-   "joined": 4
+   "joined": 4,
+   "day_outings": 1,
+   "outings": 1,
+   "status": "injured",
+   "injury": "cracked ribs",
+   "injured_until": 9,
+   "injured_on": 6,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Hatchet",
+     "icon": "axe"
+    }
+   ]
   },
   {
    "name": "Mateen",
@@ -109,7 +161,8 @@
    "role": "Farmer",
    "bio": "Mateen swapped spreadsheets for seed packets and intends to keep the entire camp fed and green.",
    "joined": 4,
-   "outings": 1
+   "outings": 1,
+   "day_outings": 1
   },
   {
    "name": "Jeremy",
@@ -137,7 +190,8 @@
    "look": {
     "hair": "#3b2416",
     "long": 1
-   }
+   },
+   "day_outings": 1
   },
   {
    "name": "Francis",
@@ -155,21 +209,53 @@
      "kind": "item",
      "name": "Digital camera"
     }
-   ]
+   ],
+   "day_outings": 1
   },
   {
    "name": "Jack",
    "ig": "rebelforce35",
    "role": "Gunsmith",
    "bio": "Jack is a gunsmith who hammers out blades by day and fixes up guns by night, so the undead get a close look at his work before they go down.",
-   "joined": 6
+   "joined": 6,
+   "day_outings": 1,
+   "outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Hunting rifle",
+     "icon": "rifle"
+    }
+   ]
   },
   {
    "name": "Carl",
    "ig": "prinz_carl062",
    "role": "EMT",
    "bio": "Carl is an EMT (a Rettungssanitäter back home) who has seen every kind of disaster, and he's ready to patch up the survivors who are left.",
-   "joined": 6
+   "joined": 6,
+   "day_outings": 1
+  },
+  {
+   "name": "Javier",
+   "ig": "javimty97",
+   "role": "Guard",
+   "bio": "Javier was a soldier left behind from the evacuation, and he still wears his gas mask like the war never ended.",
+   "joined": 7
+  },
+  {
+   "name": "Ranger",
+   "ig": "idkwhattoputhereeeee_",
+   "role": "Scout",
+   "bio": "The Ranger gave no name and no backstory, only a job title, and still somehow found the safest trail out of town.",
+   "joined": 7
+  },
+  {
+   "name": "Quinn",
+   "ig": "qlyle50",
+   "role": "Sharpshooter",
+   "bio": "Quinn is a hunter with a shotgun and a head full of survival knowledge, and the zombies have started avoiding the woods.",
+   "joined": 7
   }
  ],
  "runs": [
@@ -246,7 +332,9 @@
    "dest": "ranger",
    "difficulty": "medium",
    "squad": [
-    "Sam"
+    "Sam",
+    "Gabe",
+    "Jack"
    ],
    "loot": "The rangers' gun locker: rifles, a shotgun, a revolver, blades and boxes of ammo",
    "place": "Ranger station",
@@ -293,7 +381,9 @@
       "icon": "club"
      }
     ]
-   }
+   },
+   "done_day": 6,
+   "haul_taken": 7
   },
   {
    "dest": "hangar",
@@ -953,13 +1043,13 @@
  "stock": [
   [
    "Food",
-   50,
+   45,
    200,
    "rations"
   ],
   [
    "Water",
-   17,
+   7,
    200,
    "rations"
   ],
@@ -971,25 +1061,25 @@
   ],
   [
    "Ammo",
-   0,
+   60,
    500,
    "rds"
   ],
   [
    "Medicine",
-   4,
+   7,
    50,
    "doses"
   ],
   [
    "Scrap",
-   44,
+   43,
    200,
    "units"
   ],
   [
    "Barricades",
-   73,
+   74,
    100,
    "%"
   ]
@@ -1320,27 +1410,95 @@
     "Sam & Asa → Rosie’s Diner (13:30): +2 water",
     "Tanny & Jaylozy → Gun & Pawn (15:05): +1 scrap"
    ]
+  },
+  {
+   "day": 6,
+   "vote": {
+    "question": "Day 6. Water for one more day, no rounds left, and the horde reaches the fence tomorrow night. Where do we go?",
+    "results": {
+     "GAS": 1,
+     "RANGER": 6
+    },
+    "winner": "RANGER",
+    "tiebreak": null,
+    "reel": "https://www.instagram.com/reel/DfpOfnCylnR/"
+   },
+   "outings": [
+    {
+     "target": "Ranger station",
+     "key": "ranger",
+     "first": true,
+     "kind": "run",
+     "difficulty": "medium",
+     "squad": [
+      "Sam",
+      "Gabe",
+      "Jack"
+     ],
+     "results": [
+      {
+       "name": "Sam",
+       "ig": "surviveoakhaven",
+       "outcome": "injured",
+       "detail": "cracked ribs, out until Day 8"
+      },
+      {
+       "name": "Gabe",
+       "ig": "camp_counselor_dlc",
+       "outcome": "injured",
+       "detail": "cracked ribs, out until Day 9"
+      },
+      {
+       "name": "Jack",
+       "ig": "rebelforce35",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    }
+   ],
+   "healed": [],
+   "joined": [
+    "Javier",
+    "Ranger",
+    "Quinn"
+   ],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Scrap": -1,
+    "Food": -5,
+    "Ammo": 60,
+    "Medicine": 3,
+    "Water": -10,
+    "Barricades": 1
+   },
+   "camp": [
+    "The ranger station's gun locker was still locked. Nobody had made it out here. Three guns, four blades and axes, and boxes of ammo.",
+    "Handed out: Jack gets the hunting rifle, Asa gets the pump shotgun, Tanny gets the revolver, Sam gets the machete, Gabe gets the hatchet, Jaylozy gets the pulaski fire axe, Seth gets the splitting maul."
+   ],
+   "horde": null,
+   "returned": [],
+   "story": [
+    "The front of the Millbrook horde reaches the city: faster ones that turned recently, and dock brutes from the coast."
+   ],
+   "day_runs": [
+    "Francis & Victoria → Pier 9 warehouse (11:50): +2 scrap",
+    "Jack & Carl → Hollow Creek Farm (13:30): +1 food",
+    "Gabe & Mateen → Fresh Market (15:05): +2 food"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Water": 9,
-  "Scrap": -2,
-  "Ammo": -2,
-  "Food": -12,
+  "Scrap": -1,
+  "Food": -5,
+  "Ammo": 60,
+  "Medicine": 3,
+  "Water": -10,
   "Barricades": 1
  },
- "schedule": [
-  {
-   "on_day": 7,
-   "do": "unlock",
-   "zombies": [
-    "runner",
-    "brute"
-   ],
-   "note": "The front of the Millbrook horde reaches the city: faster ones that turned recently, and dock brutes from the coast."
-  }
- ],
+ "schedule": [],
  "broadcast": {
   "day": 4,
   "from": "Millbrook, 60 miles north",
@@ -1399,7 +1557,9 @@
  ],
  "zombie_types": [
   "walker",
-  "crawler"
+  "crawler",
+  "runner",
+  "brute"
  ],
  "milestones_hit": [
   2,
@@ -1407,15 +1567,15 @@
   25
  ],
  "undead": {
-  "count": 28391,
+  "count": 28390,
   "last": {
-   "day": 5,
-   "killed": 4,
-   "turned": 2,
+   "day": 6,
+   "killed": 9,
+   "turned": 8,
    "arrived": 0
   }
  },
- "last_run": 1794481089,
+ "last_run": 1794567520,
  "horde": {
   "day": 7,
   "week": 1
@@ -1429,47 +1589,57 @@
    "harvest"
   ]
  },
+ "camp_bonus": [
+  {
+   "item": "Food",
+   "amt": 6,
+   "why": "new survivors' packs"
+  },
+  {
+   "item": "Water",
+   "amt": 6,
+   "why": "new survivors' packs"
+  }
+ ],
  "day_runs": {
-  "day": 6,
+  "day": 7,
   "runs": [
    {
-    "time": "11:50",
-    "dest": "port",
+    "time": "10:15",
+    "dest": "farm",
     "crew": [
-     "Francis",
-     "Victoria"
+     "Javier",
+     "Ranger"
     ],
     "find": {
-     "Scrap": 2
+     "Water": 2
     },
     "event": "ok",
-    "line": "Francis: Found 2 car doors for the fence. Heading home."
+    "line": "Javier: Found 2 jugs of water under a sink. Heading home."
    },
    {
     "time": "13:30",
-    "dest": "farm",
+    "dest": "port",
     "crew": [
-     "Jack",
-     "Carl"
+     "Quinn",
+     "Gary Finklestein"
     ],
-    "find": {
-     "Food": 1
-    },
+    "find": {},
     "event": "ok",
-    "line": "Jack: Found 1 jars of peanut butter in a back room. Heading home."
+    "line": "Quinn: Picked clean. Nothing worth carrying. Heading home."
    },
    {
     "time": "15:05",
-    "dest": "market",
+    "dest": "farm",
     "crew": [
-     "Gabe",
-     "Mateen"
+     "Asa",
+     "Jeremy"
     ],
     "find": {
-     "Food": 2
+     "Water": 1
     },
     "event": "ok",
-    "line": "Gabe: Found 2 cans of soup behind the counter. Heading home."
+    "line": "Asa: Found 1 jugs of water under a sink. Heading home."
    }
   ]
  }
