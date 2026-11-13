@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oakhaven Scrapbook</title>
+<meta name="description" content="Every photo from every Oakhaven mission, in one camp scrapbook.">
+<meta property="og:title" content="Oakhaven Scrapbook">
+<meta property="og:description" content="Every photo from every mission. Taken on the camp camera.">
+<meta property="og:image" content="scrapbook/day7-ranger-4.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Chakra+Petch:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@500;700&display=swap">
+<style>
+/* The camp scrapbook: the same gunmetal console as the live map, holding a stack of kraft-paper pages,
+   one per mission, with the camera roll taped onto each in instant-photo frames and notes in marker. */
+:root{
+  --bg:#0c0f11; --bg-2:#10151a; --panel:#141a1e; --line:#253037; --line-2:#34424b;
+  --fg:#e7e9e4; --muted:#8a979d; --dim:#5f6c72;
+  --accent:#f2a93b; --accent-ink:#1b1206; --accent-soft:rgba(242,169,59,.14);
+  --paper:#2b251d; --paper-2:#332b21; --paper-ink:#efe3cc; --paper-dim:#b9a98c;
+  --frame:#ece6d8; --frame-ink:#2a2620;
+  --f-pixel:"Pixelify Sans","Courier New",monospace;
+  --f-head:"Chakra Petch","Barlow","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Barlow","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --f-hand:"Caveat","Bradley Hand","Segoe Print",cursive;
+  --r:4px; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font-family:var(--f-body);font-size:15px;line-height:1.5;min-height:100vh;
+  background:radial-gradient(1200px 500px at 70% -10%,rgba(242,169,59,.06),transparent 60%),radial-gradient(900px 600px at 0% 30%,rgba(80,120,110,.07),transparent 60%),var(--bg)}
+button{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.inner{max-width:1180px;margin:0 auto}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* top bar, as on the map */
+.topbar{position:sticky;top:0;z-index:20;background:rgba(16,21,26,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.topbar::before{content:"";display:block;height:3px;background:repeating-linear-gradient(-45deg,var(--accent) 0 10px,#1b1206 10px 20px);opacity:.9}
+.topbar .inner{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;min-width:0}
+.brand b{font-family:var(--f-pixel);font-weight:700;font-size:24px;letter-spacing:.06em;line-height:1}
+.brand b span{color:var(--accent)}
+@media (max-width:420px){.brand small{display:none}}
+.brand small{font-family:var(--f-head);font-weight:600;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.back{margin-left:auto;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-family:var(--f-head);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent-ink);background:var(--accent);border-radius:var(--r);padding:8px 14px;white-space:nowrap}
+.back:hover{filter:brightness(1.08)}
+.back svg{width:15px;height:15px}
+
+/* intro */
+.hero{padding-block:28px 6px}
+.kicker{font-family:var(--f-head);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.hero h1{font-family:var(--f-pixel);font-weight:700;font-size:clamp(34px,7vw,56px);line-height:1;margin:8px 0 10px;letter-spacing:.03em;text-wrap:balance}
+.hero p{margin:0;color:var(--muted);max-width:60ch;text-wrap:pretty}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.stat{font-family:var(--f-mono);font-size:12px;color:var(--muted);border:1px solid var(--line-2);border-radius:999px;padding:4px 11px}
+.stat b{color:var(--fg);font-weight:500}
+
+/* filters */
+.filters{position:sticky;top:var(--barh,60px);z-index:10;padding-block:12px;margin-top:14px;
+  background:linear-gradient(var(--bg) 70%,rgba(12,15,17,0))}
+.frow{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;align-items:center}
+.frow::-webkit-scrollbar{display:none}
+.frow + .frow{margin-top:8px}
+.flabel{font-family:var(--f-head);font-weight:600;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);flex:none;width:58px}
+.chip{flex:none;border:1px solid var(--line-2);background:var(--panel);color:var(--fg);border-radius:999px;padding:6px 13px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.chip .n{font-family:var(--f-mono);font-size:11px;opacity:.7;margin-left:4px}
+
+/* a scrapbook page per camera roll */
+.book{display:grid;gap:34px;padding-block:14px 60px}
+.page{position:relative;border-radius:6px;padding:26px clamp(16px,4vw,40px) 30px;
+  background:
+    radial-gradient(120% 80% at 10% 0%,rgba(255,236,200,.05),transparent 60%),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.035) 0 2px,transparent 2px 5px),
+    linear-gradient(160deg,var(--paper-2),var(--paper));
+  box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 18px 40px -18px rgba(0,0,0,.8),0 2px 0 #1d1912,0 4px 0 #17140f;
+  border:1px solid #3d3428}
+.page::before{content:"";position:absolute;left:clamp(8px,2vw,18px);top:22px;bottom:22px;width:0;border-left:2px dotted rgba(239,227,204,.12)}
+.phead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 16px;margin-bottom:6px}
+.stamp{font-family:var(--f-head);font-weight:700;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#e8794f;
+  border:2px solid currentColor;border-radius:3px;padding:3px 8px;transform:rotate(-3deg);opacity:.9}
+.phead h2{font-family:var(--f-pixel);font-weight:700;font-size:clamp(26px,4.4vw,36px);line-height:1;margin:0;color:var(--paper-ink);letter-spacing:.02em}
+.byline{font-family:var(--f-mono);font-size:12px;color:var(--paper-dim);margin-left:auto}
+.byline b{color:var(--paper-ink);font-weight:500}
+.hand{font-family:var(--f-hand);font-weight:500;color:var(--paper-ink);font-size:clamp(21px,2.6vw,25px);line-height:1.15;margin:10px 0 0;max-width:58ch;text-wrap:pretty}
+.hand.out{color:var(--paper-dim);margin-top:24px}
+.crew{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.crew button{border:1px dashed rgba(239,227,204,.3);background:none;color:var(--paper-dim);border-radius:999px;padding:2px 10px;font-size:12.5px;cursor:pointer}
+.crew button:hover{color:var(--paper-ink);border-color:var(--paper-ink)}
+
+.roll{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:30px 26px;margin-top:26px}
+@media (max-width:520px){.roll{grid-template-columns:1fr 1fr;gap:20px 14px}}
+.snap{position:relative;display:block;width:100%;border:0;padding:9px 9px 0;background:var(--frame);color:var(--frame-ink);cursor:zoom-in;text-align:left;
+  border-radius:2px;box-shadow:0 10px 18px -8px rgba(0,0,0,.75),0 2px 3px rgba(0,0,0,.4);
+  transform:rotate(var(--rot,0deg)) translateY(0);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.snap:hover,.snap:focus-visible{transform:rotate(0deg) translateY(-4px) scale(1.02);box-shadow:0 18px 30px -10px rgba(0,0,0,.85);z-index:2}
+.snap::before{content:"";position:absolute;top:-11px;left:calc(50% - 38px + var(--tx,0px));width:76px;height:22px;transform:rotate(var(--trot,-4deg));
+  background:repeating-linear-gradient(90deg,rgba(242,169,59,.55) 0 6px,rgba(242,169,59,.42) 6px 12px);box-shadow:0 1px 2px rgba(0,0,0,.25);mix-blend-mode:normal;opacity:.85}
+.snap img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;background:#1a1712}
+.snap .cap{display:block;font-family:var(--f-hand);font-weight:500;font-size:clamp(17px,1.8vw,20px);line-height:1.1;padding:8px 2px 12px;min-height:3.4em}
+.snap .cap time{font-family:var(--f-mono);font-size:10.5px;color:#7d7462;display:block;margin-bottom:2px;letter-spacing:.04em}
+@media (max-width:520px){.snap{padding:6px 6px 0}.snap .cap{font-size:15px;padding:6px 1px 9px}}
+.snap.hide{display:none}
+.page.hide{display:none}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:50;display:none;background:rgba(6,8,9,.94);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.lb.on{display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+.lbtop{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 8px max(14px,env(safe-area-inset-left,0px))}
+.lbtop .where{font-family:var(--f-head);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbtop .count{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-left:auto;flex:none}
+.ib{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:999px;border:1px solid var(--line-2);background:rgba(20,26,30,.85);cursor:pointer}
+.ib:hover{border-color:var(--accent);color:var(--accent)}
+.ib svg{width:18px;height:18px}
+.stage{position:relative;display:grid;place-items:center;min-height:0;padding:4px 60px;touch-action:pan-y}
+@media (max-width:640px){.stage{padding:4px 10px}}
+.stage figure{margin:0;max-height:100%;display:grid;place-items:center;min-height:0}
+.stage img{max-width:min(100%,900px);max-height:calc(100vh - 230px);max-height:calc(100dvh - 230px);width:auto;height:auto;border:8px solid var(--frame);border-bottom-width:8px;border-radius:2px;box-shadow:0 30px 60px -20px #000;background:#1a1712}
+.nav{position:absolute;top:50%;transform:translateY(-50%)}
+.nav.prev{left:12px}.nav.next{right:12px}
+@media (max-width:640px){.nav{top:auto;bottom:-52px;transform:none}.nav.prev{left:14px}.nav.next{right:14px}}
+.lbcap{padding:12px max(16px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px));text-align:center}
+.lbcap p{font-family:var(--f-hand);font-weight:500;font-size:clamp(22px,3vw,28px);line-height:1.15;margin:0 auto;max-width:42ch;color:var(--fg);text-wrap:balance}
+.lbmeta{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px;align-items:center}
+.lbmeta .t{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.lbmeta button{border:1px solid var(--line-2);background:var(--panel);border-radius:999px;padding:3px 10px;font-size:12.5px;cursor:pointer}
+.lbmeta button:hover{border-color:var(--accent)}
+.lbmeta .share{color:var(--accent)}
+@media (max-width:640px){.lbcap{padding-left:64px;padding-right:64px}}
+
+@media (prefers-reduced-motion:reduce){.snap{transition:none}}
+footer{color:var(--dim);font-size:12.5px;padding-bottom:40px;text-align:center}
+</style>
+
+<header class="topbar gut">
+  <div class="inner">
+    <a class="brand" href="./"><b>OAK<span>HAVEN</span></b><small>Scrapbook</small></a>
+    <a class="back" href="./">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      Live map
+    </a>
+  </div>
+</header>
+
+<main class="gut">
+  <div class="inner">
+    <section class="hero">
+      <div class="kicker">The camp camera</div>
+      <h1>Scrapbook</h1>
+      <p>Every photo from every mission, taped in the order we lived it. Tap any photo to look closer, or pick a survivor to find every shot they're in.</p>
+      <div class="stats" id="stats"></div>
+    </section>
+
+    <nav class="filters" aria-label="Filter the scrapbook">
+      <div class="frow" id="fMission" role="group" aria-label="Mission"><span class="flabel">Mission</span></div>
+      <div class="frow" id="fWho" role="group" aria-label="Survivor"><span class="flabel">Who</span></div>
+    </nav>
+
+    <div class="book" id="book" aria-live="polite"></div>
+    <footer>New photos are added after every mission. Want to be in the next roll? Comment your name and job on <a href="https://www.instagram.com/surviveoakhaven/" target="_blank" rel="noopener">@surviveoakhaven</a>.</footer>
+  </div>
+</main>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <div class="lbtop">
+    <span class="where" id="lbWhere"></span>
+    <span class="count" id="lbCount"></span>
+    <button class="ib" id="lbClose" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="stage" id="stage">
+    <figure><img id="lbImg" alt=""></figure>
+    <button class="ib nav prev" id="lbPrev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="ib nav next" id="lbNext" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+  <div class="lbcap">
+    <p id="lbNote"></p>
+    <div class="lbmeta" id="lbMeta"></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+let ROLLS = [], ALL = [], shown = [], cur = -1, fMission = 'all', fWho = 'all';
+
+// a steady little tilt per photo, so the pages look hand-taped but don't reshuffle on every visit
+function tilt(s) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return ((h >>> 0) % 1000) / 1000; }
+
+function build() {
+  ALL = [];
+  for (const r of ROLLS) r.photos.forEach((p, i) => {
+    const key = `${r.id}-${i + 1}`;
+    ALL.push({ ...p, key, roll: r, n: i + 1, who: p.who || r.crew || [], src: `scrapbook/${key}.jpg`, thumb: `scrapbook/thumbs/${key}.jpg` });
+  });
+  // stats
+  const people = new Set(ALL.flatMap(p => p.who));
+  $('stats').innerHTML = `<span class="stat"><b>${ALL.length}</b> photos</span><span class="stat"><b>${ROLLS.length}</b> missions</span><span class="stat"><b>${people.size}</b> survivors pictured</span>`;
+  // filters
+  const mk = (row, val, label, n, kind) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.dataset.v = val; b.dataset.kind = kind;
+    b.innerHTML = `${esc(label)}${n != null ? `<span class="n">${n}</span>` : ''}`; b.setAttribute('aria-pressed', 'false'); row.appendChild(b); };
+  mk($('fMission'), 'all', 'All missions', ALL.length, 'm');
+  for (const r of ROLLS) mk($('fMission'), r.id, `Day ${r.day} · ${r.place}`, r.photos.length, 'm');
+  const counts = {}; for (const p of ALL) for (const w of p.who) counts[w] = (counts[w] || 0) + 1;
+  mk($('fWho'), 'all', 'Everyone', null, 'w');
+  for (const w of Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b))) mk($('fWho'), w, w, counts[w], 'w');
+  document.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { b.dataset.kind === 'm' ? fMission = b.dataset.v : fWho = b.dataset.v; apply(); }));
+  // pages
+  $('book').innerHTML = ROLLS.map(r => `
+    <article class="page" id="${esc(r.id)}" aria-labelledby="h-${esc(r.id)}">
+      <div class="phead">
+        <span class="stamp">Day ${pad(r.day)}</span>
+        <h2 id="h-${esc(r.id)}">${esc(r.place)}</h2>
+        <span class="byline">📷 <b>${esc(r.by)}</b> · ${r.photos.length} photos</span>
+      </div>
+      ${r.intro ? `<p class="hand">${esc(r.intro)}</p>` : ''}
+      <div class="crew">${(r.crew || []).map(c => `<button type="button" data-who="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+      <div class="roll">${ALL.filter(p => p.roll === r).map(p => {
+        const a = tilt(p.key), rot = ((a - .5) * 5).toFixed(2), trot = ((tilt(p.key + 't') - .5) * 12).toFixed(1), tx = ((tilt(p.key + 'x') - .5) * 50).toFixed(0);
+        return `<button type="button" class="snap" data-key="${p.key}" style="--rot:${rot}deg;--trot:${trot}deg;--tx:${tx}px" aria-label="Open photo ${p.n} from ${esc(r.place)}, day ${r.day}: ${esc(p.note)}">
+          <img src="${p.thumb}" alt="${esc(p.note)}" loading="lazy" decoding="async" width="432" height="540">
+          <span class="cap"><time>${p.time ? 'DAY ' + pad(r.day) + ' · ' + esc(p.time) : 'DAY ' + pad(r.day)}</time>${esc(p.note)}</span>
+        </button>`; }).join('')}</div>
+      ${r.outro ? `<p class="hand out">${esc(r.outro)}</p>` : ''}
+    </article>`).join('') + `<p class="empty" id="empty" hidden>No photos match. Try another survivor.</p>`;
+  document.querySelectorAll('.snap').forEach(b => b.addEventListener('click', () => open(b.dataset.key)));
+  document.querySelectorAll('.crew button').forEach(b => b.addEventListener('click', () => { fWho = b.dataset.who; fMission = 'all'; apply(); window.scrollTo({ top: $('book').offsetTop - 140, behavior: 'smooth' }); }));
+}
+
+function match(p) { return (fMission === 'all' || p.roll.id === fMission) && (fWho === 'all' || p.who.includes(fWho)); }
+function apply() {
+  document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === (b.dataset.kind === 'm' ? fMission : fWho))));
+  shown = ALL.filter(match);
+  const keys = new Set(shown.map(p => p.key));
+  document.querySelectorAll('.snap').forEach(b => b.classList.toggle('hide', !keys.has(b.dataset.key)));
+  document.querySelectorAll('.page').forEach(pg => pg.classList.toggle('hide', !shown.some(p => p.roll.id === pg.id)));
+  $('empty').hidden = shown.length > 0;
+}
+
+// ---------------------------------------------------------------- the viewer
+let lastFocus = null;
+function open(key) {
+  if (!shown.some(p => p.key === key)) { fMission = 'all'; fWho = 'all'; apply(); }
+  cur = shown.findIndex(p => p.key === key); if (cur < 0) return;
+  lastFocus = document.activeElement;
+  $('lb').hidden = false; $('lb').classList.add('on'); document.body.style.overflow = 'hidden';
+  show(); $('lbClose').focus();
+}
+function close() {
+  $('lb').classList.remove('on'); $('lb').hidden = true; document.body.style.overflow = '';
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  if (lastFocus) lastFocus.focus();
+}
+function show() {
+  const p = shown[cur], r = p.roll;
+  $('lbImg').src = p.src; $('lbImg').alt = p.note;
+  $('lbWhere').textContent = `Day ${r.day} · ${r.place}`;
+  $('lbCount').textContent = `${cur + 1} / ${shown.length}`;
+  $('lbNote').textContent = p.note;
+  $('lbMeta').innerHTML = `<span class="t">${p.time ? esc(p.time) + ' · ' : ''}📷 ${esc(r.by)}</span>` +
+    p.who.map(w => `<button type="button" data-who="${esc(w)}">${esc(w)}</button>`).join('') +
+    `<button type="button" class="share" id="lbShare">Copy link</button>`;
+  $('lbMeta').querySelectorAll('[data-who]').forEach(b => b.addEventListener('click', () => { fWho = b.dataset.who; fMission = 'all'; apply(); cur = shown.findIndex(q => q.key === p.key); show(); }));
+  $('lbShare').addEventListener('click', async e => {
+    const url = location.origin + location.pathname + '#' + p.key;
+    try { await navigator.clipboard.writeText(url); e.target.textContent = 'Link copied'; } catch (_) { e.target.textContent = url; }
+  });
+  history.replaceState(null, '', '#' + p.key);
+  $('lbPrev').disabled = shown.length < 2; $('lbNext').disabled = shown.length < 2;
+  for (const k of [cur - 1, cur + 1]) { const q = shown[(k + shown.length) % shown.length]; if (q) { const i = new Image(); i.src = q.src; } }   // ready the neighbours
+}
+const step = d => { if (!shown.length) return; cur = (cur + d + shown.length) % shown.length; show(); };
+$('lbPrev').addEventListener('click', () => step(-1));
+$('lbNext').addEventListener('click', () => step(1));
+$('lbClose').addEventListener('click', close);
+$('lb').addEventListener('click', e => { if (e.target === $('lb') || e.target === $('stage')) close(); });
+document.addEventListener('keydown', e => {
+  if ($('lb').hidden) return;
+  if (e.key === 'Escape') close(); else if (e.key === 'ArrowLeft') step(-1); else if (e.key === 'ArrowRight') step(1);
+  else if (e.key === 'Tab') {   // keep focus inside the viewer
+    const f = [...$('lb').querySelectorAll('button')].filter(b => !b.disabled && b.offsetParent);
+    if (!f.length) return; const i = f.indexOf(document.activeElement);
+    if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+  }
+});
+let sx = null, sy = 0;
+$('stage').addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+$('stage').addEventListener('touchend', e => {
+  if (sx == null) return; const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; sx = null;
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1); else if (dy > 90) close();
+});
+
+// the filters stick just under the top bar, whatever height it ends up
+const barH = () => document.documentElement.style.setProperty('--barh', document.querySelector('.topbar').offsetHeight + 'px');
+barH(); addEventListener('resize', barH);
+
+fetch('scrapbook/scrapbook.json', { cache: 'no-cache' }).then(r => r.json()).then(d => {
+  ROLLS = (d.rolls || []).slice().sort((a, b) => b.day - a.day);
+  build(); apply();
+  const k = location.hash.slice(1);
+  if (k && ALL.some(p => p.key === k)) open(k);
+  else if (k && ROLLS.some(r => r.id === k)) document.getElementById(k).scrollIntoView();
+}).catch(() => { $('book').innerHTML = '<p class="empty">The scrapbook didn\'t load. Pull to refresh.</p>'; });
+</script>
+</html>
