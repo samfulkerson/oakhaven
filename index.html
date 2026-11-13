@@ -289,6 +289,10 @@ footer a{color:var(--muted)}
   .brand h1{font-size:22px}
   .status-strip{margin-left:0;width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
   .topbar .btn{display:none}
+  .topbar .btn.sb{display:inline-flex;margin-left:auto;padding:6px 9px;gap:6px;font-size:11.5px;letter-spacing:.05em}
+  .topbar .inner{gap:12px 10px}
+  .topbar .btn.sb svg{display:none}
+  .status-strip{order:2}
   .tfind{width:100%;order:3}
   .ctrls button{padding:6px 8px;font-size:11px}
 }
@@ -314,6 +318,10 @@ footer a{color:var(--muted)}
       <input id="tq" type="search" autocomplete="off" list="handles" placeholder="Find your survivor: @you" enterkeyhint="search">
       <datalist id="handles"></datalist>
     </form>
+    <a class="btn ghost sb" id="scrapTop" href="scrapbook.html" title="Every photo from every mission">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      Scrapbook
+    </a>
     <a class="btn" id="joinTop" href="https://www.instagram.com/surviveoakhaven/" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
       Join the camp
