@@ -1,0 +1,56 @@
+{
+  "note": "The Oakhaven scrapbook: every camera roll from every mission. Newest first. Each photo lives in scrapbook/<id>-<n>.jpg (1080x1350) with a 432x540 copy in scrapbook/thumbs/. 'who' lists the survivors in a photo; a photo without 'who' counts everyone in the roll's crew.",
+  "rolls": [
+    {
+      "id": "day7-ranger",
+      "day": 7,
+      "place": "Ranger station",
+      "by": "Jack",
+      "crew": ["Sam", "Gabe", "Jack"],
+      "intro": "Jack had the camera today. Three of us walked out there with zero rounds.",
+      "outro": "We came home with 3 guns, 4 blades and axes, 60 rounds, and two sets of cracked ribs.",
+      "photos": [
+        { "time": "10:05", "who": ["Sam", "Gabe"], "note": "Sam and Gabe on the forest road. Nobody had been out here since it started." },
+        { "time": "10:21", "who": ["Sam", "Gabe"], "note": "The gun locker was padlocked. Sam's crowbar, Gabe's flashlight." },
+        { "time": "10:29", "who": ["Jack"], "note": "Three guns, blades, axes, and 60 rounds. Jack went straight for the rifle." },
+        { "time": "10:36", "who": ["Sam"], "note": "Then the door opened. One of the big ones, all the way from the docks." },
+        { "time": "10:41", "who": ["Sam", "Gabe"], "note": "Sam's machete and Gabe's hatchet put it down. Gabe taped Sam up first, then himself." },
+        { "time": "11:20", "who": ["Sam", "Gabe"], "note": "The long walk home. Nobody talked." }
+      ]
+    },
+    {
+      "id": "day6-camp",
+      "day": 6,
+      "place": "The laundromat",
+      "by": "Francis",
+      "crew": ["Adam", "Tanny", "Mateen", "Jaylozy", "Victoria", "Asa", "Seth"],
+      "intro": "Francis found a camera at Pier 9 today. He spent the rest of the day testing it on us.",
+      "outro": "Nobody would look at the camera. Out here you don't want to be remembered.",
+      "photos": [
+        { "time": "14:18", "who": ["Adam"], "note": "Adam trying to bring the generator back. Still no gas." },
+        { "time": "15:32", "who": ["Tanny"], "note": "Tanny wiring today's car doors into the fence. We had company." },
+        { "time": "16:47", "who": ["Mateen", "Jaylozy"], "note": "Mateen's garden on the roof. Jaylozy on watch." },
+        { "time": "17:56", "who": ["Victoria", "Asa"], "note": "Victoria making supper. Asa didn't leave that chair all night." },
+        { "time": "21:41", "who": ["Seth"], "note": "Seth on the radio after dark. Nothing but static." }
+      ]
+    },
+    {
+      "id": "day4-pier9",
+      "day": 4,
+      "place": "Pier 9",
+      "by": "Sam",
+      "crew": ["Sam", "Jeremy", "Jaylozy"],
+      "intro": "Sam, Jeremy and Jaylozy cleared the Pier 9 warehouse.",
+      "outro": "32 rations of food, a crate of bayonets, and 6 of our last 8 rounds gone.",
+      "photos": [
+        { "time": "15:02", "who": ["Jeremy", "Jaylozy"], "note": "Walking in. Something already standing in the loading door." },
+        { "time": "15:04", "who": ["Jaylozy"], "note": "Jaylozy took the shot." },
+        { "time": "15:11", "note": "Inside. It wasn't alone." },
+        { "time": "15:19", "who": ["Sam"], "note": "32 rations of food in one crate." },
+        { "time": "15:23", "who": ["Jeremy"], "note": "Jeremy found these. He kept one." },
+        { "time": "15:26", "who": ["Sam"], "note": "Six of our last eight rounds." },
+        { "time": "15:38", "who": ["Jeremy", "Jaylozy"], "note": "Hauling it home." }
+      ]
+    }
+  ]
+}
