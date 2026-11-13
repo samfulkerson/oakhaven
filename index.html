@@ -3561,6 +3561,7 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
   day7: {
     title: 'Day 7 · The Gun Locker', dur: 66.5, audioOffset: 1.0,
+    hook: { from: 19.2, tag: 'DAY 07 · 10:36', lines: ['THREE WENT IN.', 'ZERO ROUNDS.', 'THE DOOR OPENED.'] },
     cam: [[0, 800, 600, 1560], [2.6, 220, 520, 700], [3.4, 98, 430, 240], [6.4, 98, 430, 220], [6.6, 'follow', 'Gabe', 150], [9.5, 'follow', 'Gabe', 140],
           [10.2, 100, 424, 140], [13.5, 100, 424, 128], [14.0, 100, 426, 120], [17.9, 100, 426, 112], [18.5, 100, 428, 110], [22.4, 100, 428, 100],
           [22.6, 100, 429, 92], [25.9, 100, 429, 86], [26.4, 'follow', 'Sam', 150], [28.7, 'follow', 'Sam', 140],
@@ -3867,6 +3868,25 @@ function wrapPx(c, s, px, maxW, weight = 700) {
   for (const w of s.split(' ')) { const t = line ? line + ' ' + w : w; if (c.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; }
   if (line) out.push(line); return out;
 }
+// the channel's signature hazard tape along the top edge
+function epTape(c, Wc, u) { for (let x = -40 * u; x < Wc; x += 40 * u) { c.fillStyle = '#f2a93b'; c.beginPath(); c.moveTo(x, 0); c.lineTo(x + 20 * u, 0); c.lineTo(x + 32 * u, 12 * u); c.lineTo(x + 12 * u, 12 * u); c.fill(); } }
+// the cold open: an episode's "hook" is { from, lines, tag }. Its footage is the episode's own biggest moment (from `from`, for as long as the narrator's hook line runs);
+// the Reel starts here, with the line already on screen from the very first frame, then the normal episode follows (title card, recap, vote)
+function epHook(tau) {
+  const c = vctx, Wc = view.width, Hc = view.height, u = Wc / 1080, hk = EPI.ep.hook; if (!hk) return;
+  const dark = c.createLinearGradient(0, 0, 0, Hc * .5); dark.addColorStop(0, 'rgba(0,0,0,.78)'); dark.addColorStop(1, 'rgba(0,0,0,0)');
+  c.save(); c.imageSmoothingEnabled = true; c.fillStyle = dark; c.fillRect(0, 0, Wc, Hc * .5);
+  // found-footage cues: a blinking REC dot and the camera's timestamp
+  if (Math.floor(tau * 2) % 2 === 0) { c.fillStyle = '#e0392b'; c.beginPath(); c.arc(92 * u, 74 * u, 17 * u, 0, 7); c.fill(); }
+  c.font = `600 ${Math.round(42 * u)}px ${CAP_FONT}`; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillStyle = '#f3f4f0'; c.shadowColor = 'rgba(0,0,0,.7)'; c.shadowBlur = 8 * u;
+  c.fillText('REC  ' + (hk.tag || ''), 124 * u, 76 * u); c.shadowColor = 'transparent';
+  // the hook itself: big, plain, readable at a glance; the last line is the one that hurts
+  const px = 82 * u, lh = px * 1.12, lines = hk.lines.flatMap(l => wrapPx(c, l, px, Wc - 110 * u));
+  const pop = 1 + .06 * Math.max(0, 1 - tau / .22);                       // a quick punch-in on the first frames
+  let y = Hc * .12;
+  lines.forEach((ln, i) => { const last = i === lines.length - 1; c.save(); c.translate(Wc / 2, y + px / 2); c.scale(pop, pop); capLine(c, ln, 0, -px / 2, px, last ? '#f2a93b' : '#f3f4f0', 700); c.restore(); y += lh; });
+  epTape(c, Wc, u); c.restore();
+}
 function epPost() {
   const c = vctx, Wc = view.width, Hc = view.height, t = EPI.t, ep = EPI.ep, u = Wc / 1080;
   c.save(); c.imageSmoothingEnabled = true;
@@ -3908,7 +3928,7 @@ function epPost() {
   }
   c.globalAlpha = 1; c.shadowColor = 'transparent';
   // hazard tape along the top edge, the channel's signature
-  for (let x = -40 * u; x < Wc; x += 40 * u) { c.fillStyle = '#f2a93b'; c.beginPath(); c.moveTo(x, 0); c.lineTo(x + 20 * u, 0); c.lineTo(x + 32 * u, 12 * u); c.lineTo(x + 12 * u, 12 * u); c.fill(); }
+  epTape(c, Wc, u);
   c.restore();
 }
 // set the world up for an episode: its first hour, the dead settled, Sam home, camera on its first key
@@ -3924,6 +3944,15 @@ function epEnd() { EPI.on = false; preview = false; HOUR_OVR = null; CAM_W = 0; 
 window.oakEpisode = {
   prepare(key) { EPI.manual = true; epPrepare(key); return EPI.ep.dur; },
   frame(t, steps = 2) { EPI.t = t; epPre(); for (let i = 0; i < steps; i++) update(); draw(); epPost(); },
+  // one step of the world, two pictures: [the normal frame, the cold-open frame (or '' outside the hook window)]. hookDur: seconds of footage the hook line needs
+  frames2(t, hookDur, steps = 2) {
+    EPI.t = t; epPre(); for (let i = 0; i < steps; i++) update(); draw();
+    const hk = EPI.ep.hook, inHook = hk && t >= hk.from && t < hk.from + hookDur;
+    let raw = null; if (inHook) { raw = document.createElement('canvas'); raw.width = view.width; raw.height = view.height; raw.getContext('2d').drawImage(view, 0, 0); }
+    epPost(); const main = view.toDataURL('image/jpeg', .93); if (!inHook) return [main, ''];
+    vctx.drawImage(raw, 0, 0); epHook(t - hk.from); return [main, view.toDataURL('image/jpeg', .93)];
+  },
+  hook() { return EPI.ep.hook || null; },
   end() { EPI.manual = false; epEnd(); },
   EPISODES
 };
