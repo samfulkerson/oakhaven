@@ -566,13 +566,24 @@ For each real join request return an object with:
 Crude, sexual or joke answers still get in: pick the closest role and write a bio that roasts it with a wink
 (e.g. "Gary ran the adult shop on Main. The town pervert, and somehow still alive.") without getting graphic.
 Skip anything that is not a join request, and anything hateful, harassing or aimed at a real person.
+Today's vote options are {votes}. A comment that only names one of them is a vote, not a join request,
+even if the word could pass for a name or a job ("RANGER" is a vote for the ranger station, not a ranger joining).
 Reply with only a JSON array.
 
 Comments:
 """
 
 
-def read_joins(comments, skip):
+VOTE_FILLER = {"THE", "STATION", "VOTE", "GO", "TO", "PLEASE", "PICK", "MY", "I", "SAY", "FOR"}
+
+
+def is_just_a_vote(text, votes):
+    """'Ranger', 'ranger station 🌲', 'GAS!!' and emoji-only comments are votes or chatter, never join requests."""
+    words = re.sub(r"[^A-Z ]", " ", str(text).upper()).split()
+    return not words or set(words) <= set(votes) | VOTE_FILLER
+
+
+def read_joins(comments, skip, votes=()):
     if not os.environ.get("ANTHROPIC_API_KEY"):
         log("No ANTHROPIC_API_KEY set: skipping new survivors.")
         return []
@@ -581,14 +592,14 @@ def read_joins(comments, skip):
     by_user = {}
     for c in comments:
         u = c["username"]
-        if u.lower() in skip:
+        if u.lower() in skip or is_just_a_vote(c.get("text", ""), votes):
             continue
         by_user.setdefault(u, []).append(c.get("text", "").replace("\n", " ")[:300])
     items, out = list(by_user.items()), []
     for i in range(0, len(items), 40):
         batch = "\n".join(f"@{u}: {' / '.join(t)}" for u, t in items[i:i + 40])
         msg = client.messages.create(model=MODEL, max_tokens=4000,
-                                     messages=[{"role": "user", "content": PROMPT.format(roles=ROLES) + batch}])
+                                     messages=[{"role": "user", "content": PROMPT.format(roles=ROLES, votes=", ".join(votes) or "none") + batch}])
         text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text")   # skip thinking blocks
         try:
             out += json.loads(text[text.index("["): text.rindex("]") + 1])
@@ -980,7 +991,7 @@ def main():
     living_ig = {s.get("ig", "").lower() for s in data["survivors"] if s.get("status") != "dead"}
     living_ig |= {str(p.get("ig", "")).lower() for p in data.get("waitlist", [])}
     try:
-        parsed = read_joins(comments, living_ig) if comments else []
+        parsed = read_joins(comments, living_ig, list(keys)) if comments else []
         if DRY and not comments:
             parsed_test = read_joins([{"username": "test_jake", "text": "Jake here, I'll be the mechanic. Scared of birds."},
                                       {"username": "test_vote", "text": "DINER!!"}], set())
