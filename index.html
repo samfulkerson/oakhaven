@@ -2897,6 +2897,8 @@ function update() {
       if (e.inside) continue;
       if (e.wait > 0) { e.wait--; continue; }
       if (moveToward(e, e.tx, e.ty, e.spd)) { e.wait = 80 + rand() * 260 | 0; [e.tx, e.ty] = yardSpot(); }
+    } else if (e.mode === 'defend') {
+      continue;                                       // a studio defender holds their spot at the fence
     } else if (e.mode === 'run') {
       if (e.delay > 0) { e.delay--; continue; }
       if (e.wp < e.path.length) {
@@ -2912,9 +2914,30 @@ function update() {
     const z = zombies.find(z => !z.dying && z !== EPI_BRUTE && Math.abs(z.x - m.x) < 11 && Math.hypot(z.x - m.x, z.y - m.y) < 11);   // a scripted brute is fought by the script's own blows
     if (z) { m.cool = 32; melee(m, z, .6); }
   }
+  if (runWait > 1e8) for (const m of people) {
+    if (m.mode !== 'defend' || m.hidden || --m.cool > 0) continue;
+    if (m.gun) {
+      let t = null, td = m.range || 62;
+      for (const z of zombies) if (z.horde && !z.dying && z.wp > 0) { const dd = Math.hypot(z.x - m.x, z.y - m.y); if (dd < td) { td = dd; t = z; } }
+      if (t) { m.flip = t.x < m.x; m.cool = 24 + rand() * 22 | 0; shoot(m, t, .5); }
+    } else {
+      const z = zombies.find(z => z.horde && !z.dying && Math.hypot(z.x - m.x, z.y - m.y) < 13);
+      if (z) { m.cool = 28 + rand() * 16 | 0; melee(m, z, .45); }
+    }
+  }
   for (const z of zombies) {
     z.moving = false;
     if (z.dying) { z.dying++; continue; }
+    if (z.horde) {
+      if (z.delay > 0) { z.delay--; continue; }
+      const wpt = z.path[Math.min(z.wp, z.path.length - 1)];
+      if (moveToward(z, wpt[0], wpt[1], z.spd) && z.wp < z.path.length) z.wp++;
+      else if (z.wp >= z.path.length && --z.bang <= 0) {
+        z.bang = 30 + rand() * 50; z.flip = !z.flip;
+        for (let i = 0; i < 3; i++) parts.push({ x: wpt[0] + (rand() - .5) * 3, y: wpt[1] - 3 - rand() * 3, vx: (rand() - .5) * .3, vy: -.15 - rand() * .2, life: 28, col: '#9a9e9a' });
+      }
+      z.state = 'siege'; continue;
+    }
     const px = z.x, py = z.y;
     let target = null, td = 50;
     if (z !== EPI_BRUTE) for (const m of outside) { const dd = Math.hypot(m.x - z.x, m.y - z.y); if (dd < td) { td = dd; target = m; } }
@@ -3559,6 +3582,14 @@ requestAnimationFrame(loop);
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
+  day8: {
+    title: 'Day 8 · The Horde', dur: 124.6, audioOffset: 1.0,
+    hook: { from: 28.3, tag: 'DAY 07 · 21:52', lines: ['97 OF THEM.', 'ONE FENCE.', '13 OF US.'] },
+    cam: [[0, 450, 462, 520], [3.2, 452, 466, 320], [9.6, 448, 474, 250], [10.6, 462, 482, 220], [13.57, 440, 488, 200], [14.6, 430, 488, 200], [16.44, "follow", "Jaylozy", 120], [17.88, "follow", "Jaylozy", 112], [18.08, "follow", "Seth", 120], [19.12, "follow", "Seth", 112], [19.32, "follow", "Jeremy", 120], [21.35, "follow", "Jeremy", 112], [21.55, "follow", "Francis", 120], [23.08, "follow", "Francis", 112], [23.23, "follow", "Jack", 125], [24.58, "follow", "Jack", 115], [24.73, "follow", "Asa", 125], [25.98, "follow", "Asa", 115], [26.13, "follow", "Tanny", 125], [28.03, "follow", "Tanny", 115], [28.23, 426, 492, 175], [31.0, 426, 492, 210], [37.33, 426, 494, 400], [37.63, 424, 496, 300], [38.7, 424, 496, 280], [38.9, 330, 520, 360], [41.27, 300, 515, 220], [45.64, 290, 510, 170], [49.73, 286, 504, 150], [50.24, 276, 482, 120], [53.71, 276, 482, 104], [54.19, 276, 488, 160], [60.7, 276, 488, 190], [61.3, "follow", "Tanny", 160], [65.94, "follow", "Tanny", 140], [66.24, 554, 392, 130], [69.42, 554, 392, 112], [69.9, 584, 476, 170], [76.12, 584, 476, 130], [76.58, 470, 520, 230], [78.81, "follow", "Elder", 140], [82.01, "follow", "Elder", 125], [82.21, 424, 500, 140], [84.14, 424, 500, 128], [84.52, 424, 496, 230], [88.56, 424, 496, 260], [89.03, 470, 300, 900], [93.28, 470, 260, 1000], [93.58, 440, 466, 220], [94.7, 441, 462, 150], [102.43, 441, 460, 100], [107.07, 441, 460, 88], [107.7, 470, 560, 700], [116.44, 470, 560, 760], [124.6, 470, 600, 1100]],
+    hour: [[0, 19.0], [27.83, 19.2], [31.0, 19.4], [31.5, 29.0], [36.73, 30.6], [37.63, 31.2], [39.0, 32], [92.98, 38], [94.38, 49.5], [124.6, 50.2]],
+    events: [[0, "defend", [["Jaylozy", 457, 474], ["Seth", 457, 488], ["Jack", 452, 506, 1], ["Gary Finklestein", 457, 500], ["Jeremy", 404, 512], ["Francis", 416, 512], ["Asa", 430, 509, 1], ["Tanny", 442, 509, 1], ["Adam", 395, 512], ["Mateen", 393, 500], ["Victoria", 393, 486], ["Carl", 393, 472], ["Quinn", 393, 460]]], [0.5, "horde", 26, [[488, 396], [488, 478]], "e", 9], [2.5, "horde", 18, [[566, 552], [470, 552], [470, 530]], "s", 9], [3.5, "horde", 14, [[352, 552], [380, 552], [380, 528]], "s", 8], [4.5, "horde", 12, [[352, 432], [376, 446], [376, 488]], "w", 8], [13.5, "horde", 16, [[488, 400], [488, 478]], "e", 8], [18.0, "horde", 14, [[560, 552], [470, 552], [470, 530]], "s", 7], [35.53, "clearHorde"], [37.63, "stand", ["Jaylozy", "Seth", "Jack", "Gary Finklestein", "Jeremy", "Adam", "Mateen", "Victoria", "Sam", "Gabe"]], [37.63, "away", ["Carl", "Quinn", "Asa", "Tanny", "Francis", "Javier", "Elder"]], [38.7, "walk", "Carl", [[372, 552], [276, 552], [276, 498]]], [38.9, "walk", "Quinn", [[384, 553], [280, 553], [280, 499]]], [39.1, "walk", "Javier", [[396, 551], [272, 551], [272, 499]]], [39.3, "walk", "Asa", [[408, 552], [284, 552], [284, 499]]], [54.79, "away", ["Carl", "Quinn", "Javier", "Asa"]], [60.2, "walk", "Tanny", [[505, 432], [552, 432], [552, 384]]], [60.4, "walk", "Francis", [[497, 433], [557, 433], [557, 384]]], [69.62, "away", ["Tanny", "Francis"]], [75.38, "walk", "Elder", [[488, 596], [488, 552], [424, 552], [424, 512]]], [88.56, "stand", ["Elder"]], [93.58, "defend", [["Seth", 441, 457]]]],
+    captions: [[1.0, 3.3, "title", "OAKHAVEN", "DAY 8"], [3.5, 10.3, "capTop", "DAY 7 · 21:40 · THE HORDE"], [14.6, 16.39, "cap", "13 ON THE FENCE"], [16.44, 17.88, "cap", "JAYLOZY · FIRE AXE"], [18.08, 19.12, "cap", "SETH · MAUL"], [19.32, 21.35, "cap", "JEREMY · BAYONET SPEAR"], [21.55, 23.08, "cap", "FRANCIS · BOAT HOOK"], [23.23, 24.58, "cap", "JACK · RIFLE"], [24.73, 25.98, "cap", "ASA · SHOTGUN"], [26.13, 28.03, "cap", "TANNY · REVOLVER"], [34.24, 35.53, "capTop", "THE FENCE HELD"], [35.69, 37.53, "capTop", "FENCE AT 60%"], [37.73, 38.7, "capTop", "DAY 8 · 07:10"], [39.0, 41.29, "capTop", "THE VOTE: POLICE, 4–1"], [41.47, 45.32, "cap", "CARL, QUINN, JAVIER + ASA"], [45.64, 49.93, "cap", "JAVIER: CONCUSSION · OUT UNTIL DAY 10"], [50.24, 54.01, "capTop", "+10 WATER"], [54.19, 57.58, "capTop", "2 MORE NIGHTS INSIDE"], [57.72, 61.0, "capTop", "WHO CHAINED THE DOORS?"], [61.4, 66.0, "cap", "TANNY + FRANCIS · THE DINER"], [66.24, 69.62, "capTop", "+6 WATER"], [70.0, 73.22, "capTop", "50 FOLLOWERS · THE PUMPS ARE RUNNING"], [73.37, 78.72, "capTop", "+2 FUEL EVERY NIGHT"], [79.01, 82.01, "cap", "ELDER · MECHANIC"], [82.21, 84.34, "cap", "SAM + GABE: BACK ON THEIR FEET"], [84.52, 86.11, "cap", "17 SURVIVORS"], [86.26, 88.86, "cap", "FOOD: 2 DAYS · WATER: 1 DAY"], [89.03, 93.28, "capTop", "NEXT HORDE: DAY 14"], [94.5, 102.23, "capTop", "88.1 · 02:14 AM"], [102.43, 107.37, "capTop", "\"…FORT CORRAN…\""], [107.7, 116.6, "vote", "WHILE THEY’RE INSIDE, WHERE DOES A SMALL GROUP GO?", ["GAS", "GUN SHOP", "MAPLE"]], [116.7, 124.6, "card", "WHO’S ON THE RADIO?", "COMMENT YOUR NAME + JOB TO MOVE IN"]]
+  },
   day7: {
     title: 'Day 7 · The Gun Locker', dur: 66.5, audioOffset: 1.0,
     hook: { from: 19.2, tag: 'DAY 07 · 10:36', lines: ['THREE WENT IN.', 'ZERO ROUNDS.', 'THE DOOR OPENED.'] },
@@ -3827,6 +3858,26 @@ function epEvent(ev) {
     spawnZombie(true, true); const z = zombies[zombies.length - 1];
     [z.x, z.y] = ev[2]; z.street = null; z.free = [ev[3][0] - 1, ev[3][1] - 1, 2, 2]; z.tx = ev[3][0]; z.ty = ev[3][1]; z.spd = .09; EPI_BRUTE = z;
   }
+  else if (ev[1] === 'defend') {                     // [t, 'defend', [[name, x, y, gun], ...]]: the camp lines the inside of the fence
+    for (const [n, x, y, gun] of ev[2]) { const e = byName[n]; if (!e) continue; e.mode = 'defend'; e.hidden = false; e.inside = false; e.x = x; e.y = y; e.gun = !!gun; e.cool = rand() * 40 | 0; e.flip = x < HOME_CENTER[0]; }
+  }
+  else if (ev[1] === 'stand') who(ev[2]).forEach(e => { e.mode = 'wander'; e.gun = false; e.inside = false; e.hidden = false; e.wait = 60 + rand() * 200 | 0; [e.tx, e.ty] = yardSpot(); [e.x, e.y] = yardSpot(); })
+  else if (ev[1] === 'horde') {                      // [t, 'horde', n, [[x, y] route...], side, seconds]: n of them come down the route and spread along one side of the fence
+    const [, , n, route, side, secs] = ev;
+    for (let i = 0; i < n; i++) {
+      spawnZombie(false, true); const z = zombies[zombies.length - 1];
+      z.free = null; z.street = null; z.horde = true; z.wp = 1; z.bang = rand() * 60; z.spd = .13 + rand() * .07; z.delay = 0;
+      const j = () => (rand() - .5) * 7;
+      z.path = route.map(([x, y]) => [x + j(), y + j()]);
+      // a strung-out column: each one starts further back up the road, so they arrive one after another over `secs` seconds
+      const [ax, ay] = z.path[0], [bx, by] = z.path[1], L = Math.hypot(bx - ax, by - ay) || 1, back = (i / n) * secs * 60 * .15;
+      z.path[0] = [ax - (bx - ax) / L * back, ay - (by - ay) / L * back]; [z.x, z.y] = z.path[0];
+      const u = rand(), F = FENCE;
+      z.path.push(side === 'e' ? [F.x1 + 3 + rand() * 4, F.y0 + 4 + u * (F.y1 - F.y0 - 6)] : side === 'w' ? [F.x0 - 3 - rand() * 4, F.y0 + 4 + u * (F.y1 - F.y0 - 6)]
+                : [F.x0 + 3 + u * (F.x1 - F.x0 - 6), F.y1 + 4 + rand() * 4]);
+    }
+  }
+  else if (ev[1] === 'clearHorde') { for (const z of zombies) if (z.horde && !z.dying) { z.dying = 1; } }   // morning: whatever was left at the fence is down
   else if (ev[1] === 'hit') who(ev[2]).forEach(e => { const z = EPI_BRUTE; if (z && !z.dying) melee(e, z, 1); });   // a sure blow with whatever they carry
   else if (ev[1] === 'arrive') {
     // walk in from up the road: the last stretch of the way home from ev[3], ending at the laundromat door
