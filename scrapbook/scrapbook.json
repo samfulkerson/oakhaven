@@ -2,6 +2,24 @@
   "note": "The Oakhaven scrapbook: every camera roll from every mission. Newest first. Each photo lives in scrapbook/<id>-<n>.jpg (1080x1350) with a 432x540 copy in scrapbook/thumbs/. 'who' lists the survivors in a photo; a photo without 'who' counts everyone in the roll's crew.",
   "rolls": [
     {
+      "id": "day7-horde",
+      "day": 7,
+      "place": "The laundromat fence",
+      "by": "Sam",
+      "crew": ["Jaylozy", "Seth", "Jack", "Jeremy", "Francis", "Asa", "Tanny", "Gary Finklestein", "Adam", "Mateen", "Victoria", "Carl", "Quinn"],
+      "intro": "Horde night. Sam couldn't swing an axe with cracked ribs, so he took the camera up the lookout tower.",
+      "outro": "97 of them hit the fence. The fence held. Sixty percent of it, anyway.",
+      "photos": [
+        { "time": "21:38", "note": "From the tower. They came down the street in one long line." },
+        { "time": "21:44", "who": ["Jaylozy", "Seth"], "note": "Jaylozy's fire axe and Seth's maul, right through the chain link." },
+        { "time": "21:51", "who": ["Jack"], "note": "Jack's rifle. For a second you could see all of them." },
+        { "time": "22:07", "who": ["Jeremy", "Francis"], "note": "Jeremy's bayonet spear and Francis's boat hook. They kept coming." },
+        { "time": "22:30", "note": "The whole fence, every side." },
+        { "time": "05:58", "who": ["Asa"], "note": "Day 8, sunrise. Asa never left his bucket." },
+        { "time": "07:24", "who": ["Carl", "Quinn", "Javier", "Asa", "Tanny", "Francis"], "note": "Day 8. Carl, Quinn, Javier, Asa, Tanny and Francis walked out the gate anyway." }
+      ]
+    },
+    {
       "id": "day7-ranger",
       "day": 7,
       "place": "Ranger station",
