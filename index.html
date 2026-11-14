@@ -157,6 +157,9 @@ canvas#world.dragging{cursor:grabbing}
 /* vote */
 .vote-q{font-family:var(--f-head);font-weight:600;font-size:17px;line-height:1.35;margin:0;text-wrap:balance}
 #voteOpts{display:grid;gap:8px}
+.mission-now{font-size:13px;color:var(--fg);padding:9px 12px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r);background:linear-gradient(90deg,var(--accent-soft),var(--panel-2) 70%)}
+.mission-now b{font-family:var(--f-head);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:2px}
+.mission-now span{color:var(--muted)}
 .opt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:10px 12px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r)}
 .opt b{font-family:var(--f-pixel);font-weight:700;font-size:17px;letter-spacing:.06em;color:var(--fg)}
 .opt .val{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -209,6 +212,9 @@ canvas#world.dragging{cursor:grabbing}
 .run.active{border-left-color:var(--accent);background:linear-gradient(90deg,var(--accent-soft),var(--panel-2) 60%)}
 .run.back{border-left-color:var(--ok)}
 .run.locked{border-left-color:var(--bad)}
+.run.fresh{border-left-color:var(--warn)}
+.run.fresh .status{color:var(--warn);background:rgba(224,138,46,.14)}
+.run.searched{opacity:.78}
 .run.found{border-left-color:var(--warn)}
 .run > span:first-child{min-width:0}
 .place{font:inherit;font-family:var(--f-head);font-weight:700;font-size:15px;letter-spacing:.01em;background:none;border:0;padding:0;color:var(--fg);cursor:pointer;text-align:left}
@@ -395,18 +401,19 @@ footer a{color:var(--muted)}
 
     <aside class="col" aria-label="Today">
       <section class="card-f">
-        <div class="ph"><h2>Today's vote</h2><small id="voteClose">Closes 11 pm Central</small></div>
+        <div class="ph"><h2>Today's vote</h2><small id="voteClose">Counted at 11 pm Central</small></div>
         <div class="pb">
           <p class="vote-q" id="voteQ"></p>
           <div id="voteOpts"></div>
           <p class="how" id="voteHow"></p>
-          <a class="btn ghost" id="voteBtn" href="https://www.instagram.com/surviveoakhaven/" target="_blank" rel="noopener" style="justify-self:start">Vote in the comments</a>
+          <a class="btn ghost" id="voteBtn" href="https://www.instagram.com/surviveoakhaven/" target="_blank" rel="noopener" style="justify-self:start">Vote on the most recent post</a>
         </div>
       </section>
 
       <section class="card-f quiet">
         <div class="ph"><h2>In the field</h2><small id="fieldNote"></small></div>
         <div class="pb">
+          <div class="mission-now" id="fieldMission" hidden></div>
           <div class="field">
             <canvas id="fieldSprite" width="7" height="11" aria-hidden="true"></canvas>
             <div><span class="state" id="fieldState">At camp</span><div class="who" id="fieldWho">Sam</div><div class="what" id="fieldWhat">Inside the laundromat on 3rd Street.</div></div>
@@ -431,7 +438,7 @@ footer a{color:var(--muted)}
     </div>
 
     <div class="tabpanel" role="tabpanel" id="p-runs" aria-labelledby="tab-runs">
-      <div class="tabhead"><p>Scavenging runs, in the order Sam works through them. The longer the walk, the more can go wrong. Tap a place to fly the camera there.</p></div>
+      <div class="tabhead"><p>Every place the camp can scavenge. The ones nobody has searched yet come first. The longer the walk, the more can go wrong. Tap a place to fly the camera there.</p></div>
       <div class="runs" id="runs"></div>
     </div>
     <div class="tabpanel" role="tabpanel" id="p-missions" aria-labelledby="tab-missions" hidden>
@@ -460,7 +467,7 @@ footer a{color:var(--muted)}
   <section class="card-f join" aria-label="How to join">
     <div>
       <h2>Every follower can be a <span>survivor</span>.</h2>
-      <p>Sam has been alone in a dead city for weeks. The power is out, the dead own the streets, and the laundromat on 3rd Street is the only safe place left. Follow <strong id="handle"></strong> and you find the building too.</p>
+      <p>It started with Sam, alone in a laundromat on 3rd Street. Now a camp holds the fence there, and every survivor in it is a real follower. The power is out and the dead own the streets. Follow <strong id="handle"></strong> and you move in too.</p>
       <a class="btn" id="joinBottom" href="https://www.instagram.com/surviveoakhaven/" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
         Follow on Instagram
@@ -574,6 +581,10 @@ if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 's
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
+// a squad working a multi-night mission is inside that building: not in the yard, not on small runs
+const MISSION_NOW = (DATA.missions || []).find(m => m.status === 'active' && (m.squad || []).length) || null;
+const onMission = d => !!(MISSION_NOW && d && MISSION_NOW.squad.includes(d.name));
+const missionLeft = () => MISSION_NOW ? Math.max(1, (MISSION_NOW.days || 3) - (MISSION_NOW.days_done || 0)) : 0;
 const DIFF = { easy: 'Easy', medium: 'Medium', hard: 'Hard', deadly: 'Deadly' };
 const diffTag = d => d && DIFF[d] ? `<span class="diff ${d}">${DIFF[d]}</span>` : '';
 
@@ -2609,7 +2620,7 @@ for (let i = 0; i < visible; i++) {
   const [x, y] = yardSpot();
   const e = { kind: 's', d, x, y, tx: x, ty: y, wait: rand() * 200 | 0, step: 0, flip: rand() < .5, spd: .12 + rand() * .08, mode: 'wander', cool: 0, inside: false,
     look: d ? { ...lookFor(d.ig || d.name, d.role), axe: /\baxe\b/i.test(d.bio || '') ? 1 : 0, ...gearLook(d), ...(d.look || {}) } : lookFor('anon' + i, '') };
-  if (d && d.status === 'away') { e.mode = 'away'; e.hidden = true; }   // out scouting: not in the yard
+  if (d && (d.status === 'away' || onMission(d))) { e.mode = 'away'; e.hidden = true; }   // out scouting: not in the yard
   people.push(e); if (d) byName[d.name] = e;
 }
 
@@ -2759,7 +2770,7 @@ const crewOf = r => r.crew || [];
 const solo = r => crewOf(r).length === 1;
 const WALK = .55;
 // who can go out: alive, not injured, already moved in. Everyone takes turns; the ones who've been out least go first
-const fitToGo = d => !!d && d.status !== 'dead' && d.status !== 'injured' && d.status !== 'away' && (d.joined || 1) <= DATA.day;
+const fitToGo = d => !!d && d.status !== 'dead' && d.status !== 'injured' && d.status !== 'away' && !onMission(d) && (d.joined || 1) <= DATA.day;
 const CREW_N = { easy: 2, medium: 2, hard: 3, deadly: 4 };
 let nextCrew = null;
 function planCrew(r) {
@@ -3019,7 +3030,7 @@ const WORLD_TALK = [
 ];
 let talkN = 0;
 function campChatter() {
-  const here = DATA.survivors.filter(d => d.status !== 'dead' && d.status !== 'away' && (d.joined || 1) <= DATA.day && !active.some(a => crewOf(a.r).includes(d.name)));
+  const here = DATA.survivors.filter(d => d.status !== 'dead' && d.status !== 'away' && !onMission(d) && (d.joined || 1) <= DATA.day && !active.some(a => crewOf(a.r).includes(d.name)));
   const away = DATA.survivors.filter(d => d.status === 'away' && (d.joined || 1) <= DATA.day);
   const bc = DATA.broadcast && DATA.broadcast.day >= DATA.day - 1 ? DATA.broadcast : null;
   if (bc && talkN % 4 === 1) { talkN++; radio(`88.1 · ${bc.from}: ${bc.text}`); return; }
@@ -3437,11 +3448,13 @@ renderMissions();
 
 const keyOf = d => Object.keys(POIS).find(k => POIS[k] === d);
 function renderRuns() {
-  const rows = DATA.runs.map(r => {
-    const p = POIS[r.dest], cls = r.status === 'back' ? 'back' : r.status === 'queued' ? '' : 'active';
+  // out right now first, then places nobody has searched, then the ones already searched (latest first)
+  const rank = r => r.status !== 'queued' ? 0 : r.done_day ? 2 : 1;
+  const rows = DATA.runs.map((r, i) => [r, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || (rank(a[0]) === 2 ? b[0].done_day - a[0].done_day : a[1] - b[1])).map(([r]) => {
+    const idle = r.status === 'queued', p = POIS[r.dest], cls = r.status === 'back' ? 'back' : !idle ? 'active' : r.done_day ? 'searched' : 'fresh';
     const km = p.meters >= 1000 ? (p.meters / 1000).toFixed(1) + ' km' : p.meters + ' m';
-    return `<div class="run ${cls}"><span><button type="button" class="place" data-place="${r.dest}">${esc(p.name)}</button><span class="area">${p.area} · ${km} each way</span>${diffTag(r.difficulty)}</span><span class="status">${STATUS_LABEL[r.status]}</span>
-      ${crewOf(r).length ? `<span class="squad">${solo(r) ? 'Alone: ' : 'Squad: '}${crewOf(r).map(n => `<button type="button" class="namebtn" data-name="${esc(n)}">${esc(n)}</button>`).join(', ')}</span>` : ''}
+    return `<div class="run ${cls}"><span><button type="button" class="place" data-place="${r.dest}">${esc(p.name)}</button><span class="area">${p.area} · ${km} each way</span>${diffTag(r.difficulty)}</span><span class="status">${idle ? (r.done_day ? `Searched Day ${r.done_day}` : 'Never searched') : STATUS_LABEL[r.status]}</span>
+      ${!idle && crewOf(r).length ? `<span class="squad">${solo(r) ? 'Alone: ' : 'Squad: '}${crewOf(r).map(n => `<button type="button" class="namebtn" data-name="${esc(n)}">${esc(n)}</button>`).join(', ')}</span>` : ''}
       ${r.status === 'back' ? `<span class="loot">Brought back: ${esc(r.loot)}</span>` : ''}</div>`;
   });
   $('runs').innerHTML = rows.join('');
@@ -3450,7 +3463,9 @@ renderRuns();
 
 const v = DATA.vote, total = v.opts.reduce((s, o) => s + o[1], 0);
 $('voteQ').textContent = v.q;
-$('voteOpts').innerHTML = v.opts.map(([w, n, t]) => { const pct = total ? Math.round(n / total * 100) : 0; return `<div class="opt"><b>${esc(w)}</b><span class="val">${n} vote${n === 1 ? '' : 's'} · ${pct}%</span><span class="bar"><i style="width:${pct}%;background:var(--accent)"></i></span><span class="desc">${esc(t)}</span></div>`; }).join('');
+// votes are counted from the Instagram comments at night, so the options are listed without a running tally
+$('voteOpts').innerHTML = v.opts.map(([w, n, t, k, emo]) => `<div class="opt"><b>${emo ? esc(emo) + ' ' : ''}${esc(w)}</b><span class="desc">${esc(t)}</span></div>`).join('');
+if (!v.opts.length) { $('voteBtn').hidden = true; $('voteClose').textContent = ''; }
 $('voteHow').textContent = v.how;
 
 const nextM = (DATA.milestones.find(m => m[0] > DATA.followers) || [0])[0];
@@ -3461,6 +3476,7 @@ function whereOf(d) {
   if (d.status === 'dead') return `Buried in the churchyard`;
   const e = byName[d.name];
   if ((d.joined || 1) > DATA.day) return `Arrives on Day ${d.joined}`;
+  if (onMission(d)) return `Inside the ${MISSION_NOW.name.toLowerCase()} with the squad · ${missionLeft()} more night${missionLeft() === 1 ? '' : 's'}`;
   if (d.status === 'away') return `Out alone: ${d.away_note || 'scouting'}${d.away_until ? `. Back Day ${d.away_until}` : ''}`;
   const base = !e ? 'At the laundromat' : e.mode === 'run' ? `Out on the ${runOf(e) ? runOf(e).d.name : ''} run` : e.mode === 'watch' ? 'On watch in the lookout tower' : e.inside ? 'Barricaded inside for the night' : 'In the laundromat yard';
   return base + (d.status === 'injured' ? ` · injured${d.injury ? ` (${d.injury})` : ''}, resting${d.injured_until ? ` until Day ${d.injured_until}` : ''}` : '');
@@ -3473,7 +3489,7 @@ function cardOf(d) {
     : `${esc(d.role)} · arrived Day ${d.joined}`;
   return `<article class="card${dead ? ' fallen' : ''}${pickedName === d.name ? ' sel' : ''}" data-name="${esc(d.name)}" tabindex="0" aria-label="${esc(d.name)}: show on the map">
     <canvas width="${GW}" height="${GH}" data-portrait="${esc(d.name)}"${dead ? ' style="filter:grayscale(1) brightness(.7)"' : ''}></canvas><div>
-    <h3>${dead ? '\u2020 ' : ''}${esc(d.name)}${d.status === 'injured' ? '<span class="tag">Hurt</span>' : d.status === 'away' ? '<span class="tag">Away</span>' : ''}</h3>${d.ig ? `<div class="ig">@${esc(d.ig)}</div>` : '<div class="ig">Story character</div>'}<p>${esc(d.bio)}</p>
+    <h3>${dead ? '\u2020 ' : ''}${esc(d.name)}${d.status === 'injured' ? '<span class="tag">Hurt</span>' : d.status === 'away' ? '<span class="tag">Away</span>' : onMission(d) ? '<span class="tag">On mission</span>' : ''}</h3>${d.ig ? `<div class="ig">@${esc(d.ig)}</div>` : '<div class="ig">Story character</div>'}<p>${esc(d.bio)}</p>
     <div class="meta">${meta}</div>${(d.gear || []).length ? `<div class="meta gear">Carries: ${d.gear.map(g => esc(g.name)).join(' · ')}</div>` : ''}
     <div class="now"><b>Right now</b><span class="nowtxt">${esc(whereOf(d))}</span></div>${storyOf(d)}${shareBtn(d)}</div></article>`;
 }
@@ -3561,7 +3577,18 @@ $('scanBtn').addEventListener('click', () => { FX.scan = !FX.scan; $('scanBtn').
 (() => {
   const here = DATA.survivors.filter(d => d.status !== 'dead' && (d.joined || 1) <= DATA.day), lead = here.find(d => d.protected) || here[0];
   if (!lead) return;
-  radio(here.length > 1 ? `${lead.name}: Day ${DATA.day}. ${here.length} of us in the laundromat now. Barricades are holding.` : `${lead.name}: Day ${DATA.day}. Barricades are up on the laundromat. It’s just me.`);
+  const inCamp = here.filter(d => d.status !== 'away' && !onMission(d)).length;
+  radio(here.length > 1 ? `${lead.name}: Day ${DATA.day}. ${inCamp} of us in the laundromat now. Barricades are holding.` : `${lead.name}: Day ${DATA.day}. Barricades are up on the laundromat. It’s just me.`);
+  // catch a new visitor up: last night's horde, yesterday's vote, the squad that's out, and anything on the air
+  const hl = DATA.horde && DATA.horde.last, lg = (DATA.log || []).filter(e => e.day === DATA.day - 1).pop();
+  if (hl && hl.day === DATA.day - 1) radio(`${lead.name}: Last night ${hl.strength} of them hit the fence. It ${hl.outcome}.${hl.fence != null ? ` What's left of it: ${hl.fence}%.` : ''}`);
+  if (lg && lg.vote && lg.vote.winner) {
+    const o = (lg.outings || [])[0], hurt = o ? o.results.filter(r => r.outcome !== 'ok').map(r => `${r.name}: ${r.outcome === 'dead' ? 'didn’t make it' : r.detail || r.outcome}`) : [];
+    radio(`${lead.name}: You voted ${lg.vote.winner}.${o ? ` ${o.squad.join(', ')} went to the ${o.target.toLowerCase()}.` : ''}${hurt.length ? ' ' + hurt.join('. ') + '.' : o ? ' Everyone came through it.' : ''}`);
+  }
+  if (MISSION_NOW) radio(`${MISSION_NOW.squad[0]} (on the radio): Still inside the ${MISSION_NOW.name.toLowerCase()}. ${missionLeft()} more night${missionLeft() === 1 ? '' : 's'}.`);
+  const bc0 = DATA.broadcast && DATA.broadcast.day >= DATA.day - 1 ? DATA.broadcast : null;
+  if (bc0) radio(`88.1 · ${bc0.from}: ${bc0.text}`);
 })();
 for (let i = 0; i < 88; i++) spawnZombie(false, false);
 for (let i = 0; i < 600; i++) update();   // let the world settle before the first frame
@@ -4146,6 +4173,10 @@ window.oakEpisode = {
       else { st.className = 'state safe'; st.textContent = 'At camp'; what.innerHTML = `Getting ready. Next run: <b>${esc(POIS[nx.dest].name)}</b>${hurtTxt ? `. ${hurtTxt}` : ''}`; }
       $('fieldNote').textContent = foundTxt() ? 'Found today: ' + foundTxt() : '';
     }
+  }
+  if (MISSION_NOW) {
+    const n = (MISSION_NOW.days_done || 0) + 1, of = MISSION_NOW.days || 3, fm = $('fieldMission');
+    fm.hidden = false; fm.innerHTML = `<b>Mission · night ${Math.min(n, of)} of ${of}</b>${esc(MISSION_NOW.squad.join(', '))} are inside the ${esc(MISSION_NOW.name.toLowerCase())}. <span>Out by Day ${DATA.day + missionLeft()}.</span>`;
   }
   tick(); setInterval(tick, 500);
 })();
