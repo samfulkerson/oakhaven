@@ -4,9 +4,31 @@
  "followers": 51,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 8. No vote today: the squad is still inside Police station (4 more nights).",
-  "opts": [],
-  "how": "Comment your name and your job to move in."
+  "q": "Day 8. The squad is still inside the police station (2 more nights) and we're down to 25 rounds. Where does a small group go?",
+  "opts": [
+   [
+    "GAS",
+    0,
+    "Easy run. The generator still needs 10 L of gasoline.",
+    "gas",
+    "⛽"
+   ],
+   [
+    "GUN SHOP",
+    0,
+    "Never searched. Ammo, if anyone left any. More of them on Main.",
+    "gunshop",
+    "🔫"
+   ],
+   [
+    "MAPLE",
+    0,
+    "Never searched. Quiet houses on Maple Court. Food, maybe.",
+    "maple",
+    "🏘"
+   ]
+  ],
+  "how": "Comment GAS, GUN SHOP or MAPLE (or its emoji) on the Day 8 Reel. One vote per account, your last comment counts."
  },
  "survivors": [
   {
@@ -253,10 +275,12 @@
    "dest": "diner",
    "difficulty": "easy",
    "squad": [
-    "Sam"
+    "Tanny",
+    "Francis"
    ],
    "loot": "Canned peaches and a tin of coffee from the walk-in",
-   "place": "Rosie’s Diner"
+   "place": "Rosie’s Diner",
+   "done_day": 8
   },
   {
    "dest": "gas",
@@ -567,12 +591,66 @@
    "difficulty": "hard",
    "goal": "Cut the chains and find out who locked themselves in.",
    "crew": "Bolt cutters + 4 fighters",
-   "reward": "The basement armory",
+   "reward": "The basement armory, and whoever chained the doors",
    "name": "Police station",
    "area": "City",
-   "days": 5,
+   "days": 3,
    "days_done": 1,
-   "status": "active"
+   "status": "active",
+   "squad": [
+    "Carl",
+    "Quinn",
+    "Asa",
+    "Jack"
+   ],
+   "gain": {
+    "Ammo": 120
+   },
+   "gear": [
+    {
+     "kind": "armor",
+     "name": "Riot vest",
+     "icon": "vest"
+    },
+    {
+     "kind": "armor",
+     "name": "Riot vest",
+     "icon": "vest"
+    },
+    {
+     "kind": "armor",
+     "name": "Riot vest",
+     "icon": "vest"
+    },
+    {
+     "kind": "armor",
+     "name": "Riot vest",
+     "icon": "vest"
+    },
+    {
+     "kind": "weapon",
+     "name": "Riot shotgun",
+     "icon": "rifle"
+    },
+    {
+     "kind": "weapon",
+     "name": "Service pistol",
+     "icon": "pistol"
+    }
+   ],
+   "recruit": [
+    {
+     "name": "Officer Reyes",
+     "ig": "",
+     "role": "Guard",
+     "bio": "Reyes chained the station doors in week two and lived in the basement on evidence-room rations. Still wears the badge."
+    }
+   ],
+   "done_note": "The basement armory was untouched: 120 rounds, riot vests and two more guns. And behind the cage door, Officer Reyes, alive, chained in since week two. Reyes has a police radio. Reyes has heard the woman too.",
+   "broadcast": {
+    "from": "Officer Reyes's police radio",
+    "text": "...this is Fort Corran... if you can hear this, do not come to the fort... the gates are open... they're inside... do not come..."
+   }
   },
   {
    "poi": "terminal",
@@ -1032,7 +1110,7 @@
   ],
   [
    "Water",
-   2,
+   18,
    200,
    "rations"
   ],
@@ -1587,9 +1665,9 @@
  },
  "schedule": [],
  "broadcast": {
-  "day": 4,
-  "from": "Millbrook, 60 miles north",
-  "text": "...this is Millbrook... they came through the valley three nights ago... thousands of them... moving south... toward the bay..."
+  "day": 8,
+  "from": "Unknown, picked up by Seth",
+  "text": "...[static]... Fort Corran... the gates... [static]"
  },
  "features": [
   {
@@ -1645,6 +1723,27 @@
    "kind": "weapon",
    "title": "Boat hook and a camera",
    "text": "On the Pier 9 run for fence parts, Francis found a dockworker's bag with a working digital camera in it, and pulled a boat hook off the warehouse wall. Reach without a bullet. +2 horde defense, and the camp starts photographing every run."
+  },
+  {
+   "day": 8,
+   "who": "Carl",
+   "kind": "find",
+   "title": "The water cooler",
+   "text": "Behind the police station's front desk, a water cooler, still full. +10 water."
+  },
+  {
+   "day": 8,
+   "who": "Tanny",
+   "kind": "find",
+   "title": "The diner",
+   "text": "Tanny and Francis broke off from the police squad and searched the diner. A sealed case of water under the counter. +6 water."
+  },
+  {
+   "day": 8,
+   "who": "Francis",
+   "kind": "find",
+   "title": "The diner",
+   "text": "Francis and Tanny took the diner nobody had searched. A sealed case of water under the counter. +6 water."
   }
  ],
  "zombie_types": [
@@ -1739,14 +1838,14 @@
     "time": "13:30",
     "dest": "pharmacy",
     "crew": [
-     "Carl",
+     "Gary Finklestein",
      "Seth"
     ],
     "find": {
      "Medicine": 1
     },
     "event": "ok",
-    "line": "Carl: Found a dose of antibiotics in a cabinet. Heading home."
+    "line": "Gary Finklestein: Found a dose of antibiotics in a cabinet. Heading home."
    },
    {
     "time": "15:05",
