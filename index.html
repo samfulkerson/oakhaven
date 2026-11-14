@@ -3488,21 +3488,22 @@ function drawInterior(inView, dark) {
   f.save(); f.globalAlpha = a;
   for (let y = 0; y < R.h; y += 2) for (let X = 0; X < R.w; X += 2) P(f, R.x + X, R.y + y, ((X + y) >> 1) % 2 ? '#8c8a7c' : '#79776a', 2, 2);   // worn checker floor
   P(f, R.x, R.y, '#4a443c', R.w, 2); P(f, R.x, R.y, '#2a2622', 1, R.h); P(f, R.x + R.w - 1, R.y, '#2a2622', 1, R.h);                                 // back and side walls
-  for (let i = 0; i < 6; i++) { const X = R.x + 2 + i * 5; P(f, X, R.y + 2, '#dcdcd4', 4, 5); P(f, X, R.y + 2, '#a8a8a0', 4, 1); P(f, X + 1, R.y + 4, '#2a3a4a', 2, 2); P(f, X + 3, R.y + 2, i === 2 ? '#c8452e' : '#5a8a5a'); }   // a row of dead washers
-  P(f, R.x + 33, R.y + 2, '#6b4a2a', 6, 4); P(f, R.x + 33, R.y + 2, '#8a6a44', 6, 1); P(f, R.x + 34, R.y + 1, '#3f6a8a', 2, 2); P(f, R.x + 37, R.y + 1, '#c9a24a', 1, 2);          // supply shelf: water, cans
+  for (let i = 0; i < 4; i++) { const X = R.x + 15 + i * 5; P(f, X, R.y + 2, '#dcdcd4', 4, 5); P(f, X, R.y + 2, '#a8a8a0', 4, 1); P(f, X + 1, R.y + 4, '#2a3a4a', 2, 2); P(f, X + 3, R.y + 2, i === 2 ? '#c8452e' : '#5a8a5a'); }   // a row of dead washers
+  P(f, R.x + 35, R.y + 2, '#6b4a2a', 5, 4); P(f, R.x + 35, R.y + 2, '#8a6a44', 5, 1); P(f, R.x + 36, R.y + 1, '#3f6a8a', 2, 2); P(f, R.x + 38, R.y + 1, '#c9a24a', 1, 2);          // supply shelf: water, cans
   for (let i = 0; i < 3; i++) { const Y = R.y + 3 + i * 6; P(f, R.x + R.w - 6, Y, '#bcbcb4', 5, 5); P(f, R.x + R.w - 5, Y + 1, '#1a1a1a', 3, 3); P(f, R.x + R.w - 4, Y + 2, '#3a3a3a'); }   // dryers down the east wall
   P(f, R.x + 18, R.y + 12, '#8a6a44', 11, 3); P(f, R.x + 18, R.y + 15, '#5a4128', 1, 2); P(f, R.x + 28, R.y + 15, '#5a4128', 1, 2); P(f, R.x + 20, R.y + 12, '#e8e4da', 3, 2); P(f, R.x + 25, R.y + 12, '#ffcf6a'); P(f, R.x + 25, R.y + 13, '#5a5e62');   // folding table: a map, a lantern
-  P(f, R.x + 1, R.y + 9, '#7a3b33', 5, 2); P(f, R.x + 1, R.y + 9, '#d8d2c0', 1, 2); P(f, R.x + 1, R.y + 12, '#3f5466', 5, 2); P(f, R.x + 1, R.y + 12, '#d8d2c0', 1, 2);          // cots along the west wall
+  for (let k = 0; k < 2; k++) { const Y = R.y + 3 + k * 7; P(f, R.x + 1, Y, k ? '#3f5466' : '#7a3b33', 12, 5); P(f, R.x + 1, Y, '#d8d2c0', 2, 5); P(f, R.x + 1, Y + 5, 'rgba(0,0,0,.25)', 12, 1); }          // cots along the west wall
   P(f, R.x + 1, R.y + 17, '#5a4128', 7, 4); P(f, R.x + 2, R.y + 17, '#2e2e2e', 4, 2); P(f, R.x + 6, R.y + 16, '#9a9a9a', 1, 2); P(f, R.x + 3, R.y + 17, (frame >> 5) % 2 ? '#5aff6a' : '#2a7a3a');   // the radio desk
   P(f, HOME.door[0] - 2, R.y + R.h - 1, '#5a4a3a', 5, 1);                                                                                                // door mat
   f.restore();
   // the people indoors: they drift between a few spots, slowly
   const inn = people.filter(e => e.inside && e.mode === 'wander' && e.d).sort((p, q) => (p.iy || 0) - (q.iy || 0));
+  let hurtN = 0;
   for (const e of inn) {
-    if (!e.ix) { e.ix = R.x + 9 + rand() * 30; e.iy = R.y + 12 + rand() * 9; e.itx = e.ix; e.ity = e.iy; e.iw = rand() * 300 | 0; }
-    if (e.d.status === 'injured') { e.ix = R.x + 2; e.iy = R.y + 10 + (strHash(e.d.name) % 2) * 3; drawSprite(sprite(e.look, 'stand'), e.ix, e.iy, false, 1, a, true); continue; }   // resting on a cot
+    if (!e.ix) { e.ix = R.x + 17 + rand() * 22; e.iy = R.y + 12 + rand() * 9; e.itx = e.ix; e.ity = e.iy; e.iw = rand() * 300 | 0; }
+    if (e.d.status === 'injured') { e.ix = R.x + 8; e.iy = R.y + 10 + (hurtN++ % 2) * 7; drawSprite(sprite(e.look, 'stand'), e.ix, e.iy, false, 1, a, true); continue; }   // the whole figure stays on the cot, inside the wall   // resting on a cot
     let step = false;
-    if (e.iw > 0) e.iw--; else { const dx = e.itx - e.ix, dy = e.ity - e.iy, d = Math.hypot(dx, dy); if (d < .5) { e.itx = R.x + 9 + rand() * 30; e.ity = R.y + 12 + rand() * 9; e.iw = 120 + rand() * 500 | 0; } else { e.ix += dx / d * .08; e.iy += dy / d * .08; e.flip = dx < 0; step = true; } }
+    if (e.iw > 0) e.iw--; else { const dx = e.itx - e.ix, dy = e.ity - e.iy, d = Math.hypot(dx, dy); if (d < .5) { e.itx = R.x + 17 + rand() * 22; e.ity = R.y + 12 + rand() * 9; e.iw = 120 + rand() * 500 | 0; } else { e.ix += dx / d * .08; e.iy += dy / d * .08; e.flip = dx < 0; step = true; } }
     drawSprite(sprite(e.look, step ? ((frame >> 3) % 2 ? 'w0' : 'w1') : 'stand'), e.ix, e.iy, e.flip, 1, a);
   }
 }
