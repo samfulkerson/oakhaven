@@ -70,6 +70,8 @@ Files you'll use, all in this folder:
 | `github_patch.py` | safe edit snippet for GitHub's web editor |
 | `../photos/camera.py` | makes a generated image look like the camp's old digital camera, with date stamp |
 | `../photos/bible.json` | how every survivor and place looks in photos |
+| `bible_sync.py` | writes a starter `bible.json` profile (from the game sprite) for any survivor without one. The nightly workflow runs it for everyone who joins; entries marked `"auto": true` can be edited freely and are never overwritten |
+| `invite_card.py` | the invite card for a survivor. The nightly workflow makes one for everyone who joins, in `../cards/` |
 
 ---
 
