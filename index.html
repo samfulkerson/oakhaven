@@ -577,7 +577,7 @@ const DATA = {
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
 if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
-if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log'])
+if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log', 'weather'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
@@ -2579,6 +2579,7 @@ const ZOOMS = [1600, 1024, 640, 400, 300, 220, 160];   // how many world pixels 
 let zi = 3, camX = 0, camY = 0;
 let dragging = false, downAt = null, follow = false, selected = null;
 let ASPECT = .75;   // screen height / width; 4:3 normally, whatever the screen is in full screen
+let WEATHER_OVR = new URLSearchParams(location.search).get('weather');   // ?weather=rain previews a sky; an episode can set its own
 let CAM_W = 0, HOUR_OVR = null, EPI_BRUTE = null;   // set by the episode studio: a smooth zoom (world width), a scripted hour of the day, and a scripted brute only the script's blows can fell
 const vw = () => Math.min(CAM_W || ZOOMS[zi], W, H / ASPECT), vh = () => vw() * ASPECT;
 function clampCam() { camX = clamp(camX, 0, W - vw()); camY = clamp(camY, 0, H - vh()); }
@@ -2994,7 +2995,7 @@ function update() {
   const want = Math.round(70 + dark * 50 + surge);
   if (frame % 200 === 0 && alive < want) spawnZombie(dark > .5 && rand() < .07, false, surge && rand() < .6 ? 2 : 1);
   if (frame % 200 === 100 && alive > want + 6) { const off = zombies.find(z => !z.dying && z.state === 'roam' && !onScreen(z.x, z.y)); if (off) zombies.splice(zombies.indexOf(off), 1); }
-  for (const [sx, sy, rate] of SMOKE) if (frame % Math.max(2, 9 - rate * 2) === 0) parts.push({ x: sx + (rand() - .5) * 3, y: sy, vx: (rand() - .5) * .1 + .03, vy: -.2 - rate * .03, life: 50 + rate * 15, col: rate > 2 ? '#3a3836' : '#6d6a63' });
+  for (const [sx, sy, rate] of SMOKE) if (frame % Math.max(2, 9 - rate * 2) === 0) parts.push({ x: sx + (rand() - .5) * 3, y: sy, vx: (rand() - .5) * .1 + .03 + windX(), vy: -.2 - rate * .03, life: 50 + rate * 15, col: rate > 2 ? '#3a3836' : '#6d6a63' });
   for (let i = parts.length - 1; i >= 0; i--) { const p = parts[i]; p.x += p.vx; p.y += p.vy; if (--p.life <= 0) parts.splice(i, 1); }
   for (let i = shots.length - 1; i >= 0; i--) if (--shots[i].life <= 0) shots.splice(i, 1);
   for (let i = swings.length - 1; i >= 0; i--) if (--swings[i].life <= 0) swings.splice(i, 1);
@@ -3167,6 +3168,7 @@ function draw() {
   const VX = Math.floor(camX), VY = Math.floor(camY), VW = Math.min(W - VX, Math.ceil(vw()) + 2), VH = Math.min(H - VY, Math.ceil(vh()) + 2);
   const inView = (x, y, m = 20) => x > VX - m && x < VX + VW + m && y > VY - m && y < VY + VH + m;
   f.drawImage(BG, VX, VY, VW, VH, VX, VY, VW, VH);
+  drawWeatherGround(inView, VX, VY, VW, VH);
   // gate
   const gateOpen = people.some(m => !m.hidden && Math.abs(m.x - 424) < 8 && Math.abs(m.y - FENCE.y1) < 10);
   if (gateOpen) { P(f, GATE.x0, FENCE.y1 - 8, '#7a7e80', 1, 8); P(f, GATE.x1, FENCE.y1 - 8, '#7a7e80', 1, 8); }
@@ -3205,6 +3207,7 @@ function draw() {
       else drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1);
     } else drawSprite(sprite(a.look, poseOf(a)), a.x, a.y, a.flip);
   }
+  drawCrows(inView);
   for (const p of parts) if (inView(p.x, p.y)) { f.globalAlpha = Math.min(1, p.life / 40) * .7; P(f, Math.round(p.x), Math.round(p.y), p.col); }
   f.globalAlpha = 1;
 
@@ -3215,7 +3218,7 @@ function draw() {
     if (dark > .01) {
       const lights = collectLights(inView);
       l.globalCompositeOperation = 'source-over'; l.clearRect(VX, VY, VW, VH);
-      l.fillStyle = `rgba(6,8,22,${Math.min(.9, dark * (1.1 - .22 * moonLight()))})`; l.fillRect(VX, VY, VW, VH);
+      l.fillStyle = `rgba(6,8,22,${Math.min(.9, dark * (1.1 - .22 * moonLight())) * (1 - FLASH * .85)})`; l.fillRect(VX, VY, VW, VH);
       l.globalCompositeOperation = 'destination-out';
       for (const [x, y, r, a] of lights) {
         const g = l.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(0,0,0,${a})`); g.addColorStop(.6, `rgba(0,0,0,${a * .5})`); g.addColorStop(1, 'rgba(0,0,0,0)');
@@ -3234,6 +3237,7 @@ function draw() {
     vctx.fillStyle = '#0b0a08'; vctx.fillRect(0, 0, view.width, view.height);
     vctx.drawImage(F, camX, camY, vw(), vh(), 0, 0, view.width, view.height);
   }
+  drawWeatherSky(scale, h);
   // district names on the zoomed-out map
   if (vw() >= 400) {
     const dpr = view.width / view.getBoundingClientRect().width || 1;
@@ -3246,7 +3250,7 @@ function draw() {
     }
   }
   const moon = moonLight();
-  $('clock').textContent = `Day ${DATA.day} · ${clockText()} · ${dark > .5 ? 'Night' + (moon < .12 ? ' · new moon' : moon > .88 ? ' · full moon' : '') : dark > 0 ? 'Dusk' : 'Day'}`;
+  $('clock').textContent = `Day ${DATA.day} · ${clockText()} · ${dark > .5 ? 'Night' + (moon < .12 ? ' · new moon' : moon > .88 ? ' · full moon' : '') : dark > 0 ? 'Dusk' : 'Day'}${WX_NAME[wxNow()] ? ' · ' + WX_NAME[wxNow()] : ''}`;
   if (frame % 20 === 0) $('horde').textContent = zombies.filter(z => !z.dying).length;
 }
 
@@ -3329,6 +3333,142 @@ const MASK = (() => {
 // buildings that cast sun shadows: [x, y, w, h, height]
 const CASTERS = SOLIDS.filter(b => !(b[0] === FENCE.x0 && b[1] === FENCE.y0)).map(b => [...b, b[3] <= 7 ? 4 : b[0] === 236 && b[1] === 206 ? 64 : clamp(b[3] * .5, 6, 40)]);
 
+// ------------------------------------------------------------------ the world keeps up with the story: everything here is drawn from data.json
+// onto the finished map once, at load: the camp fills up as people join, the fence shows its repairs and its damage, the morning after
+// a horde the dead lie where they fell, and every place the camp has searched is marked.
+const AFTERMATH = [];        // where bodies lie (flies gather there by day)
+(function dressWorld() {
+  const x = BG.getContext('2d'), F0 = FENCE, living = DATA.survivors.filter(d => d.status !== 'dead' && (d.joined || 1) <= DATA.day).length;
+  const stockOf = k => (DATA.stock.find(r => r[0] === k) || [0, 0])[1];
+  // water barrels down the west side of the yard: one per 6 rations, blue when there's water in them
+  const wb = clamp(Math.ceil(stockOf('Water') / 6), 0, 6);
+  for (let i = 0; i < 6; i++) { const bx = 392 + (i % 2) * 4, by = 456 + (i >> 1) * 6, full = i < wb; P(x, bx, by + 4, 'rgba(0,0,0,.3)', 3, 1); P(x, bx, by, full ? '#3f6a8a' : '#4a4640', 3, 4); P(x, bx, by, full ? '#7ab0cc' : '#2e2b27', 3, 1); P(x, bx, by + 2, full ? '#2f5470' : '#3a3632', 3, 1); }
+  // a woodpile for the barrel fire
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3 - (r > 1 ? 1 : 0); c++) { P(x, 392 + c * 2 + (r > 1 ? 1 : 0), 482 - r * 2 + 4, '#6b4a2a', 2, 2); P(x, 392 + c * 2 + (r > 1 ? 1 : 0), 482 - r * 2 + 4, '#c9a268'); }
+  // bedrolls and a tent: the yard gets crowded as people move in (one bedroll for every two survivors)
+  const beds = [[452, 486], [455, 486], [452, 493], [455, 493], [452, 505], [455, 505], [392, 494], [392, 501], [392, 508], [431, 496], [434, 496]];
+  const cols = ['#7a3b33', '#3f5466', '#5a6a3a', '#6a5a7a', '#8a6a3c', '#4a6a6a'];
+  beds.slice(0, clamp(Math.floor(living / 2), 0, beds.length)).forEach(([bx, by], i) => { P(x, bx, by + 5, 'rgba(0,0,0,.25)', 2, 1); P(x, bx, by, cols[i % cols.length], 2, 5); P(x, bx, by, '#d8d2c0', 2, 1); });
+  if (living >= 12) { for (let r = 0; r < 4; r++) P(x, 453 - r, 480 + r, r % 2 ? '#5a6a3a' : '#4d5a34', 2 + r * 2, 1); P(x, 453, 482, '#1a1a16', 2, 2); }   // a pup tent by the east fence
+  // the roof garden grows: sprouts in its first days, then something to pick
+  const gd = (DATA.features || []).find(f => f.id === 'roof_garden');
+  if (gd) { const age = DATA.day - (gd.day || DATA.day); for (let i = 0; i < clamp(age - 2, 0, 7); i++) P(x, 421 + (i * 5) % 11, 459 + (i * 3) % 6, i % 3 ? '#c8452e' : '#e8c84a'); }
+  // the fence: car doors and scrap wired on as it's repaired (Barricades), bent links where it's taken damage
+  const bar = stockOf('Barricades'), paint = ['#7a3b33', '#3f5466', '#8a8e92', '#3a5a3a', '#c9c6b8', '#5a4128'];
+  const spots = [['t', 396], ['r', 462], ['b', 400], ['l', 470], ['t', 412], ['r', 496], ['b', 440], ['l', 498], ['t', 404], ['b', 448]];
+  spots.slice(0, clamp(Math.floor(bar / 12), 0, spots.length)).forEach(([side, v], i) => {
+    const c = paint[i % paint.length];
+    if (side === 't' || side === 'b') { const y = side === 't' ? F0.y0 - 1 : F0.y1 - 1; P(x, v, y, c, 6, 3); P(x, v + 1, y, 'rgba(255,255,255,.18)', 4, 1); P(x, v + 4, y + 1, '#1c1c1c'); }
+    else { const X = side === 'l' ? F0.x0 - 1 : F0.x1 - 1; P(x, X, v, c, 3, 6); P(x, X, v + 1, 'rgba(255,255,255,.18)', 1, 4); P(x, X + 1, v + 4, '#1c1c1c'); }
+  });
+  for (let i = 0; i < clamp(Math.ceil((100 - bar) / 14), 0, 6); i++) {
+    const side = i % 3, v = side === 2 ? 394 + hash2(i, 3, 41) * 20 | 0 : 460 + hash2(i, 5, 41) * 46 | 0;
+    if (side === 2) { P(x, v, F0.y1 - 1, '#3a3328', 4, 2); P(x, v, F0.y1 - 2, '#55585a'); P(x, v + 1, F0.y1 - 3, '#7a7e80'); P(x, v + 2, F0.y1 - 3, '#55585a'); P(x, v + 3, F0.y1 - 2, '#7a7e80'); }
+    else { const X = side ? F0.x1 : F0.x0, d = side ? -1 : 1; P(x, X - (side ? 1 : 0), v, '#3a3328', 2, 4); P(x, X + d, v, '#55585a'); P(x, X + d * 2, v + 1, '#7a7e80'); P(x, X + d * 2, v + 2, '#55585a'); P(x, X + d, v + 3, '#7a7e80'); }
+  }
+  // the morning after a horde: the dead lie along the fence. Most are dragged off by the second day, and a pile burns outside the gate
+  const hl = DATA.horde && DATA.horde.last, since = hl ? DATA.day - hl.day : 99;
+  if (since >= 1 && since <= 2) {
+    const n = since === 1 ? 18 : 6, skin = ['#7d9268', '#6f8a6a', '#8b9a74'], cloth = ['#4a4a44', '#53473c', '#3c4652', '#4d3b36'];
+    for (let i = 0; i < n; i++) {
+      const u = hash2(i, 11, 97), side = i % 3;
+      const bx = side === 0 ? F0.x1 + 3 + (hash2(i, 2, 5) * 5 | 0) : side === 1 ? (u < .5 ? 393 + u * 44 : 432 + (u - .5) * 44) | 0 : F0.x0 - 8 + (hash2(i, 2, 5) * 4 | 0);
+      const by = side === 1 ? F0.y1 + 3 + (hash2(i, 4, 5) * 4 | 0) : F0.y0 + 4 + (u * 54 | 0);
+      P(x, bx - 1, by + 1, 'rgba(70,12,10,.5)', 6, 1); P(x, bx, by, cloth[i % 4], 3, 2); P(x, bx + (i % 2 ? 3 : -1), by, skin[i % 3], 1, 2); P(x, bx + (i % 2 ? -1 : 3), by + 1, '#2f3540', 2, 1);
+      AFTERMATH.push([bx + 1, by]);
+    }
+    if (since === 2) { P(x, 398, 524, '#1c1a18', 9, 4); P(x, 400, 522, '#2a2622', 5, 2); P(x, 401, 523, '#5a3a22', 2, 1); SMOKE.push([402, 521, 3]); LIGHTS.push([402, 523, 12, .5, '255,110,40', 'fire']); }
+  }
+  // searched places: a spray-painted X and the day by the door
+  for (const r of DATA.runs) {
+    const p = POIS[r.dest]; if (!r.done_day || !p || !p.door) continue;
+    const X = p.door[0] + 4, Y = p.door[1] - 7, c = '#e07a2a';
+    P(x, X, Y, c); P(x, X + 2, Y, c); P(x, X + 1, Y + 1, c); P(x, X, Y + 2, c); P(x, X + 2, Y + 2, c);
+    text(x, String(r.done_day), X + 4, Y - 1, c);
+  }
+})();
+
+// ------------------------------------------------------------------ weather: one sky a day for everyone (data.json "weather", rolled by the nightly update)
+let EPI_WX_SET = false, FLASH = 0, flashWait = 200;
+const wxNow = () => WEATHER_OVR || (DATA.weather && DATA.weather.day === DATA.day ? DATA.weather.kind : 'clear');
+const WX_NAME = { wind: 'Windy', fog: 'Fog', rain: 'Rain', storm: 'Storm', snow: 'Snow' };
+const windX = () => { const w = wxNow(); return w === 'wind' ? .3 : w === 'storm' ? .4 : 0; };
+const fract = v => v - Math.floor(v);
+// puddles collect along the streets when it rains
+const PUDDLES = STREETS.flatMap((st, k) => Array.from({ length: Math.max(2, (st.a1 - st.a0) / 110 | 0) }, (_, i) => {
+  const a = st.a0 + 20 + hash2(k, i, 61) * (st.a1 - st.a0 - 40) | 0, o = (hash2(k, i, 62) - .5) * 14 | 0;
+  return st.axis === 'v' ? [st.c + o, a] : [a, st.c + o];
+}));
+// in the world, under the people: puddles, snow on the roofs, leaves on the wind
+function drawWeatherGround(inView, VX, VY, VW, VH) {
+  const w = wxNow();
+  if (w === 'rain' || w === 'storm') for (const [px, py] of PUDDLES) {
+    if (!inView(px, py)) continue;
+    P(f, px - 3, py, 'rgba(52,70,88,.55)', 7, 2); P(f, px - 2, py - 1, 'rgba(52,70,88,.55)', 5, 1); P(f, px - 2, py + 2, 'rgba(52,70,88,.55)', 4, 1);
+    if ((frame + px * 13) % 23 < 4) P(f, px - 2 + ((frame >> 2) + px) % 5, py + ((frame >> 3) + py) % 2, 'rgba(170,200,220,.7)');   // a drop lands
+  }
+  if (w === 'snow') {
+    for (const [bx, by, bw, bh] of CASTERS) if (inView(bx + bw / 2, by + bh / 2, Math.max(bw, bh))) { P(f, bx, by, 'rgba(236,242,248,.42)', bw, Math.max(2, bh * .6 | 0)); P(f, bx, by, 'rgba(246,250,252,.7)', bw, 1); }
+    for (let gy = VY - VY % 6; gy < VY + VH; gy += 6) for (let gx = VX - VX % 6; gx < VX + VW; gx += 6) { const n = hash2(gx, gy, 71); if (n > .45) P(f, gx + (n * 40 | 0) % 6, gy + (n * 70 | 0) % 6, 'rgba(236,242,248,.55)', n > .8 ? 3 : 2, n > .9 ? 2 : 1); }   // drifts on the ground
+  }
+  if (windX() && frame % 3 === 0 && parts.length < 400) parts.push({ x: VX - 2, y: VY + rand() * VH, vx: 1.3 + rand() * 1.2, vy: (rand() - .35) * .5, life: 240, col: ['#8a6a2a', '#a8742a', '#6b4a2a', '#c9a24a', '#8a8e80'][rand() * 5 | 0] });
+}
+// over everything, in screen pixels: rain, snow, fog, the flash of lightning
+function drawWeatherSky(scale, h) {
+  const w = wxNow(), c = vctx, Wc = view.width, Hc = view.height, t = performance.now() / 1000, px = Math.max(1, Math.round(Math.min(scale, 4) * .5));
+  if (w === 'storm') { if (--flashWait <= 0) { FLASH = 1; flashWait = 240 + rand() * 700 | 0; } else if (FLASH > .25 && FLASH < .4 && rand() < .25) FLASH = .8; }
+  FLASH = w === 'storm' ? FLASH * .84 : 0; if (FLASH < .02) FLASH = 0;
+  if (w === 'rain' || w === 'storm') {
+    c.fillStyle = `rgba(24,34,52,${w === 'storm' ? .24 : .15})`; c.fillRect(0, 0, Wc, Hc);
+    const n = Math.min(700, Wc * Hc / (w === 'storm' ? 1500 : 2400) | 0), slant = w === 'storm' ? .3 : .1;
+    c.fillStyle = 'rgba(186,206,226,.62)';
+    for (let i = 0; i < n; i++) { const y = fract(i * .754877 + t * (1.5 + (i % 7) * .09)), xx = fract(i * .618034 + y * slant); c.fillRect(xx * Wc | 0, y * Hc | 0, px, px * 7); }
+    c.fillStyle = 'rgba(205,222,238,.5)';
+    for (let i = 0; i < n / 5; i++) c.fillRect(rand() * Wc | 0, rand() * Hc | 0, px * 2, px);   // splashes
+  }
+  if (w === 'snow') {
+    c.fillStyle = 'rgba(214,224,236,.16)'; c.fillRect(0, 0, Wc, Hc);
+    c.fillStyle = 'rgba(244,248,252,.85)';
+    const n = Math.min(600, Wc * Hc / 2600 | 0);
+    for (let i = 0; i < n; i++) { const y = fract(i * .754877 + t * (.07 + (i % 5) * .018)), xx = fract(i * .618034 + Math.sin(t * .6 + i) * .012 + y * .05); c.fillRect(xx * Wc | 0, y * Hc | 0, px + (i % 3 === 0 ? px : 0), px + (i % 3 === 0 ? px : 0)); }
+  }
+  const fog = w === 'fog' ? (h < 10 ? 1 : h < 13 ? 1 - (h - 10) / 3 * .7 : h > 19 ? .7 : .3) : w === 'rain' || w === 'storm' ? .22 : 0;
+  if (fog > 0) {
+    c.fillStyle = `rgba(188,198,202,${.12 * fog})`; c.fillRect(0, 0, Wc, Hc);
+    for (let i = 0; i < 12; i++) {
+      const wx = (hash2(i, 1, 31) * 1900 + t * (5 + i % 4 * 2)) % 1900 - 150, wy = hash2(i, 2, 31) * H + Math.sin(t * .08 + i) * 30, r = (150 + hash2(i, 3, 31) * 130) * scale;
+      const sx = (wx - camX) * scale, sy = (wy - camY) * scale; if (sx < -r || sy < -r || sx > Wc + r || sy > Hc + r) continue;
+      const g = c.createRadialGradient(sx, sy, 0, sx, sy, r); g.addColorStop(0, `rgba(200,208,212,${.22 * fog})`); g.addColorStop(1, 'rgba(200,208,212,0)');
+      c.fillStyle = g; c.fillRect(sx - r, sy - r, r * 2, r * 2);
+    }
+  }
+  if (FLASH) { c.fillStyle = `rgba(222,232,255,${FLASH * .16})`; c.fillRect(0, 0, Wc, Hc); }
+}
+
+// ------------------------------------------------------------------ crows on the rooftops: they scatter when anyone comes close, and drift back
+const CROWS = Object.keys(POIS).filter(k => POIS[k].box && k !== 'laundromat').flatMap((k, i) => {
+  const [bx, by, bw] = POIS[k].box, n = 1 + (hash2(i, 9, 3) > .55 ? 1 : 0);
+  return Array.from({ length: n }, (_, j) => { const px = bx + 3 + hash2(i, j, 4) * (bw - 6) | 0; return { px, py: by + 2 + j, x: px, y: by + 2 + j, st: 0, vx: 0, vy: 0, t: 0 }; });
+}).filter(c => Math.hypot(c.px - HOME_CENTER[0], c.py - HOME_CENTER[1]) > 60);
+function drawCrows(inView) {
+  const check = frame % 6 === 0;
+  for (const c of CROWS) {
+    if (c.st === 0) {
+      if (!inView(c.px, c.py)) continue;
+      if (check && c.t-- <= 0) { let near = false; for (const e of people) if (!e.hidden && Math.abs(e.x - c.x) < 24 && Math.abs(e.y - c.y) < 26) { near = true; break; } if (!near) for (const z of zombies) if (!z.dying && Math.abs(z.x - c.x) < 18 && Math.abs(z.y - c.y) < 20) { near = true; break; }
+        if (near) { c.st = 1; c.t = 0; c.vx = (rand() < .5 ? -1 : 1) * (.8 + rand() * .7); c.vy = -(.5 + rand() * .5); } }
+      P(f, c.x, c.y - 1, '#121216', 2, 1); P(f, c.x + ((c.px + (frame >> 6)) % 2), c.y - 2, '#121216'); continue;
+    }
+    if (c.st === 1) { c.x += c.vx; c.y += c.vy + Math.sin(c.t * .2) * .2; if (++c.t > 240) { c.st = 2; c.x = c.px - c.vx * 90; c.y = c.py - 70; } }
+    else { const dx = c.px - c.x, dy = c.py - c.y, d = Math.hypot(dx, dy); if (d < 1.6) { c.st = 0; c.x = c.px; c.y = c.py; c.t = 50; continue; } c.x += dx / d * 1.1; c.y += dy / d * 1.1; }
+    if (!inView(c.x, c.y)) continue;
+    const up = (frame >> 2) % 2, X = Math.round(c.x), Y = Math.round(c.y);
+    P(f, X + 3, Y + 9, 'rgba(0,0,0,.18)', 3, 1); P(f, X, Y, '#121216', 2, 1); P(f, X - 1, Y + (up ? -1 : 1), '#121216'); P(f, X + 2, Y + (up ? -1 : 1), '#121216');
+  }
+  // flies over the dead, by day
+  if (AFTERMATH.length && darkness(hourNow()) < .4) for (let i = 0; i < AFTERMATH.length; i += 2) { const [ax, ay] = AFTERMATH[i]; if (inView(ax, ay)) P(f, ax + (hash2(i, frame >> 2, 1) * 5 | 0) - 2, ay - 1 - (hash2(i, frame >> 2, 2) * 4 | 0), '#0c0c0c'); }
+}
+
 function layer(name, w, h) {
   const L2 = FX.gl.layers;
   if (!L2[name] || L2[name].c.width !== w || L2[name].c.height !== h) { const [c, x] = mk(w, h); L2[name] = { c, x }; }
@@ -3339,7 +3479,7 @@ function renderFX(VX, VY, VW, VH, inView, dark, h, scale) {
   if (glc.width !== view.width || glc.height !== view.height) { glc.width = view.width; glc.height = view.height; }
   const sky0 = skyAt(h), lum = sky0[0] * .3 + sky0[1] * .59 + sky0[2] * .11;
   const night = clamp((.75 - lum) / .6, 0, 1), day = clamp((lum - .45) / .5, 0, 1);
-  const moonK = 1 + (moonLight() - .3) * .45 * night, sky = sky0.map(v => v * moonK);   // bright blue nights under a full moon, near-black ones under a new moon
+  const moonK = 1 + (moonLight() - .3) * .45 * night, sky = sky0.map(v => v * moonK + FLASH * 1.1);   // bright blue nights under a full moon, near-black ones under a new moon
   // albedo and water mask for the visible window
   const A = layer('alb', VW, VH); A.x.clearRect(0, 0, VW, VH); A.x.drawImage(F, VX, VY, VW, VH, 0, 0, VW, VH);
   const M = layer('mask', VW, VH); M.x.clearRect(0, 0, VW, VH); M.x.drawImage(MASK, VX, VY, VW, VH, 0, 0, VW, VH);
@@ -4037,6 +4177,7 @@ function epPost() {
 }
 // set the world up for an episode: its first hour, the dead settled, Sam home, camera on its first key
 function epPrepare(key) {
+  if (EPI_WX_SET || EPISODES[key].weather) { WEATHER_OVR = EPISODES[key].weather || null; EPI_WX_SET = true; }
   EPI.ep = EPISODES[key]; EPI.t = 0; EPI.fired = new Set(); EPI_BRUTE = null; follow = false; selected = null;
   HOUR_OVR = EPI.ep.hour[0][1]; active = []; runWait = 1e9;
   for (const e of people) { e.mode = 'wander'; e.inside = true; e.hidden = true; e.x = HOME.door[0]; e.y = HOME.door[1] + 1; }

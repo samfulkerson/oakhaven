@@ -522,6 +522,22 @@ def settle_day_runs(data, day, rng):
     return lines, total
 
 
+# ---------------------------------------------------------------- 3d2. the weather, rolled once a day so every visitor sees the same sky
+# data.json "weather": {"day": N, "kind": clear | wind | fog | rain | storm | snow}. Rain fills the barrels. Set "season": "winter" in
+# data.json to turn rain into snow; set "weather_next": "storm" to choose tomorrow's weather by hand (for a story beat).
+WEATHER = [("clear", 50), ("wind", 14), ("fog", 14), ("rain", 16), ("storm", 6)]
+def roll_weather(data, new_day, rng):
+    kind = data.pop("weather_next", None) or rng.choices([k for k, _ in WEATHER], [w for _, w in WEATHER])[0]
+    if data.get("season") == "winter" and kind in ("rain", "storm"):
+        kind = "snow"
+    data["weather"] = {"day": new_day, "kind": kind}
+    if kind in ("rain", "storm"):
+        amt = 4 if kind == "rain" else 6
+        data.setdefault("camp_bonus", []).append({"item": "Water", "amt": amt, "why": "rain in the barrels",
+            "note": ("It rained all night." if kind == "rain" else "A storm came through in the night.") + f" The barrels caught {amt} rations of water."})
+    return kind
+
+
 # ---------------------------------------------------------------- 3e. follower milestones that change the world
 # data.json milestones: [followers, text, effect, what it does]. Reaching one builds it for real.
 def milestone_unlocks(data, new_day):
@@ -1014,6 +1030,7 @@ def main():
     outings = todays_outing(data, keys.get(winner, winner), rng)
     new_day = day + 1
     trips = scout_trips(data, new_day, rng, outings)
+    roll_weather(data, new_day, random.Random(f"oakhaven-weather-{new_day}-{os.environ.get('OAKHAVEN_SEED', '')}"))
     ledger, stock_notes = keep_stockpile(data, outings, rng, new_day)
     horde = horde_night(data, rng, day)
     healed = heal(data, new_day)
