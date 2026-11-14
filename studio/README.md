@@ -326,15 +326,17 @@ git fetch && python3 studio/github_patch.py index.html work/patch.js
 ```
 1. Browser: open `https://github.com/samfulkerson/oakhaven/edit/main/index.html`.
 2. Run the contents of `work/patch.js` with the javascript tool. It must return `OK`. (`OLD MISMATCH`: GitHub has changed since your fetch; re-fetch, redo your edit on the new version, regenerate. Never commit after a mismatch.)
-3. Commit with JavaScript (one call):
+3. Commit with JavaScript, in **two separate calls** (the dialog needs a moment to appear; doing it in one call can fail with "Illegal invocation"):
    ```js
-   [...document.querySelectorAll('button')].find(x=>/Commit changes/.test(x.textContent)).click();
-   await new Promise(r=>setTimeout(r,1000));
+   [...document.querySelectorAll('button')].find(x=>/Commit changes/.test(x.textContent)).click(); 'clicked'
+   ```
+   ```js
    const i=document.querySelector('#commit-message-input');
    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(i,'Day 9 episode'); i.dispatchEvent(new Event('input',{bubbles:true}));
    const d=document.querySelector('dialog[open], [role=dialog]');
    [...d.querySelectorAll('button')].find(x=>/^\s*Commit changes\s*$/.test(x.textContent)).click(); 'ok'
    ```
+   Wait for the editor page to finish loading before running the patch (if the javascript tool says it can't interact with the page, take a screenshot and run it again). Paste the snippet file's exact contents; never retype it.
 4. Verify: `git fetch && git diff origin/main -- index.html` shows nothing (GitHub sometimes adds a final newline to data.json; that's fine). Then `git reset --hard origin/main`.
 
 Don't edit `data.json` around 05:00–05:30 UTC (the nightly run writes it).
