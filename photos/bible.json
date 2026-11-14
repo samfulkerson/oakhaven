@@ -9,6 +9,38 @@
  ],
  "stamp": "Added afterwards by camera.py, never by the image model: orange seven-segment date stamp in the lower right reading DAY nn and the time.",
  "characters": {
+  "Jack": {
+   "role": "Gunsmith",
+   "skin": "fair skin",
+   "hair": "under a black knit watch cap",
+   "outfit": "brown waxed hunting jacket, black knit watch cap, work gloves",
+   "signature": "a bolt-action hunting rifle (from the ranger station locker)",
+   "face": "from behind or over the shoulder, cap low"
+  },
+  "Carl": {
+   "role": "EMT",
+   "skin": "medium skin",
+   "hair": "short dark hair",
+   "outfit": "navy-blue EMT jacket with reflective stripes, no lettering, dark pants",
+   "signature": "a red medical bag; bolt cutters over his shoulder on the police station job",
+   "face": "from behind"
+  },
+  "Quinn": {
+   "role": "Sharpshooter",
+   "skin": "fair skin",
+   "hair": "under a black ball cap",
+   "outfit": "dark green jacket, black ball cap, olive pants",
+   "signature": "a scoped rifle slung on his back",
+   "face": "from behind, cap brim"
+  },
+  "Javier": {
+   "role": "Guard",
+   "skin": "medium-brown skin",
+   "hair": "under a gray beanie",
+   "outfit": "black puffer jacket, gray beanie, jeans",
+   "signature": "an aluminum baseball bat; a head bandage after his Day 7 concussion (until Day 10)",
+   "face": "from behind"
+  },
   "Sam": {
    "role": "Scavenger, camp leader",
    "skin": "medium-tan skin",
