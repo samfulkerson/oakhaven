@@ -159,8 +159,14 @@ def place_name(kind, item):
     return item.get("place") or item["dest"].replace("_", " ").title()
 
 
-def pick_squad(data, kind, item, rng):
-    living = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= data["day"]]
+def mission_crew(data):
+    """Names of the squad working inside an active multi-night mission: they're busy, so votes and small runs send other people."""
+    m = next((m for m in data.get("missions", []) if m.get("status") == "active"), None)
+    return set(m.get("squad", [])) if m else set()
+
+
+def pick_squad(data, kind, item, rng, busy=()):
+    living = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= data["day"] and s["name"] not in busy]
     by_name = {s["name"]: s for s in living}
     squad = [by_name[n] for n in item.get("squad", []) if n in by_name]
     want = SQUAD_SIZE.get(item.get("difficulty", "medium"), 2)
@@ -193,11 +199,11 @@ def gear_odds(s, die, inj):
     return die, inj
 
 
-def resolve_outing(data, kind, item, rng):
+def resolve_outing(data, kind, item, rng, busy=()):
     first = not item.get("done_day")
     diff = item.get("difficulty", "medium")
     place = place_name(kind, item)
-    squad = pick_squad(data, kind, item, rng)
+    squad = pick_squad(data, kind, item, rng, busy)
     if not squad:
         return {"target": place, "key": item.get("dest") or item.get("poi"), "first": first, "kind": kind, "difficulty": diff, "squad": [], "results": [], "note": "Nobody was fit to go."}
     roles = {role_of(s) for s in squad}
@@ -232,6 +238,7 @@ def resolve_outing(data, kind, item, rng):
     else:
         item["days"] = item.get("days") or MISSION_DAYS.get(diff, 3)
         item["days_done"] = item.get("days_done", 0) + 1
+        item["squad"] = [s["name"] for s in squad if s.get("status") not in ("dead", "injured")]   # the same crew goes back in tomorrow
         item["status"] = "done" if item["days_done"] >= item["days"] else "active"
     return {"target": place, "key": item.get("dest") or item.get("poi"), "first": first, "kind": kind, "difficulty": diff, "squad": [s["name"] for s in squad], "results": results,
             "mission_status": item.get("status") if kind == "mission" else None}
@@ -251,16 +258,19 @@ def todays_outing(data, winner, rng):
         active = next((m for m in data.get("missions", []) if m.get("status") == "active"), None)
         if active:
             targets.append(("mission", active))
-    if not targets:
         t = find_target(data, winner)
-        if t:
+        if t and (not active or t[0] == "run"):       # a mission in progress doesn't stop the vote: a small group goes out too
             targets.append(t)
     if not targets and data.get("runs"):
         runs = data["runs"]
         fresh = [r for r in runs if not r.get("done_day")]
         nxt = fresh[0] if fresh else min(runs, key=lambda r: r.get("done_day", 0))
         targets.append(("run", nxt))
-    return [resolve_outing(data, k, it, rng) for k, it in targets]
+    out = []
+    for k, it in targets:
+        busy = {n for o in out if o["kind"] == "mission" for n in o["squad"]}
+        out.append(resolve_outing(data, k, it, rng, busy))
+    return out
 
 
 # ---------------------------------------------------------------- 3. healing
@@ -444,7 +454,8 @@ DAY_TIMES = ["08:40", "10:15", "11:50", "13:30", "15:05"]
 
 
 def plan_day_runs(data, new_day, rng):
-    fit = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= new_day]
+    busy = mission_crew(data)
+    fit = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= new_day and s["name"] not in busy]
     # only places the story has already been: a voted mission (done_day) or survivors in a daily post (scouted)
     places = [r["dest"] for r in data.get("runs", []) if r.get("done_day") or r.get("scouted")]
     if not fit or not places:
@@ -730,6 +741,23 @@ def keep_stockpile(data, outings, rng, new_day):
                 data.setdefault("income", []).append({"item": item, "amt": amt, "why": m.get("name", o["target"])})
             if m.get("done_note"):
                 notes.append(m["done_note"])
+            crew = [r["name"] for r in o["results"] if r["outcome"] != "dead"]
+            weapons = [g for g in m.get("gear", []) if g.get("kind") == "weapon"]
+            given = hand_out(data, weapons, crew, present) if weapons else []
+            for g in (g for g in m.get("gear", []) if g.get("kind") != "weapon"):      # armor: the squad first, then whoever has none
+                bare = [s for s in present if s.get("status") != "dead" and not has_gear(s, g["kind"])]
+                if not bare:
+                    break
+                who = min(bare, key=lambda s: (0 if s["name"] in crew else 1, present.index(s)))
+                who.setdefault("gear", []).append(dict(g)); given.append((who["name"], g))
+            if given:
+                notes.append("Handed out: " + ", ".join(f"{n} gets the {g['name'].lower()}" for n, g in given) + ".")
+            for p in m.get("recruit", []):           # someone found alive inside comes home with the squad
+                if not any(s["name"] == p["name"] for s in data["survivors"]):
+                    data["survivors"].append({**p, "joined": new_day})
+                    notes.append(f"{p['name']} came home with the squad: {p.get('bio', '')}".strip())
+            if m.get("broadcast"):
+                data["broadcast"] = {"day": new_day, **m["broadcast"]}
             have = data.setdefault("zombie_types", ["walker"])
             for z in m.get("unlock_zombies", []):
                 if z not in have:
@@ -867,7 +895,7 @@ Only use facts from the recap above: don't invent what happened, who was there o
 Reply with only JSON like {{"q": "...", "desc": {{"WORD": "..."}}}}."""
 
 
-def vote_options(data, new_day, rng):
+def vote_options(data, new_day, rng, missions_ok=True):
     healthy = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= new_day]
     n = len(healthy)
     ok = lambda diff: n >= UNLOCK.get(diff, 2)
@@ -877,7 +905,7 @@ def vote_options(data, new_day, rng):
     pool = [("run", r) for r in (fresh[:5] or again[:5])]
     picks = rng.sample(pool, min(3, len(pool)))
     missions = [m for m in data.get("missions", []) if m.get("poi") and m.get("status") != "done" and n >= SQUAD_SIZE.get(m.get("difficulty", "hard"), 4)]
-    if missions and picks and rng.random() < .5:
+    if missions_ok and missions and picks and rng.random() < .5:
         picks[-1] = ("mission", rng.choice(missions))
     want = {}
     for d, g, l in power_wants(data):
@@ -921,15 +949,19 @@ def ballot_options(data, ballot):
 
 def next_vote(data, new_day, rng, recap, problems):
     active = next((m for m in data.get("missions", []) if m.get("status") == "active"), None)
-    if active:
-        left = active.get("days", 3) - active.get("days_done", 0)
-        return {"q": f"Day {new_day}. No vote today: the squad is still inside {place_name('mission', active)} ({left} more night{'s' if left != 1 else ''}).",
-                "opts": [], "how": "Comment your name and your job to move in."}
+    left = active.get("days", 3) - active.get("days_done", 0) if active else 0
+    inside = f"the squad is still inside {place_name('mission', active)} ({left} more night{'s' if left != 1 else ''})" if active else ""
     ballot = data.get("ballot") if (data.get("ballot") or {}).get("day") == new_day else None
-    opts = ballot_options(data, ballot) if ballot else vote_options(data, new_day, rng)
+    opts = ballot_options(data, ballot) if ballot else vote_options(data, new_day, rng, missions_ok=not active)
+    if active:
+        opts = [o for o in opts if o["kind"] == "run"]          # while the squad is inside, the vote sends a small group on a run
     if len(opts) < 2:
+        if active:
+            return {"q": f"Day {new_day}. No vote today: {inside}.", "opts": [], "how": "Comment your name and your job to move in."}
         return {"q": f"Day {new_day}. Nowhere left to vote on tonight.", "opts": [], "how": "Comment your name and your job to move in."}
-    q, desc = f"Day {new_day}. Where does the squad go next?", {}
+    q, desc = (f"Day {new_day}. While {inside}, where does a small group go?" if active else f"Day {new_day}. Where does the squad go next?"), {}
+    if active:
+        recap += f"\nThe main squad ({', '.join(active.get('squad', []))}) is still inside {place_name('mission', active)}: this vote sends a separate small group on a run."
     if os.environ.get("ANTHROPIC_API_KEY"):
         try:
             import anthropic
