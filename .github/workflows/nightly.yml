@@ -46,18 +46,21 @@ jobs:
           git add data.json report.md
           git diff --cached --quiet || git commit -m "Day $(python -c 'import json; print(json.load(open("data.json"))["day"])')"
           git push
-      - name: Invite cards for anyone new
+      - name: Invite card and camera-roll profile for anyone new
         continue-on-error: true            # a card that fails to draw never holds up the day
         run: |
           OUT=${{ inputs.dry_run && '/tmp/cards' || 'cards' }}
-          if python studio/invite_card.py need "$OUT"; then
+          CARDS=0; python studio/invite_card.py need "$OUT" && CARDS=1
+          BIBLE=0; python studio/bible_sync.py need && BIBLE=1
+          if [ "$CARDS$BIBLE" != 00 ]; then
             pip install playwright && python -m playwright install --with-deps chromium
             python -m http.server 8768 >/dev/null 2>&1 &
             sleep 2
-            python studio/invite_card.py missing "$OUT"
+            [ $CARDS = 1 ] && python studio/invite_card.py missing "$OUT"
+            [ $BIBLE = 1 ] && python studio/bible_sync.py missing
             if [ "$OUT" = cards ]; then
-              git add cards
-              git diff --cached --quiet || git commit -m "Invite cards, day $(python -c 'import json; print(json.load(open("data.json"))["day"])')"
+              git add cards photos/bible.json
+              git diff --cached --quiet || git commit -m "Invite cards and photo profiles, day $(python -c 'import json; print(json.load(open("data.json"))["day"])')"
               git push
             fi
           fi
