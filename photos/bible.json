@@ -136,6 +136,15 @@
    "outfit": "yellow hard hat, olive-green work jacket, dark olive pants, tool belt",
    "signature": "a claw hammer on his belt and a boat hook (a long wooden pole with a steel spike and a curled hook) in hand",
    "face": "hard hat brim shadow"
+  },
+  "Elder": {
+   "role": "Mechanic",
+   "skin": "dark brown skin",
+   "hair": "gray hair, under a faded blue cap",
+   "outfit": "brown work jacket, dark brown pants, a faded blue cap, work gloves",
+   "signature": "a big adjustable wrench",
+   "face": "cap brim low, often bent over an engine",
+   "auto": true
   }
  },
  "places": {
