@@ -26,6 +26,8 @@ REPORT_FILE = "report.md"
 IG_ACCOUNT_ID = os.environ.get("IG_USER_ID") or "17841422748770654"   # @surviveoakhaven's Instagram account ID, shown on the Meta app page
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-haiku-5-5")
 MAX_NEW_PER_DAY = 25          # pacing: at most this many new survivors move in per day; the rest wait in line
+BUDDY_PACK = {"Food": 6, "Water": 6}   # someone who joins "with @a_survivor" arrives with a full pack, and the two become buddies
+BUDDY_RISK = 0.7                        # buddies on the same outing cover each other: injury and death odds x0.7 for both
 PACK = {"Food": 2, "Water": 2}  # what each new survivor carries in; counted the next night, when they start eating
 ROLES = ["Scavenger", "Medic", "EMT", "Scout", "Sharpshooter", "Gunsmith", "Farmer", "Builder", "Radio Operator", "Mechanic", "Guard", "Cook", "Engineer"]
 ACTS_AS = {"EMT": "Medic"}     # roles that do another role's job in the game: an EMT patches people up like a medic
@@ -183,6 +185,17 @@ def pick_squad(data, kind, item, rng, busy=()):
                 squad.append(pro); rest.remove(pro); roles_have.add(need)
     while len(squad) < want and rest:
         squad.append(rest.pop(0))
+    # buddies go out together when they can: one swap, for the last person picked who isn't there for their role or their own buddy
+    fixed = set(item.get("squad", []))
+    for s in list(squad):
+        pal = next((r for r in rest if r["name"] in s.get("buddies", [])), None)
+        if not pal or any(m["name"] in s.get("buddies", []) for m in squad):
+            continue
+        out = next((m for m in reversed(squad) if m is not s and m["name"] not in fixed and not m.get("buddies")
+                    and not (item.get("difficulty") in ("hard", "deadly") and role_of(m) in ("Medic", "Sharpshooter"))), None)
+        if out:
+            squad[squad.index(out)] = pal; rest.remove(pal); rest.append(out)
+            break
     return squad
 
 
@@ -221,6 +234,8 @@ def resolve_outing(data, kind, item, rng, busy=()):
         s["outings"] = s.get("outings", 0) + 1
         roll = rng.random()
         die_s, inj_s = gear_odds(s, die, inj)
+        if any(m["name"] in s.get("buddies", []) for m in squad):      # a buddy on the same outing watches their back
+            die_s *= BUDDY_RISK; inj_s *= BUDDY_RISK
         if roll < die_s and not s.get("protected"):
             s.update(status="dead", died_day=data["day"], died_at=place, cause=rng.choice(DEATHS).format(p=place))
             results.append({"name": s["name"], "ig": s.get("ig", ""), "outcome": "dead", "detail": s["cause"]})
@@ -590,6 +605,8 @@ For each real join request return an object with:
   "name": the character name they asked for (short, cleaned up, nothing hateful)
   "role": the closest match from {roles}
   "bio": one short, fun third-person sentence built from what they said
+  "with": if they say they're joining with, or were invited by, someone already in the game ("with @name", "invited by @name",
+          "@name sent me"), that username without the @; otherwise ""
 Crude, sexual or joke answers still get in: pick the closest role and write a bio that roasts it with a wink
 (e.g. "Gary ran the adult shop on Main. The town pervert, and somehow still alive.") without getting graphic.
 Skip anything that is not a join request, and anything hateful, harassing or aimed at a real person.
@@ -652,12 +669,22 @@ def add_survivors(data, parsed):
         while name.lower() in taken:
             name, n = f"{base} {n}", n + 1
         s = {"name": name, "ig": ig, "role": p["role"], "bio": str(p.get("bio", ""))[:200], "joined": data["day"] + 1}
+        w = str(p.get("with") or "").lstrip("@").strip().lower()          # joined with a friend who's already here
+        host = next((h for h in data["survivors"] if w and h.get("status") != "dead" and w in (h.get("ig", "").lower(), h["name"].lower())), None)
+        if host:
+            s["buddies"] = [host["name"]]; s["invited_by"] = host["name"]
+            host.setdefault("buddies", []).append(name)
         data["survivors"].append(s)
         taken.add(name.lower()); living_ig.add(ig.lower()); added.append(s)
     data["waitlist"] = wait
+    solo, paired = [s for s in added if not s.get("invited_by")], [s for s in added if s.get("invited_by")]
     for item, amt in PACK.items():               # everyone who moves in brings a pack, so growth pays for part of itself
-        if added:
-            data.setdefault("camp_bonus", []).append({"item": item, "amt": amt * len(added), "why": "new survivors' packs"})
+        if solo:
+            data.setdefault("camp_bonus", []).append({"item": item, "amt": amt * len(solo), "why": "new survivors' packs"})
+    for i, (item, amt) in enumerate(BUDDY_PACK.items()):
+        if paired:
+            note = " ".join(f"{s['name']} moved in with {s['invited_by']}: buddies now, and a full pack between them." for s in paired) if i == 0 else None
+            data.setdefault("camp_bonus", []).append({"item": item, "amt": amt * len(paired), "why": "invited friends' full packs", **({"note": note} if note else {})})
     return added
 
 
