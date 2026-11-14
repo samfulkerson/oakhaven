@@ -93,7 +93,12 @@
      "name": "Splitting maul",
      "icon": "club"
     }
-   ]
+   ],
+   "look": {
+    "skin": "#f1c9a5",
+    "hair": "#d9b45a",
+    "bun": 1
+   }
   },
   {
    "name": "Gary Finklestein",
