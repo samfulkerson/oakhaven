@@ -201,6 +201,8 @@ dayN: {
 
 **Hour** (`hour`): the in-game hour, interpolated. It can go past 24 to reach the next morning (30 = 6 am). Darkness: full day 7–17.5, darkening to night by 20.5. **For readable night scenes use 19.0–19.4.** A dusk-to-night cut: two keys 1–1.5 s apart (e.g. 38 → 49.5).
 
+**Weather**: the live site uses the day's weather from `data.json` (`weather.kind`: clear, wind, fog, rain, storm, snow; rolled by the nightly update, and `"weather_next": "storm"` in data.json picks tomorrow's by hand). An episode can set its own with `weather: 'rain'` next to `title`. Preview any sky on the site with `?weather=storm` on the URL.
+
 **Who's on screen**: at t=0 everyone is inside the laundromat. In daylight they wander out into the yard on their own; at night they go in. Use events to put people where the story needs them, and `away` to hide anyone who is out on a mission.
 
 **Events**:
