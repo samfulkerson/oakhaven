@@ -2,12 +2,16 @@
 
   python3 studio/invite_card.py "Jaylozy" OUT.jpg            (1080x1350, Instagram 4:5; the local server must be running)
   python3 studio/invite_card.py all OUTDIR                   (one card for every living survivor with an Instagram handle)
+  python3 studio/invite_card.py missing OUTDIR               (only the survivors who have no card in OUTDIR yet)
+  python3 studio/invite_card.py need OUTDIR                  (no browser: exit 0 if anyone is missing a card, 1 if not)
+
+The nightly workflow runs "need" then "missing" on cards/, so everyone who joins gets a card the same night:
+https://surviveoakhaven.com/cards/invite-<name>.jpg, linked from their card in the survivor list.
 
 The sprite, gear and colours come straight from the live game, so the card always matches the map.
 The perk wording is in PERKS below: keep it in step with what nightly.py really gives.
 """
 import asyncio, base64, json, os, re, sys
-from playwright.async_api import async_playwright
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PERKS = [["DOUBLE RATIONS", "You both arrive with a full pack: +6 food and +6 water."],
@@ -32,7 +36,7 @@ JS = r"""
   for (let i = 0; i < 22; i++) { const an = i / 22 * Math.PI * 2 + R(i) * .22, rr = 300 + R(i + 50) * 230; zs.push([cx + Math.cos(an) * rr * 1.0, cy - 40 + Math.sin(an) * rr * .78, i]); }
   zs.sort((a, b) => a[1] - b[1]);
   for (const [zx, zy, i] of zs) {
-    if (zy > cy - 150 && zy < cy + 60 && Math.abs(zx - cx) < 150) continue;
+    if (zy > cy - 110 && zy < cy + 50 && Math.abs(zx - cx) < 105) continue;
     if (zy > cy + 40 && Math.abs(zx - cx) < 250) continue;                     // keep the name plate clear
     const runner = i % 7 === 3, brute = i === 1, sc = brute ? 16 : S, look = runner ? { zombie: 1, ztype: 'runner' } : brute ? { zombie: 1, ztype: 'brute' } : lookFor('inv' + NAME + i, null, true);
     const img = sprite(look, i % 2 ? 'w0' : 'w1'), flip = zx > cx, far = Math.hypot(zx - cx, zy - cy) / 560;
@@ -42,8 +46,8 @@ JS = r"""
     x.fillStyle = '#ff3b2a'; for (const o of ex) x.fillRect(Math.round(zx + o * sc), Math.round(ey), sc, sc);
     x.globalCompositeOperation = 'lighter'; const eg = x.createRadialGradient(zx, ey, 0, zx, ey, sc * 5); eg.addColorStop(0, 'rgba(255,50,30,.38)'); eg.addColorStop(1, 'rgba(255,50,30,0)'); x.fillStyle = eg; x.fillRect(zx - sc * 5, ey - sc * 5, sc * 10, sc * 10); x.globalCompositeOperation = 'source-over';
   }
-  // the survivor, twice the size of everything else
-  const HS = 20, hero = sprite(e ? e.look : lookFor(d.ig || d.name, d.role), 'stand');
+  // the survivor, half as big again as the dead around them
+  const HS = 13, hero = sprite(e ? e.look : lookFor(d.ig || d.name, d.role), 'stand');
   x.fillStyle = 'rgba(0,0,0,.45)'; x.beginPath(); x.ellipse(cx, cy + HS, HS * 5, HS * 1.2, 0, 0, 7); x.fill();
   put(hero, cx, cy, HS, false);
   // vignette, tape, type
@@ -79,8 +83,22 @@ JS = r"""
 """
 
 
+slug = lambda n: 'invite-' + re.sub(r'[^a-z0-9]+', '-', n.lower()).strip('-') + '.jpg'
+
+
+def missing(out):
+    d = json.load(open(os.path.join(HERE, '..', 'data.json'), encoding='utf-8'))
+    return [s['name'] for s in d['survivors'] if s.get('status') != 'dead' and s.get('ig') and s.get('joined', 1) <= d['day']
+            and not os.path.exists(os.path.join(out, slug(s['name'])))]
+
+
 async def main():
     who, out = sys.argv[1], sys.argv[2]
+    if who in ('need', 'missing'):
+        todo = missing(out); print('no card yet:', todo)
+        if who == 'need': sys.exit(0 if todo else 1)
+        if not todo: return
+    from playwright.async_api import async_playwright
     async with async_playwright() as p:
         kw = {'executable_path': '/usr/bin/google-chrome'} if os.path.exists('/usr/bin/google-chrome') else {}
         b = await p.chromium.launch(args=['--use-gl=swiftshader'], **kw)
@@ -91,13 +109,15 @@ async def main():
         await pg.add_style_tag(content=css); await pg.wait_for_timeout(2500)
         await pg.evaluate("Promise.all([document.fonts.load('700 60px \"Chakra Petch\"'), document.fonts.load('600 60px \"Chakra Petch\"')])")
         names = [who]
+        if who == 'missing':
+            os.makedirs(out, exist_ok=True); names = todo
         if who == 'all':
             os.makedirs(out, exist_ok=True)
             names = await pg.evaluate("DATA.survivors.filter(s => s.status !== 'dead' && s.ig && (s.joined || 1) <= DATA.day).map(s => s.name)")
         for n in names:
             url = await pg.evaluate(f"({JS})({json.dumps([n, PERKS])})")
             if not url: print('no survivor called', n); continue
-            path = os.path.join(out, 'invite-' + re.sub(r'[^a-z0-9]+', '-', n.lower()).strip('-') + '.jpg') if who == 'all' else out
+            path = os.path.join(out, slug(n)) if who in ('all', 'missing') else out
             open(path, 'wb').write(base64.b64decode(url.split(',')[1])); print('wrote', path)
         await b.close()
 
