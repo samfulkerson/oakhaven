@@ -3565,6 +3565,16 @@ function renderFX(VX, VY, VW, VH, inView, dark, h, scale) {
       const ht = a.brute ? 13 : 7, dx = dirx * len * ht, dy = diry * len * ht, n = Math.max(2, Math.ceil(Math.hypot(dx, dy)));
       for (let i = 0; i <= n; i++) lx.fillRect(Math.round(a.x - (a.brute ? 4 : 2) + dx * i / n), Math.round(a.y - 1 + dy * i / n), a.brute ? 8 : 4, 2);
     }
+    // ...but a shadow never swallows a figure: everyone standing in one is lifted back to daylight, cut to their own outline,
+    // so a survivor in a building's shadow (or in the long evening shadow of the one ahead) doesn't sink into the road
+    const SC = FX.sil || (FX.sil = Object.assign(document.createElement('canvas'), { width: GW * 2, height: GH * 2 })), sx = SC.getContext('2d'), lit = rgb(sky);
+    for (const a of [...people, ...zombies]) {
+      if (a.hidden || a.dying || !inView(a.x, a.y, 20)) continue;
+      const sc = a.brute ? 2 : 1, w = GW * sc, hh = GH * sc;
+      sx.globalCompositeOperation = 'source-over'; sx.clearRect(0, 0, SC.width, SC.height); sx.drawImage(sprite(a.look, poseOf(a)), 0, 0, w, hh);
+      sx.globalCompositeOperation = 'source-in'; sx.fillStyle = lit; sx.fillRect(0, 0, w, hh);
+      lx.save(); lx.translate(Math.round(a.x), Math.round(a.y)); if (a.flip) lx.scale(-1, 1); lx.drawImage(SC, 0, 0, w, hh, -Math.floor(w / 2), -hh + 1, w, hh); lx.restore();
+    }
   }
   const lights = collectLights(inView);
   lx.globalCompositeOperation = 'lighter';
