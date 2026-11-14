@@ -3078,6 +3078,7 @@ function drawEmissive(c, dark, inView, part) {
     for (let i = 0; i < 5; i++) P(c, BARREL[0] - 2 + (rand() * 5 | 0), BARREL[1] - 5 - (rand() * 4 | 0), rand() < .4 ? '#f6d36a' : '#e8742a');
     for (const [fx, fy, n] of [[744, 44, 14], [690, 704, 8]]) if (inView(fx, fy)) for (let i = 0; i < n; i++) P(c, fx - 6 + (rand() * 12 | 0), fy - (rand() * 7 | 0), rand() < .35 ? '#f6d36a' : rand() < .6 ? '#e8742a' : '#c83a1a');
     if (people.some(e => e.inside)) { P(c, 440, 488, '#ffcf6a'); P(c, 440, 487, '#fff2b8'); }
+    if (dark > .3) for (const [wx, wy] of clearedWins()) if (inView(wx, wy)) P(c, wx, wy, (frame + wx * 7) % 97 < 90 ? '#ffcf6a' : '#c98a3a');
     if (powered('substation')) { P(c, 407, 355, '#3fbf6a', 5, 9); P(c, 405, 357, '#3fbf6a', 9, 5); P(c, 408, 356, '#8fe8a8', 3, 1); for (const [lx, ly] of STREETLIGHTS) P(c, lx, ly, '#fff2b8', 2, 1); P(c, 733, 488, 'rgba(255,90,70,.6)', 18, 1); }
     if (powered('diner')) { P(c, 534, 366, '#e04a8a', 40, 7); textC(c, 'DINER', 554, 367, '#ffe8f2'); P(c, 514, 374, 'rgba(255,230,170,.45)', 30, 4); P(c, 564, 374, 'rgba(255,230,170,.45)', 30, 4); }
     if (powered('gas')) { P(c, 504, 486, '#1a1a1a', 17, 7); text(c, '3.99', 506, 488, '#ffb84a'); P(c, 569, 479, 'rgba(255,235,190,.5)', 9, 4); P(c, 590, 479, 'rgba(255,235,190,.5)', 9, 4); }
@@ -3104,7 +3105,7 @@ function drawEmissive(c, dark, inView, part) {
       const on = powered(g.id), j = on && frame % 4 < 2 ? 1 : 0;
       P(c, gx + 1, gy - 3 + j, on ? (frame % 30 < 20 ? '#5aff6a' : '#2a7a3a') : '#a83a2a');
     }
-    for (const s of shots) line(c, s.x1, s.y1, s.x2, s.y2, s.life > 3 ? '#fff1b0' : '#d8a640');
+    for (const s of shots) { line(c, s.x1, s.y1, s.x2, s.y2, s.life > 3 ? '#fff1b0' : '#d8a640'); if (s.life > 2) { const mx = Math.round(s.x1), my = Math.round(s.y1); P(c, mx - 2, my, '#fff6c8', 5, 1); P(c, mx, my - 2, '#fff6c8', 1, 5); P(c, mx - 1, my - 1, '#ffffff', 3, 3); } }   // the muzzle flash itself
     for (const s of swings) { const k = 7 - s.life; for (let i = 0; i < 4; i++) P(c, s.x + s.dir * (3 + i + (k >> 1)), s.y - 11 + i * 2 + (k >> 1), s.life > 3 ? '#eef2f4' : '#9aa0a4'); }   // a swing, no muzzle flash
   }
   if (part !== 'early') {
@@ -3122,6 +3123,11 @@ function drawEmissive(c, dark, inView, part) {
   }
 }
 
+// the moon runs on the horde's weekly clock: new moon on horde night (the darkest), full moon halfway between
+function moonLight() { const hd = DATA.horde && DATA.horde.day; return .5 - .5 * Math.cos(2 * Math.PI * (hd != null ? DATA.day - hd : DATA.day) / 7); }
+// places the camp has searched keep a candle in a window, so the map shows at a glance where the story has been
+let CLEARED_WINS = null;
+function clearedWins() { return CLEARED_WINS || (CLEARED_WINS = DATA.runs.filter(r => r.done_day && POIS[r.dest] && POIS[r.dest].win).map(r => POIS[r.dest].win[0])); }
 // every light source on (or near) the screen this frame: [x, y, radius, strength, colour, burns (fire, candle, gunfire)]
 function collectLights(inView) {
   const out = [[BARREL[0], BARREL[1] - 5, 26 + rand() * 3, 1, '255,140,40', true]];
@@ -3133,8 +3139,17 @@ function collectLights(inView) {
     if (kind === 'flicker' && (frame + x) % 173 < 10) continue;
     out.push([x, y, kind === 'fire' ? r + rand() * 4 : r, a, col, kind === 'fire']);
   }
-  for (const s of shots) out.push([s.x1, s.y1, 15, 1, '255,220,140', true]);
-  for (const e of people) if (!e.hidden && e.mode === 'run') out.push([e.x + (e.flip ? -6 : 6), e.y - 4, 13, .85, '235,235,215', false]);
+  // gunfire lights up everything around the shooter for an instant, and throws a little light where it lands
+  for (const s of shots) { out.push([s.x1, s.y1, 14 + s.life * 6, 1, '255,220,140', true]); out.push([s.x2, s.y2, 9, .6, '255,200,120', true]); }
+  // anyone out on a run carries a flashlight: a cone that points where they're walking and sways a little with each step
+  for (const e of people) if (!e.hidden && e.mode === 'run') {
+    const mx = e.x - (e.fpx ?? e.x), my = e.y - (e.fpy ?? e.y); e.fpx = e.x; e.fpy = e.y;
+    if (Math.hypot(mx, my) > .02) { const t = Math.atan2(my, mx), d = t - (e.fh ?? t); e.fh = (e.fh ?? t) + Math.atan2(Math.sin(d), Math.cos(d)) * .15; }
+    const an = (e.fh ?? (e.flip ? Math.PI : 0)) + Math.sin(frame * .05 + e.x * .3) * .12;
+    out.push([e.x, e.y - 5, 8, .6, '235,235,215', false]);
+    for (let i = 1; i <= 4; i++) out.push([e.x + Math.cos(an) * i * 11, e.y - 5 + Math.sin(an) * i * 11, 6 + i * 4, .95 - i * .15, '235,235,215', false]);
+  }
+  for (const [wx, wy] of clearedWins()) out.push([wx, wy, 9 + rand() * 1.5, .5, '255,190,110', false]);
   for (const a of active) if (a.r.status === 'searching' && frame % 40 < 30) { const w = a.d.win[(frame / 40 | 0) % 2]; out.push([w[0], w[1], 10, .9, '220,220,180', false]); }
   return out.filter(L => inView(L[0], L[1], L[2]));
 }
@@ -3200,7 +3215,7 @@ function draw() {
     if (dark > .01) {
       const lights = collectLights(inView);
       l.globalCompositeOperation = 'source-over'; l.clearRect(VX, VY, VW, VH);
-      l.fillStyle = `rgba(6,8,22,${dark})`; l.fillRect(VX, VY, VW, VH);
+      l.fillStyle = `rgba(6,8,22,${Math.min(.9, dark * (1.1 - .22 * moonLight()))})`; l.fillRect(VX, VY, VW, VH);
       l.globalCompositeOperation = 'destination-out';
       for (const [x, y, r, a] of lights) {
         const g = l.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(0,0,0,${a})`); g.addColorStop(.6, `rgba(0,0,0,${a * .5})`); g.addColorStop(1, 'rgba(0,0,0,0)');
@@ -3230,7 +3245,8 @@ function draw() {
       vctx.fillStyle = 'rgba(232,225,207,.85)'; vctx.textAlign = 'center'; vctx.fillText(name, sx, sy);
     }
   }
-  $('clock').textContent = `Day ${DATA.day} · ${clockText()} · ${dark > .5 ? 'Night' : dark > 0 ? 'Dusk' : 'Day'}`;
+  const moon = moonLight();
+  $('clock').textContent = `Day ${DATA.day} · ${clockText()} · ${dark > .5 ? 'Night' + (moon < .12 ? ' · new moon' : moon > .88 ? ' · full moon' : '') : dark > 0 ? 'Dusk' : 'Day'}`;
   if (frame % 20 === 0) $('horde').textContent = zombies.filter(z => !z.dying).length;
 }
 
@@ -3321,8 +3337,9 @@ function layer(name, w, h) {
 function renderFX(VX, VY, VW, VH, inView, dark, h, scale) {
   const { gl, glc, U, T } = FX.gl;
   if (glc.width !== view.width || glc.height !== view.height) { glc.width = view.width; glc.height = view.height; }
-  const sky = skyAt(h), lum = sky[0] * .3 + sky[1] * .59 + sky[2] * .11;
+  const sky0 = skyAt(h), lum = sky0[0] * .3 + sky0[1] * .59 + sky0[2] * .11;
   const night = clamp((.75 - lum) / .6, 0, 1), day = clamp((lum - .45) / .5, 0, 1);
+  const moonK = 1 + (moonLight() - .3) * .45 * night, sky = sky0.map(v => v * moonK);   // bright blue nights under a full moon, near-black ones under a new moon
   // albedo and water mask for the visible window
   const A = layer('alb', VW, VH); A.x.clearRect(0, 0, VW, VH); A.x.drawImage(F, VX, VY, VW, VH, 0, 0, VW, VH);
   const M = layer('mask', VW, VH); M.x.clearRect(0, 0, VW, VH); M.x.drawImage(MASK, VX, VY, VW, VH, 0, 0, VW, VH);
@@ -3341,6 +3358,13 @@ function renderFX(VX, VY, VW, VH, inView, dark, h, scale) {
     const vis = CASTERS.filter(b => inView(b[0] + b[2] / 2, b[1] + b[3] / 2, Math.max(b[2], b[3]) + 90));
     for (const [bx, by, bw, bh, ht] of vis) { const dx = dirx * len * ht, dy = diry * len * ht, n = Math.max(2, Math.ceil(Math.hypot(dx, dy) / 3)); for (let i = 1; i <= n; i++) lx.fillRect(Math.round(bx + dx * i / n), Math.round(by + dy * i / n), bw, bh); }
     lx.fillStyle = rgb(sky); for (const [bx, by, bw, bh] of vis) lx.fillRect(bx, by, bw, bh);
+    // people and the dead cast shadows too: short at noon, long across the street at dawn and dusk
+    lx.fillStyle = rgb(sky, 1 - .42 * str);
+    for (const a of [...people, ...zombies]) {
+      if (a.hidden || a.dying || !inView(a.x, a.y, 40)) continue;
+      const ht = a.brute ? 13 : 7, dx = dirx * len * ht, dy = diry * len * ht, n = Math.max(2, Math.ceil(Math.hypot(dx, dy)));
+      for (let i = 0; i <= n; i++) lx.fillRect(Math.round(a.x - (a.brute ? 4 : 2) + dx * i / n), Math.round(a.y - 1 + dy * i / n), a.brute ? 8 : 4, 2);
+    }
   }
   const lights = collectLights(inView);
   lx.globalCompositeOperation = 'lighter';
