@@ -229,6 +229,10 @@ def resolve_outing(data, kind, item, rng, busy=()):
         die *= 1.5; inj *= 1.4
     if data.get("hungry_days", 0) > 0:                        # weak from hunger
         inj *= 1.3
+    if has_feat(data, "antenna"):                             # milestone: other camps radio in what's on the road
+        inj *= 0.85
+    if has_feat(data, "workshop"):                            # milestone: every blade sharpened, every pack mended
+        die *= 0.8
     results = []
     for s in squad:
         s["outings"] = s.get("outings", 0) + 1
@@ -236,12 +240,14 @@ def resolve_outing(data, kind, item, rng, busy=()):
         die_s, inj_s = gear_odds(s, die, inj)
         if any(m["name"] in s.get("buddies", []) for m in squad):      # a buddy on the same outing watches their back
             die_s *= BUDDY_RISK; inj_s *= BUDDY_RISK
+        if has_feat(data, "training") and s["outings"] <= 3:           # milestone: rookies have been drilled before their first runs
+            inj_s *= 0.75
         if roll < die_s and not s.get("protected"):
             s.update(status="dead", died_day=data["day"], died_at=place, cause=rng.choice(DEATHS).format(p=place))
             results.append({"name": s["name"], "ig": s.get("ig", ""), "outcome": "dead", "detail": s["cause"]})
         elif roll < die_s + inj_s:       # an injury; a protected character (Sam) who rolls death gets the worst injury instead
             lo, hi = INJURY_DAYS.get(diff, (2, 4))
-            days = rng.randint(lo, hi) + (2 if roll < die_s else 0)
+            days = sick_days(data, rng.randint(lo, hi) + (2 if roll < die_s else 0))
             s.update(status="injured", injury=rng.choice(INJURIES), injured_until=data["day"] + days, injured_on=data["day"])
             results.append({"name": s["name"], "ig": s.get("ig", ""), "outcome": "injured", "detail": f"{s['injury']}, out until Day {s['injured_until']}"})
         else:
@@ -408,7 +414,7 @@ def horde_night(data, rng, day):
         rng.shuffle(pool)
         out = []
         for s in pool[:n]:
-            s.update(status="injured", injury=why, injured_until=day + 1 + rng.randint(2, 3))
+            s.update(status="injured", injury=why, injured_until=day + 1 + sick_days(data, rng.randint(2, 3)))
             out.append(f"{s['name']} ({why}, out until Day {s['injured_until']})")
         return out
     def spend(name, amt):
@@ -555,6 +561,15 @@ def roll_weather(data, new_day, rng):
 
 # ---------------------------------------------------------------- 3e. follower milestones that change the world
 # data.json milestones: [followers, text, effect, what it does]. Reaching one builds it for real.
+def has_feat(data, fid):
+    return any(f.get("id") == fid for f in data.get("features", []))
+
+
+def sick_days(data, days):
+    """How long an injury keeps someone out. The infirmary (75 followers) sends everyone back a day sooner."""
+    return max(1, days - 1) if has_feat(data, "infirmary") else days
+
+
 def milestone_unlocks(data, new_day):
     hit, out = data.setdefault("milestones_hit", []), []
     for m in data.get("milestones", []):
@@ -567,6 +582,17 @@ def milestone_unlocks(data, new_day):
             feats.append({"id": "lookout", "name": "Lookout tower", "day": new_day, "defense": 6})
         elif fx == "pumps":
             data.setdefault("income", []).append({"item": "Fuel", "amt": 2, "why": "gas station pumps"})
+        elif fx == "antenna":          # other camps call in what they see: fewer injuries on every outing
+            feats.append({"id": "antenna", "name": "Radio antenna", "day": new_day})
+        elif fx == "infirmary":        # injuries heal a day sooner (sick_days)
+            feats.append({"id": "infirmary", "name": "Infirmary", "day": new_day})
+        elif fx == "workshop":         # sharper blades, mended packs: fewer deaths on every outing
+            feats.append({"id": "workshop", "name": "Workbench", "day": new_day})
+        elif fx == "training":         # the veterans drill the newcomers: rookies get hurt less
+            feats.append({"id": "training", "name": "Morning drills", "day": new_day})
+        elif fx == "kitchen":          # one long table, nothing wasted
+            feats.append({"id": "kitchen", "name": "Camp kitchen", "day": new_day})
+            data.setdefault("income", []).append({"item": "Food", "amt": 3, "why": "the camp kitchen"})
         elif fx == "wall":
             feats.append({"id": "wall", "name": "Block wall", "day": new_day, "defense": 10})
             data.setdefault("camp_bonus", []).append({"item": "Barricades", "amt": 25, "why": "the block wall"})

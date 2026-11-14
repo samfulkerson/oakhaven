@@ -3150,7 +3150,7 @@ function collectLights(inView) {
     out.push([x, y, kind === 'fire' ? r + rand() * 4 : r, a, col, kind === 'fire']);
   }
   // gunfire lights up everything around the shooter for an instant, and throws a little light where it lands
-  for (const s of shots) { out.push([s.x1, s.y1, 14 + s.life * 6, 1, '255,220,140', true]); out.push([s.x2, s.y2, 9, .6, '255,200,120', true]); }
+  for (const s of shots) { out.push([s.x1, s.y1, 10 + s.life * 4, .85, '255,220,140', true]); out.push([s.x2, s.y2, 9, .6, '255,200,120', true]); }
   // anyone out on a run carries a flashlight: a cone that points where they're walking and sways a little with each step
   for (const e of people) if (!e.hidden && e.mode === 'run') {
     const mx = e.x - (e.fpx ?? e.x), my = e.y - (e.fpy ?? e.y); e.fpx = e.x; e.fpy = e.y;
@@ -3363,6 +3363,27 @@ const AFTERMATH = [];        // where bodies lie (flies gather there by day)
   // the roof garden grows: sprouts in its first days, then something to pick
   const gd = (DATA.features || []).find(f => f.id === 'roof_garden');
   if (gd) { const age = DATA.day - (gd.day || DATA.day); for (let i = 0; i < clamp(age - 2, 0, 7); i++) P(x, 421 + (i * 5) % 11, 459 + (i * 3) % 6, i % 3 ? '#c8452e' : '#e8c84a'); }
+  // what the follower milestones built (nightly.py milestone_unlocks)
+  const built = id => (DATA.features || []).some(f => f.id === id);
+  if (built('antenna')) {         // a radio mast on the roof's north-west corner, guyed, with a red lamp on top
+    P(x, 404, 446, '#8a8e92', 1, 15); P(x, 402, 449, '#8a8e92', 5, 1); P(x, 403, 452, '#8a8e92', 3, 1); P(x, 404, 445, '#e0392e');
+    for (let i = 1; i <= 5; i++) { P(x, 404 - i, 449 + i * 2, 'rgba(160,164,168,.55)'); P(x, 404 + i, 449 + i * 2, 'rgba(160,164,168,.55)'); }
+  }
+  if (built('infirmary')) {       // a red cross painted on the roof, so anyone flying over knows there's a medic here
+    P(x, 404, 468, '#e8e4da', 7, 7); P(x, 407, 469, '#c0392e', 1, 5); P(x, 405, 471, '#c0392e', 5, 1);
+  }
+  if (built('workshop')) {        // a workbench by the south fence: a vice, a red toolbox, a grinding wheel
+    P(x, 437, 511, 'rgba(0,0,0,.3)', 10, 1); P(x, 437, 507, '#8a6a44', 10, 2); P(x, 437, 507, '#a8865a', 10, 1); P(x, 437, 509, '#5a4128', 1, 2); P(x, 446, 509, '#5a4128', 1, 2);
+    P(x, 438, 505, '#6e7276', 2, 2); P(x, 441, 505, '#b03a2e', 3, 2); P(x, 441, 505, '#d85a4a', 3, 1); P(x, 445, 505, '#9aa0a4', 2, 2);
+  }
+  if (built('training')) {        // a straw practice dummy on a post, and a chalk line to stand behind
+    P(x, 444, 501, 'rgba(0,0,0,.3)', 3, 1); P(x, 444, 497, '#5a4128', 1, 4); P(x, 443, 494, '#c9a24a', 3, 3); P(x, 442, 495, '#c9a24a', 5, 1); P(x, 444, 493, '#d8b860'); P(x, 444, 495, '#c0392e');
+    for (let X = 438; X < 449; X += 2) P(x, X, 503, 'rgba(232,228,218,.5)');
+  }
+  if (built('kitchen')) {         // one long table west of the door, benches both sides, a pot and plates
+    P(x, 406, 500, 'rgba(0,0,0,.3)', 13, 1); P(x, 406, 495, '#5a4128', 13, 1); P(x, 406, 499, '#5a4128', 13, 1); P(x, 406, 496, '#8a6a44', 13, 3); P(x, 406, 496, '#a8865a', 13, 1);
+    P(x, 408, 497, '#e8e4da'); P(x, 411, 497, '#e8e4da'); P(x, 416, 497, '#e8e4da'); P(x, 413, 496, '#3a3a3a', 2, 2); P(x, 413, 496, '#6e7276', 2, 1);
+  }
   // the fence: car doors and scrap wired on as it's repaired (Barricades), bent links where it's taken damage
   const bar = stockOf('Barricades'), paint = ['#7a3b33', '#3f5466', '#8a8e92', '#3a5a3a', '#c9c6b8', '#5a4128'];
   const spots = [['t', 396], ['r', 462], ['b', 400], ['l', 470], ['t', 412], ['r', 496], ['b', 440], ['l', 498], ['t', 404], ['b', 448]];
@@ -3458,7 +3479,7 @@ function drawWeatherSky(scale, h) {
 // ------------------------------------------------------------------ crows on the rooftops: they scatter when anyone comes close, and drift back
 const CROWS = Object.keys(POIS).filter(k => POIS[k].box && k !== 'laundromat').flatMap((k, i) => {
   const [bx, by, bw] = POIS[k].box, n = 1 + (hash2(i, 9, 3) > .55 ? 1 : 0);
-  return Array.from({ length: n }, (_, j) => { const px = bx + 3 + hash2(i, j, 4) * (bw - 6) | 0; return { px, py: by + 2 + j, x: px, y: by + 2 + j, st: 0, vx: 0, vy: 0, t: 0 }; });
+  return Array.from({ length: n }, (_, j) => { const px = bx + 3 + hash2(i, j, 4) * (bw - 6) | 0; return { px, py: by + 5 + j * 3, x: px, y: by + 5 + j * 3, st: 0, vx: 0, vy: 0, t: 0 }; });
 }).filter(c => Math.hypot(c.px - HOME_CENTER[0], c.py - HOME_CENTER[1]) > 60);
 function drawCrows(inView) {
   const check = frame % 6 === 0;
@@ -3467,13 +3488,13 @@ function drawCrows(inView) {
       if (!inView(c.px, c.py)) continue;
       if (check && c.t-- <= 0) { let near = false; for (const e of people) if (!e.hidden && Math.abs(e.x - c.x) < 24 && Math.abs(e.y - c.y) < 26) { near = true; break; } if (!near) for (const z of zombies) if (!z.dying && Math.abs(z.x - c.x) < 18 && Math.abs(z.y - c.y) < 20) { near = true; break; }
         if (near) { c.st = 1; c.t = 0; c.vx = (rand() < .5 ? -1 : 1) * (.8 + rand() * .7); c.vy = -(.5 + rand() * .5); } }
-      P(f, c.x, c.y - 1, '#121216', 2, 1); P(f, c.x + ((c.px + (frame >> 6)) % 2), c.y - 2, '#121216'); continue;
+      { const hd = (c.px + (frame >> 6)) % 2 ? 2 : -1; P(f, c.x - 1, c.y + 1, 'rgba(0,0,0,.25)', 4, 1); P(f, c.x - 1, c.y - 1, '#0a0a0e', 3, 2); P(f, c.x, c.y - 1, '#2e2e3a'); P(f, c.x + (hd > 0 ? 1 : -1), c.y - 2, '#0a0a0e', 2, 1); P(f, c.x + hd + (hd > 0 ? 1 : -1), c.y - 2, '#8a8a7a'); } continue;
     }
     if (c.st === 1) { c.x += c.vx; c.y += c.vy + Math.sin(c.t * .2) * .2; if (++c.t > 240) { c.st = 2; c.x = c.px - c.vx * 90; c.y = c.py - 70; } }
     else { const dx = c.px - c.x, dy = c.py - c.y, d = Math.hypot(dx, dy); if (d < 1.6) { c.st = 0; c.x = c.px; c.y = c.py; c.t = 50; continue; } c.x += dx / d * 1.1; c.y += dy / d * 1.1; }
     if (!inView(c.x, c.y)) continue;
     const up = (frame >> 2) % 2, X = Math.round(c.x), Y = Math.round(c.y);
-    P(f, X + 3, Y + 9, 'rgba(0,0,0,.18)', 3, 1); P(f, X, Y, '#121216', 2, 1); P(f, X - 1, Y + (up ? -1 : 1), '#121216'); P(f, X + 2, Y + (up ? -1 : 1), '#121216');
+    const wy = up ? -1 : 1; P(f, X + 2, Y + 10, 'rgba(0,0,0,.22)', 5, 1); P(f, X - 1, Y, '#0a0a0e', 4, 1); P(f, X, Y, '#2e2e3a', 2, 1); P(f, X - 2, Y + wy, '#0a0a0e', 2, 1); P(f, X + 2, Y + wy, '#0a0a0e', 2, 1); P(f, X - 3, Y + wy * 2, '#1c1c24'); P(f, X + 4, Y + wy * 2, '#1c1c24'); P(f, X + (c.vx < 0 || (c.st === 2 && c.px < c.x) ? -2 : 3), Y, '#8a8a7a');
   }
   // flies over the dead, by day
   if (AFTERMATH.length && darkness(hourNow()) < .4) for (let i = 0; i < AFTERMATH.length; i += 2) { const [ax, ay] = AFTERMATH[i]; if (inView(ax, ay)) P(f, ax + (hash2(i, frame >> 2, 1) * 5 | 0) - 2, ay - 1 - (hash2(i, frame >> 2, 2) * 4 | 0), '#0c0c0c'); }

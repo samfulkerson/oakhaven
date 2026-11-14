@@ -1172,14 +1172,44 @@
    "+2 fuel every night, no run needed"
   ],
   [
+   60,
+   "Seth runs an antenna up the lookout tower, and Oakhaven starts answering the radio",
+   "antenna",
+   "Other camps call in what they see: 15% fewer injuries on every run"
+  ],
+  [
+   75,
+   "The back room becomes an infirmary: real beds and a locked medicine cabinet",
+   "infirmary",
+   "The injured are back on their feet a day sooner"
+  ],
+  [
    100,
    "Wall off the whole block",
    "wall",
    "Fence +25% now, +10 horde defense for good"
   ],
   [
+   125,
+   "A workbench in the yard: every blade sharpened, every pack mended",
+   "workshop",
+   "Better kit on every run: 20% fewer deaths"
+  ],
+  [
    150,
    "Restart the substation and turn the streetlights back on"
+  ],
+  [
+   175,
+   "The veterans start drilling the newcomers in the yard every morning",
+   "training",
+   "A survivor's first three runs: 25% fewer injuries"
+  ],
+  [
+   200,
+   "The first harvest supper: one long table, and everyone eats together",
+   "kitchen",
+   "A real kitchen wastes nothing: +3 food every night"
   ],
   [
    250,
