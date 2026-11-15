@@ -24,6 +24,7 @@ ROLE = {
     'Scavenger': [None, None, 'a worn brown backpack', 'from behind, the backpack filling the frame'],
     'Radio Operator': [None, None, 'a backpack radio with a tall whip antenna (red tip), a headset around the neck', 'angle and crop, the headset strap crossing the face'],
     'Scout': ['an olive hood, always up', 'olive-green field jacket', 'binoculars on a strap', 'hood up, from the side or behind'],
+    'Decoy': ['a white headband', 'bright red track jacket with white stripes down the sleeves', 'nothing in his hands: he needs them free to dance', 'mid-spin, or from behind, arms out in the street'],
     'Sharpshooter': [None, None, 'a scoped rifle slung on the back', 'from behind or over the shoulder'],
     'Guard': [None, None, 'a long wooden club', 'from behind, shoulders squared to the fence'],
     'Gunsmith': [None, None, 'a hammer in hand, a leather apron', 'head down over the work, or from behind'],
