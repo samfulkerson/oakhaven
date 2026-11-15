@@ -46,7 +46,9 @@ class Episode:
         h = self.hook_seg['at'] + (self.hook_seg['to'] - self.hook_seg['from']) + .45      # the line, then a breath before the title
         return math.ceil(h * 30) / 30
 
-    def write(self, title, dur, cam, hour, events, captions, hook=None, audio_offset=1.0):
+    def write(self, title, dur, cam, hour, events, captions, hook=None, audio_offset=1.0, weather='clear'):
+        """weather: one sky for the whole episode ('clear', 'rain', ...) or keys [[t, 'clear'], [40, 'rain'], [52, 'clear']].
+        Always set: without it the episode would use the night's real weather in every scene."""
         r = lambda v: json.dumps(v, ensure_ascii=False)
         rnd = lambda rows: [[round(x[0], 2)] + list(x[1:]) for x in rows]
         for name, rows in (('cam', cam), ('hour', hour)):
@@ -56,7 +58,8 @@ class Episode:
         h = ''
         if hook:
             h = f"\n    hook: {{ from: {hook['from']}, tag: {r(hook['tag'])}, lines: {r(hook['lines'])} }},"
-        js = (f"  {self.key}: {{\n    title: {r(title)}, dur: {round(dur, 1)}, audioOffset: {audio_offset},{h}\n"
+        w = r(weather) if isinstance(weather, str) else r([[round(k[0], 2), k[1]] for k in weather])
+        js = (f"  {self.key}: {{\n    title: {r(title)}, dur: {round(dur, 1)}, audioOffset: {audio_offset}, weather: {w},{h}\n"
               f"    cam: {r(rnd(cam))},\n    hour: {r(rnd(hour))},\n    events: {r(rnd(events))},\n"
               f"    captions: {r([[round(c[0], 2), round(c[1], 2)] + list(c[2:]) for c in captions])}\n  }},\n")
         jp = os.path.join(self.workdir, f'{self.key}.js'); open(jp, 'w').write(js)

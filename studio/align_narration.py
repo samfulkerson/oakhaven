@@ -17,7 +17,7 @@ PRON = {
     "gabe": "G EY B", "gabe's": "G EY B Z", "tanny": "T AE N IY", "tanny's": "T AE N IY Z", "jaylozy": "JH EY L OW Z IY", "jaylozy's": "JH EY L OW Z IY Z",
     "corran": "K AO R AH N", "seth's": "S EH TH S", "asa": "AA S AH", "asa's": "AA S AH Z", "jeremy's": "JH EH R AH M IY Z", "jack's": "JH AE K S",
     "squad's": "S K W AA D Z", "finklestein": "F IH NG K AH L S T IY N", "reyes": "R EY EH S", "millbrook": "M IH L B R UH K", "gunsmith": "G AH N S M IH TH",
-    "sam's": "S AE M Z", "carl's": "K AA R L Z", "quinn's": "K W IH N Z", "elder's": "EH L D ER Z", "victoria's": "V IH K T AO R IY AH Z",
+    "sam's": "S AE M Z", "litres": "L IY T ER Z", "carl's": "K AA R L Z", "quinn's": "K W IH N Z", "elder's": "EH L D ER Z", "victoria's": "V IH K T AO R IY AH Z",
 }
 
 
