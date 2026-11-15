@@ -3478,12 +3478,29 @@ function drawWeatherSky(scale, h) {
   if (w === 'storm') { if (--flashWait <= 0) { FLASH = 1; flashWait = 240 + rand() * 700 | 0; } else if (FLASH > .25 && FLASH < .4 && rand() < .25) FLASH = .8; }
   FLASH = w === 'storm' ? FLASH * .84 : 0; if (FLASH < .02) FLASH = 0;
   if (w === 'rain' || w === 'storm') {
-    c.fillStyle = `rgba(24,34,52,${w === 'storm' ? .24 : .15})`; c.fillRect(0, 0, Wc, Hc);
-    const n = Math.min(700, Wc * Hc / (w === 'storm' ? 1500 : 2400) | 0), slant = w === 'storm' ? .3 : .1;
-    c.fillStyle = 'rgba(186,206,226,.62)';
-    for (let i = 0; i < n; i++) { const y = fract(i * .754877 + t * (1.5 + (i % 7) * .09)), xx = fract(i * .618034 + y * slant); c.fillRect(xx * Wc | 0, y * Hc | 0, px, px * 7); }
-    c.fillStyle = 'rgba(205,222,238,.5)';
-    for (let i = 0; i < n / 5; i++) c.fillRect(rand() * Wc | 0, rand() * Hc | 0, px * 2, px);   // splashes
+    // rain: long thin streaks in two depths that fall a little less than their own length each frame, so they read as
+    // falling rain, not flicker; on the ground, small rings that open and fade where drops land
+    const storm = w === 'storm', k = Wc / 1080, slant = storm ? .26 : .1;
+    c.fillStyle = `rgba(24,34,52,${storm ? .22 : .13})`; c.fillRect(0, 0, Wc, Hc);
+    c.lineCap = 'round';
+    for (const [n, alpha, len, speed, width] of storm ? [[150, .2, 85, 1.2, 1.1], [110, .34, 120, 1.7, 1.8]] : [[110, .16, 72, 1.0, 1.0], [70, .28, 100, 1.45, 1.6]]) {
+      const L = len * k, count = Math.round(n * Wc * Hc / (1080 * 1920)), span = Hc + L;
+      c.strokeStyle = `rgba(206,220,238,${alpha})`; c.lineWidth = Math.max(1, width * k); c.beginPath();
+      for (let i = 0; i < count; i++) {
+        const u = hash2(i, n, 91), v = hash2(i, n, 92), sp = speed * (.85 + .3 * hash2(i, n, 93));
+        const y = fract(v + t * sp * Hc / span) * span, x = fract(u - y * slant / Wc) * (Wc + slant * span) - slant * L;
+        c.moveTo(x, y - L); c.lineTo(x + slant * L, y);
+      }
+      c.stroke();
+    }
+    c.strokeStyle = 'rgba(214,226,240,.5)'; c.lineWidth = Math.max(1, k);
+    const rings = Math.round((storm ? 26 : 16) * Wc * Hc / (1080 * 1920));
+    for (let i = 0; i < rings; i++) {
+      const ph = t * 1.6 + hash2(i, 5, 94), slot = Math.floor(ph), age = ph - slot;
+      const x = hash2(i, slot, 95) * Wc, y = hash2(i, slot, 96) * Hc, r = (2 + age * 9) * k;
+      c.globalAlpha = (1 - age) * .8; c.beginPath(); c.ellipse(x, y, r, r * .45, 0, 0, Math.PI * 2); c.stroke();
+    }
+    c.globalAlpha = 1;
   }
   if (w === 'snow') {
     c.fillStyle = 'rgba(214,224,236,.16)'; c.fillRect(0, 0, Wc, Hc);
@@ -3874,12 +3891,12 @@ const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
   day9: {
-    title: "Day 9 · Sam Went Alone", dur: 84.7, audioOffset: 1.0, weather: [[0, "clear"], [37.69, "rain"], [43.59, "clear"]],
-    hook: { from: 4.6, tag: "DAY 08 · 10:42", lines: ["19 OF US.", "ONE DAY", "NO WATER."] },
-    cam: [[0, 620, 925, 210], [3.3, 624, 914, 140], [4.4, 624, 911, 106], [7.4, 624, 912, 100], [7.9, "follow", "Sam", 110], [10.9, "follow", "Sam", 104], [11.3, 598, 956, 120], [18.2, 596, 956, 108], [18.7, 276, 468, 230], [24.67, 276, 470, 190], [24.87, 409, 404, 135], [27.48, 409, 402, 122], [34.58, 409, 400, 112], [34.73, "follow", "Javier", 140], [37.29, "follow", "Javier", 128], [37.69, 422, 486, 200], [43.29, 424, 488, 170], [43.59, "follow", "Shawn", 170], [47.27, "follow", "Shawn", 140], [48.62, "follow", "Shawn", 135], [48.77, "follow", "Ryan", 112], [50.45, 425, 500, 92], [53.4, 425, 500, 84], [53.8, 424, 490, 230], [60.67, 424, 490, 270], [60.87, 520, 380, 900], [63.25, 520, 360, 960], [63.45, 441, 466, 170], [65.09, 441, 462, 130], [67.77, 441, 460, 100], [68.0, 470, 560, 760], [69.6, 480, 540, 720], [69.75, 584, 470, 280], [73.51, 584, 470, 240], [73.66, 830, 1085, 380], [75.45, 830, 1085, 330], [75.6, 300, 135, 420], [78.6, 300, 135, 360], [78.75, 470, 560, 900], [84.7, 470, 600, 1100]],
-    hour: [[0, 10.7], [18.2, 11.4], [18.6, 12.4], [24.77, 13.1], [34.58, 15.0], [37.59, 15.4], [37.69, 19.15], [43.29, 19.35], [43.59, 31.1], [53.4, 31.6], [63.35, 32.2], [84.7, 33.5]],
-    events: [[0, "away", ["Carl", "Quinn", "Asa", "Jack", "Shawn", "Ryan"]], [0, "defend", [["Sam", 624, 912]]], [2.6, "brute", [650, 905], [628, 911]], [5.9, "hit", "Sam"], [6.6, "hit", "Sam"], [7.3, "hit", "Sam"], [7.9, "run", "Sam", "maple", {"near": 90, "hold": 4.8}], [23.7, "run", ["Elder", "Francis"], "pharmacy", {"near": 60, "hold": 1.0}], [29.58, "leave", ["Gary Finklestein", "Seth"], "pharmacy"], [32.05, "leave", ["Adam", "Sam"], "pharmacy"], [34.38, "stand", ["Javier"]], [37.69, "away", ["Elder", "Francis", "Gary Finklestein", "Seth", "Adam", "Sam"]], [37.74, "settle", ["Elder", "Francis", "Gary Finklestein", "Seth", "Adam", "Sam", "Javier"]], [43.29, "arrive", ["Shawn", "Ryan"], "market"], [50.15, "defend", [["Ryan", 424, 501], ["Shawn", 435, 503]]], [50.65, "spin", ["Ryan"], 1.6], [53.7, "stand", ["Shawn", "Ryan", "Javier", "Elder", "Francis", "Gary Finklestein", "Adam", "Sam"]], [63.35, "defend", [["Seth", 441, 457]]]],
-    captions: [[1.0, 3.3, "title", "OAKHAVEN", "DAY 9"], [7.8, 10.77, "capTop", "THE VOTE: MAPLE, 3–1"], [10.79, 12.15, "cap", "SAM · ALONE"], [12.12, 16.63, "capTop", "+7 FOOD · +5 ROUNDS"], [19.2, 23.23, "cap", "CARL · QUINN · ASA · JACK"], [23.47, 24.67, "capTop", "BACK TOMORROW"], [27.48, 29.9, "capTop", "ELDER + FRANCIS · NOTHING"], [30.08, 32.28, "capTop", "GARY + SETH · +1 MEDICINE"], [32.55, 34.68, "capTop", "ADAM + SAM · +2 FOOD"], [34.84, 37.09, "cap", "JAVIER · BACK ON HIS FEET"], [37.79, 39.75, "capTop", "DAY 8 · 19:20 · RAIN"], [39.95, 43.19, "capTop", "+4 WATER"], [47.27, 48.67, "cap", "SHAWN · GUARD"], [48.77, 53.6, "cap", "RYAN · DECOY"], [54.3, 57.17, "cap", "FOOD: 1 DAY · WATER: 0"], [57.26, 60.87, "cap", "13 ROUNDS · FENCE 65%"], [60.87, 63.25, "capTop", "HORDE: DAY 14"], [63.8, 64.99, "capTop", "55 → 60 FOLLOWERS"], [65.09, 67.87, "capTop", "RADIO ANTENNA"], [68.1, 78.8, "vote", "WHERE DO WE SEND THE RUNNERS?", ["GAS", "FREIGHT", "HANGAR"]], [78.9, 84.7, "card", "WHERE DO WE SEND THE RUNNERS?", "COMMENT YOUR NAME + JOB TO MOVE IN"]]
+    title: "Day 9 · Sam Went Alone", dur: 82.5, audioOffset: 1.0, weather: [[0, "clear"], [35.49, "rain"], [41.39, "fog"], [51.6, "clear"]],
+    hook: { from: 2.9, tag: "DAY 08 · 10:42", lines: ["19 OF US.", "ONE DAY", "NO WATER."] },
+    cam: [[0, 620, 925, 180], [2.4, 624, 914, 130], [3.0, 624, 911, 106], [4.9, 624, 912, 100], [5.3, "follow", "Sam", 110], [8.3, "follow", "Sam", 104], [8.7, 598, 956, 120], [16.0, 596, 956, 108], [16.5, 276, 468, 230], [22.47, 276, 470, 190], [22.67, 409, 404, 135], [25.28, 409, 402, 122], [32.38, 409, 400, 112], [32.53, "follow", "Javier", 140], [35.09, "follow", "Javier", 128], [35.49, 422, 486, 200], [41.09, 424, 488, 170], [41.39, "follow", "Shawn", 170], [45.07, "follow", "Shawn", 140], [46.42, "follow", "Shawn", 135], [46.57, "follow", "Ryan", 112], [48.25, 425, 500, 92], [51.2, 425, 500, 84], [51.6, 424, 490, 230], [58.47, 424, 490, 270], [58.67, 520, 380, 900], [61.05, 520, 360, 960], [61.25, 441, 466, 170], [62.89, 441, 462, 130], [65.57, 441, 460, 100], [65.8, 470, 560, 760], [67.4, 480, 540, 720], [67.55, 584, 470, 280], [71.31, 584, 470, 240], [71.46, 830, 1085, 380], [73.25, 830, 1085, 330], [73.4, 300, 135, 420], [76.4, 300, 135, 360], [76.55, 470, 560, 900], [82.5, 470, 600, 1100]],
+    hour: [[0, 10.7], [16.0, 11.4], [16.4, 12.4], [22.57, 13.1], [32.38, 15.0], [35.39, 15.4], [35.49, 19.15], [41.09, 19.35], [41.39, 31.1], [51.2, 31.6], [61.15, 32.2], [82.5, 33.5]],
+    events: [[0, "away", ["Carl", "Quinn", "Asa", "Jack", "Shawn", "Ryan"]], [0, "defend", [["Sam", 624, 912]]], [1.6, "brute", [640, 908], [628, 911]], [3.8, "hit", "Sam"], [4.3, "hit", "Sam"], [4.8, "hit", "Sam"], [5.3, "run", "Sam", "maple", {"near": 90, "hold": 4.8}], [21.5, "run", ["Elder", "Francis"], "pharmacy", {"near": 60, "hold": 1.0}], [27.38, "leave", ["Gary Finklestein", "Seth"], "pharmacy"], [29.85, "leave", ["Adam", "Sam"], "pharmacy"], [32.18, "stand", ["Javier"]], [35.49, "away", ["Elder", "Francis", "Gary Finklestein", "Seth", "Adam", "Sam"]], [35.54, "settle", ["Elder", "Francis", "Gary Finklestein", "Seth", "Adam", "Sam", "Javier"]], [41.09, "arrive", ["Shawn", "Ryan"], "market"], [47.95, "defend", [["Ryan", 424, 501], ["Shawn", 435, 503]]], [48.45, "spin", ["Ryan"], 1.6], [51.5, "stand", ["Shawn", "Ryan", "Javier", "Elder", "Francis", "Gary Finklestein", "Adam", "Sam"]], [61.15, "defend", [["Seth", 441, 457]]]],
+    captions: [[1.0, 3.3, "title", "OAKHAVEN", "DAY 9"], [5.6, 8.57, "capTop", "THE VOTE: MAPLE, 3–1"], [8.59, 9.95, "cap", "SAM · ALONE"], [9.92, 14.43, "capTop", "+7 FOOD · +5 ROUNDS"], [17.0, 21.03, "cap", "CARL · QUINN · ASA · JACK"], [21.27, 22.47, "capTop", "BACK TOMORROW"], [25.28, 27.7, "capTop", "ELDER + FRANCIS · NOTHING"], [27.88, 30.08, "capTop", "GARY + SETH · +1 MEDICINE"], [30.35, 32.48, "capTop", "ADAM + SAM · +2 FOOD"], [32.64, 34.89, "cap", "JAVIER · BACK ON HIS FEET"], [35.59, 37.55, "capTop", "DAY 8 · 19:20 · RAIN"], [37.75, 40.99, "capTop", "+4 WATER"], [45.07, 46.47, "cap", "SHAWN · GUARD"], [46.57, 51.4, "cap", "RYAN · DECOY"], [52.1, 54.97, "cap", "FOOD: 1 DAY · WATER: 0"], [55.06, 58.67, "cap", "13 ROUNDS · FENCE 65%"], [58.67, 61.05, "capTop", "HORDE: DAY 14"], [61.6, 62.79, "capTop", "55 → 60 FOLLOWERS"], [62.89, 65.67, "capTop", "RADIO ANTENNA"], [65.9, 76.6, "vote", "WHERE DO WE SEND THE RUNNERS?", ["GAS", "FREIGHT", "HANGAR"]], [76.7, 82.5, "card", "WHERE DO WE SEND THE RUNNERS?", "COMMENT YOUR NAME + JOB TO MOVE IN"]]
   },
   day8: {
     title: 'Day 8 · The Horde', dur: 124.6, audioOffset: 1.0,
