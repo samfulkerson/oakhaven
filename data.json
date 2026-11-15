@@ -43,6 +43,11 @@
    "gear": [
     {
      "kind": "weapon",
+     "name": "Pump shotgun",
+     "icon": "rifle"
+    },
+    {
+     "kind": "weapon",
      "name": "Machete",
      "icon": "blade"
     }
@@ -131,8 +136,8 @@
    "gear": [
     {
      "kind": "weapon",
-     "name": "Pump shotgun",
-     "icon": "rifle"
+     "name": "Red-handled fire axe",
+     "icon": "axe"
     }
    ],
    "outings": 2
@@ -1890,6 +1895,13 @@
    "kind": "find",
    "title": "The diner",
    "text": "Francis and Tanny took the diner nobody had searched. A sealed case of water under the counter. +6 water."
+  },
+  {
+   "day": 9,
+   "who": "Asa",
+   "kind": "weapon",
+   "title": "The trade",
+   "text": "Asa handed Sam his pump shotgun and took a red-handled fire axe. Asa doesn't go anywhere without an axe."
   }
  ],
  "zombie_types": [
