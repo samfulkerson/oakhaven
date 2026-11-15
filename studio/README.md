@@ -203,7 +203,7 @@ dayN: {
 
 **Hour** (`hour`): the in-game hour, interpolated. It can go past 24 to reach the next morning (30 = 6 am). Darkness: full day 7–17.5, darkening to night by 20.5. **For readable night scenes use 19.0–19.4.** A dusk-to-night cut: two keys 1–1.5 s apart (e.g. 38 → 49.5).
 
-**Weather**: the live site uses the day's weather from `data.json` (`weather.kind`: clear, wind, fog, rain, storm, snow; rolled by the nightly update, and `"weather_next": "storm"` in data.json picks tomorrow's by hand). An episode can set its own with `weather: 'rain'` next to `title`. Preview any sky on the site with `?weather=storm` on the URL.
+**Weather**: the live site uses the day's weather from `data.json` (`weather.kind`: clear, wind, fog, rain, storm, snow; rolled by the nightly update, and `"weather_next": "storm"` in data.json picks tomorrow's by hand). An episode can set its own with `weather: 'rain'` next to `title`, or change it over time with `weather: [[0, 'clear'], [40, 'rain'], [52, 'clear']]`. **Always set it**: without it the episode uses tonight's real weather for every scene, and rain over a whole Reel reads as static. Preview any sky on the site with `?weather=storm` on the URL.
 
 **Who's on screen**: at t=0 everyone is inside the laundromat. In daylight they wander out into the yard on their own; at night they go in. Use events to put people where the story needs them, and `away` to hide anyone who is out on a mission.
 
@@ -215,7 +215,8 @@ dayN: {
 | `[t, 'settle', [names]]` | back inside the laundromat |
 | `[t, 'stand', [names]]` | visible, wandering in the yard |
 | `[t, 'walk', 'Name', [[x,y], [x,y], ...]]` | appears at the first point and walks the path (about 12 world px per second) |
-| `[t, 'run', 'Name', 'poiKey']` | leaves the camp door and walks the real route to a place |
+| `[t, 'run', 'Name' or [names], 'poiKey', {near: px, hold: s}]` | walks the real route to a place, goes **in through the door** (fades into the dark doorway), stays inside `hold` seconds (default 6), then comes back out and walks home. `near: 120` starts them that many world px short of the door instead of at the camp (use it for far places; walking is about 33 px a second) |
+| `[t, 'leave', [names], 'poiKey']` | they step out of that place's door one at a time and walk home |
 | `[t, 'arrive', [names], 'poiKey']` | walks the last stretch home from a place, in a little column |
 | `[t, 'defend', [[name, x, y], [name, x, y, 1], ...]]` | stands them still at a spot; with `1` they have a gun. During a horde they fight whatever is in reach (guns at range, others through the fence). Also used to place someone alone (on the roof lookout: 441, 457) |
 | `[t, 'horde', n, [[x,y], [x,y]], 'e'|'s'|'w', seconds]` | n zombies come in a strung-out column along the route and spread along that side of the fence |
