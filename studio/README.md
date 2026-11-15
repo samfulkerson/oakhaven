@@ -26,6 +26,7 @@ The worst failures so far, all of which this guide prevents:
 - Scenes too dark to read. Night scenes use hour 19.0 to 19.4, not midnight.
 - Rendering from a different take than the one you aligned, or editing the script after generating the voice.
 - Real faces in the photo posts. Never: survivors are always seen from behind, hooded, masked or cropped.
+- Close-ups on the laundromat showing its interior (the roof cut away, cots and washers) when the story isn't about anyone inside. **Sam's rule: the roof stays on in a Reel unless the narration is about or highlighting someone inside.** The renderer keeps it on by default; turn the interior on only for that moment with `[t, 'interior', true]` and off again with `[t, 'interior', false]`.
 
 ---
 
@@ -223,6 +224,8 @@ dayN: {
 | `[t, 'clearHorde']` | everything left at the fence falls (use during a sunrise transition) |
 | `[t, 'brute', [x,y], [tx,ty]]` + `[t, 'hit', 'Name']` | a scripted dock brute walks to a spot; each `hit` is a sure blow from that survivor (needs 3) |
 | `[t, 'preview', true]` | the planned route of the next run, drawn on the map |
+| `[t, 'interior', true / false]` | show / hide the inside of the laundromat in close-ups. Off by default: only turn it on while the narration is about someone inside (Sam's rule) |
+| `[t, 'spin', ['Ryan'], seconds]` | Ryan (the Decoy) breaks into a spin on cue; he must be standing still (`defend`) |
 
 Zombies already in the world fight anyone walking outside the fence by themselves. Survivors kill them.
 
