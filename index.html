@@ -3510,11 +3510,11 @@ function drawWeatherSky(scale, h) {
   }
   const fog = w === 'fog' ? (h < 10 ? 1 : h < 13 ? 1 - (h - 10) / 3 * .7 : h > 19 ? .7 : .3) : w === 'rain' || w === 'storm' ? .22 : 0;
   if (fog > 0) {
-    c.fillStyle = `rgba(188,198,202,${.12 * fog})`; c.fillRect(0, 0, Wc, Hc);
+    c.fillStyle = `rgba(188,198,202,${(w === 'fog' ? .17 : .12) * fog})`; c.fillRect(0, 0, Wc, Hc);
     for (let i = 0; i < 12; i++) {
       const wx = (hash2(i, 1, 31) * 1900 + t * (5 + i % 4 * 2)) % 1900 - 150, wy = hash2(i, 2, 31) * H + Math.sin(t * .08 + i) * 30, r = (150 + hash2(i, 3, 31) * 130) * scale;
       const sx = (wx - camX) * scale, sy = (wy - camY) * scale; if (sx < -r || sy < -r || sx > Wc + r || sy > Hc + r) continue;
-      const g = c.createRadialGradient(sx, sy, 0, sx, sy, r); g.addColorStop(0, `rgba(200,208,212,${.22 * fog})`); g.addColorStop(1, 'rgba(200,208,212,0)');
+      const g = c.createRadialGradient(sx, sy, 0, sx, sy, r); g.addColorStop(0, `rgba(200,208,212,${(w === 'fog' ? .3 : .22) * fog})`); g.addColorStop(1, 'rgba(200,208,212,0)');
       c.fillStyle = g; c.fillRect(sx - r, sy - r, r * 2, r * 2);
     }
   }
