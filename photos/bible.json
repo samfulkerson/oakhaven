@@ -156,12 +156,12 @@
    "auto": true
   },
   "Ryan": {
-   "role": "Scout",
+   "role": "Decoy",
    "skin": "light tan skin",
-   "hair": "gray hair, under an olive hood, always up",
-   "outfit": "olive-green field jacket, olive cargo pants, an olive hood, always up, work gloves",
-   "signature": "binoculars on a strap",
-   "face": "hood up, from the side or behind",
+   "hair": "gray hair, under a white headband",
+   "outfit": "bright red track jacket with white stripes down the sleeves, olive cargo pants, a white headband, work gloves",
+   "signature": "nothing in his hands: he needs them free to dance",
+   "face": "mid-spin, or from behind, arms out in the street",
    "auto": true
   }
  },
