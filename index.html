@@ -3393,6 +3393,12 @@ const AFTERMATH = [];        // where bodies lie (flies gather there by day)
   if (gd) { const age = DATA.day - (gd.day || DATA.day); for (let i = 0; i < clamp(age - 2, 0, 7); i++) P(x, 421 + (i * 5) % 11, 459 + (i * 3) % 6, i % 3 ? '#c8452e' : '#e8c84a'); }
   // what the follower milestones built (nightly.py milestone_unlocks)
   const built = id => (DATA.features || []).some(f => f.id === id);
+  if (built('victoria_kitchen')) {   // Victoria's cooking corner in the south-west of the yard: a grill with a pot on it, a crate counter, and a sign with Gary's name crossed out
+    P(x, 397, 511, 'rgba(0,0,0,.3)', 6, 1); P(x, 397, 508, '#2e2b27', 6, 3); P(x, 398, 510, '#d8582a', 4, 1); P(x, 399, 510, '#ffb04a');           // the grill and its embers
+    P(x, 398, 506, '#3a3a3a', 4, 2); P(x, 398, 506, '#6e7276', 4, 1); P(x, 397, 507, '#3a3a3a'); P(x, 402, 507, '#3a3a3a');                   // the stock pot
+    P(x, 404, 511, 'rgba(0,0,0,.3)', 4, 1); P(x, 404, 508, '#8a6a44', 4, 3); P(x, 404, 508, '#a8865a', 4, 1); P(x, 405, 507, '#c9a24a'); P(x, 407, 507, '#e8e4da');   // crate counter: a can, a plate
+    P(x, 414, 504, '#5a4128', 1, 7); P(x, 412, 500, '#e8e4da', 6, 5); P(x, 413, 501, '#2a2622', 2, 3); P(x, 415, 503, '#2a2622'); P(x, 412, 500, '#c0392e'); P(x, 413, 501, '#c0392e'); P(x, 414, 502, '#c0392e'); P(x, 415, 503, '#c0392e'); P(x, 416, 504, '#c0392e'); P(x, 417, 500, '#c0392e');   // the sign: a G, struck through in red
+  }
   if (built('antenna')) {         // a radio mast on the roof's north-west corner, guyed, with a red lamp on top
     P(x, 404, 446, '#8a8e92', 1, 15); P(x, 402, 449, '#8a8e92', 5, 1); P(x, 403, 452, '#8a8e92', 3, 1); P(x, 404, 445, '#e0392e');
     for (let i = 1; i <= 5; i++) { P(x, 404 - i, 449 + i * 2, 'rgba(160,164,168,.55)'); P(x, 404 + i, 449 + i * 2, 'rgba(160,164,168,.55)'); }

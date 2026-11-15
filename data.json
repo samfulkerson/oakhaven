@@ -1833,6 +1833,11 @@
    "name": "Lookout tower",
    "day": 5,
    "defense": 6
+  },
+  {
+   "id": "victoria_kitchen",
+   "name": "Victoria's kitchen corner",
+   "day": 9
   }
  ],
  "income": [
@@ -1902,6 +1907,20 @@
    "kind": "weapon",
    "title": "The trade",
    "text": "Asa handed Sam his pump shotgun and took a red-handled fire axe. Asa doesn't go anywhere without an axe."
+  },
+  {
+   "day": 9,
+   "who": "Victoria",
+   "kind": "build",
+   "title": "Victoria's kitchen",
+   "text": "Victoria set up a cooking corner in the yard: a grill, a stock pot, a crate for a counter. And a sign with Gary's name crossed out."
+  },
+  {
+   "day": 9,
+   "who": "Gary Finklestein",
+   "kind": "funny",
+   "title": "Banned from the kitchen",
+   "text": "Victoria caught Gary taste-testing Sam's Maple Court soup straight from the pot. Three times. He's banned from her kitchen, and there's a sign."
   }
  ],
  "zombie_types": [
