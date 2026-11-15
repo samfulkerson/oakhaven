@@ -3241,7 +3241,7 @@ function draw() {
       if (a.dying) drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1, a.dying < CORPSE - 600 ? .9 : Math.max(0, (CORPSE - a.dying) / 667), true);   // bodies lie where they fell, then fade
       else drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1);
     } else {
-      const spin = a.look.role === 'Decoy' && !a.moving && (frame + (a.x | 0) * 7) % 540 < 40;   // now and then the decoy throws a quick spin, just to stay loose
+      const spin = (a.spinUntil > frame && !a.moving) || (a.look.role === 'Decoy' && !a.moving && runWait < 1e8 && (frame + (a.x | 0) * 7) % 540 < 40);   // now and then the decoy throws a quick spin, just to stay loose
       drawSprite(sprite(a.look, poseOf(a)), a.x, a.y, spin ? !!((frame >> 2) & 1) : a.flip, 1, a.fade == null ? 1 : a.fade);
     }
   }
@@ -3873,6 +3873,14 @@ requestAnimationFrame(loop);
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
+  day9: {
+    title: "Day 9 · Sam Went Alone", dur: 84.7, audioOffset: 1.0, weather: [[0, "clear"], [37.69, "rain"], [43.59, "clear"]],
+    hook: { from: 4.6, tag: "DAY 08 · 10:42", lines: ["19 OF US.", "ONE DAY", "NO WATER."] },
+    cam: [[0, 616, 920, 260], [3.3, 620, 916, 200], [4.4, 624, 914, 150], [7.4, 626, 916, 136], [7.8, 620, 930, 170], [10.79, 608, 950, 160], [12.12, 600, 955, 150], [18.2, 598, 958, 138], [18.7, 276, 468, 230], [24.67, 276, 470, 190], [24.87, 400, 404, 190], [27.48, 404, 400, 160], [34.58, 408, 398, 150], [34.73, "follow", "Javier", 140], [37.29, "follow", "Javier", 128], [37.69, 422, 486, 200], [43.29, 424, 488, 170], [43.59, "follow", "Shawn", 170], [47.27, "follow", "Shawn", 140], [48.62, "follow", "Shawn", 135], [48.77, "follow", "Ryan", 130], [50.45, 426, 500, 118], [53.4, 426, 500, 108], [53.8, 424, 490, 230], [60.67, 424, 490, 270], [60.87, 520, 380, 900], [63.25, 520, 360, 960], [63.45, 441, 466, 170], [65.09, 441, 462, 130], [67.77, 441, 460, 100], [68.0, 470, 560, 760], [69.6, 480, 540, 720], [69.75, 584, 470, 280], [73.51, 584, 470, 240], [73.66, 830, 1085, 380], [75.45, 830, 1085, 330], [75.6, 300, 135, 420], [78.6, 300, 135, 360], [78.75, 470, 560, 900], [84.7, 470, 600, 1100]],
+    hour: [[0, 10.7], [18.2, 11.4], [18.6, 12.4], [24.77, 13.1], [34.58, 15.0], [37.59, 15.4], [37.69, 19.15], [43.29, 19.35], [43.59, 31.1], [53.4, 31.6], [63.35, 32.2], [84.7, 33.5]],
+    events: [[0, "away", ["Carl", "Quinn", "Asa", "Jack", "Shawn", "Ryan"]], [0, "defend", [["Sam", 624, 912]]], [2.6, "brute", [650, 905], [628, 911]], [5.9, "hit", "Sam"], [6.6, "hit", "Sam"], [7.3, "hit", "Sam"], [7.9, "run", "Sam", "maple", {"near": 90, "hold": 4.8}], [23.7, "run", ["Elder", "Francis"], "pharmacy", {"near": 60, "hold": 1.0}], [29.58, "leave", ["Gary Finklestein", "Seth"], "pharmacy"], [32.05, "leave", ["Adam", "Sam"], "pharmacy"], [34.38, "stand", ["Javier"]], [37.69, "away", ["Elder", "Francis", "Gary Finklestein", "Seth", "Adam", "Sam"]], [37.74, "settle", ["Elder", "Francis", "Gary Finklestein", "Seth", "Adam", "Sam", "Javier"]], [43.29, "arrive", ["Shawn", "Ryan"], "market"], [50.15, "defend", [["Ryan", 424, 501], ["Shawn", 435, 503]]], [50.65, "spin", ["Ryan"], 1.6], [53.7, "stand", ["Shawn", "Ryan", "Javier", "Elder", "Francis", "Gary Finklestein", "Adam", "Sam"]], [63.35, "defend", [["Seth", 441, 457]]]],
+    captions: [[1.0, 3.3, "title", "OAKHAVEN", "DAY 9"], [7.8, 10.77, "capTop", "THE VOTE: MAPLE, 3–1"], [10.79, 12.15, "cap", "SAM · ALONE"], [12.12, 16.63, "capTop", "+7 FOOD · +5 ROUNDS"], [19.2, 23.23, "cap", "CARL · QUINN · ASA · JACK"], [23.47, 24.67, "capTop", "BACK TOMORROW"], [27.48, 29.9, "capTop", "ELDER + FRANCIS · NOTHING"], [30.08, 32.28, "capTop", "GARY + SETH · +1 MEDICINE"], [32.55, 34.68, "capTop", "ADAM + SAM · +2 FOOD"], [34.84, 37.09, "cap", "JAVIER · BACK ON HIS FEET"], [37.79, 39.75, "capTop", "DAY 8 · 19:20 · RAIN"], [39.95, 43.19, "capTop", "+4 WATER"], [47.27, 48.67, "cap", "SHAWN · GUARD"], [48.77, 53.6, "cap", "RYAN · DECOY"], [54.3, 57.17, "cap", "FOOD: 1 DAY · WATER: 0"], [57.26, 60.87, "cap", "13 ROUNDS · FENCE 65%"], [60.87, 63.25, "capTop", "HORDE: DAY 14"], [63.8, 64.99, "capTop", "55 → 60 FOLLOWERS"], [65.09, 67.87, "capTop", "RADIO ANTENNA"], [68.1, 78.8, "vote", "WHERE DO WE SEND THE RUNNERS?", ["GAS", "FREIGHT", "HANGAR"]], [78.9, 84.7, "card", "WHERE DO WE SEND THE RUNNERS?", "COMMENT YOUR NAME + JOB TO MOVE IN"]]
+  },
   day8: {
     title: 'Day 8 · The Horde', dur: 124.6, audioOffset: 1.0,
     hook: { from: 28.3, tag: 'DAY 07 · 21:52', lines: ['97 OF THEM.', 'ONE FENCE.', '13 OF US.'] },
@@ -4157,8 +4165,9 @@ function epEvent(ev) {
     [z.x, z.y] = ev[2]; z.street = null; z.free = [ev[3][0] - 1, ev[3][1] - 1, 2, 2]; z.tx = ev[3][0]; z.ty = ev[3][1]; z.spd = .09; EPI_BRUTE = z;
   }
   else if (ev[1] === 'defend') {                     // [t, 'defend', [[name, x, y, gun], ...]]: the camp lines the inside of the fence
-    for (const [n, x, y, gun] of ev[2]) { const e = byName[n]; if (!e) continue; e.mode = 'defend'; e.hidden = false; e.inside = false; e.x = x; e.y = y; e.gun = !!gun; e.cool = rand() * 40 | 0; e.flip = x < HOME_CENTER[0]; }
+    for (const [n, x, y, gun] of ev[2]) { const e = byName[n]; if (!e) continue; e.goIn = null; e.emerge = 0; e.fade = 1; e.mode = 'defend'; e.hidden = false; e.inside = false; e.x = x; e.y = y; e.gun = !!gun; e.cool = rand() * 40 | 0; e.flip = x < HOME_CENTER[0]; }
   }
+  else if (ev[1] === 'spin') who(ev[2]).forEach(e => { e.spinUntil = frame + (ev[3] || 1.2) * 60; });   // the decoy shows off, on cue
   else if (ev[1] === 'stand') who(ev[2]).forEach(e => { e.mode = 'wander'; e.gun = false; e.inside = false; e.hidden = false; e.wait = 60 + rand() * 200 | 0; [e.tx, e.ty] = yardSpot(); [e.x, e.y] = yardSpot(); })
   else if (ev[1] === 'horde') {                      // [t, 'horde', n, [[x, y] route...], side, seconds]: n of them come down the route and spread along one side of the fence
     const [, , n, route, side, secs] = ev;
