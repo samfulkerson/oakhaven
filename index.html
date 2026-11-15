@@ -2510,6 +2510,7 @@ function sprite(look, pose) {
   let jacket = look.jacket, hair = look.hair;
   if (role === 'Medic' || role === 'Chef') jacket = '#d8d3c8';
   if (role === 'Scout') { jacket = '#4d5a34'; hair = '#4d5a34'; }
+  if (role === 'Decoy') jacket = '#c0392e';                    // a red track jacket you can see from three blocks away
   const map = { h: hair, s: look.skin, e: '#1a1412', j: jacket, p: look.pants, b: '#231c16', g: look.skin, r: '#3a1010' };
   if (look.ztype && ZT[look.ztype]) { const t = ZT[look.ztype]; (pose === 'w1' && t.w ? t.g.map((row, y) => t.w[y] || row) : t.g).forEach((row, y) => [...row].forEach((ch, X) => { if (ch !== '.') g[y][X] = t.c[ch]; })); }
   else (look.zombie ? ZOMB : HUMAN).concat(LEGS[pose] || LEGS.stand).forEach((row, r) => [...row].forEach((ch, c) => { if (ch !== '.') set(c, r, map[ch]); }));
@@ -2534,6 +2535,7 @@ function sprite(look, pose) {
   if (role === 'Farmer') { for (let c = 0; c <= 6; c++) set(c, 0, '#c9a24a'); set(-1, 1, '#c9a24a'); set(7, 1, '#c9a24a'); }
   if (role === 'Builder') { for (let c = 1; c <= 5; c++) { set(c, 0, '#d9b02a'); set(c, 1, '#d9b02a'); } set(0, 1, '#b08a1a'); set(6, 1, '#b08a1a'); }
   if (role === 'Cook') { for (let c = 2; c <= 4; c++) { set(c, -1, '#e8e4da'); set(c, 0, '#e8e4da'); } set(1, 0, '#e8e4da'); set(5, 0, '#e8e4da'); }
+  if (role === 'Decoy') { for (let c = 1; c <= 5; c++) set(c, 1, '#f2efe8'); set(0, 5, '#f2efe8'); set(0, 6, '#f2efe8'); set(6, 5, '#f2efe8'); set(6, 6, '#f2efe8'); }   // white headband, white stripes down the sleeves
   if (role === 'Engineer') { set(2, 3, '#8fd0e0'); set(4, 3, '#8fd0e0'); set(1, 2, '#2a2a2a'); set(5, 2, '#2a2a2a'); }
   const out = g.map(r => r.slice());
   for (let y = 0; y < GH; y++) for (let X = 0; X < GW; X++) if (!g[y][X]) {
@@ -3015,6 +3017,7 @@ function update() {
 const ROLE_TALK = {
   Medic: ['Checked everyone for scratches. Keep your cuts clean or you lose the arm.', 'We need more gauze. Whoever hits the pharmacy next, grab all of it.'],
   Sharpshooter: ['On the roof. I count {z} of them between here and Main.', "Got a clear line down 3rd. Nothing's getting to the gate today."],
+  Decoy: ["Ran the dead around the block twice so the squad could load the truck. Then I did a windmill. For morale.", "Somebody has to be the loudest thing on the street. Might as well be somebody with moves."],
   Scout: ['Climbed the water tower. Smoke out past the fort again.', "Mapped a back way to the market through the alleys. Quieter than Main."],
   'Radio Operator': ['Scanning the bands. Static, static... 88.1 again. Same three words.', "Rigged a better antenna on the roof. If anyone's out there, we'll hear them."],
   Mechanic: ["That yard generator isn't dead, it's starving. Bring me fuel.", 'Found a van on 4th with half a tank. Battery is shot.'],
@@ -3215,7 +3218,10 @@ function draw() {
       const img = sprite(a.look, a.dying ? 'stand' : poseOf(a));
       if (a.dying) drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1, a.dying < CORPSE - 600 ? .9 : Math.max(0, (CORPSE - a.dying) / 667), true);   // bodies lie where they fell, then fade
       else drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1);
-    } else drawSprite(sprite(a.look, poseOf(a)), a.x, a.y, a.flip);
+    } else {
+      const spin = a.look.role === 'Decoy' && !a.moving && (frame + (a.x | 0) * 7) % 540 < 40;   // now and then the decoy throws a quick spin, just to stay loose
+      drawSprite(sprite(a.look, poseOf(a)), a.x, a.y, spin ? !!((frame >> 2) & 1) : a.flip);
+    }
   }
   drawCrows(inView);
   for (const p of parts) if (inView(p.x, p.y)) { f.globalAlpha = Math.min(1, p.life / 40) * .7; P(f, Math.round(p.x), Math.round(p.y), p.col); }

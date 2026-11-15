@@ -225,6 +225,8 @@ def resolve_outing(data, kind, item, rng, busy=()):
         die *= 0.5; inj *= 0.85
     if "Sharpshooter" in roles:
         die *= 0.75; inj *= 0.75
+    if "Decoy" in roles:                                      # he breaks in the middle of the street; every zombie on the block turns to watch
+        inj *= 0.8
     if stock_get(data, "Ammo") < AMMO_USE.get(diff, 6):       # out of bullets: everything is more dangerous
         die *= 1.5; inj *= 1.4
     if data.get("hungry_days", 0) > 0:                        # weak from hunger
@@ -238,6 +240,8 @@ def resolve_outing(data, kind, item, rng, busy=()):
         s["outings"] = s.get("outings", 0) + 1
         roll = rng.random()
         die_s, inj_s = gear_odds(s, die, inj)
+        if role_of(s) == "Decoy":                             # ...which is great for everyone except the decoy
+            inj_s *= 1.25
         if any(m["name"] in s.get("buddies", []) for m in squad):      # a buddy on the same outing watches their back
             die_s *= BUDDY_RISK; inj_s *= BUDDY_RISK
         if has_feat(data, "training") and s["outings"] <= 3:           # milestone: rookies have been drilled before their first runs
