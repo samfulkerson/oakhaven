@@ -279,6 +279,22 @@
    "signature": "a worn brown backpack",
    "face": "from behind, the backpack filling the frame",
    "auto": true
+  },
+  "Scott Tedeschi": {
+   "role": "Zombie (the twins, patient zero)",
+   "skin": "gray-green mottled dead skin",
+   "hair": "short dark hair, neatly cut once",
+   "outfit": "a blue sport coat over a white dress shirt and a dark red tie, gray slacks, dress shoes, all filthy and torn; identical to his twin's",
+   "signature": "the first of the twins; the two always appear together in matching blue sport coats; eyes glow a dim red in the dark",
+   "face": "never visible: seen from behind, in silhouette, or too far away and in shadow"
+  },
+  "Ryan Tedeschi": {
+   "role": "Zombie (the twins, patient zero)",
+   "skin": "gray-green mottled dead skin",
+   "hair": "short dark hair, neatly cut once",
+   "outfit": "a blue sport coat over a white dress shirt and a dark red tie, gray slacks, dress shoes, all filthy and torn; identical to his twin's",
+   "signature": "Scott's identical twin, always a step behind him; the two always appear together in matching blue sport coats; eyes glow a dim red in the dark",
+   "face": "never visible: seen from behind, in silhouette, or too far away and in shadow"
   }
  },
  "places": {
