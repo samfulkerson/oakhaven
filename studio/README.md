@@ -424,3 +424,14 @@ Deliver the photos + caption to Sam (send + `~/Downloads/oakhaven-camera-roll/<i
 - [ ] No faces in any photo.
 - [ ] Files sent and copied to Sam's Downloads.
 - [ ] index.html / data.json / scrapbook pushed via the web editor and verified; local clone reset; `work/` deleted; server stopped (`pkill -f "http.server 8768"`).
+
+## The twins (Scott and Ryan Tedeschi)
+
+Two real followers (@scotty_knows_nu2028 and @oldpatriot2) play Oakhaven's first dead: Incident #0001 on Mill Street, the call Officer Reyes took on Night 1. They're in `data.json` `twins` and appear on the site from `reveal_day` (Day 11).
+- **Names:** always "the twins", "Scott Tedeschi" or "Ryan Tedeschi". Never just "Ryan": Ryan @justryan_16 is the Decoy, a survivor.
+- **Look:** matching blue sport coats, white shirts, dark red ties. Zombies, so faces are never shown in photos either.
+- **They lead every horde from the front.** The horde still comes on its normal weekly night; the twins don't change its size, the odds, or who gets hurt. The report says "the twins at the front" on horde nights.
+- **They can't die.** Not on runs, not at the fence. When a horde breaks, they pull back into the dark. Only a mission Sam chooses to put on the ballot can end them.
+- **In Reels:** they stay off camera unless the script brings them in: `[t, 'twins', [[x, y], ...], speed, face]` places them at the first point and walks the rest (`face` 'w' or 'e' once they stop; `[[-60, -60]]` hides them). A `horde` event puts them at the front of the column automatically.
+- **On the map:** by day they walk the east side (the street at x 760); after dark they come down and stand at the front of the dead outside the fence. Their cards sit above the survivors on the Survivors tab.
+
