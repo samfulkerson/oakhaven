@@ -130,6 +130,7 @@ canvas#world.dragging{cursor:grabbing}
 .ctrls div{display:flex;pointer-events:auto;background:rgba(10,13,15,.82);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:3px;gap:2px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .ctrls button{font-family:var(--f-head);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;background:transparent;color:var(--muted);border:0;border-radius:3px;padding:6px 10px;cursor:pointer;min-width:30px}
 .ctrls button:hover{color:var(--fg);background:rgba(255,255,255,.06)}
+@media (max-width:440px){.ctrls div{flex-wrap:wrap;max-width:100%}.ctrls button{padding:6px 7px;letter-spacing:.04em}}
 .ctrls button[aria-pressed="true"]{color:var(--accent-ink);background:var(--accent)}
 .ctrls button:disabled{opacity:.4;cursor:default}
 .screen.studio{position:fixed;inset:0;z-index:80;border:0;border-radius:0;background:#050607;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px}
@@ -370,6 +371,7 @@ footer a{color:var(--muted)}
                 <button type="button" id="tAuto" aria-pressed="true">Live</button>
                 <button type="button" id="tDay" aria-pressed="false">Day</button>
                 <button type="button" id="tNight" aria-pressed="false">Night</button>
+                <button type="button" id="wxBtn" aria-pressed="false" title="Preview the weather: click to cycle through the skies">Weather</button>
                 <button type="button" id="fxBtn" aria-pressed="true" title="Lighting and shader effects">FX</button>
                 <button type="button" id="scanBtn" aria-pressed="false" title="Scanlines when zoomed in">CRT</button>
                 <button type="button" id="studioOpen" hidden title="Episode studio: play and record scripted Reels">Studio</button>
@@ -3457,6 +3459,20 @@ const AFTERMATH = [];        // where bodies lie (flies gather there by day)
 let EPI_WX_SET = false, FLASH = 0, flashWait = 200;
 const wxNow = () => WEATHER_OVR || (DATA.weather && DATA.weather.day === DATA.day ? DATA.weather.kind : 'clear');
 const WX_NAME = { wind: 'Windy', fog: 'Fog', rain: 'Rain', storm: 'Storm', snow: 'Snow' };
+// the Weather button cycles a preview sky for this visitor only (Live = tonight's real weather), and keeps it in the URL so it can be shared
+const WX_CYCLE = [null, 'clear', 'wind', 'fog', 'rain', 'storm', 'snow'];
+let WX_PICK = WX_CYCLE.includes(WEATHER_OVR) ? WEATHER_OVR : null;
+function wxButton() {
+  const b = $('wxBtn'); b.textContent = WX_PICK ? (WX_NAME[WX_PICK] || 'Clear') : 'Weather';
+  b.setAttribute('aria-pressed', String(!!WX_PICK));
+}
+$('wxBtn').addEventListener('click', () => {
+  WX_PICK = WX_CYCLE[(WX_CYCLE.indexOf(WX_PICK) + 1) % WX_CYCLE.length];
+  if (!EPI.on) WEATHER_OVR = WX_PICK;
+  wxButton();
+  try { const u = new URL(location.href); if (WX_PICK) u.searchParams.set('weather', WX_PICK); else u.searchParams.delete('weather'); history.replaceState(null, '', u); } catch (e) {}
+});
+wxButton();
 const windX = () => { const w = wxNow(); return w === 'wind' ? .3 : w === 'storm' ? .4 : 0; };
 const fract = v => v - Math.floor(v);
 // puddles collect along the streets when it rains
@@ -4345,7 +4361,7 @@ function epPrepare(key) {
   for (let i = 0; i < 900; i++) update();
   EPI.on = true; epPre();
 }
-function epEnd() { EPI.on = false; preview = false; HOUR_OVR = null; CAM_W = 0; runWait = 240; setZoom(4, HOME_CENTER[0], HOME_CENTER[1]); }
+function epEnd() { EPI.on = false; WEATHER_OVR = WX_PICK; EPI_WX_SET = false; preview = false; HOUR_OVR = null; CAM_W = 0; runWait = 240; setZoom(4, HOME_CENTER[0], HOME_CENTER[1]); }
 // manual stepping, used to render a video frame by frame
 window.oakEpisode = {
   prepare(key) { EPI.manual = true; epPrepare(key); return EPI.ep.dur; },
