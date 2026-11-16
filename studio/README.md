@@ -10,7 +10,7 @@ You are making content for **Sam** (Instagram **@surviveoakhaven**, site **survi
 
 A finished daily Reel looks like this (Day 8, "The Horde", 2:10):
 
-1. **Cold open, 5 s.** The episode's single most dramatic moment, with a found-footage overlay (blinking REC dot, `REC DAY 07 · 21:52`, hazard tape) and three short hook lines in big type, the last one amber. The narrator says the hook line over it.
+1. **Cold open, 5 s.** The episode's single most dramatic moment, with three short hook lines in big type (**no found-footage cues**: no REC dot, timestamp or hazard tape on the cold open; Sam's rule, and the renderer no longer draws them), the last one amber. The narrator says the hook line over it.
 2. **Title card**: `OAKHAVEN` / `DAY 8`, narrator says "Oakhaven. Day eight."
 3. **The recap**, told by the camera *in the real game world*: the camera flies to where things happened, follows named survivors in close-up when the narrator names them, and every on-screen caption appears on the exact word the narrator says it.
 4. **Status**: survivors, food/water days, next threat.
@@ -241,7 +241,7 @@ Zombies already in the world fight anyone walking outside the fence by themselve
 
 Rules: start a caption on the word (`s(i)`), end it at the end of that thought (`e(i) + .2`), never overlap two captions of the same kind, uppercase, about 22 characters per line max. Put captions on the half of the frame the action isn't in (`capTop` when the action is low, `cap` when it's high). Use `·` to join two facts: `ELDER · MECHANIC`. Vote card options are exactly the `vote.opts` labels in `data.json`.
 
-**Hook** (`hook`): `from` = the episode second where the cold-open footage starts. Pick the most violent/dramatic, readable shot (a wide fight with muzzle flashes, a brute in a doorway). The narrator's hook line lasts `hook_seconds` (printed by `episode.py`); the footage from `from` to `from + hook_seconds` is reused. `tag` is the camera's timestamp text. `lines`: 3 lines, each 2–3 words, last line the twist.
+**Hook** (`hook`): `from` = the episode second where the cold-open footage starts. Pick the most violent/dramatic, readable shot (a wide fight with muzzle flashes, a brute in a doorway). The narrator's hook line lasts `hook_seconds` (printed by `episode.py`); the footage from `from` to `from + hook_seconds` is reused. `tag` is no longer shown (leave it out). `lines`: 3 lines, each 2–3 words, last line the twist.
 
 ### 7c. Map reference (world pixels, 1600 x 1200)
 
