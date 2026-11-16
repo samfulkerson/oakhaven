@@ -168,10 +168,9 @@
    "role": "Guard",
    "skin": "dark brown skin",
    "hair": "gray hair",
-   "outfit": "dusty purple jacket, dark brown pants, work gloves",
-   "signature": "a long wooden club",
-   "face": "from behind, shoulders squared to the fence",
-   "auto": true
+   "outfit": "dusty purple jacket over a faded navy police uniform shirt, dark brown pants, work gloves",
+   "signature": "a long wooden club; his black handheld police radio",
+   "face": "from behind, shoulders squared to the fence"
   },
   "Toast": {
    "role": "Guard",
