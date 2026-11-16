@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 9,
- "followers": 55,
+ "day": 10,
+ "followers": 75,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 9. Water is gone and food lasts one more day. The horde reaches our fence in five. Where do we send the runners?",
+  "q": "Day 10. Water is at zero and food lasts one more day. The radio warned: do not go to Fort Corran. Where do we send the squads?",
   "opts": [
-   [
-    "GAS",
-    0,
-    "Easy run. The Laundromat generator needs 10 L of gas. We have 2.",
-    "gas",
-    "⛽"
-   ],
-   [
-    "FREIGHT",
-    0,
-    "Medium risk, never searched. Anything could be waiting in there.",
-    "freight",
-    "🚂"
-   ],
    [
     "HANGAR",
     0,
-    "Medium risk, never searched. Nobody knows what's inside Hangar 2.",
+    "Medium run, never searched. More danger, and no promise of what's inside.",
     "hangar",
     "🛩"
+   ],
+   [
+    "FARM",
+    0,
+    "Easy run, never searched. Low risk, but we are out of water.",
+    "farm",
+    "🌾"
+   ],
+   [
+    "STORAGE UNITS",
+    0,
+    "A quick run. Low risk.",
+    "storage",
+    "📦"
    ]
   ],
-  "how": "Comment GAS, FREIGHT or HANGAR (or its emoji) on the Day 9 Reel. One vote per account, your last comment counts."
+  "how": "Comment HANGAR, FARM or STORAGE UNITS (or its emoji) on the Day 10 Reel. One vote per account, your last comment counts."
  },
  "survivors": [
   {
@@ -38,7 +38,7 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 5,
+   "outings": 6,
    "day_outings": 2,
    "gear": [
     {
@@ -60,7 +60,7 @@
    "bio": "Jaylozy joins as a Sharpshooter, ready to take the shot when the moment comes.",
    "joined": 2,
    "outings": 1,
-   "day_outings": 1,
+   "day_outings": 2,
    "gear": [
     {
      "kind": "weapon",
@@ -138,9 +138,14 @@
      "kind": "weapon",
      "name": "Red-handled fire axe",
      "icon": "axe"
+    },
+    {
+     "kind": "armor",
+     "name": "Riot vest",
+     "icon": "vest"
     }
    ],
-   "outings": 2
+   "outings": 3
   },
   {
    "name": "Gabe",
@@ -165,7 +170,7 @@
    "bio": "Mateen swapped spreadsheets for seed packets and intends to keep the entire camp fed and green.",
    "joined": 4,
    "outings": 1,
-   "day_outings": 1
+   "day_outings": 2
   },
   {
    "name": "Jeremy",
@@ -194,7 +199,8 @@
     "hair": "#3b2416",
     "long": 1
    },
-   "day_outings": 1
+   "day_outings": 2,
+   "outings": 1
   },
   {
    "name": "Francis",
@@ -222,12 +228,17 @@
    "bio": "Jack is a gunsmith who hammers out blades by day and fixes up guns by night, so the undead get a close look at his work before they go down.",
    "joined": 6,
    "day_outings": 1,
-   "outings": 2,
+   "outings": 3,
    "gear": [
     {
      "kind": "weapon",
      "name": "Hunting rifle",
      "icon": "rifle"
+    },
+    {
+     "kind": "armor",
+     "name": "Riot vest",
+     "icon": "vest"
     }
    ]
   },
@@ -238,7 +249,14 @@
    "bio": "Carl is an EMT (a Rettungssanitäter back home) who has seen every kind of disaster, and he's ready to patch up the survivors who are left.",
    "joined": 6,
    "day_outings": 1,
-   "outings": 2
+   "outings": 3,
+   "gear": [
+    {
+     "kind": "armor",
+     "name": "Riot vest",
+     "icon": "vest"
+    }
+   ]
   },
   {
    "name": "Javier",
@@ -247,7 +265,14 @@
    "bio": "Javier was a soldier left behind from the evacuation, and he still wears his gas mask like the war never ended.",
    "joined": 7,
    "day_outings": 1,
-   "outings": 1
+   "outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Riot shotgun",
+     "icon": "rifle"
+    }
+   ]
   },
   {
    "name": "Quinn",
@@ -256,7 +281,14 @@
    "bio": "Quinn is a hunter with a shotgun and a head full of survival knowledge, and the zombies have started avoiding the woods.",
    "joined": 7,
    "day_outings": 1,
-   "outings": 2
+   "outings": 3,
+   "gear": [
+    {
+     "kind": "armor",
+     "name": "Riot vest",
+     "icon": "vest"
+    }
+   ]
   },
   {
    "name": "Elder",
@@ -264,21 +296,122 @@
    "role": "Mechanic",
    "bio": "Elder keeps the old engines running and the grumbling loud, a wrench in one hand and a sigh in the other.",
    "joined": 8,
-   "day_outings": 1
+   "day_outings": 2,
+   "outings": 1
   },
   {
    "name": "Shawn",
    "ig": "shawn_hohne",
    "role": "Guard",
    "bio": "Shawn comes from a military background, so he'll be the one organizing the perimeter and barking orders at the zombies.",
-   "joined": 9
+   "joined": 9,
+   "day_outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Service pistol",
+     "icon": "pistol"
+    }
+   ]
   },
   {
    "name": "Ryan",
    "ig": "justryan_16",
    "role": "Decoy",
    "bio": "Ryan is a professional break dancer who can outmove any zombie, though the undead may still challenge him to a dance-off.",
-   "joined": 9
+   "joined": 9,
+   "day_outings": 1
+  },
+  {
+   "name": "Officer Reyes",
+   "ig": "",
+   "role": "Guard",
+   "bio": "Reyes chained the station doors in week two and lived in the basement on evidence-room rations. Still wears the badge.",
+   "joined": 10
+  },
+  {
+   "name": "Toast",
+   "ig": "totally.am.toastyy",
+   "role": "Guard",
+   "bio": "Toast shows up with an M240 machine gun and zero plans to be quiet about it.",
+   "joined": 10
+  },
+  {
+   "name": "Artemis",
+   "ig": "artemistheproto",
+   "role": "Engineer",
+   "bio": "Artemis is an electrician who loves apocalypse vibes and wants to bring her boyfriend Foxy along.",
+   "joined": 10
+  },
+  {
+   "name": "Weston",
+   "ig": "westonkeithsteward",
+   "role": "Builder",
+   "bio": "Weston is a carpenter who will build you a fortress, then argue about the door hinges.",
+   "joined": 10
+  },
+  {
+   "name": "Ben",
+   "ig": "bennyliebs",
+   "role": "Radio Operator",
+   "bio": "Ben is a military radio operator who will keep the group talking, even when nobody asked.",
+   "joined": 10
+  },
+  {
+   "name": "Frost",
+   "ig": "sir_waffles45",
+   "role": "Engineer",
+   "bio": "Frost is a plumber who knows exactly where the water pipes run and how to make them useful.",
+   "joined": 10
+  },
+  {
+   "name": "Joseph",
+   "ig": "chamra_universal",
+   "role": "Medic",
+   "bio": "Joseph is a military medic who stays calm while everyone else panics.",
+   "joined": 10
+  },
+  {
+   "name": "Jeff",
+   "ig": "zigos1229",
+   "role": "Mechanic",
+   "bio": "Jeff is a mechanic who can fix any vehicle, as long as it isn't on fire.",
+   "joined": 10
+  },
+  {
+   "name": "Spenz",
+   "ig": "its_spencerist",
+   "role": "Sharpshooter",
+   "bio": "Spenz is a sniper who never misses, mostly because nobody sees them coming.",
+   "joined": 10
+  },
+  {
+   "name": "Marco",
+   "ig": "isaiahfs21",
+   "role": "Scout",
+   "bio": "Marco is an expert hunter who knows how to track anything, living or undead.",
+   "joined": 10
+  },
+  {
+   "name": "Bob",
+   "ig": "_mjork.voldt_",
+   "role": "Scavenger",
+   "bio": "Bob is old but wise, has seen it all, and knows exactly which places still have supplies.",
+   "joined": 10
+  },
+  {
+   "name": "Amnic0re",
+   "ig": "andrew_nelson99",
+   "role": "Builder",
+   "bio": "Amnic0re is a server repair tech who spent his spare time doomsday prepping, and now finally gets to use it.",
+   "joined": 10
+  },
+  {
+   "name": "John",
+   "ig": "linguistic_syllable",
+   "role": "Scavenger",
+   "bio": "John is a paranoid mushroom grower and canning expert with a spear, a fear of the dead, and a lot of jars.",
+   "joined": 10
   }
  ],
  "runs": [
@@ -460,10 +593,13 @@
    "dest": "freight",
    "difficulty": "medium",
    "squad": [
-    "Sam"
+    "Sam",
+    "Victoria",
+    "Elder"
    ],
    "loot": "A crate of canned tuna from a split boxcar",
-   "place": "Freight yard"
+   "place": "Freight yard",
+   "done_day": 9
   },
   {
    "dest": "farm",
@@ -617,8 +753,8 @@
    "name": "Police station",
    "area": "City",
    "days": 3,
-   "days_done": 2,
-   "status": "active",
+   "days_done": 3,
+   "status": "done",
    "squad": [
     "Carl",
     "Quinn",
@@ -1126,25 +1262,25 @@
  "stock": [
   [
    "Food",
-   31,
+   44,
    200,
    "rations"
   ],
   [
    "Water",
-   11,
+   0,
    200,
    "rations"
   ],
   [
    "Fuel",
-   2,
+   4,
    200,
    "L"
   ],
   [
    "Ammo",
-   13,
+   120,
    500,
    "rds"
   ],
@@ -1156,13 +1292,13 @@
   ],
   [
    "Scrap",
-   33,
+   27,
    200,
    "units"
   ],
   [
    "Barricades",
-   65,
+   70,
    100,
    "%"
   ]
@@ -1802,23 +1938,141 @@
     "Gary Finklestein & Seth → Pharmacy (13:30): +1 medicine",
     "Adam & Sam → Pharmacy (15:05): +2 food"
    ]
+  },
+  {
+   "day": 9,
+   "vote": {
+    "question": "Day 9. Water is gone and food lasts one more day. The horde reaches our fence in five. Where do we send the runners?",
+    "results": {
+     "FREIGHT": 5,
+     "HANGAR": 1
+    },
+    "winner": "FREIGHT",
+    "tiebreak": null,
+    "reel": "https://www.instagram.com/reel/DfrzRKZyLJC/"
+   },
+   "outings": [
+    {
+     "target": "Police station",
+     "key": "police",
+     "first": true,
+     "kind": "mission",
+     "difficulty": "hard",
+     "squad": [
+      "Carl",
+      "Quinn",
+      "Asa",
+      "Jack"
+     ],
+     "results": [
+      {
+       "name": "Carl",
+       "ig": "prinz_carl062",
+       "outcome": "ok"
+      },
+      {
+       "name": "Quinn",
+       "ig": "qlyle50",
+       "outcome": "ok"
+      },
+      {
+       "name": "Asa",
+       "ig": "asa_von_carstein",
+       "outcome": "ok"
+      },
+      {
+       "name": "Jack",
+       "ig": "rebelforce35",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": "done"
+    },
+    {
+     "target": "Freight yard",
+     "key": "freight",
+     "first": true,
+     "kind": "run",
+     "difficulty": "medium",
+     "squad": [
+      "Sam",
+      "Victoria",
+      "Elder"
+     ],
+     "results": [
+      {
+       "name": "Sam",
+       "ig": "surviveoakhaven",
+       "outcome": "ok"
+      },
+      {
+       "name": "Victoria",
+       "ig": "",
+       "outcome": "ok"
+      },
+      {
+       "name": "Elder",
+       "ig": "themortimer",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    }
+   ],
+   "healed": [],
+   "joined": [
+    "Toast",
+    "Artemis",
+    "Weston",
+    "Ben",
+    "Frost",
+    "Joseph",
+    "Jeff",
+    "Spenz",
+    "Marco",
+    "Bob",
+    "Amnic0re",
+    "John"
+   ],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Food": 13,
+    "Water": -11,
+    "Scrap": -6,
+    "Ammo": 107,
+    "Fuel": 2,
+    "Barricades": 5
+   },
+   "camp": [
+    "The basement armory was untouched: 120 rounds, riot vests and two more guns. And behind the cage door, Officer Reyes, alive, chained in since week two. Reyes has a police radio. Reyes has heard the woman too.",
+    "Handed out: Javier gets the riot shotgun, Shawn gets the service pistol, Asa gets the riot vest, Jack gets the riot vest, Carl gets the riot vest, Quinn gets the riot vest.",
+    "Officer Reyes came home with the squad: Reyes chained the station doors in week two and lived in the basement on evidence-room rations. Still wears the badge."
+   ],
+   "horde": null,
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Shawn & Ryan → Hollow Creek Farm (08:40): +2 food",
+    "Jaylozy & Mateen → Rosie’s Diner (10:15): +1 food",
+    "Elder & Victoria → Pier 9 warehouse (11:50): +1 scrap (a close call)"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": -4,
-  "Water": -7,
-  "Medicine": 0,
-  "Ammo": -12,
+  "Food": 13,
+  "Water": -11,
+  "Scrap": -6,
+  "Ammo": 107,
   "Fuel": 2,
-  "Barricades": 5,
-  "Scrap": -7
+  "Barricades": 5
  },
  "schedule": [],
  "broadcast": {
-  "day": 8,
-  "from": "Unknown, picked up by Seth",
-  "text": "...[static]... Fort Corran... the gates... [static]"
+  "day": 10,
+  "from": "Officer Reyes's police radio",
+  "text": "...this is Fort Corran... if you can hear this, do not come to the fort... the gates are open... they're inside... do not come..."
  },
  "features": [
   {
@@ -1838,6 +2092,16 @@
    "id": "victoria_kitchen",
    "name": "Victoria's kitchen corner",
    "day": 9
+  },
+  {
+   "id": "antenna",
+   "name": "Radio antenna",
+   "day": 10
+  },
+  {
+   "id": "infirmary",
+   "name": "Infirmary",
+   "day": 10
   }
  ],
  "income": [
@@ -1933,18 +2197,20 @@
   2,
   5,
   25,
-  50
+  50,
+  60,
+  75
  ],
  "undead": {
-  "count": 31652,
+  "count": 31628,
   "last": {
-   "day": 8,
-   "killed": 24,
-   "turned": 2,
+   "day": 9,
+   "killed": 32,
+   "turned": 8,
    "arrived": 0
   }
  },
- "last_run": 1794746493,
+ "last_run": 1794826414,
  "horde": {
   "day": 14,
   "week": 2,
@@ -1986,63 +2252,61 @@
   ]
  },
  "weather": {
-  "day": 9,
-  "kind": "rain"
+  "day": 10,
+  "kind": "clear"
  },
  "camp_bonus": [
   {
    "item": "Food",
-   "amt": 4,
+   "amt": 24,
    "why": "new survivors' packs"
   },
   {
    "item": "Water",
-   "amt": 4,
+   "amt": 24,
    "why": "new survivors' packs"
   }
  ],
  "day_runs": {
-  "day": 9,
+  "day": 10,
   "runs": [
    {
-    "time": "08:40",
-    "dest": "farm",
-    "crew": [
-     "Shawn",
-     "Ryan"
-    ],
-    "find": {
-     "Food": 2
-    },
-    "event": "ok",
-    "line": "Shawn: Found 2 jars of peanut butter in a back room. Heading home."
-   },
-   {
-    "time": "10:15",
-    "dest": "diner",
-    "crew": [
-     "Jaylozy",
-     "Mateen"
-    ],
-    "find": {
-     "Food": 1
-    },
-    "event": "ok",
-    "line": "Jaylozy: Found 1 boxes of crackers nobody wanted. Heading home."
-   },
-   {
     "time": "11:50",
-    "dest": "port",
+    "dest": "maple",
     "crew": [
-     "Elder",
-     "Victoria"
+     "Joseph",
+     "John"
+    ],
+    "find": {},
+    "event": "ok",
+    "line": "Joseph: Picked clean. Nothing worth carrying. Heading home."
+   },
+   {
+    "time": "13:30",
+    "dest": "hardware",
+    "crew": [
+     "Weston",
+     "Toast"
     ],
     "find": {
      "Scrap": 1
     },
     "event": "scare",
-    "line": "Elder: Found 1 car doors for the fence. Heading home.",
-    "scare": "Victoria: Three of them at the door when we came out. Went out the back."
+    "line": "Weston: Found 1 car doors for the fence. Heading home.",
+    "scare": "Toast: Something knocked over a shelf in the back. We didn't wait to see what."
+   },
+   {
+    "time": "15:05",
+    "dest": "maple",
+    "crew": [
+     "Jeff",
+     "Frost"
+    ],
+    "find": {
+     "Water": 1
+    },
+    "event": "ok",
+    "line": "Jeff: Found 1 jugs of water under a sink. Heading home."
    }
   ]
  }
