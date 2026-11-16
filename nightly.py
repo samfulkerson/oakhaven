@@ -16,7 +16,7 @@ Secrets it reads from the environment (set them in GitHub under Settings > Secre
 Options:
   DRY_RUN=1              print what would happen, change nothing
 """
-import os, re, json, random, time
+import os, re, json, math, random, time
 from datetime import datetime, timezone
 from collections import Counter
 
@@ -28,6 +28,11 @@ MODEL = os.environ.get("CLAUDE_MODEL", "claude-haiku-5-5")
 MAX_NEW_PER_DAY = 25          # pacing: at most this many new survivors move in per day; the rest wait in line
 BUDDY_PACK = {"Food": 6, "Water": 6}   # someone who joins "with @a_survivor" arrives with a full pack, and the two become buddies
 BUDDY_RISK = 0.7                        # buddies on the same outing cover each other: injury and death odds x0.7 for both
+# camp jobs: everyone who spends the day at the laundromat (not out on the vote's run, not on a mission, not hurt) works their job,
+# so a bigger camp feeds itself better. role -> (item, amount each, why)
+CAMP_JOBS = {"Farmer": ("Food", 3, "the farm plots"), "Scout": ("Food", 1, "snares and hunting"), "Scavenger": ("Food", 1, "foraging the block"),
+             "Engineer": ("Water", 2, "rain catchers and pipe taps")}
+CHEF_STRETCH = 0.1          # a chef at home stretches every meal: this share of the camp's food comes back
 PACK = {"Food": 2, "Water": 2}  # what each new survivor carries in; counted the next night, when they start eating
 ROLES = ["Scavenger", "Medic", "EMT", "Scout", "Sharpshooter", "Gunsmith", "Farmer", "Builder", "Radio Operator", "Mechanic", "Guard", "Cook", "Engineer"]
 ACTS_AS = {"EMT": "Medic"}     # roles that do another role's job in the game: an EMT patches people up like a medic
@@ -836,6 +841,27 @@ def keep_stockpile(data, outings, rng, new_day):
                 if z not in have:
                     have.append(z)
                     notes.append(m.get("unlock_note") or f"Something new out there: {z}s.")
+    # camp jobs: the people who stayed home today work their jobs
+    out_today = {n for o in outings for n in o.get("squad", [])} | mission_crew(data)
+    home = [s for s in present if s.get("status") not in ("injured", "away") and s["name"] not in out_today]
+    jobs = {}
+    for s in home:
+        job = CAMP_JOBS.get(role_of(s))
+        if job:
+            jobs.setdefault(job, []).append(s["name"])
+    done = []
+    for (item, amt, why), names in jobs.items():
+        got = add(item, amt * len(names), why)
+        if got:
+            done.append(f"{' and '.join(names) if len(names) < 3 else f'{len(names)} of them'} ({why}): +{got} {item.lower()}")
+    chefs = [s["name"] for s in home if role_of(s) in ("Chef", "Cook")]
+    if chefs:
+        got = add("Food", math.ceil(len(present) * CHEF_STRETCH), f"{chefs[0]}'s cooking")
+        if got:
+            done.append(f"{chefs[0]} stretched every meal: +{got} food")
+    if done:
+        notes.append("Camp jobs: " + "; ".join(done) + ".")
+
     for inc in data.get("income", []):          # the windmill, the milk cows, Mateen's roof garden once it grows...
         if new_day >= inc.get("from_day", 0):
             add(inc["item"], inc["amt"], inc["why"])
@@ -946,11 +972,11 @@ def power_wants(data):
 
 # ---------------------------------------------------------------- 7. tomorrow's vote
 # the word people comment for each place (must be easy to type and not contain another option's word)
-LABELS = {"gunshop": "GUN SHOP", "port": "PIER", "firestation": "FIRE STATION", "cold": "COLD STORAGE", "airfreight": "AIR FREIGHT",
+LABELS = {"watertower": "WATER TOWER", "gunshop": "GUN SHOP", "port": "PIER", "firestation": "FIRE STATION", "cold": "COLD STORAGE", "airfreight": "AIR FREIGHT",
           "showbarn": "SHOW BARN", "hunter": "CABIN", "harbor": "HARBOR", "storage": "STORAGE UNITS", "surplus": "SURPLUS"}
 EMOJI = {"pharmacy": "💊", "diner": "🍳", "gas": "⛽", "market": "🛒", "hardware": "🔨", "gunshop": "🔫", "port": "⚓", "ranger": "🌲",
          "hangar": "🛩", "firestation": "🚒", "maple": "🏘", "storage": "📦", "mall": "🛍", "freight": "🚂", "farm": "🌾", "fair": "🎡",
-         "harbor": "⛵", "hunter": "🏕", "cold": "🧊", "greenhouse": "🌱", "airfreight": "🛫", "checkpoint": "🪖", "surplus": "🎒", "windmill": "💧", "harvest": "🌽", "cattle": "🐄", "fortify": "🧱",
+         "harbor": "⛵", "hunter": "🏕", "cold": "🧊", "greenhouse": "🌱", "airfreight": "🛫", "checkpoint": "🪖", "surplus": "🎒", "windmill": "💧", "watertower": "🚰", "harvest": "🌽", "cattle": "🐄", "fortify": "🧱",
          "funhouse": "🤡", "arcade": "🕹", "showbarn": "🐄", "hospital": "🏥", "police": "🚓", "terminal": "🛬"}
 UNLOCK = {"easy": 1, "medium": 2, "hard": 4, "deadly": 6}     # healthy survivors needed before a difficulty shows up in the vote
 
@@ -991,6 +1017,9 @@ def vote_options(data, new_day, rng, missions_ok=True):
         r = next((r for r in fresh + again if LOOT.get(r["dest"], {}).get("Food", 0) >= 8), None)
         if r and all(it is not r for _, it in picks):
             picks = picks[:1] + [("run", r)] + picks[2:] if len(picks) > 1 else picks + [("run", r)]
+    wt = next((m for m in missions if m.get("poi") == "watertower"), None)
+    if wt and missions_ok and days_left(data, "Water") < 2 and all(it is not wt for _, it in picks):    # out of water: tapping the tower is always on the ballot
+        picks = (picks[:2] if len(picks) >= 3 else picks) + [("mission", wt)]
     while len(picks) < 3 and again:
         r = again.pop(0)
         if all(it is not r for _, it in picks):

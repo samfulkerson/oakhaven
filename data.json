@@ -1035,6 +1035,34 @@
    "goal": "Clear one lane through the pile-up east of the city.",
    "crew": "2 mechanics + a tow truck",
    "reward": "A road out of Oakhaven"
+  },
+  {
+   "name": "Tap the water tower",
+   "difficulty": "medium",
+   "area": "Rail yard",
+   "at": [
+    1161,
+    1092
+   ],
+   "goal": "Frost knows where the old rail-yard tower feeds the city mains. Patch the pipes and run a line to the laundromat.",
+   "crew": "Frost the plumber, Weston the builder and two guards",
+   "reward": "+20 water now, then +10 clean water every night",
+   "poi": "watertower",
+   "status": "open",
+   "days": 2,
+   "squad": [
+    "Frost",
+    "Weston",
+    "Toast",
+    "Shawn"
+   ],
+   "gain": {
+    "Water": 20
+   },
+   "income": {
+    "Water": 10
+   },
+   "done_note": "Water is running from the old rail-yard tower, down a patched line to the laundromat. Clean water, every night."
   }
  ],
  "power": [
