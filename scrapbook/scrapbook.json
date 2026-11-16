@@ -2,6 +2,24 @@
   "note": "The Oakhaven scrapbook: every camera roll from every mission. Newest first. Each photo lives in scrapbook/<id>-<n>.jpg (1080x1350) with a 432x540 copy in scrapbook/thumbs/. 'who' lists the survivors in a photo; a photo without 'who' counts everyone in the roll's crew.",
   "rolls": [
     {
+      "id": "day9-police",
+      "day": 9,
+      "place": "The police station",
+      "by": "Quinn",
+      "crew": ["Carl", "Asa", "Javier", "Jack", "Officer Reyes"],
+      "intro": "Three days inside the police station. Quinn was on overwatch the whole job, so the camera rode in his pocket.",
+      "outro": "We went in to cut the chains. We came home with one more.",
+      "photos": [
+        { "time": "16:40", "who": ["Carl", "Asa"], "note": "Day 7. Carl's bolt cutters on the chain. Asa watched the street." },
+        { "time": "17:12", "who": ["Javier", "Carl"], "note": "Day 7. Javier took a hit in the dark lobby. Concussion. Carl patched him up and sent him home." },
+        { "time": "10:20", "who": ["Carl"], "note": "Day 8. Behind the front desk: a water cooler, still full. +10 water." },
+        { "time": "21:34", "who": ["Jack", "Asa"], "note": "Day 8. Rain all night. Jack and Asa held the doors. The dead pressed on the glass until morning." },
+        { "time": "09:15", "who": ["Carl", "Asa"], "note": "Day 9. The basement. The cage was locked from the inside." },
+        { "time": "09:22", "who": ["Officer Reyes"], "note": "Day 9. Officer Reyes. Chained in since week two, with a police radio." },
+        { "time": "17:41", "who": ["Carl", "Asa", "Jack", "Officer Reyes"], "note": "Day 9. Walking home in new riot vests with 120 rounds." }
+      ]
+    },
+    {
       "id": "day7-horde",
       "day": 7,
       "place": "The laundromat fence",
