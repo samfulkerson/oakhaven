@@ -256,6 +256,11 @@ canvas#world.dragging{cursor:grabbing}
 .card p{margin:4px 0 0;font-size:14px}
 .card .meta{font-size:12.5px;color:var(--muted);margin-top:6px}
 .card>div{display:flex;flex-direction:column;align-self:stretch;min-width:0}
+.twins{margin:0 0 14px}
+.twins h4{font-family:var(--f-head);font-weight:600;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:#9ab4ff;margin:0 0 8px}
+.twins .row{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px}
+.twins .card{border-color:rgba(154,180,255,.35)}
+.twins .case{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.45}
 .roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px;max-height:900px;overflow:auto;align-items:stretch}
 .surv{font-size:13px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;color:var(--fg);padding:4px 11px;cursor:pointer;display:flex;gap:7px;align-items:baseline}
 .surv:hover{border-color:var(--line-2);background:var(--panel-3)}
@@ -459,6 +464,7 @@ footer a{color:var(--muted)}
           <input id="q" type="search" autocomplete="off" placeholder="Name or @handle">
           <div id="card" hidden></div>
         </div>
+        <div class="twins" id="twinsBox" hidden></div>
         <div class="roster" id="roster"></div>
       </div>
     </div>
@@ -580,7 +586,7 @@ const DATA = {
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
 if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
-if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log', 'weather'])
+if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log', 'weather', 'twins'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
@@ -2487,6 +2493,8 @@ const ZT = {
   crawler: { c: { h: '#2a2520', g: '#7d9268', r: '#3a1010', j: '#53473c', p: '#2f3540', x: '#5a1a12' }, g: ['...........', '...........', '...........', '...........', '...........', '...........', '...........', '...........', '..hh.......', '.hggjjjj...', '.grgjjjjjx.', '.ggg.g.g.x.', '..g........'] },
   screamer: { c: { h: '#8a8a80', g: '#8b9a74', r: '#c02a1a', O: '#0a0606', j: '#5a4a5a', p: '#3a3328', b: '#231c16' }, g: ['.g.......g.', '.g.hhhhh.g.', '.gh.ggg.hg.', '..hgrgrgh..', '..hgOOOgh..', '..h.gOg.h..', '..jjjjjjj..', '...jjjjj...', '...jj.jj...', '....ppp....', '....p.p....', '...bb.bb...', '...........'], w: { 10: '...p...p...', 11: '..bb...bb..' } },
 };
+ZT.twin = { c: { h: '#2a2520', g: '#8b9a74', r: '#ff3b2a', w: '#d8d8d0', t: '#5a1a14', j: '#2c4a8c', p: '#3a3a42', b: '#1a1712' },   // the twins: matching blue sport coats, white shirts, ties
+  g: ['...........', '...hhhh....', '..hhhhhh...', '..hggggg...', '...rgrg....', '...ggg.....', '..jjwjjggg.', '..jjtjj....', '..jjtjj....', '...ppp.....', '..p...p....', '.bb...bb...', '...........'], w: { 10: '...p.p.....', 11: '...b.b.....' } };
 const ZONES_FOR = { soldier: [[1330, 60, 240, 340], [1200, 292, 90, 26]], patient: [[500, 270, 130, 34]], crawler: [[270, 1070, 80, 50], [244, 1066, 220, 120]] };
 const zUnlocked = t => (DATA.zombie_types || ['walker']).includes(t);
 const OX = 2, OY = 1, GW = 11, GH = 13;
@@ -2687,6 +2695,52 @@ function spawnZombie(brute, nearOk, edge) {
     }
   }
   retarget(z); zombies.push(z);
+}
+// ------------------------------------------------------------------ the twins: Scott and Ryan Tedeschi, Oakhaven's first dead (data.json "twins").
+// By day they walk the east side, where it started. After dark they come down to the fence and stand at the front of the dead.
+// They can't be hurt: survivors leave them alone, and nothing on the map can kill them.
+const TW = DATA.twins || null;
+const twinsOn = () => !!TW && DATA.day >= (TW.reveal_day ?? 1e9);
+const TWIN_ZONE = [752, 230, 16, 540], TWIN_ROUTE = [[760, 552], [488, 552], [488, 500], [468, 492]];
+const TWINS = [];
+function spawnTwins() {
+  if (!twinsOn() || TWINS.length) return;
+  for (let k = 0; k < 2; k++) {
+    const z = { kind: 'z', id: zId++, twin: k, wait: 0, state: 'roam', spd: .07, step: rand() * 10, flip: false, hp: Infinity, dying: 0, bang: 0, stuck: 0,
+      look: { zombie: 1, ztype: 'twin' }, ztype: 'twin', free: TWIN_ZONE, name: TW.names[k] };
+    z.x = TWIN_ZONE[0] + 8 - k * 7; z.y = TWIN_ZONE[1] + 260 + k * 5; retarget(z);
+    TWINS.push(z); zombies.push(z);
+  }
+  if (darkness(hourNow()) > .45) { const [x, y] = TWIN_ROUTE[TWIN_ROUTE.length - 1]; TWINS[0].x = x; TWINS[0].y = y; TWINS[0].state = 'front'; TWINS[1].x = x - 7; TWINS[1].y = y + 5; }
+}
+const epiOn = () => { try { return EPI.on; } catch (e) { return false; } };   // EPI is defined further down the page
+function twinStep(z, dark) {
+  const lead = TWINS[0];
+  if (z.twin === 1) {                                  // a step behind his brother, always
+    const tx = lead.x - 7, ty = lead.y + 5;
+    if (Math.hypot(tx - z.x, ty - z.y) > 1.5) moveToward(z, tx, ty, Math.max(z.spd, lead.spd) * 1.2); else z.flip = lead.flip;
+    return;
+  }
+  if (epiOn()) {                                     // in a Reel they only do what the script says: walk the path they're given, then stand facing the fence
+    if (z.hold && z.hold.length) { if (moveToward(z, z.hold[0][0], z.hold[0][1], z.spd)) z.hold.shift(); }
+    else if (z.face) z.flip = z.face === 'w';
+    return;
+  }
+  if (dark > .45) {
+    if (z.state !== 'toFence' && z.state !== 'front') { z.state = 'toFence'; z.rp = 0; }
+    if (z.state === 'toFence') { const p = TWIN_ROUTE[z.rp]; if (moveToward(z, p[0], p[1], z.spd) && ++z.rp >= TWIN_ROUTE.length) z.state = 'front'; }
+    else z.flip = true;                                // at the front, facing the fence
+  } else {
+    if (z.state === 'toFence' || z.state === 'front') { z.state = 'back'; z.rp = TWIN_ROUTE.length - 1; }
+    if (z.state === 'back') { const p = TWIN_ROUTE[z.rp]; if (moveToward(z, p[0], p[1], z.spd) && --z.rp < 0) { z.state = 'roam'; retarget(z); } }
+    else if (z.wait > 0) z.wait--;
+    else if (moveToward(z, z.tx, z.ty, z.spd)) { z.wait = 120 + rand() * 300 | 0; retarget(z); }
+  }
+}
+function twinsTo(path, spd, face) {
+  if (!TWINS.length) return;
+  const [a, b] = TWINS, [x, y] = path[0];
+  a.x = x; a.y = y; b.x = x - 7; b.y = y + 5; a.hold = path.slice(1); a.spd = spd || .08; a.face = face || null; a.state = 'script';
 }
 function nearestStreet(z) {
   let best = null, bd = Infinity;
@@ -2958,22 +3012,23 @@ function update() {
   const outside = runnersOutside();
   for (const m of outside) {
     if (--m.cool > 0) continue;
-    const z = zombies.find(z => !z.dying && z !== EPI_BRUTE && Math.abs(z.x - m.x) < 11 && Math.hypot(z.x - m.x, z.y - m.y) < 11);   // a scripted brute is fought by the script's own blows
+    const z = zombies.find(z => !z.dying && z !== EPI_BRUTE && z.hp !== Infinity && Math.abs(z.x - m.x) < 11 && Math.hypot(z.x - m.x, z.y - m.y) < 11);   // a scripted brute is fought by the script's own blows
     if (z) { m.cool = 32; melee(m, z, .6); }
   }
   if (runWait > 1e8) for (const m of people) {
     if (m.mode !== 'defend' || m.hidden || --m.cool > 0) continue;
     if (m.gun) {
       let t = null, td = m.range || 62;
-      for (const z of zombies) if (z.horde && !z.dying && z.wp > 0) { const dd = Math.hypot(z.x - m.x, z.y - m.y); if (dd < td) { td = dd; t = z; } }
+      for (const z of zombies) if (z.horde && !z.dying && z.wp > 0 && z.hp !== Infinity) { const dd = Math.hypot(z.x - m.x, z.y - m.y); if (dd < td) { td = dd; t = z; } }
       if (t) { m.flip = t.x < m.x; m.cool = 24 + rand() * 22 | 0; shoot(m, t, .5); }
     } else {
-      const z = zombies.find(z => z.horde && !z.dying && Math.hypot(z.x - m.x, z.y - m.y) < 13);
+      const z = zombies.find(z => z.horde && !z.dying && z.hp !== Infinity && Math.hypot(z.x - m.x, z.y - m.y) < 13);
       if (z) { m.cool = 28 + rand() * 16 | 0; melee(m, z, .45); }
     }
   }
   for (const z of zombies) {
     z.moving = false;
+    if (z.twin != null) { twinStep(z, dark); continue; }
     if (z.dying) { z.dying++; continue; }
     if (z.horde) {
       if (z.delay > 0) { z.delay--; continue; }
@@ -3027,7 +3082,7 @@ function update() {
   const surge = hl === 0 ? 40 : hl === 1 ? 20 : hl === 2 ? 10 : 0;
   const want = Math.round(70 + dark * 50 + surge);
   if (frame % 200 === 0 && alive < want) spawnZombie(dark > .5 && rand() < .07, false, surge && rand() < .6 ? 2 : 1);
-  if (frame % 200 === 100 && alive > want + 6) { const off = zombies.find(z => !z.dying && z.state === 'roam' && !onScreen(z.x, z.y)); if (off) zombies.splice(zombies.indexOf(off), 1); }
+  if (frame % 200 === 100 && alive > want + 6) { const off = zombies.find(z => !z.dying && z.twin == null && z.state === 'roam' && !onScreen(z.x, z.y)); if (off) zombies.splice(zombies.indexOf(off), 1); }
   for (const [sx, sy, rate] of SMOKE) if (frame % Math.max(2, 9 - rate * 2) === 0) parts.push({ x: sx + (rand() - .5) * 3, y: sy, vx: (rand() - .5) * .1 + .03 + windX(), vy: -.2 - rate * .03, life: 50 + rate * 15, col: rate > 2 ? '#3a3836' : '#6d6a63' });
   for (let i = parts.length - 1; i >= 0; i--) { const p = parts[i]; p.x += p.vx; p.y += p.vy; if (--p.life <= 0) parts.splice(i, 1); }
   for (let i = shots.length - 1; i >= 0; i--) if (--shots[i].life <= 0) shots.splice(i, 1);
@@ -3144,13 +3199,15 @@ function drawEmissive(c, dark, inView, part) {
     for (const s of swings) { const k = 7 - s.life; for (let i = 0; i < 4; i++) P(c, s.x + s.dir * (3 + i + (k >> 1)), s.y - 11 + i * 2 + (k >> 1), s.life > 3 ? '#eef2f4' : '#9aa0a4'); }   // a swing, no muzzle flash
   }
   if (part !== 'early') {
-    if (dark > .4) for (const z of zombies) {
-      if (z.dying || !inView(z.x, z.y)) continue;
+    for (const z of zombies) {
+      if (z.dying || !inView(z.x, z.y) || (dark <= .4 && !(z.twin != null && dark > .12))) continue;    // the twins' eyes show first, at dusk
       const zx = Math.round(z.x), zy = Math.round(z.y), fx = z.flip ? -1 : 1;
       if (z.brute) { P(c, zx - 3, zy - 17, '#ff3b2a', 2, 1); P(c, zx + 2, zy - 17, '#ff3b2a', 2, 1); }
       else if (z.ztype === 'crawler') P(c, fx > 0 ? zx - 3 : zx + 2, zy - 2, '#ff3b2a');     // low to the ground, at the front of the body
       else { P(c, zx - fx, zy - 8, '#ff3b2a'); P(c, zx + fx, zy - 8, '#ff3b2a'); }
     }
+    if (TWINS.length && (vw() <= 300 || TWINS.includes(selected)) && inView(TWINS[0].x, TWINS[0].y) && !epiOn())
+      textC(c, 'THE TWINS', Math.round(TWINS[0].x - 3), Math.round(TWINS[0].y) - 24, '#9ab4ff');
     if (selected && !selected.hidden && frame % 40 < 30) {
       const x = Math.round(selected.x), y = Math.round(selected.y) - 16;
       P(c, x - 2, y, '#e2a32a', 5, 1); P(c, x - 1, y + 1, '#e2a32a', 3, 1); P(c, x, y + 2, '#e2a32a');
@@ -3808,6 +3865,24 @@ function renderRoster(q = '') {
     const pc = c.getContext('2d'); pc.imageSmoothingEnabled = false; pc.drawImage(sprite(e ? e.look : lookFor(d.ig || d.name, d.role), 'stand'), 0, 0);
   }
 }
+// the twins' cards: the first dead, above the survivors. Clicking one finds them on the map.
+function twinWhere() {
+  const z = TWINS[0]; if (!z) return '';
+  return z.state === 'front' ? 'At the fence, at the front of the dead' : z.state === 'toFence' ? 'Walking toward the laundromat' : z.state === 'back' ? 'Heading back to the east side' : 'Walking the east side, where it started';
+}
+function renderTwins() {
+  const box = $('twinsBox'); if (!twinsOn()) return;
+  box.hidden = false;
+  box.innerHTML = `<h4>The first dead · Incident #0001</h4><div class="row">${TW.names.map((n, k) => `<article class="card" data-twin="${k}" tabindex="0" aria-label="${esc(n)}: show on the map">
+    <canvas width="${GW}" height="${GH}" data-twinpic="${k}"></canvas><div><h3>${esc(n)}<span class="tag" style="color:#9ab4ff">Patient zero</span></h3>
+    ${TW.ig && TW.ig[k] ? `<div class="ig">@${esc(TW.ig[k])}</div>` : ''}<p>${esc((TW.bio || [])[k] || '')}</p>
+    <div class="meta">Turned on Night 1 · Mill Street · ${esc(TW.coat || '')}</div>
+    <div class="now"><b>Right now</b><span class="twinnow">${esc(twinWhere())}</span></div>${k === 0 && TW.case ? `<p class="case">${esc(TW.case)}</p>` : ''}</div></article>`).join('')}</div>`;
+  for (const c of box.querySelectorAll('canvas[data-twinpic]')) { const pc = c.getContext('2d'); pc.imageSmoothingEnabled = false; pc.drawImage(sprite({ zombie: 1, ztype: 'twin' }, 'stand'), 0, 0); }
+}
+renderTwins();
+$('twinsBox').addEventListener('keydown', ev => { const c = ev.target.closest('.card'); if (c && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); c.click(); } });
+setInterval(() => { for (const t of document.querySelectorAll('.twinnow')) t.textContent = twinWhere(); }, 1000);
 setInterval(() => { for (const el of document.querySelectorAll('#roster .card')) { const d = DATA.survivors.find(x => x.name === el.dataset.name), t = el.querySelector('.nowtxt'); if (d && t) t.textContent = whereOf(d); } }, 1000);
 // everything the nightly log says about one survivor, newest first
 function storyOf(d) {
@@ -3844,6 +3919,8 @@ function select(name, jump = true) {
 }
 document.addEventListener('click', ev => {
   if (ev.target.closest('[data-share]')) return;
+  const tw = ev.target.closest('[data-twin]');
+  if (tw && TWINS.length) { selected = TWINS[+tw.dataset.twin]; follow = true; setZoom(Math.max(zi, 4), selected.x, selected.y); $('world').scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
   const b = ev.target.closest('[data-name]'); if (b) { select(b.dataset.name); if (b.classList.contains('card')) $('world').scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
   const p = ev.target.closest('[data-place]'); if (p) { flyTo(p.dataset.place); $('world').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
   const mi = ev.target.closest('[data-mission]'); if (mi) { const m = DATA.missions[+mi.dataset.mission], p = m.poi ? POIS[m.poi] : null; const [cx, cy] = p ? [p.box[0] + p.box[2] / 2, p.box[1] + p.box[3] / 2] : m.at; follow = false; setZoom(Math.max(zi, 3), cx, cy); $('world').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
@@ -3884,7 +3961,8 @@ $('scanBtn').addEventListener('click', () => { FX.scan = !FX.scan; $('scanBtn').
   radio(here.length > 1 ? `${lead.name}: Day ${DATA.day}. ${inCamp} of us at the laundromat now${here.length > inCamp ? `, ${here.length - inCamp} out on a mission` : ''}. Barricades are holding.` : `${lead.name}: Day ${DATA.day}. Barricades are up on the laundromat. It’s just me.`);
   // catch a new visitor up: last night's horde, yesterday's vote, the squad that's out, and anything on the air
   const hl = DATA.horde && DATA.horde.last, lg = (DATA.log || []).filter(e => e.day === DATA.day - 1).pop();
-  if (hl && hl.day === DATA.day - 1) radio(`${lead.name}: Last night ${hl.strength} of them hit the fence. It ${hl.outcome}.${hl.fence != null ? ` What's left of it: ${hl.fence}%.` : ''}`);
+  if (twinsOn() && DATA.day - TW.reveal_day < 3) radio(`Reyes: The first call was Mill Street. Two brothers in blue sport coats, walking into traffic. Scott and Ryan Tedeschi. If you see two coats at the end of the block, that's them. Don't wait to find out.`);
+  if (hl && hl.day === DATA.day - 1) radio(`${lead.name}: Last night ${hl.strength} of them hit the fence${hl.led ? ', the twins out in front' : ''}. It ${hl.outcome}.${hl.fence != null ? ` What's left of it: ${hl.fence}%.` : ''}`);
   if (lg && lg.vote && lg.vote.winner) {
     const o = (lg.outings || [])[0], hurt = o ? o.results.filter(r => r.outcome !== 'ok').map(r => `${r.name}: ${r.outcome === 'dead' ? 'didn’t make it' : r.detail || r.outcome}`) : [];
     radio(`${lead.name}: You voted ${lg.vote.winner}.${o ? ` ${o.squad.join(', ')} went to the ${o.target.toLowerCase()}.` : ''}${hurt.length ? ' ' + hurt.join('. ') + '.' : o ? ' Everyone came through it.' : ''}`);
@@ -3899,6 +3977,7 @@ $('scanBtn').addEventListener('click', () => { FX.scan = !FX.scan; $('scanBtn').
   if (bc0) radio(`88.1 · ${bc0.from}: ${bc0.text}`);
 })();
 for (let i = 0; i < 88; i++) spawnZombie(false, false);
+spawnTwins();
 for (let i = 0; i < 600; i++) update();   // let the world settle before the first frame
 fit();
 setZoom(view.getBoundingClientRect().width < 640 ? 5 : 4, HOME_CENTER[0], HOME_CENTER[1]);
@@ -4237,6 +4316,10 @@ function epEvent(ev) {
   else if (ev[1] === 'stand') who(ev[2]).forEach(e => { e.mode = 'wander'; e.gun = false; e.inside = false; e.hidden = false; e.wait = 60 + rand() * 200 | 0; [e.tx, e.ty] = yardSpot(); [e.x, e.y] = yardSpot(); })
   else if (ev[1] === 'horde') {                      // [t, 'horde', n, [[x, y] route...], side, seconds]: n of them come down the route and spread along one side of the fence
     const [, , n, route, side, secs] = ev;
+    if (TWINS.length) {                              // the twins walk at the front of the column and stop at the fence, ahead of the rest
+      const F = FENCE, end = side === 'e' ? [F.x1 + 12, (F.y0 + F.y1) / 2] : side === 'w' ? [F.x0 - 12, (F.y0 + F.y1) / 2] : [(F.x0 + F.x1) / 2, F.y1 + 12];
+      twinsTo(route.concat([end]), .2, side === 'e' ? 'w' : side === 'w' ? 'e' : null);
+    }
     for (let i = 0; i < n; i++) {
       spawnZombie(false, true); const z = zombies[zombies.length - 1];
       z.free = null; z.street = null; z.horde = true; z.wp = 1; z.bang = rand() * 60; z.spd = .13 + rand() * .07; z.delay = 0;
@@ -4250,6 +4333,7 @@ function epEvent(ev) {
                 : [F.x0 + 3 + u * (F.x1 - F.x0 - 6), F.y1 + 4 + rand() * 4]);
     }
   }
+  else if (ev[1] === 'twins') twinsTo(ev[2], ev[3], ev[4]);   // [t, 'twins', [[x, y], ...], speed?, face?]: the twins appear at the first point and walk the rest; [[-60, -60]] hides them
   else if (ev[1] === 'clearHorde') { for (const z of zombies) if (z.horde && !z.dying) { z.dying = 1; } }   // morning: whatever was left at the fence is down
   else if (ev[1] === 'hit') who(ev[2]).forEach(e => { const z = EPI_BRUTE; if (z && !z.dying) melee(e, z, 1); });   // a sure blow with whatever they carry
   else if (ev[1] === 'arrive') {
@@ -4364,9 +4448,9 @@ function epPrepare(key) {
   for (const e of people) { e.mode = 'wander'; e.inside = true; e.hidden = true; e.x = HOME.door[0]; e.y = HOME.door[1] + 1; e.goIn = null; e.emerge = 0; e.fade = 1; }
   OPEN_DOORS.clear();
   for (let i = 0; i < 900; i++) update();
-  EPI.on = true; epPre();
+  EPI.on = true; twinsTo([[-60, -60]]); epPre();          // the twins stay off camera unless the script brings them in
 }
-function epEnd() { EPI.on = false; WEATHER_OVR = WX_PICK; EPI_WX_SET = false; preview = false; HOUR_OVR = null; CAM_W = 0; runWait = 240; setZoom(4, HOME_CENTER[0], HOME_CENTER[1]); }
+function epEnd() { if (TWINS.length) { twinsTo([[760, 500]]); TWINS[0].spd = .07; TWINS[0].state = 'roam'; retarget(TWINS[0]); } EPI.on = false; WEATHER_OVR = WX_PICK; EPI_WX_SET = false; preview = false; HOUR_OVR = null; CAM_W = 0; runWait = 240; setZoom(4, HOME_CENTER[0], HOME_CENTER[1]); }
 // manual stepping, used to render a video frame by frame
 window.oakEpisode = {
   prepare(key) { EPI.manual = true; epPrepare(key); return EPI.ep.dur; },

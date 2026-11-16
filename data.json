@@ -2270,6 +2270,24 @@
    "ammo": 25
   }
  },
+ "twins": {
+  "reveal_day": 11,
+  "names": [
+   "Scott Tedeschi",
+   "Ryan Tedeschi"
+  ],
+  "ig": [
+   "scotty_knows_nu2028",
+   "oldpatriot2"
+  ],
+  "coat": "matching blue sport coats",
+  "case": "Incident #0001, the first call of the outbreak. A neighbor on Mill Street, on the east side, reported two men in matching blue sport coats walking into traffic. Officer Reyes and his partner took the call. They cuffed one. The other bit his partner, case #3. By morning Mill Street was gone; by the end of the week, so was Oakhaven.",
+  "bio": [
+   "Twin brothers from Mill Street. The first two people in Oakhaven to turn, and the first two the dead ever followed.",
+   "Scott's twin. Same coat, same walk, same night. Where one goes, the other is a step behind."
+  ],
+  "rules": "Always called 'the twins' or by full name (Ryan Tedeschi, never just Ryan: Ryan the Decoy is a survivor). They lead every horde from the front; they never change the odds and can't die except in a mission Sam chooses to put on the ballot."
+ },
  "ballot": {
   "day": 5,
   "keys": [

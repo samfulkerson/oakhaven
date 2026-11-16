@@ -490,6 +490,8 @@ def horde_night(data, rng, day):
     res = {"day": day, "week": h.get("week", 1), "outcome": outcome, "strength": round(strength), "defense": round(defense),
            "defenders": [s["name"] for s in fit], "hurt": hurt_list, "dead": dead, "lit": lit,
            "fence": stock_get(data, "Barricades"), "ammo": stock_get(data, "Ammo")}
+    if twins_here(data, day):        # the twins walk at the front of every horde: the story's, not the dice's. Same night, same odds, and they can't die.
+        res["led"] = True
     h["last"] = res
     h["day"], h["week"] = day + 7, h.get("week", 1) + 1
     return res
@@ -606,6 +608,12 @@ def roll_weather(data, new_day, rng):
 
 # ---------------------------------------------------------------- 3e. follower milestones that change the world
 # data.json milestones: [followers, text, effect, what it does]. Reaching one builds it for real.
+def twins_here(data, day):
+    """Scott and Ryan Tedeschi, Oakhaven's first dead (data.json "twins"): in the story from their reveal day on."""
+    t = data.get("twins") or {}
+    return bool(t) and day >= t.get("reveal_day", 10 ** 6)
+
+
 def has_feat(data, fid):
     return any(f.get("id") == fid for f in data.get("features", []))
 
@@ -1214,6 +1222,7 @@ def main():
             lines.append("- Everyone came back in one piece.")
     if horde:
         lines.append(f"**Horde night (week {horde['week']}): the fence {horde['outcome'].upper()}.** {horde['strength']} of them against a defense of {horde['defense']}"
+                     + (" — the twins at the front" if horde.get("led") else "")
                      + (" (the generator light drew more in)" if horde["lit"] else "") + f". Defenders: {', '.join(horde['defenders']) or 'nobody'}.")
         for d_ in horde["dead"]:
             lines.append(f"- † **{d_}** was pulled over the fence.")
