@@ -133,7 +133,8 @@ def count_vote(data, comments):
         text = " " + re.sub(r"[^A-Z0-9 ]", " ", raw.upper()) + " "
         at = {}
         for o in options:                                  # where in the comment each option is named, by word or by emoji
-            m = re.search(rf"(?<![A-Z]){re.escape(o)}(?![A-Z])", text)
+            pat = r"\s+".join(re.escape(w[:-1]) + "S?" if w.endswith("S") and len(w) > 3 else re.escape(w) for w in o.split())   # "storage unit" counts for STORAGE UNITS
+            m = re.search(rf"(?<![A-Z]){pat}(?![A-Z])", text)
             spots = [m.start()] if m else []
             if o in emojis and emojis[o] in plain(raw):
                 spots.append(plain(raw).index(emojis[o]))
