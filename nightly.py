@@ -124,22 +124,50 @@ def count_vote(data, comments):
         e = o[4] if len(o) > 4 and o[4] else EMOJI.get(o[3] if len(o) > 3 else o[0].lower()) or EMOJI.get(o[0].lower())
         if e:
             emojis[o[0].upper()] = plain(e)
-    ballots = {}
+    ballots, named = {}, {}
     owner = str(data.get("handle", "")).lstrip("@").lower()
     for c in comments:
         if c["username"].lower() == owner:                 # your own replies on the Reel don't count as votes
             continue
-        text = " " + re.sub(r"[^A-Z0-9 ]", " ", c.get("text", "").upper()) + " "
-        pick = next((o for o in options if re.search(rf"(?<![A-Z]){re.escape(o)}(?![A-Z])", text)), None) \
-            or next((o for o in options if o in emojis and emojis[o] in plain(c.get("text", ""))), None)
-        if pick:
-            ballots[c["username"].lower()] = pick          # later comments overwrite earlier ones
+        raw = c.get("text", "")
+        text = " " + re.sub(r"[^A-Z0-9 ]", " ", raw.upper()) + " "
+        at = {}
+        for o in options:                                  # where in the comment each option is named, by word or by emoji
+            m = re.search(rf"(?<![A-Z]){re.escape(o)}(?![A-Z])", text)
+            spots = [m.start()] if m else []
+            if o in emojis and emojis[o] in plain(raw):
+                spots.append(plain(raw).index(emojis[o]))
+            if spots:
+                at[o] = min(spots)
+        if at:
+            who = c["username"].lower()
+            ballots[who] = min(at, key=at.get)             # the first place named is the vote; later comments overwrite earlier ones
+            named[who] = set(at)                           # "HANGAR, and send a few to the FARM" asks for two groups: one to each
     tally = Counter(ballots.values())
     for o in vote["opts"]:
         o[1] = tally.get(o[0].upper(), 0)
     top = tally.most_common()
     winner = top[0][0] if top and (len(top) == 1 or top[0][1] > top[1][1]) else None   # a tie means no winner
-    return winner, dict(tally)
+    support = Counter(o for picks in named.values() if len(picks) > 1 for o in picks)   # only people who asked for two places
+    return winner, dict(tally), dict(support), len(ballots)
+
+
+# A second group: when enough people name two places in one comment ("HANGAR, and send a few to the FARM"),
+# a separate group goes to the most-asked-for other place the same day. A plain vote for the runner-up doesn't count toward it. It only goes to a run, never starts a multi-night mission, and only if the camp can spare people.
+SPLIT_MIN, SPLIT_SHARE, SPLIT_SPARE = 3, .15, 10       # at least 3 people and 15% of voters asking; at least 10 fit to go out
+
+
+def second_group(data, winner, support, voters, keys):
+    if not winner or not support:
+        return None
+    need = max(SPLIT_MIN, -(-voters * SPLIT_SHARE // 1))
+    for word, n in sorted(support.items(), key=lambda kv: -kv[1]):
+        if word == winner or n < need:
+            continue
+        t = find_target(data, keys.get(word, word))
+        if t and t[0] == "run":
+            return {"word": word, "support": n, "need": int(need)}
+    return None
 
 
 # ---------------------------------------------------------------- 2. today's outing, injuries and deaths
@@ -172,11 +200,11 @@ def mission_crew(data):
     return set(m.get("squad", [])) if m else set()
 
 
-def pick_squad(data, kind, item, rng, busy=()):
+def pick_squad(data, kind, item, rng, busy=(), at_least=1):
     living = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= data["day"] and s["name"] not in busy]
     by_name = {s["name"]: s for s in living}
     squad = [by_name[n] for n in item.get("squad", []) if n in by_name]
-    want = SQUAD_SIZE.get(item.get("difficulty", "medium"), 2)
+    want = max(at_least, SQUAD_SIZE.get(item.get("difficulty", "medium"), 2))
     if kind == "run" and item.get("squad") == ["Sam"] and len(living) == 1:
         want = 1
     rest = [s for s in living if s not in squad]
@@ -217,11 +245,11 @@ def gear_odds(s, die, inj):
     return die, inj
 
 
-def resolve_outing(data, kind, item, rng, busy=()):
+def resolve_outing(data, kind, item, rng, busy=(), at_least=1):
     first = not item.get("done_day")
     diff = item.get("difficulty", "medium")
     place = place_name(kind, item)
-    squad = pick_squad(data, kind, item, rng, busy)
+    squad = pick_squad(data, kind, item, rng, busy, at_least)
     if not squad:
         return {"target": place, "key": item.get("dest") or item.get("poi"), "first": first, "kind": kind, "difficulty": diff, "squad": [], "results": [], "note": "Nobody was fit to go."}
     roles = {role_of(s) for s in squad}
@@ -274,7 +302,7 @@ def resolve_outing(data, kind, item, rng, busy=()):
             "mission_status": item.get("status") if kind == "mission" else None}
 
 
-def todays_outing(data, winner, rng):
+def todays_outing(data, winner, rng, second=None):
     # 1) anything planned by hand in data.json "outings"; 2) an active multi-day mission; 3) the vote winner; 4) the next run
     planned = data.pop("outings", None) or []
     targets = []
@@ -291,15 +319,22 @@ def todays_outing(data, winner, rng):
         t = find_target(data, winner)
         if t and (not active or t[0] == "run"):       # a mission in progress doesn't stop the vote: a small group goes out too
             targets.append(t)
+        t2 = find_target(data, second) if second and targets else None
+        fit = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= data["day"]]
+        if t2 and t2[0] == "run" and all(t2[1] is not it for _, it in targets) and len(fit) - len(mission_crew(data)) >= SPLIT_SPARE:
+            targets.append(t2 + ("second",))
     if not targets and data.get("runs"):
         runs = data["runs"]
         fresh = [r for r in runs if not r.get("done_day")]
         nxt = fresh[0] if fresh else min(runs, key=lambda r: r.get("done_day", 0))
         targets.append(("run", nxt))
     out = []
-    for k, it in targets:
-        busy = {n for o in out if o["kind"] == "mission" for n in o["squad"]}
-        out.append(resolve_outing(data, k, it, rng, busy))
+    for k, it, *tag in targets:
+        busy = {n for o in out for n in o["squad"]}       # nobody goes out twice in one day
+        o = resolve_outing(data, k, it, rng, busy, 2 if tag else 1)     # a second group is never one person alone
+        if tag:
+            o["second"] = True
+        out.append(o)
     return out
 
 
@@ -653,7 +688,8 @@ Comments:
 """
 
 
-VOTE_FILLER = {"THE", "STATION", "VOTE", "GO", "TO", "PLEASE", "PICK", "MY", "I", "SAY", "FOR"}
+VOTE_FILLER = {"THE", "STATION", "VOTE", "GO", "TO", "PLEASE", "PICK", "MY", "I", "SAY", "FOR", "AND", "ALSO", "TOO", "THEN", "SEND", "SPLIT", "UP",
+               "SECOND", "GROUP", "TEAM", "SQUAD", "SOME", "A", "FEW", "PEOPLE", "BOTH", "OR", "OTHER", "ANOTHER", "TO", "THE"}
 
 
 def is_just_a_vote(text, votes):
@@ -1081,7 +1117,7 @@ def next_vote(data, new_day, rng, recap, problems):
     words = [o["label"] for o in opts]
     return {"q": q,
             "opts": [[o["label"], 0, desc.get(o["label"]) or fallback.get(o["difficulty"], ""), o["key"], EMOJI.get(o["key"], "")] for o in opts],
-            "how": f"Comment {', '.join(words[:-1])} or {words[-1]} (or its emoji) on the Day {new_day} Reel. One vote per account, your last comment counts."}
+            "how": f"Comment {', '.join(words[:-1])} or {words[-1]} (or its emoji) on the Day {new_day} Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."}
 
 
 # ---------------------------------------------------------------- main
@@ -1104,7 +1140,7 @@ def main():
     comments = ig["comments"] if ig else []
 
     day_lines, day_finds = settle_day_runs(data, day, rng)
-    winner, tally = count_vote(data, comments)
+    winner, tally, support, voters = count_vote(data, comments)
     tiebreak = None
     if not winner and tally:                             # a tie: Sam's call if one is set in data.json vote "tiebreak", otherwise a coin flip
         top = max(tally.values())
@@ -1113,7 +1149,10 @@ def main():
         winner = call if call in tied else rng.choice(tied)
         tiebreak = f"{' / '.join(tied)} tied. " + (f"Sam broke the tie: {winner}." if call in tied else f"A coin flip picked {winner}.")
     keys = {o[0].upper(): o[3] for o in (data.get("vote") or {}).get("opts", []) if len(o) > 3}
-    outings = todays_outing(data, keys.get(winner, winner), rng)
+    split = second_group(data, winner, support, voters, keys)
+    outings = todays_outing(data, keys.get(winner, winner), rng, keys.get(split["word"], split["word"]) if split else None)
+    if split and not any(o.get("second") for o in outings):
+        split = None                                       # not enough people to spare today
     new_day = day + 1
     trips = scout_trips(data, new_day, rng, outings)
     roll_weather(data, new_day, random.Random(f"oakhaven-weather-{new_day}-{os.environ.get('OAKHAVEN_SEED', '')}"))
@@ -1144,6 +1183,7 @@ def main():
     undead = update_undead(data, outings, len(day_lines), horde, rng)
     data["day"] = new_day
     entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner, "tiebreak": tiebreak,
+                                  "second": {"place": split["word"], "asked": split["support"]} if split else None,
                                   "reel": ig["reel"]["permalink"] if ig and ig.get("reel") else None},
              "outings": outings, "healed": healed, "joined": [s["name"] for s in added], "waiting": len(data.get("waitlist", [])), "power": power_news,
              "stock": data.get("stock_change", {}), "camp": stock_notes,
@@ -1157,8 +1197,10 @@ def main():
         lines.append(f"**Vote:** {', '.join(f'{k} {v}' for k, v in tally.items())}. Winner: {winner or 'tie, no winner'}.")
     if tiebreak:
         lines.append(f"**Tie:** {tiebreak}")
+    if split:
+        lines.append(f"**Second group:** {split['support']} of {voters} voters asked for {split['word']} as well, so a separate group went there too.")
     for o in outings:
-        lines.append(f"**{o['kind'].title()}: {o['target']}** ({o['difficulty']}), squad: {', '.join(o['squad']) or 'nobody'}"
+        lines.append(f"**{'Second group run' if o.get('second') else o['kind'].title()}: {o['target']}** ({o['difficulty']}), squad: {', '.join(o['squad']) or 'nobody'}"
                      + (f" — mission {o['mission_status']}" if o.get("mission_status") else ""))
         for r in o["results"]:
             if r["outcome"] == "dead":

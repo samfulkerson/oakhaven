@@ -3888,6 +3888,11 @@ $('scanBtn').addEventListener('click', () => { FX.scan = !FX.scan; $('scanBtn').
   if (lg && lg.vote && lg.vote.winner) {
     const o = (lg.outings || [])[0], hurt = o ? o.results.filter(r => r.outcome !== 'ok').map(r => `${r.name}: ${r.outcome === 'dead' ? 'didn’t make it' : r.detail || r.outcome}`) : [];
     radio(`${lead.name}: You voted ${lg.vote.winner}.${o ? ` ${o.squad.join(', ')} went to the ${o.target.toLowerCase()}.` : ''}${hurt.length ? ' ' + hurt.join('. ') + '.' : o ? ' Everyone came through it.' : ''}`);
+    const o2 = (lg.outings || []).find(x => x.second);      // enough of you asked for a second place too, so a separate group went there
+    if (o2 && o2.squad.length) {
+      const hurt2 = o2.results.filter(r => r.outcome !== 'ok').map(r => `${r.name}: ${r.outcome === 'dead' ? 'didn’t make it' : r.detail || r.outcome}`);
+      radio(`${lead.name}: Enough of you asked for the ${o2.target.toLowerCase()} too, so ${o2.squad.join(' and ')} went there as a second group.${hurt2.length ? ' ' + hurt2.join('. ') + '.' : ' They made it back.'}`);
+    }
   }
   if (MISSION_NOW) radio(`${MISSION_NOW.squad[0]} (on the radio): Still inside the ${MISSION_NOW.name.toLowerCase()}. ${missionLeft()} more night${missionLeft() === 1 ? '' : 's'}.`);
   const bc0 = DATA.broadcast && DATA.broadcast.day >= DATA.day - 1 ? DATA.broadcast : null;
