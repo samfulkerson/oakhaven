@@ -57,7 +57,7 @@ class Episode:
         assert all(c[0] < c[1] for c in captions), 'a caption ends before it starts'
         h = ''
         if hook:
-            h = f"\n    hook: {{ from: {hook['from']}, tag: {r(hook['tag'])}, lines: {r(hook['lines'])} }},"
+            h = f"\n    hook: {{ from: {hook['from']}, lines: {r(hook['lines'])} }},"     # no tag: the cold open has no found-footage cues
         w = r(weather) if isinstance(weather, str) else r([[round(k[0], 2), k[1]] for k in weather])
         js = (f"  {self.key}: {{\n    title: {r(title)}, dur: {round(dur, 1)}, audioOffset: {audio_offset}, weather: {w},{h}\n"
               f"    cam: {r(rnd(cam))},\n    hour: {r(rnd(hour))},\n    events: {r(rnd(events))},\n"
