@@ -163,6 +163,123 @@
    "signature": "nothing in his hands: he needs them free to dance",
    "face": "mid-spin, or from behind, arms out in the street",
    "auto": true
+  },
+  "Officer Reyes": {
+   "role": "Guard",
+   "skin": "dark brown skin",
+   "hair": "gray hair",
+   "outfit": "dusty purple jacket, dark brown pants, work gloves",
+   "signature": "a long wooden club",
+   "face": "from behind, shoulders squared to the fence",
+   "auto": true
+  },
+  "Toast": {
+   "role": "Guard",
+   "skin": "light tan skin",
+   "hair": "dark brown hair",
+   "outfit": "khaki-tan jacket, khaki-brown pants, work gloves",
+   "signature": "a long wooden club",
+   "face": "from behind, shoulders squared to the fence",
+   "auto": true
+  },
+  "Artemis": {
+   "role": "Engineer",
+   "skin": "brown skin",
+   "hair": "auburn hair, under safety goggles pushed up on the forehead",
+   "outfit": "slate-blue jacket, navy pants, safety goggles pushed up on the forehead, work gloves",
+   "signature": "a canvas tool roll",
+   "face": "goggles down, or from behind",
+   "auto": true
+  },
+  "Weston": {
+   "role": "Builder",
+   "skin": "brown skin",
+   "hair": "sandy blonde hair, under a yellow hard hat",
+   "outfit": "charcoal-gray jacket, dark brown pants, a yellow hard hat, work gloves",
+   "signature": "a claw hammer in a tool belt",
+   "face": "hard hat tipped forward, or from behind",
+   "auto": true
+  },
+  "Ben": {
+   "role": "Radio Operator",
+   "skin": "brown skin",
+   "hair": "sandy blonde hair",
+   "outfit": "olive-green jacket, olive cargo pants, work gloves",
+   "signature": "a backpack radio with a tall whip antenna (red tip), a headset around the neck",
+   "face": "angle and crop, the headset strap crossing the face",
+   "auto": true
+  },
+  "Frost": {
+   "role": "Engineer",
+   "skin": "light tan skin",
+   "hair": "gray hair, under safety goggles pushed up on the forehead",
+   "outfit": "brick-red jacket, navy pants, safety goggles pushed up on the forehead, work gloves",
+   "signature": "a canvas tool roll",
+   "face": "goggles down, or from behind",
+   "auto": true
+  },
+  "Joseph": {
+   "role": "Medic",
+   "skin": "dark brown skin",
+   "hair": "dark brown hair",
+   "outfit": "off-white medic jacket with a red cross on the chest, khaki-brown pants, work gloves",
+   "signature": "a red first-aid bag",
+   "face": "a surgical mask, or head down over a patient",
+   "auto": true
+  },
+  "Jeff": {
+   "role": "Mechanic",
+   "skin": "medium-brown skin",
+   "hair": "gray hair, under a faded blue cap",
+   "outfit": "slate-blue jacket, olive cargo pants, a faded blue cap, work gloves",
+   "signature": "a big adjustable wrench",
+   "face": "cap brim low, often bent over an engine",
+   "auto": true
+  },
+  "Spenz": {
+   "role": "Sharpshooter",
+   "skin": "fair skin",
+   "hair": "auburn hair",
+   "outfit": "brown work jacket, olive cargo pants, work gloves",
+   "signature": "a scoped rifle slung on the back",
+   "face": "from behind or over the shoulder",
+   "auto": true
+  },
+  "Marco": {
+   "role": "Scout",
+   "skin": "dark brown skin",
+   "hair": "dark brown hair, under an olive hood, always up",
+   "outfit": "olive-green field jacket, olive cargo pants, an olive hood, always up, work gloves",
+   "signature": "binoculars on a strap",
+   "face": "hood up, from the side or behind",
+   "auto": true
+  },
+  "Bob": {
+   "role": "Scavenger",
+   "skin": "medium-brown skin",
+   "hair": "dark brown hair",
+   "outfit": "dark green jacket, navy pants, work gloves",
+   "signature": "a worn brown backpack",
+   "face": "from behind, the backpack filling the frame",
+   "auto": true
+  },
+  "Amnic0re": {
+   "role": "Builder",
+   "skin": "fair skin",
+   "hair": "dark brown hair, under a yellow hard hat",
+   "outfit": "dark green jacket, khaki-brown pants, a yellow hard hat, work gloves",
+   "signature": "a claw hammer in a tool belt",
+   "face": "hard hat tipped forward, or from behind",
+   "auto": true
+  },
+  "John": {
+   "role": "Scavenger",
+   "skin": "medium-brown skin",
+   "hair": "auburn hair",
+   "outfit": "khaki-tan jacket, dark brown pants, work gloves",
+   "signature": "a worn brown backpack",
+   "face": "from behind, the backpack filling the frame",
+   "auto": true
   }
  },
  "places": {
