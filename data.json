@@ -26,9 +26,16 @@
     "Easy run. Gives the Laundromat generator its 10 L of gasoline.",
     "gas",
     "⛽"
+   ],
+   [
+    "WATER TOWER",
+    0,
+    "Two nights. Frost taps the old tower in the woods: +20 water, then +10 a night.",
+    "watertower",
+    "🚰"
    ]
   ],
-  "how": "Comment GUN SHOP, FAIR or GAS (or its emoji) on the Day 11 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment GUN SHOP, FAIR, GAS or WATER TOWER (or its emoji) on the Day 11 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -1084,7 +1091,7 @@
    "crew": "Frost the plumber, Weston the builder and two guards",
    "reward": "+20 water now, then +10 clean water every night",
    "poi": "watertower",
-   "from_day": 12,
+   "from_day": 11,
    "status": "open",
    "days": 2,
    "squad": [
