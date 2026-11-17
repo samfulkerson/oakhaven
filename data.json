@@ -1143,7 +1143,7 @@
    "clue": "Sam dragged it home from the auto shop. The carburetor is shot.",
    "crew": "1 mechanic",
    "fuel": "10 L gasoline",
-   "powers": "A porch light and a floodlight over the yard",
+   "powers": "A porch light and a floodlight over the yard: the dead wear the fence down slower every night, and on horde nights the shooters can see (+10 defense, +4 for every shooter), though the light draws more of them in. Burns 2 L of fuel a night.",
    "needs": [
     {
      "label": "10 L of gasoline from the gas station",

@@ -453,6 +453,11 @@ def horde_night(data, rng, day):
     defense = fence * .5 + min(ammo, 60) * .5 + len(fit) * 6 + roles["Sharpshooter"] * 8 + roles["Builder"] * 5 \
         + sum(2 for s in fit if has_gear(s, "weapon")) + sum(1 for s in fit if has_gear(s, "armor")) \
         + sum(f.get("defense", 0) for f in data.get("features", []))
+    flood = 0
+    if lit:                                               # the floodlights: the light draws more of them in, but now the shooters can see
+        shooters = sum(1 for s in fit if s.get("role") == "Sharpshooter" or any(g.get("icon") in ("rifle", "pistol") for g in s.get("gear", [])))
+        flood = FLOOD_BASE + FLOOD_PER_SHOOTER * shooters
+        defense += flood
     margin = round(defense - strength)
     def hurt(n, why):
         pool = [s for s in fit if s.get("status") != "injured"]
@@ -488,7 +493,7 @@ def horde_night(data, rng, day):
     if stock_get(data, "Barricades") < 10:
         stock_row(data, "Barricades")[1] = 10
     res = {"day": day, "week": h.get("week", 1), "outcome": outcome, "strength": round(strength), "defense": round(defense),
-           "defenders": [s["name"] for s in fit], "hurt": hurt_list, "dead": dead, "lit": lit,
+           "defenders": [s["name"] for s in fit], "hurt": hurt_list, "dead": dead, "lit": lit, "flood": flood,
            "fence": stock_get(data, "Barricades"), "ammo": stock_get(data, "Ammo")}
     if twins_here(data, day):        # the twins walk at the front of every horde: the story's, not the dice's. Same night, same odds, and they can't die.
         res["led"] = True
@@ -791,6 +796,8 @@ LOOT = {"pharmacy": {"Medicine": 6, "Food": 2}, "diner": {"Food": 12, "Water": 6
         "funhouse": {"Scrap": 12}, "arcade": {"Scrap": 10}, "showbarn": {"Food": 12}}
 AMMO_USE = {"easy": 2, "medium": 6, "hard": 15, "deadly": 30}     # rounds a squad burns on an outing
 FENCE_WEAR = 4                                                   # barricade % the dead tear down each night
+FLOOD_WEAR = 2                                                   # ...less while the yard floodlight is on: the guards see them coming and clear the fence
+FLOOD_BASE, FLOOD_PER_SHOOTER = 10, 4                            # horde-night defense from the floodlights: a flat bonus, plus more for every shooter
 
 
 def stock_row(data, name):
@@ -956,7 +963,8 @@ def keep_stockpile(data, outings, rng, new_day):
             notes.append(f"The {g['name']} ran out of fuel and went dark.")
 
     # the dead wear the fence down; builders and scrap patch it up
-    add("Barricades", -FENCE_WEAR, "the dead at the fence")
+    lit_now = any(g.get("status") == "running" and not g.get("dry") for g in data.get("power", []))
+    add("Barricades", -(FENCE_WEAR - FLOOD_WEAR if lit_now else FENCE_WEAR), "the dead at the fence" + (" (the floodlight keeps them back)" if lit_now else ""))
     builders = [s for s in present if s.get("role") == "Builder" and s.get("status") not in ("injured", "away")]
     for b in builders:
         if stock_get(data, "Scrap") >= 3 and stock_get(data, "Barricades") < 100:
@@ -1235,7 +1243,7 @@ def main():
     if horde:
         lines.append(f"**Horde night (week {horde['week']}): the fence {horde['outcome'].upper()}.** {horde['strength']} of them against a defense of {horde['defense']}"
                      + (" — the twins at the front" if horde.get("led") else "")
-                     + (" (the generator light drew more in)" if horde["lit"] else "") + f". Defenders: {', '.join(horde['defenders']) or 'nobody'}.")
+                     + (f" (the floodlight drew more in, but it gave the shooters +{horde.get('flood', 0)} defense)" if horde["lit"] else "") + f". Defenders: {', '.join(horde['defenders']) or 'nobody'}.")
         for d_ in horde["dead"]:
             lines.append(f"- † **{d_}** was pulled over the fence.")
         for h_ in horde["hurt"]:
