@@ -4,7 +4,7 @@
 
 x, y = the world point to centre on (the yard is around 424, 500; see the map table in README), w = how many world pixels
 wide the shot is (50-70 is a tight close-up of the yard). Make the gear/feature change in data.json FIRST (locally), so the
-survivor is drawn holding it, then run this with the local server up. --who stands that survivor still near x, y, apart
+survivor is drawn holding it, then run this with the local server up. --who stands that survivor (or several, comma-separated: --who "Frost,Weston,Jeff") still near x, y, apart
 from the crowd. Look at the result; move x/y/w until the person and the gear are clearly in frame.
 """
 import argparse, json, os, subprocess, sys, tempfile
@@ -19,7 +19,7 @@ a = ap.parse_args()
 d = tempfile.mkdtemp()
 inj = os.path.join(d, 'spot.js')
 open(inj, 'w').write("EPISODES.spot = { title: 'spot', dur: 4, audioOffset: 0, cam: [[0, %s, %s, %s], [4, %s, %s, %s]], hour: [[0, %s], [4, %s]], events: %s, "
-                     "captions: [[0, 4, 'capTop', %s]] };" % (a.x, a.y, a.w, a.x, a.y, a.w, a.hour, a.hour, json.dumps([[0, 'defend', [[a.who, a.x, a.y + 4]]]] if a.who else []), json.dumps(a.headline.upper())))
+                     "captions: [[0, 4, 'capTop', %s]] };" % (a.x, a.y, a.w, a.x, a.y, a.w, a.hour, a.hour, json.dumps([[0, 'defend', [[n.strip(), a.x + (i - (len(a.who.split(',')) - 1) / 2) * 11, a.y + 4] for i, n in enumerate(a.who.split(','))]]] if a.who else []), json.dumps(a.headline.upper())))
 subprocess.run([sys.executable, os.path.join(HERE, 'render_reel.py'), 'spot', d, '--stills', '2', '--inject', inj], check=True)
 im = Image.open(os.path.join(d, 'still_002.00.jpg'))
 top = 250                                                   # keeps the headline (drawn at 17% of the height) inside the 4:5 crop
