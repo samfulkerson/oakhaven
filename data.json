@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 10,
- "followers": 75,
+ "day": 11,
+ "followers": 87,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 10. Water is at zero and food lasts one more day. The radio warned: do not go to Fort Corran. Where do we send the squads?",
+  "q": "Day 11. Food lasts one day, water is gone, and Sam is still out. The horde reaches the fence in three days. Where do we go?",
   "opts": [
    [
-    "HANGAR",
+    "GUN SHOP",
     0,
-    "Medium run, never searched. More danger, and no promise of what's inside.",
-    "hangar",
-    "🛩"
+    "Never searched. Could mean more ammo, or nothing left worth taking.",
+    "gunshop",
+    "🔫"
    ],
    [
-    "FARM",
+    "FAIR",
     0,
-    "Easy run, never searched. Low risk, but we are out of water.",
-    "farm",
-    "🌾"
+    "Never searched. Food's nearly gone, but nothing here is promised.",
+    "fair",
+    "🎡"
    ],
    [
-    "STORAGE UNITS",
+    "GAS",
     0,
-    "A quick run. Low risk.",
-    "storage",
-    "📦"
+    "Easy run. Gives the Laundromat generator its 10 L of gasoline.",
+    "gas",
+    "⛽"
    ]
   ],
-  "how": "Comment HANGAR, FARM or STORAGE UNITS (or its emoji) on the Day 10 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment GUN SHOP, FAIR or GAS (or its emoji) on the Day 11 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -38,7 +38,7 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 6,
+   "outings": 7,
    "day_outings": 2,
    "gear": [
     {
@@ -334,7 +334,8 @@
    "ig": "totally.am.toastyy",
    "role": "Guard",
    "bio": "Toast shows up with an M240 machine gun and zero plans to be quiet about it.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1
   },
   {
    "name": "Artemis",
@@ -348,7 +349,9 @@
    "ig": "westonkeithsteward",
    "role": "Builder",
    "bio": "Weston is a carpenter who will build you a fortress, then argue about the door hinges.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1,
+   "outings": 1
   },
   {
    "name": "Ben",
@@ -362,21 +365,27 @@
    "ig": "sir_waffles45",
    "role": "Engineer",
    "bio": "Frost is a plumber who knows exactly where the water pipes run and how to make them useful.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1,
+   "outings": 1
   },
   {
    "name": "Joseph",
    "ig": "chamra_universal",
    "role": "Medic",
    "bio": "Joseph is a military medic who stays calm while everyone else panics.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1,
+   "outings": 1
   },
   {
    "name": "Jeff",
    "ig": "zigos1229",
    "role": "Mechanic",
    "bio": "Jeff is a mechanic who can fix any vehicle, as long as it isn't on fire.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1,
+   "outings": 1
   },
   {
    "name": "Spenz",
@@ -411,7 +420,29 @@
    "ig": "linguistic_syllable",
    "role": "Scavenger",
    "bio": "John is a paranoid mushroom grower and canning expert with a spear, a fear of the dead, and a lot of jars.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1
+  },
+  {
+   "name": "Vic",
+   "ig": "victorioussecrt",
+   "role": "Gunsmith",
+   "bio": "Vic is a blacksmith with a taste for big rewards, aiming for the Hangar and maybe the Farm on the way back.",
+   "joined": 11
+  },
+  {
+   "name": "Sam 2",
+   "ig": "samuelnathanael16",
+   "role": "EMT",
+   "bio": "Sam is a firefighter who discovered the fire truck still has water in it and shared the news with the scavengers.",
+   "joined": 11
+  },
+  {
+   "name": "Kim",
+   "ig": "kim.cheyanne",
+   "role": "Engineer",
+   "bio": "Kim is an electrician who's tagging along with wstonkiethsteward to keep the lights on.",
+   "joined": 11
   }
  ],
  "runs": [
@@ -547,10 +578,13 @@
    "dest": "hangar",
    "difficulty": "medium",
    "squad": [
-    "Sam"
+    "Sam",
+    "Frost",
+    "Joseph"
    ],
    "loot": "A flare gun and a drum of aviation fuel",
-   "place": "Hangar 2"
+   "place": "Hangar 2",
+   "done_day": 10
   },
   {
    "dest": "firestation",
@@ -605,11 +639,13 @@
    "dest": "farm",
    "difficulty": "easy",
    "squad": [
-    "Sam"
+    "Jeff",
+    "Weston"
    ],
    "loot": "Seed packets, a sack of feed corn and two very angry chickens",
    "place": "Hollow Creek Farm",
-   "scouted": 4
+   "scouted": 4,
+   "done_day": 10
   },
   {
    "dest": "fair",
@@ -1291,25 +1327,25 @@
  "stock": [
   [
    "Food",
-   44,
+   66,
    200,
    "rations"
   ],
   [
    "Water",
-   0,
+   4,
    200,
    "rations"
   ],
   [
    "Fuel",
-   4,
+   40,
    200,
    "L"
   ],
   [
    "Ammo",
-   120,
+   112,
    500,
    "rds"
   ],
@@ -1321,13 +1357,13 @@
   ],
   [
    "Scrap",
-   27,
+   31,
    200,
    "units"
   ],
   [
    "Barricades",
-   70,
+   81,
    100,
    "%"
   ]
@@ -2086,16 +2122,121 @@
     "Jaylozy & Mateen → Rosie’s Diner (10:15): +1 food",
     "Elder & Victoria → Pier 9 warehouse (11:50): +1 scrap (a close call)"
    ]
+  },
+  {
+   "day": 10,
+   "vote": {
+    "question": "Day 10. Water is at zero and food lasts one more day. The radio warned: do not go to Fort Corran. Where do we send the squads?",
+    "results": {
+     "HANGAR": 7,
+     "STORAGE UNITS": 2,
+     "FARM": 3
+    },
+    "winner": "HANGAR",
+    "tiebreak": null,
+    "second": {
+     "place": "FARM",
+     "asked": 3
+    },
+    "reel": "https://www.instagram.com/reel/DfzhwGTyL8P/"
+   },
+   "outings": [
+    {
+     "target": "Hangar 2",
+     "key": "hangar",
+     "first": true,
+     "kind": "run",
+     "difficulty": "medium",
+     "squad": [
+      "Sam",
+      "Frost",
+      "Joseph"
+     ],
+     "results": [
+      {
+       "name": "Sam",
+       "ig": "surviveoakhaven",
+       "outcome": "injured",
+       "detail": "a bad fall, out until Day 11"
+      },
+      {
+       "name": "Frost",
+       "ig": "sir_waffles45",
+       "outcome": "ok"
+      },
+      {
+       "name": "Joseph",
+       "ig": "chamra_universal",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    },
+    {
+     "target": "Hollow Creek Farm",
+     "key": "farm",
+     "first": true,
+     "kind": "run",
+     "difficulty": "easy",
+     "squad": [
+      "Jeff",
+      "Weston"
+     ],
+     "results": [
+      {
+       "name": "Jeff",
+       "ig": "zigos1229",
+       "outcome": "ok"
+      },
+      {
+       "name": "Weston",
+       "ig": "westonkeithsteward",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null,
+     "second": true
+    }
+   ],
+   "healed": [
+    "Sam"
+   ],
+   "joined": [
+    "Vic",
+    "Sam 2",
+    "Kim"
+   ],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Food": 22,
+    "Water": 4,
+    "Scrap": 4,
+    "Ammo": -8,
+    "Fuel": 36,
+    "Barricades": 11
+   },
+   "camp": [
+    "Camp jobs: Tanny and Marco (snares and hunting): +2 food; 3 of them (foraging the block): +3 food; Mateen (the farm plots): +3 food; Artemis (rain catchers and pipe taps): +2 water; Victoria stretched every meal: +4 food."
+   ],
+   "horde": null,
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Joseph & John → Maple Court (11:50): nothing",
+    "Weston & Toast → Hardware store (13:30): +1 scrap (a close call)",
+    "Jeff & Frost → Maple Court (15:05): +1 water"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": 13,
-  "Water": -11,
-  "Scrap": -6,
-  "Ammo": 107,
-  "Fuel": 2,
-  "Barricades": 5
+  "Food": 22,
+  "Water": 4,
+  "Scrap": 4,
+  "Ammo": -8,
+  "Fuel": 36,
+  "Barricades": 11
  },
  "schedule": [],
  "broadcast": {
@@ -2231,15 +2372,15 @@
   75
  ],
  "undead": {
-  "count": 31628,
+  "count": 31615,
   "last": {
-   "day": 9,
-   "killed": 32,
-   "turned": 8,
+   "day": 10,
+   "killed": 16,
+   "turned": 3,
    "arrived": 0
   }
  },
- "last_run": 1794826414,
+ "last_run": 1794912938,
  "horde": {
   "day": 14,
   "week": 2,
@@ -2299,61 +2440,60 @@
   ]
  },
  "weather": {
-  "day": 10,
+  "day": 11,
   "kind": "clear"
  },
  "camp_bonus": [
   {
    "item": "Food",
-   "amt": 24,
+   "amt": 6,
    "why": "new survivors' packs"
   },
   {
    "item": "Water",
-   "amt": 24,
+   "amt": 6,
    "why": "new survivors' packs"
   }
  ],
  "day_runs": {
-  "day": 10,
+  "day": 11,
   "runs": [
    {
-    "time": "11:50",
-    "dest": "maple",
+    "time": "08:40",
+    "dest": "hangar",
     "crew": [
-     "Joseph",
-     "John"
+     "Sam 2",
+     "Bob"
     ],
     "find": {},
     "event": "ok",
-    "line": "Joseph: Picked clean. Nothing worth carrying. Heading home."
+    "line": "Sam 2: Picked clean. Nothing worth carrying. Heading home."
    },
    {
-    "time": "13:30",
-    "dest": "hardware",
+    "time": "11:50",
+    "dest": "farm",
     "crew": [
-     "Weston",
-     "Toast"
+     "Officer Reyes",
+     "Ben"
     ],
     "find": {
-     "Scrap": 1
+     "Food": 2
     },
-    "event": "scare",
-    "line": "Weston: Found 1 car doors for the fence. Heading home.",
-    "scare": "Toast: Something knocked over a shelf in the back. We didn't wait to see what."
+    "event": "ok",
+    "line": "Officer Reyes: Found 2 cans of soup behind the counter. Heading home."
    },
    {
     "time": "15:05",
-    "dest": "maple",
+    "dest": "ranger",
     "crew": [
-     "Jeff",
-     "Frost"
+     "Marco",
+     "Spenz"
     ],
     "find": {
-     "Water": 1
+     "Food": 1
     },
     "event": "ok",
-    "line": "Jeff: Found 1 jugs of water under a sink. Heading home."
+    "line": "Marco: Found 1 jars of peanut butter in a back room. Heading home."
    }
   ]
  }
