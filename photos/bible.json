@@ -305,15 +305,6 @@
    "face": "head down over the work, or from behind",
    "auto": true
   },
-  "Sam 2": {
-   "role": "EMT",
-   "skin": "medium-brown skin",
-   "hair": "dark brown hair",
-   "outfit": "off-white medic jacket with a red cross on the chest, navy pants, work gloves",
-   "signature": "a red first-aid bag",
-   "face": "a surgical mask, or head down over a patient",
-   "auto": true
-  },
   "Kim": {
    "role": "Engineer",
    "skin": "light tan skin",
@@ -321,6 +312,15 @@
    "outfit": "olive-green jacket, black jeans, safety goggles pushed up on the forehead, work gloves",
    "signature": "a canvas tool roll",
    "face": "goggles down, or from behind",
+   "auto": true
+  },
+  "Steve": {
+   "role": "EMT",
+   "skin": "medium-brown skin",
+   "hair": "dark brown hair",
+   "outfit": "off-white medic jacket with a red cross on the chest, navy pants, work gloves",
+   "signature": "a red first-aid bag",
+   "face": "a surgical mask, or head down over a patient",
    "auto": true
   }
  },
