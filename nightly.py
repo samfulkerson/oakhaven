@@ -771,6 +771,16 @@ def add_survivors(data, parsed):
 # ---------------------------------------------------------------- 5b. the stockpile
 # data.json "stock" rows are [name, amount, capacity, unit]. Food and water are rations: one per survivor per day.
 # What each place brings home on a first visit (half that when it's been picked over), give or take a quarter.
+# Food and water from runs grow with the camp: survivors / 15, at least 1x, at most 2.5x (reached at about 37 people).
+# Past that, runs alone fall behind again and the camp needs lasting sources (the water tower, harvests, cattle, the kitchen).
+# Ammo, fuel, scrap and medicine never scale; repeat visits still give half.
+SCALED_LOOT, HAUL_PER, HAUL_CAP = ("Food", "Water"), 15, 2.5
+
+
+def haul_scale(people):
+    return max(1.0, min(HAUL_CAP, people / HAUL_PER))
+
+
 LOOT = {"pharmacy": {"Medicine": 6, "Food": 2}, "diner": {"Food": 12, "Water": 6}, "gas": {"Fuel": 20, "Water": 8},
         "market": {"Food": 18, "Water": 10}, "hardware": {"Scrap": 25}, "gunshop": {"Ammo": 40}, "port": {"Food": 30, "Scrap": 10},
         "ranger": {"Ammo": 15, "Medicine": 4, "Food": 4}, "hangar": {"Fuel": 30, "Scrap": 10}, "firestation": {"Medicine": 6, "Scrap": 15, "Water": 10},
@@ -841,7 +851,8 @@ def keep_stockpile(data, outings, rng, new_day):
         add("Ammo", -AMMO_USE.get(o.get("difficulty"), 6), f"{o['target']} run")
         if o.get("kind") == "run" and any(r["outcome"] != "dead" for r in o["results"]):
             for item, amt in LOOT.get(o.get("key"), {}).items():
-                add(item, round(amt * (1 if o.get("first") else .5) * rng.uniform(.75, 1.25)), o["target"])
+                mult = haul_scale(len(present)) if item in SCALED_LOOT else 1      # a bigger camp sends bigger squads with more packs
+                add(item, round(amt * mult * (1 if o.get("first") else .5) * rng.uniform(.75, 1.25)), o["target"])
             run = next((r for r in data.get("runs", []) if r["dest"] == o.get("key")), {})
             haul = run.get("haul")
             if haul and o.get("first") and not run.get("haul_taken"):      # a one-time find set by hand in data.json (a locked gun locker...)

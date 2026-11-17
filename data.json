@@ -358,7 +358,14 @@
    "bio": "Weston is a carpenter who will build you a fortress, then argue about the door hinges.",
    "joined": 10,
    "day_outings": 1,
-   "outings": 1
+   "outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Pitchfork",
+     "icon": "spear"
+    }
+   ]
   },
   {
    "name": "Ben",
@@ -374,7 +381,14 @@
    "bio": "Frost is a plumber who knows exactly where the water pipes run and how to make them useful.",
    "joined": 10,
    "day_outings": 1,
-   "outings": 1
+   "outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Propeller club",
+     "icon": "club"
+    }
+   ]
   },
   {
    "name": "Joseph",
@@ -392,7 +406,14 @@
    "bio": "Jeff is a mechanic who can fix any vehicle, as long as it isn't on fire.",
    "joined": 10,
    "day_outings": 1,
-   "outings": 1
+   "outings": 1,
+   "gear": [
+    {
+     "kind": "armor",
+     "name": "Welder's leather jacket",
+     "icon": "vest"
+    }
+   ]
   },
   {
    "name": "Spenz",
@@ -2362,6 +2383,27 @@
    "kind": "funny",
    "title": "Banned from the kitchen",
    "text": "Gary tried to bribe Victoria with something from his old shop for extra dessert. She banned him from her kitchen, and there's a sign."
+  },
+  {
+   "day": 11,
+   "who": "Frost",
+   "kind": "good",
+   "title": "Propeller club",
+   "text": "In the back of Hangar 2, Frost found a broken wooden propeller. He sawed one blade down to a handle and wrapped it in pipe tape. Now he has a club."
+  },
+  {
+   "day": 11,
+   "who": "Weston",
+   "kind": "good",
+   "title": "Pitchfork",
+   "text": "Weston walked out of the Hollow Creek barn with a pitchfork. Four steel tines, five feet of reach, and he never has to get close."
+  },
+  {
+   "day": 11,
+   "who": "Jeff",
+   "kind": "good",
+   "title": "Welder's leather jacket",
+   "text": "Jeff found a welder's leather jacket hanging in the Hollow Creek workshop. Heavy cowhide, made to stop sparks. It'll stop teeth too."
   }
  ],
  "zombie_types": [
