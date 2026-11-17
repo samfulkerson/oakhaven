@@ -1048,6 +1048,7 @@
    "crew": "Frost the plumber, Weston the builder and two guards",
    "reward": "+20 water now, then +10 clean water every night",
    "poi": "watertower",
+   "from_day": 12,
    "status": "open",
    "days": 2,
    "squad": [

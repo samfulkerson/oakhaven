@@ -1048,7 +1048,8 @@ def vote_options(data, new_day, rng, missions_ok=True):
     again = sorted([r for r in runs if r.get("done_day")], key=lambda r: r["done_day"])   # longest since the last visit first
     pool = [("run", r) for r in (fresh[:5] or again[:5])]
     picks = rng.sample(pool, min(3, len(pool)))
-    missions = [m for m in data.get("missions", []) if m.get("poi") and m.get("status") != "done" and n >= SQUAD_SIZE.get(m.get("difficulty", "hard"), 4)]
+    missions = [m for m in data.get("missions", []) if m.get("poi") and m.get("status") != "done" and n >= SQUAD_SIZE.get(m.get("difficulty", "hard"), 4)
+                and new_day >= m.get("from_day", 0)]          # "from_day": keep a mission off the ballot until a set day
     if missions_ok and missions and picks and rng.random() < .5:
         picks[-1] = ("mission", rng.choice(missions))
     want = {}
