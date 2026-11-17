@@ -446,9 +446,11 @@ def horde_night(data, rng, day):
     fit = [s for s in home if s.get("status") != "injured"]
     roles = Counter(role_of(s) for s in fit)
     lit = any(g.get("status") == "running" and not g.get("dry") for g in data.get("power", []))
-    strength = 70 + 15 * (h.get("week", 1) - 1) + min(data.get("followers") or 0, 80) * 0.5 + rng.uniform(-10, 10)
+    wk = h.get("week", 1) - 1                            # the horde grows with the camp: every survivor at the laundromat is more noise and more
+    heads = len(fit) + .5 * (len(home) - len(fit))        # smell to follow (the injured, kept inside, count half)
+    strength = (HORDE_BASE + HORDE_WEEK * wk + HORDE_PER_HEAD * heads * (1 + HORDE_HEAD_GROWTH * wk)) * rng.uniform(.9, 1.1)
     if lit:
-        strength *= 1.15                                  # the light draws them in
+        strength *= 1.10                                  # the light draws them in
     fence, ammo = stock_get(data, "Barricades"), stock_get(data, "Ammo")
     defense = fence * .5 + min(ammo, 60) * .5 + len(fit) * 6 + roles["Sharpshooter"] * 8 + roles["Builder"] * 5 \
         + sum(2 for s in fit if has_gear(s, "weapon")) + sum(1 for s in fit if has_gear(s, "armor")) \
@@ -459,6 +461,7 @@ def horde_night(data, rng, day):
         flood = FLOOD_BASE + FLOOD_PER_SHOOTER * shooters
         defense += flood
     margin = round(defense - strength)
+    ratio = defense / max(1, strength)                    # outcomes go by how far ahead or behind the camp is, so they work at any size
     def hurt(n, why):
         pool = [s for s in fit if s.get("status") != "injured"]
         rng.shuffle(pool)
@@ -472,13 +475,13 @@ def horde_night(data, rng, day):
         if r:
             r[1] = max(0, r[1] - amt)
     hurt_list, dead = [], []
-    if margin >= 15:
+    if ratio >= 1.08:
         outcome, fence_hit, ammo_hit = "held", 15, 20
-    elif margin >= 0:
+    elif ratio >= 1.0:
         outcome, fence_hit, ammo_hit = "barely held", 25, 30
         if rng.random() < .5:
             hurt_list = hurt(1, "clawed at the fence")
-    elif margin >= -20:
+    elif ratio >= .88:
         outcome, fence_hit, ammo_hit = "breached", 40, 35
         hurt_list = hurt(rng.randint(1, 2), "bitten back from the breach")
     else:
@@ -795,6 +798,9 @@ LOOT = {"pharmacy": {"Medicine": 6, "Food": 2}, "diner": {"Food": 12, "Water": 6
         "checkpoint": {"Ammo": 60, "Food": 6, "Medicine": 4}, "surplus": {"Water": 15, "Food": 6, "Medicine": 2},
         "funhouse": {"Scrap": 12}, "arcade": {"Scrap": 10}, "showbarn": {"Food": 12}}
 AMMO_USE = {"easy": 2, "medium": 6, "hard": 15, "deadly": 30}     # rounds a squad burns on an outing
+# Horde strength: a base, more every week, and more for every survivor at the laundromat (that share also grows each week).
+# Tuned so a normal camp usually holds or barely holds, a neglected one (low fence, little ammo, people hurt) can be breached.
+HORDE_BASE, HORDE_WEEK, HORDE_PER_HEAD, HORDE_HEAD_GROWTH = 40, 10, 7.5, .04
 FENCE_WEAR = 4                                                   # barricade % the dead tear down each night
 FLOOD_WEAR = 2                                                   # ...less while the yard floodlight is on: the guards see them coming and clear the fence
 FLOOD_BASE, FLOOD_PER_SHOOTER = 10, 4                            # horde-night defense from the floodlights: a flat bonus, plus more for every shooter
