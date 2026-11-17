@@ -13,6 +13,6 @@
 **Supplies left:** food for 1 day, water for 0 days, 112 rounds, fence at 81%
 **Camp:** Camp jobs: Tanny and Marco (snares and hunting): +2 food; 3 of them (foraging the block): +3 food; Mateen (the farm plots): +3 food; Artemis (rain catchers and pipe taps): +2 water; Victoria stretched every meal: +4 food.
 **Horde:** reaches the fence in 3 days (Day 14).
-**New survivors (3):** Vic the Gunsmith (@victorioussecrt), Sam 2 the EMT (@samuelnathanael16), Kim the Engineer (@kim.cheyanne) (each brought a pack: +2 food, +2 water)
+**New survivors (3):** Vic the Gunsmith (@victorioussecrt), Steve the EMT (@samuelnathanael16), Kim the Engineer (@kim.cheyanne) (each brought a pack: +2 food, +2 water)
 **Followers:** 87  |  **Tomorrow is Day 11**
 **Tomorrow's vote:** Day 11. Food lasts one day, water is gone, and Sam is still out. The horde reaches the fence in three days. Where do we go? 🔫 GUN SHOP (Never searched. Could mean more ammo, or nothing left worth taking.) / 🎡 FAIR (Never searched. Food's nearly gone, but nothing here is promised.) / ⛽ GAS (Easy run. Gives the Laundromat generator its 10 L of gasoline.)

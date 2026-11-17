@@ -431,10 +431,10 @@
    "joined": 11
   },
   {
-   "name": "Sam 2",
+   "name": "Steve",
    "ig": "samuelnathanael16",
    "role": "EMT",
-   "bio": "Sam is a firefighter who discovered the fire truck still has water in it and shared the news with the scavengers.",
+   "bio": "Steve is a firefighter who discovered the fire truck still has water in it and shared the news with the scavengers.",
    "joined": 11
   },
   {
@@ -2203,7 +2203,7 @@
    ],
    "joined": [
     "Vic",
-    "Sam 2",
+    "Steve",
     "Kim"
    ],
    "waiting": 0,
@@ -2462,12 +2462,12 @@
     "time": "08:40",
     "dest": "hangar",
     "crew": [
-     "Sam 2",
+     "Steve",
      "Bob"
     ],
     "find": {},
     "event": "ok",
-    "line": "Sam 2: Picked clean. Nothing worth carrying. Heading home."
+    "line": "Steve: Picked clean. Nothing worth carrying. Heading home."
    },
    {
     "time": "11:50",
