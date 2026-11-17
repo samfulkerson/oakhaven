@@ -13,7 +13,7 @@ import json, os, re, subprocess, sys, tempfile, wave
 from pocketsphinx import Decoder
 
 PRON = {
-    "oakhaven": "OW K HH EY V AH N", "mateen": "M AH T IY N", "francis": "F R AE N S IH S", "javier": "HH AA V Y EH R", "quinn": "K W IH N",
+    "oakhaven": "OW K HH EY V AH N", "oakhaven's": "OW K HH EY V AH N Z", "tedesky": "T AH D EH S K IY", "mateen": "M AH T IY N", "francis": "F R AE N S IH S", "javier": "HH AA V Y EH R", "quinn": "K W IH N",
     "gabe": "G EY B", "gabe's": "G EY B Z", "tanny": "T AE N IY", "tanny's": "T AE N IY Z", "jaylozy": "JH EY L OW Z IY", "jaylozy's": "JH EY L OW Z IY Z",
     "corran": "K AO R AH N", "seth's": "S EH TH S", "asa": "AA S AH", "asa's": "AA S AH Z", "jeremy's": "JH EH R AH M IY Z", "jack's": "JH AE K S",
     "squad's": "S K W AA D Z", "finklestein": "F IH NG K AH L S T IY N", "reyes": "R EY EH S", "millbrook": "M IH L B R UH K", "gunsmith": "G AH N S M IH TH",
