@@ -1039,12 +1039,12 @@
   {
    "name": "Tap the water tower",
    "difficulty": "medium",
-   "area": "Rail yard",
+   "area": "Forest",
    "at": [
-    1161,
-    1092
+    174,
+    940
    ],
-   "goal": "Frost knows where the old rail-yard tower feeds the city mains. Patch the pipes and run a line to the laundromat.",
+   "goal": "Frost knows the old Oakhaven water tower in the woods off Elm Street still holds water and feeds the east mains. Patch the pipes and run a line to the laundromat.",
    "crew": "Frost the plumber, Weston the builder and two guards",
    "reward": "+20 water now, then +10 clean water every night",
    "poi": "watertower",
@@ -1062,7 +1062,7 @@
    "income": {
     "Water": 10
    },
-   "done_note": "Water is running from the old rail-yard tower, down a patched line to the laundromat. Clean water, every night."
+   "done_note": "Water is running from the old tower in the woods, down a patched line to the laundromat. Clean water, every night."
   }
  ],
  "power": [

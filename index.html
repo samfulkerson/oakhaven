@@ -700,6 +700,7 @@ const POIS = {
   freight: { name: 'Freight yard', area: 'Southside', box: [800, 1066, 60, 30], door: [830, 1096], entry: [760, 1100], approach: [[830, 1100], [830, 1099]], win: [[812, 1090], [848, 1090]] },
   harbor: { name: 'Harbor Master', area: 'Port', box: [786, 450, 52, 38], door: [822, 488], entry: [776, 552], approach: [[822, 552], [822, 491]], win: [[793, 484], [807, 484]] },
   cold: { name: 'Cold Storage', area: 'Port', box: [784, 600, 64, 46], door: [816, 646], entry: [776, 552], approach: [[860, 552], [860, 656], [816, 656], [816, 649]], win: [[793, 642], [841, 642]] },
+  watertower: { name: 'Water tower', area: 'Forest', nosolid: true, box: [157, 888, 36, 78], door: [174, 964], entry: [216, 966], approach: [[176, 966]], win: [] },
   hunter: { name: 'Hunter\u2019s cabin', area: 'Forest', box: [120, 846, 40, 26], door: [140, 872], entry: [216, 882], approach: [[140, 882], [140, 875]], win: [[129, 864], [151, 864]] },
   greenhouse: { name: 'Hollow Creek greenhouse', area: 'Farmland', box: [150, 1150, 46, 30], door: [173, 1180], entry: [60, 1040], approach: [[60, 1136], [204, 1136], [204, 1186], [173, 1186], [173, 1183]], win: [[160, 1172], [188, 1172]] },
   airfreight: { name: 'Air Freight terminal', area: 'Airport', box: [736, 94, 96, 42], door: [784, 136], entry: [488, 176], approach: [[488, 170], [784, 170], [784, 139]], win: [[750, 130], [818, 130]] },
@@ -850,7 +851,7 @@ function buildBG() {
     }
   }
   P(x, 146, 423, '#6b5034', 12, 18); for (let i = 0; i < 18; i += 2) P(x, 146, 423 + i, '#5a4128', 12, 1); P(x, 145, 423, '#3b2c20', 1, 18); P(x, 158, 423, '#3b2c20', 1, 18);
-  const clear = (X, Y) => Y > 1016 || (X > 140 && X < 166 && Y > 592 && Y < 612) || (X > 12 && X < 42 && Y > 672 && Y < 698) || (X > 46 && X < 76 && Y > 360 && Y < 408) || (X > 104 && Y > 682 && Y < 772) || Math.hypot((X - 140) / 36, (Y - 864) / 28) < 1 || Math.hypot((X - 44) / 32, (Y - 950) / 20) < 1 || (X > 132 && Math.abs(Y - 882) < 6) || (X <= 140 && X > 20 && Math.abs(Y - (882 + (140 - X) * .27)) < 6) || Math.hypot((X - 60) / 8, (Y - 812) / 12) < 1 || Math.hypot((X - 182) / 22, (Y - 804) / 8) < 1 || Math.hypot((X - 108) / 78, (Y - 414) / 46) < 1 || Math.hypot((X - 80) / 60, (Y - 640) / 44) < 1 || Math.abs(Y - 432) < 12;
+  const clear = (X, Y) => Y > 1016 || Math.hypot((X - 175) / 27, (Y - 930) / 42) < 1 || Math.hypot((X - 176) / 44, (Y - 962) / 22) < 1 || (X > 170 && Math.abs(Y - 966) < 5) || (X > 140 && X < 166 && Y > 592 && Y < 612) || (X > 12 && X < 42 && Y > 672 && Y < 698) || (X > 46 && X < 76 && Y > 360 && Y < 408) || (X > 104 && Y > 682 && Y < 772) || Math.hypot((X - 140) / 36, (Y - 864) / 28) < 1 || Math.hypot((X - 44) / 32, (Y - 950) / 20) < 1 || (X > 132 && Math.abs(Y - 882) < 6) || (X <= 140 && X > 20 && Math.abs(Y - (882 + (140 - X) * .27)) < 6) || Math.hypot((X - 60) / 8, (Y - 812) / 12) < 1 || Math.hypot((X - 182) / 22, (Y - 804) / 8) < 1 || Math.hypot((X - 108) / 78, (Y - 414) / 46) < 1 || Math.hypot((X - 80) / 60, (Y - 640) / 44) < 1 || Math.abs(Y - 432) < 12;
   for (let y = 360; y < 470; y++) for (let X = 20; X < 200; X++) if (Math.hypot((X - 108) / 78, (y - 414) / 46) < 1 && Math.abs(y - 432) > 8 && hash2(X, y, 91) > .3) P(x, X, y, hash2(X, y, 92) > .5 ? '#34422a' : '#3a4a2e');
   for (let y = 596; y < 686; y++) for (let X = 20; X < 142; X++) if (Math.hypot((X - 80) / 60, (y - 640) / 44) < 1 && hash2(X, y, 93) > .3) P(x, X, y, hash2(X, y, 94) > .5 ? '#34422a' : '#3a4a2e');
   const trees = [];
@@ -954,6 +955,32 @@ function buildBG() {
   P(x, 179, 754, '#100f0d', 6, 8); P(x, 171, 752, '#d9b02a', 5, 5); P(x, 173, 753, '#1a1a1a', 1, 3);
   P(x, 136, 684, '#c9a22a', 43, 7); text(x, 'SUBSTATION', 138, 685, '#1a1a1a');
     trees.sort((a, b) => a[1] - b[1]).forEach(([px, py, s]) => (hash2(px, py, 98) > .93 ? deadTree(x, px, py) : hash2(px, py, 99) > .55 ? fallTree(x, px, py, px * 7 + py) : pine(x, px, py, s, px + py)));
+  // ---- the old Oakhaven water tower in a clearing off Elm Street: four legs, cross braces, a ladder and a catwalk, in a clearing.
+  //      Frost says it still holds water and feeds the east mains (the "Tap the water tower" mission)
+  // white steel tower, like a small-town one: four splayed legs with ring braces and cross wires, a fat riser in the middle,
+  // a round-bottomed tank with a catwalk, a cone roof and a finial
+  P(x, 152, 964, 'rgba(0,0,0,.32)', 48, 7);
+  const WT = '#eceae4', WT2 = '#c8ccce', WT3 = '#9aa2a8';
+  const legX = (k, y) => { const t = (y - 912) / 54; return [162, 168, 182, 188][k] + [-8, -3, 3, 8][k] * t; };   // legs splay outward toward the ground
+  for (let y = 912; y < 966; y++) for (let k = 0; k < 4; k++) P(x, Math.round(legX(k, y)), y, k === 0 || k === 2 ? WT : WT2);
+  for (const ry of [924, 938, 952]) { const l = Math.round(legX(0, ry)), r = Math.round(legX(3, ry)); P(x, l, ry, WT2, r - l + 1, 1); }
+  for (const [y0, y1] of [[912, 924], [924, 938], [938, 952], [952, 965]]) for (const [k0, k1] of [[0, 1], [2, 3]]) for (let t = 0; t <= 1; t += .04) {
+    const y = y0 + (y1 - y0) * t; P(x, Math.round(legX(k0, y0) + (legX(k1, y1) - legX(k0, y0)) * t), Math.round(y), WT3);
+    P(x, Math.round(legX(k1, y0) + (legX(k0, y1) - legX(k1, y0)) * t), Math.round(y), WT3);
+  }
+  P(x, 172, 912, WT, 4, 54); P(x, 176, 912, WT2, 2, 54); P(x, 171, 912, WT3, 1, 54);           // the riser
+  P(x, 172, 962, '#8a8e90', 6, 4);                                                                // its footing
+  for (let y = 900; y <= 914; y++) {                                                              // the tank: a cylinder with a rounded bottom
+    const half = y <= 908 ? 17 : Math.round(17 * Math.sqrt(Math.max(0, 1 - ((y - 908) / 7) ** 2)));
+    for (let a = -half; a <= half; a++) P(x, 175 + a, y, a < -10 ? '#f8f6f0' : a < 6 ? WT : a < 13 ? WT2 : WT3);
+  }
+  P(x, 157, 909, '#7a8084', 37, 1); for (let a = -18; a <= 18; a += 3) P(x, 175 + a, 907, '#7a8084', 1, 2);   // catwalk and rail
+  for (let r = 0; r < 6; r++) P(x, 175 - (17 - r * 3), 899 - r, r ? WT : WT2, 2 * (17 - r * 3) + 1, 1);        // cone roof
+  P(x, 174, 892, WT2, 3, 1); P(x, 175, 889, '#7a8084', 1, 3);                                   // finial
+  for (let y = 896; y < 912; y += 2) P(x, 159, y, '#7a8084', 2, 1);                              // ladder up the tank side
+  textC(x, 'OAKHAVEN', 175, 902, '#1a1a1a');
+  P(x, 172, 964, '#2a3034', 6, 3); P(x, 173, 963, '#6a7478', 4, 1);           // valve box at the foot of the riser
+
   LABELS.push(['FOREST', 100, 160, 'area']);
 
   // ================= AIRPORT (north) =================
