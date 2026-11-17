@@ -2621,6 +2621,7 @@ let zi = 3, camX = 0, camY = 0;
 let dragging = false, downAt = null, follow = false, selected = null;
 let ASPECT = .75;   // screen height / width; 4:3 normally, whatever the screen is in full screen
 let WEATHER_OVR = new URLSearchParams(location.search).get('weather');   // ?weather=rain previews a sky; an episode can set its own
+const BRUTE_SC = 1.6;      // brutes are drawn this much bigger than everyone else (same sprite, just scaled)
 let CAM_W = 0, HOUR_OVR = null, EPI_BRUTE = null;   // set by the episode studio: a smooth zoom (world width), a scripted hour of the day, and a scripted brute only the script's blows can fell
 const vw = () => Math.min(CAM_W || ZOOMS[zi], W, H / ASPECT), vh = () => vw() * ASPECT;
 function clampCam() { camX = clamp(camX, 0, W - vw()); camY = clamp(camY, 0, H - vh()); }
@@ -2796,7 +2797,7 @@ function stepTowardHome(z) {
 // ------------------------------------------------------------------ effects
 const shots = [], parts = [];
 function shoot(from, target, hitChance) {
-  const hit = rand() < hitChance, ty = target.y - (target.brute ? 12 : 6);
+  const hit = rand() < hitChance, ty = target.y - (target.brute ? Math.round(6 * BRUTE_SC) : 6);
   shots.push({ x1: from.x + (from.flip ? -3 : 3), y1: from.y - 7, x2: target.x + (hit ? 0 : (rand() - .5) * 10), y2: ty + (hit ? 0 : (rand() - .5) * 8), life: 5 });
   if (hit && --target.hp <= 0) target.dying = 1;
 }
@@ -3182,7 +3183,7 @@ function campChatter() {
 
 // ------------------------------------------------------------------ drawing (only what is on screen)
 function drawSprite(img, x, y, flip, scale = 1, alpha = 1, lying = false) {
-  const w = GW * scale, hh = GH * scale;
+  const w = Math.round(GW * scale), hh = Math.round(GH * scale);
   f.save(); f.globalAlpha = alpha; f.translate(Math.round(x), Math.round(y));
   if (lying) { f.rotate(Math.PI / 2); f.drawImage(img, -hh + 2, -w / 2, w, hh); }
   else { if (flip) f.scale(-1, 1); f.drawImage(img, -Math.floor(w / 2), -hh + 1, w, hh); }
@@ -3230,7 +3231,7 @@ function drawEmissive(c, dark, inView, part) {
     for (const z of zombies) {
       if (z.dying || !inView(z.x, z.y) || (dark <= .4 && !(z.twin != null && dark > .12))) continue;    // the twins' eyes show first, at dusk
       const zx = Math.round(z.x), zy = Math.round(z.y), fx = z.flip ? -1 : 1;
-      if (z.brute) { P(c, zx - 3, zy - 17, '#ff3b2a', 2, 1); P(c, zx + 2, zy - 17, '#ff3b2a', 2, 1); }
+      if (z.brute) { const ey = zy - Math.round(GH * BRUTE_SC) + 1 + Math.round(4.3 * BRUTE_SC), ex = Math.round(2.3 * BRUTE_SC); P(c, zx - ex, ey, '#ff3b2a', 2, 1); P(c, zx + ex - 2, ey, '#ff3b2a', 2, 1); }
       else if (z.ztype === 'crawler') P(c, fx > 0 ? zx - 3 : zx + 2, zy - 2, '#ff3b2a');     // low to the ground, at the front of the body
       else { P(c, zx - fx, zy - 8, '#ff3b2a'); P(c, zx + fx, zy - 8, '#ff3b2a'); }
     }
@@ -3325,8 +3326,8 @@ function draw() {
   for (const a of actors) {
     if (a.kind === 'z') {
       const img = sprite(a.look, a.dying ? 'stand' : poseOf(a));
-      if (a.dying) drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1, a.dying < CORPSE - 600 ? .9 : Math.max(0, (CORPSE - a.dying) / 667), true);   // bodies lie where they fell, then fade
-      else drawSprite(img, a.x, a.y, a.flip, a.brute ? 2 : 1);
+      if (a.dying) drawSprite(img, a.x, a.y, a.flip, a.brute ? BRUTE_SC : 1, a.dying < CORPSE - 600 ? .9 : Math.max(0, (CORPSE - a.dying) / 667), true);   // bodies lie where they fell, then fade
+      else drawSprite(img, a.x, a.y, a.flip, a.brute ? BRUTE_SC : 1);
     } else {
       const spin = (a.spinUntil > frame && !a.moving) || (a.look.role === 'Decoy' && !a.moving && runWait < 1e8 && (frame + (a.x | 0) * 7) % 540 < 40);   // now and then the decoy throws a quick spin, just to stay loose
       drawSprite(sprite(a.look, poseOf(a)), a.x, a.y, spin ? !!((frame >> 2) & 1) : a.flip, 1, a.fade == null ? 1 : a.fade);
@@ -3715,7 +3716,7 @@ function renderFX(VX, VY, VW, VH, inView, dark, h, scale) {
     lx.fillStyle = rgb(sky, 1 - .42 * str);
     for (const a of [...people, ...zombies]) {
       if (a.hidden || a.dying || !inView(a.x, a.y, 40)) continue;
-      const ht = a.brute ? 13 : 7, dx = dirx * len * ht, dy = diry * len * ht, n = Math.max(2, Math.ceil(Math.hypot(dx, dy)));
+      const ht = a.brute ? Math.round(6.5 * BRUTE_SC) : 7, dx = dirx * len * ht, dy = diry * len * ht, n = Math.max(2, Math.ceil(Math.hypot(dx, dy)));
       for (let i = 0; i <= n; i++) lx.fillRect(Math.round(a.x - (a.brute ? 4 : 2) + dx * i / n), Math.round(a.y - 1 + dy * i / n), a.brute ? 8 : 4, 2);
     }
     // ...but a shadow never swallows a figure: everyone standing in one is lifted back to daylight, cut to their own outline,
@@ -3723,7 +3724,7 @@ function renderFX(VX, VY, VW, VH, inView, dark, h, scale) {
     const SC = FX.sil || (FX.sil = Object.assign(document.createElement('canvas'), { width: GW * 2, height: GH * 2 })), sx = SC.getContext('2d'), lit = rgb(sky);
     for (const a of [...people, ...zombies]) {
       if (a.hidden || a.dying || !inView(a.x, a.y, 20)) continue;
-      const sc = a.brute ? 2 : 1, w = GW * sc, hh = GH * sc;
+      const sc = a.brute ? BRUTE_SC : 1, w = Math.round(GW * sc), hh = Math.round(GH * sc);
       sx.globalCompositeOperation = 'source-over'; sx.clearRect(0, 0, SC.width, SC.height); sx.drawImage(sprite(a.look, poseOf(a)), 0, 0, w, hh);
       sx.globalCompositeOperation = 'source-in'; sx.fillStyle = lit; sx.fillRect(0, 0, w, hh);
       lx.save(); lx.translate(Math.round(a.x), Math.round(a.y)); if (a.flip) lx.scale(-1, 1); lx.drawImage(SC, 0, 0, w, hh, -Math.floor(w / 2), -hh + 1, w, hh); lx.restore();
