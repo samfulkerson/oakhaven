@@ -714,7 +714,7 @@ const POIS = {
   showbarn: { name: '4-H show barn', area: 'Fairground', box: [1466, 838, 56, 32], door: [1494, 870], entry: [1280, 694], approach: [[1455, 694], [1455, 874], [1494, 874], [1494, 873]], win: [[1475, 864], [1511, 864]] },
   radio: { name: 'KOAK radio tower', area: 'Eastside', box: [1490, 960, 70, 30], door: [1525, 990], locked: true }
 };
-const SOLIDS = [];
+const SOLIDS = [], NOCAST = [];      // NOCAST: solid, but drawn with its own shadow (the water tower), so no box shadow
 const solid = (b, pad = 0) => SOLIDS.push([b[0] - pad, b[1] - pad, b[2] + pad * 2, b[3] + pad * 2]);
 const inRect = (x, y, [bx, by, bw, bh], pad = 0) => x > bx - pad && x < bx + bw + pad && y > by - pad && y < by + bh + pad;
 const inSolid = (x, y) => SOLIDS.some(r => inRect(x, y, r, 1));
@@ -979,6 +979,7 @@ function buildBG() {
   P(x, 174, 892, WT2, 3, 1); P(x, 175, 889, '#7a8084', 1, 3);                                   // finial
   for (let y = 896; y < 912; y += 2) P(x, 159, y, '#7a8084', 2, 1);                              // ladder up the tank side
   textC(x, 'OAKHAVEN', 175, 902, '#1a1a1a');
+  solid([152, 890, 46, 78]); NOCAST.push(SOLIDS[SOLIDS.length - 1]);     // nobody walks through the tower: they go around it like a building
   P(x, 172, 964, '#2a3034', 6, 3); P(x, 173, 963, '#6a7478', 4, 1);           // valve box at the foot of the riser
 
   LABELS.push(['FOREST', 100, 160, 'area']);
@@ -3455,7 +3456,7 @@ const MASK = (() => {
   x.putImageData(id, 0, 0); return c;
 })();
 // buildings that cast sun shadows: [x, y, w, h, height]
-const CASTERS = SOLIDS.filter(b => !(b[0] === FENCE.x0 && b[1] === FENCE.y0)).map(b => [...b, b[3] <= 7 ? 4 : b[0] === 236 && b[1] === 206 ? 64 : clamp(b[3] * .5, 6, 40)]);
+const CASTERS = SOLIDS.filter(b => !(b[0] === FENCE.x0 && b[1] === FENCE.y0) && !NOCAST.includes(b)).map(b => [...b, b[3] <= 7 ? 4 : b[0] === 236 && b[1] === 206 ? 64 : clamp(b[3] * .5, 6, 40)]);
 
 // ------------------------------------------------------------------ the world keeps up with the story: everything here is drawn from data.json
 // onto the finished map once, at load: the camp fills up as people join, the fence shows its repairs and its damage, the morning after
