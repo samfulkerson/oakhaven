@@ -4026,6 +4026,21 @@ requestAnimationFrame(loop);
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
+  twins: {
+    title: "Incident #0001", dur: 63.6, audioOffset: 1.0, weather: "clear",
+    cam: [[0, "follow", "Officer Reyes", 130], [6.67, "follow", "Officer Reyes", 100], [7.1, 430, 505, 120], [11.8, 430, 505, 112], [11.9, 600, 460, 300], [13.9, 760, 405, 150], [20.79, 760, 412, 112], [21.1, 760, 418, 100], [27.9, 760, 428, 90], [28.0, 700, 520, 260], [33.59, 640, 600, 1100], [33.6, "follow", "Officer Reyes", 120], [38.68, "follow", "Officer Reyes", 96], [39.2, "follow", "Officer Reyes", 96], [43.88, "follow", "Officer Reyes", 96], [44.1, 492, 518, 104], [50.08, 484, 508, 88], [50.1, 441, 462, 90], [53.32, 441, 462, 84], [53.42, 486, 500, 104], [55.87, 482, 498, 92], [56.0, 470, 505, 190], [63.6, 466, 503, 150]],
+    hour: [[0, 18.85], [27.95, 18.95], [28.0, 18.6], [33.49, 18.75], [33.55, 18.75], [33.6, 18.95], [44.05, 19.05], [63.6, 19.3]],
+    events: [[0, "stand", ["Sam", "Jaylozy", "Tanny", "Seth", "Gary Finklestein", "Adam", "Asa", "Gabe", "Mateen", "Jeremy", "Victoria", "Francis", "Jack", "Carl", "Javier", "Quinn", "Elder", "Shawn", "Ryan", "Officer Reyes", "Toast", "Artemis", "Weston", "Ben", "Frost", "Joseph", "Jeff", "Spenz", "Marco", "Bob", "Amnic0re", "John", "Vic", "Steve", "Kim"]], [13.1, "twins", [[760, 382], [760, 440]], 0.07], [43.8, "horde", 22, [[560, 552], [488, 552], [488, 520]], "e", 9], [43.9, "twins", [[496, 524], [478, 502]], 0.12, "w"], [49.9, "defend", [["Quinn", 441, 457]]]],
+    captions: [[0.6, 6.97, "capTop", "DAY 11 · REYES"], [7.3, 12.1, "title", "INCIDENT", "#0001"], [12.3, 21.09, "capTop", "MILL STREET · EAST SIDE"], [21.4, 28.0, "cap", "TWINS"], [28.3, 30.76, "cap", "BY MORNING · MILL ST"], [30.99, 33.59, "cap", "BY SUNDAY · OAKHAVEN"], [33.9, 38.68, "cap", "HIS PARTNER WAS #3"], [39.0, 44.08, "card", "SCOTT & RYAN TEDESCHI", "PATIENT ZERO"], [44.4, 47.28, "capTop", "THEY DON'T WANDER."], [47.52, 50.18, "capTop", "THEY LEAD."], [50.4, 55.87, "capTop", "QUINN · OVERWATCH"], [56.3, 63.6, "capTop", "DAY 14 · THE HORDE"], [58.67, 63.6, "cap", "LED BY THE TWINS"]]
+  },
+  day11: {
+    title: "Day 11 · Two Squads", dur: 72.7, audioOffset: 1.0, weather: "clear",
+    hook: { from: 0.6, lines: ["3 OF YOU ASKED.", "YOU GOT ONE."] },
+    cam: [[0, 430, 520, 150], [3.2, 430, 515, 135], [3.6, 295, 170, 170], [6.51, 295, 165, 140], [12.4, 330, 200, 160], [16.41, 360, 260, 190], [16.8, 125, 1110, 170], [21.41, 118, 1118, 140], [27.77, 140, 1090, 160], [28.2, 500, 560, 170], [30.53, 470, 540, 140], [35.11, 450, 520, 130], [35.37, 282, 830, 150], [38.82, 282, 834, 130], [39.97, 282, 834, 125], [40.5, 424, 500, 170], [42.45, 424, 495, 150], [46.19, 470, 520, 520], [48.83, 470, 520, 620], [49.2, 470, 520, 640], [50.92, 685, 380, 150], [52.82, 685, 380, 140], [52.86, 1330, 670, 190], [54.64, 1330, 670, 175], [54.78, 584, 470, 140], [57.33, 584, 470, 130], [57.48, 176, 985, 140], [59.79, 176, 975, 118], [64.13, 176, 962, 100], [64.2, 424, 505, 220], [68.34, 424, 505, 200], [68.49, 474, 500, 92], [72.7, 474, 499, 80]],
+    hour: [[0, 9.0], [16.11, 11.2], [16.75, 14.6], [27.47, 15.4], [28.15, 16.2], [39.77, 16.9], [40.45, 17.6], [48.53, 18.2], [49.15, 16.4], [68.34, 16.8], [68.44, 16.8], [68.49, 19.3], [72.7, 19.4]],
+    events: [[0, "away", ["Vic", "Kim", "Steve"]], [0.2, "run", ["Sam", "Frost", "Joseph"], "hangar"], [0.5, "run", ["Jeff", "Weston"], "farm"], [3.55, "run", ["Sam", "Frost", "Joseph"], "hangar", {"near": 120, "hold": 30}], [12.1, "leave", ["Sam", "Frost", "Joseph"], "hangar"], [16.75, "run", ["Jeff", "Weston"], "farm", {"near": 110, "hold": 30}], [25.89, "leave", ["Jeff", "Weston"], "farm"], [28.0, "arrive", ["Vic", "Kim", "Steve"], "market"], [40.4, "stand", ["Sam", "Jaylozy", "Tanny", "Seth", "Gary Finklestein", "Adam", "Asa", "Gabe", "Mateen", "Jeremy", "Victoria", "Francis", "Jack", "Carl", "Javier", "Quinn", "Elder", "Shawn", "Ryan", "Officer Reyes", "Toast", "Artemis", "Weston", "Ben", "Frost", "Joseph", "Jeff", "Spenz", "Marco", "Bob", "Amnic0re", "John", "Vic", "Steve", "Kim"]], [68.39, "twins", [[486, 506], [476, 500]], 0.03, "w"]],
+    captions: [[1.0, 3.1, "title", "OAKHAVEN", "DAY 11"], [4.0, 6.28, "capTop", "THE VOTE: HANGAR, 7"], [6.51, 9.4, "cap", "SAM · FROST · JOSEPH"], [9.5, 12.35, "capTop", "+34 FUEL · +12 SCRAP"], [12.6, 16.41, "cap", "SAM: A BAD FALL · BACK UP"], [17.2, 21.2, "capTop", "A SECOND GROUP"], [21.41, 23.55, "cap", "JEFF · WESTON"], [23.65, 27.77, "capTop", "+16 FOOD · +5 WATER"], [28.6, 30.37, "capTop", "3 NEW SURVIVORS"], [30.53, 35.41, "cap", "VIC · KIM · STEVE"], [35.62, 40.07, "capTop", "THE FIRE TRUCK?"], [40.9, 42.33, "cap", "35 OF US"], [42.45, 45.95, "cap", "FOOD: 1 DAY · WATER: 0"], [46.29, 48.83, "capTop", "HORDE: DAY 14"], [49.3, 64.2, "vote", "WHERE NEXT?", ["GUN SHOP", "FAIR", "GAS", "WATER TOWER"]], [64.3, 68.34, "card", "WHERE NEXT?", "COMMENT YOUR NAME + JOB TO MOVE IN"], [68.99, 72.7, "cap", "REYES HAS SOMETHING TO TELL YOU"], [70.19, 72.7, "capTop", "TONIGHT."]]
+  },
   day10: {
     title: "Day 10 · Five Came Out", dur: 95.2, audioOffset: 1.0, weather: "clear",
     hook: { from: 2.0, lines: ["4 WENT IN.", "5 CAME OUT."] },
@@ -4326,6 +4341,7 @@ function epEvent(ev) {
       let nk = null, best = Infinity; for (const [k, n] of NODES) { const dd = Math.hypot(n.x - d.door[0], n.y - d.door[1] - 6); if (dd < best) { best = dd; nk = n; } }
       back = [[d.door[0], d.door[1] + 6], ...route([nk.x, nk.y], [424, 552]), [424, 536], [424, 518], [424, 504], [424, 502]];
     }
+    dropRuns(ms);                                    // forget any earlier trip of theirs, or its timer walks them out a second time
     ms.forEach((e, i) => { e.mode = 'run'; e.inside = false; comeOut(e, d, back, i * 16); e.off = OFFS[i % 4]; });
     active.push({ r, d, members: ms, timer: 0 }); r.crew = ms.map(e => e.d.name); r.status = 'returning'; renderRuns();
   }
@@ -4373,6 +4389,7 @@ function epEvent(ev) {
     who(ev[2]).forEach((e, i) => { e.mode = 'run'; e.hidden = false; e.inside = false; [e.x, e.y] = seg[0]; e.path = seg; e.wp = 1; e.delay = i * 22; e.off = OFFS[i % 4]; });
   }
 }
+function dropRuns(ms) { for (let i = active.length - 1; i >= 0; i--) if (active[i].members.some(m => ms.includes(m))) active.splice(i, 1); }
 // o.near: start that many world px short of the door instead of at the camp (for far places); o.hold: seconds inside before they come out
 function epStartRun(names, dest, o = {}) {
   const ms = (Array.isArray(names) ? names : [names]).map(n => byName[n]).filter(Boolean), d = POIS[dest]; if (!ms.length || !d) return;
@@ -4380,6 +4397,7 @@ function epStartRun(names, dest, o = {}) {
   if (o.near) { const seg = [path[path.length - 1]]; let len = 0; for (let i = path.length - 2; i >= 0 && len < o.near; i--) { len += Math.hypot(path[i][0] - seg[0][0], path[i][1] - seg[0][1]); seg.unshift(path[i]); } path = seg; }
   const r = DATA.runs.find(x => x.dest === dest) || { dest, squad: ms.map(e => e.d.name), status: 'queued' };
   ms.forEach((e, i) => { e.mode = 'run'; e.inside = false; e.hidden = false; e.goIn = null; e.emerge = 0; e.fade = 1; [e.x, e.y] = o.near ? path[0] : [HOME.door[0], HOME.door[1] + 2]; e.path = path; e.wp = o.near ? 1 : 0; e.delay = i * 16; e.off = OFFS[i % 4]; });
+  dropRuns(ms);
   active.push({ r, d, members: ms, timer: 0, hold: o.hold }); r.crew = ms.map(e => e.d.name); r.status = 'leaving'; renderRuns();
 }
 function epPre() {
