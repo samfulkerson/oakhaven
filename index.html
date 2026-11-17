@@ -3825,7 +3825,8 @@ renderGens();
 $('preview').addEventListener('change', ev => { preview = ev.target.checked; if (preview && mode === 'day') $('tNight').click(); });
 
 function renderMissions() {
-  $('missions').innerHTML = DATA.missions.map((m, i) => {
+  const rank = m => ({ done: 0, active: 1, open: 2 }[m.status] ?? 3);    // done first, then under way, then open, then locked
+  $('missions').innerHTML = DATA.missions.map((m, i) => [m, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([m, i]) => {
     const p = (m.poi && POIS[m.poi]) || m;
     return `<div class="run ${m.status === 'done' ? 'back' : m.status === 'active' ? 'active' : 'locked'}"><span><button type="button" class="place" data-mission="${i}">${esc(p.name)}</button><span class="area">${esc(p.area)}</span>${diffTag(m.difficulty)}</span><span class="status">${m.status === 'done' ? 'Done' : m.status === 'active' ? `Night ${m.days_done || 0} of ${m.days || '?'}` : m.status === 'open' ? 'Open' : 'Locked'}</span>
       <span class="why">${esc(m.goal)}</span>
