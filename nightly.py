@@ -1003,7 +1003,7 @@ def days_left(data, name):
 # ---------------------------------------------------------------- 6. the power project
 # Each generator in data.json "power" can list what it needs to run: things a run brings back ("dest"), a skill someone in
 # camp has ("role"), or enough people ("people"). Needs get ticked off as the story goes; when they're all met it runs.
-def power_progress(data, outings, new_day):
+def power_progress(data, outings, new_day, ledger=None):
     living = [s for s in data["survivors"] if s.get("status") != "dead" and s.get("joined", 1) <= new_day]
     came_back = {o.get("key") for o in outings if o.get("results") and any(r["outcome"] != "dead" for r in o["results"])}
     news, busy, lit = [], set(), False      # each skill works on one generator a night, and only one comes on per night
@@ -1022,6 +1022,12 @@ def power_progress(data, outings, new_day):
             hit = (n.get("dest") and n["dest"] in came_back) \
                 or (n.get("role") and n["role"] not in busy and any(s["role"] == n["role"] and s.get("status") not in ("injured", "away") for s in living)) \
                 or (n.get("people") and len(living) >= n["people"])
+            if not hit and n.get("fuel") and stock_get(data, "Fuel") >= n["fuel"]:    # "bring fuel" counts as done if the stockpile already has it
+                hit = True
+                stock_row(data, "Fuel")[1] -= n["fuel"]
+                if ledger is not None:
+                    ledger.setdefault("Fuel", []).append((-n["fuel"], f"{g['name']}'s first tank, from the stockpile"))
+                data.setdefault("stock_change", {})["Fuel"] = data.get("stock_change", {}).get("Fuel", 0) - n["fuel"]
             if hit and n.get("role"):
                 busy.add(n["role"])
             if hit:
@@ -1217,7 +1223,7 @@ def main():
         problems.append(f"Claude: {e}")
         parsed = []
     added = add_survivors(data, parsed)
-    power_news = power_progress(data, outings, new_day)
+    power_news = power_progress(data, outings, new_day, ledger)
 
     if ig:
         data["followers"] = ig["followers"]

@@ -9,7 +9,7 @@
    [
     "GAS",
     0,
-    "Easy run, and it brings back the 10 L of gasoline for the Laundromat generator.",
+    "Easy run, and the only place in town with bottled water left.",
     "gas",
     "⛽"
    ],
@@ -1199,8 +1199,9 @@
    "powers": "A porch light and a floodlight over the yard: the dead wear the fence down slower every night, and on horde nights the shooters can see (+10 defense, +4 for every shooter), though the light draws more of them in. Burns 2 L of fuel a night.",
    "needs": [
     {
-     "label": "10 L of gasoline from the gas station",
-     "dest": "gas"
+     "label": "10 L of gasoline",
+     "dest": "gas",
+     "fuel": 10
     },
     {
      "label": "A new carburetor from the hardware store",
