@@ -1,41 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 11,
- "followers": 87,
+ "day": 12,
+ "followers": 92,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 11. Food lasts one day, water is gone, and Sam is still out. The horde reaches the fence in three days. Where do we go?",
+  "q": "Day 12. Water is at zero and the horde reaches the fence in two days. Where do we send a runner?",
   "opts": [
    [
-    "GUN SHOP",
+    "FIRE STATION",
     0,
-    "Never searched. Could mean more ammo, or nothing left worth taking.",
-    "gunshop",
-    "🔫"
+    "Never searched, so anything could be inside. It could also be empty.",
+    "firestation",
+    "🚒"
    ],
    [
     "FAIR",
     0,
-    "Never searched. Food's nearly gone, but nothing here is promised.",
+    "Never searched. A big unknown with no promise of food or water.",
     "fair",
     "🎡"
    ],
    [
-    "GAS",
+    "GUN SHOP",
     0,
-    "Easy run. Gives the Laundromat generator its 10 L of gasoline.",
-    "gas",
-    "⛽"
-   ],
-   [
-    "WATER TOWER",
-    0,
-    "Two nights. Frost taps the old tower in the woods: +20 water, then +10 a night.",
-    "watertower",
-    "🚰"
+    "Never searched. Could mean more ammo, or nothing. We have 106 rounds now.",
+    "gunshop",
+    "🔫"
    ]
   ],
-  "how": "Comment GUN SHOP, FAIR, GAS or WATER TOWER (or its emoji) on the Day 11 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment FIRE STATION, FAIR or GUN SHOP (or its emoji) on the Day 12 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -319,7 +312,8 @@
      "name": "Service pistol",
      "icon": "pistol"
     }
-   ]
+   ],
+   "outings": 1
   },
   {
    "name": "Ryan",
@@ -334,7 +328,8 @@
    "ig": "",
    "role": "Guard",
    "bio": "Reyes chained the station doors in week two and lived in the basement on evidence-room rations. Still wears the badge.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1
   },
   {
    "name": "Toast",
@@ -342,7 +337,8 @@
    "role": "Guard",
    "bio": "Toast shows up with an M240 machine gun and zero plans to be quiet about it.",
    "joined": 10,
-   "day_outings": 1
+   "day_outings": 1,
+   "outings": 1
   },
   {
    "name": "Artemis",
@@ -358,7 +354,7 @@
    "bio": "Weston is a carpenter who will build you a fortress, then argue about the door hinges.",
    "joined": 10,
    "day_outings": 1,
-   "outings": 1,
+   "outings": 2,
    "gear": [
     {
      "kind": "weapon",
@@ -372,7 +368,8 @@
    "ig": "bennyliebs",
    "role": "Radio Operator",
    "bio": "Ben is a military radio operator who will keep the group talking, even when nobody asked.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1
   },
   {
    "name": "Frost",
@@ -381,7 +378,7 @@
    "bio": "Frost is a plumber who knows exactly where the water pipes run and how to make them useful.",
    "joined": 10,
    "day_outings": 1,
-   "outings": 1,
+   "outings": 2,
    "gear": [
     {
      "kind": "weapon",
@@ -420,21 +417,24 @@
    "ig": "its_spencerist",
    "role": "Sharpshooter",
    "bio": "Spenz is a sniper who never misses, mostly because nobody sees them coming.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1
   },
   {
    "name": "Marco",
    "ig": "isaiahfs21",
    "role": "Scout",
    "bio": "Marco is an expert hunter who knows how to track anything, living or undead.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1
   },
   {
    "name": "Bob",
    "ig": "_mjork.voldt_",
    "role": "Scavenger",
    "bio": "Bob is old but wise, has seen it all, and knows exactly which places still have supplies.",
-   "joined": 10
+   "joined": 10,
+   "day_outings": 1
   },
   {
    "name": "Amnic0re",
@@ -463,7 +463,8 @@
    "ig": "samuelnathanael16",
    "role": "EMT",
    "bio": "Steve is a firefighter who discovered the fire truck still has water in it and shared the news with the scavengers.",
-   "joined": 11
+   "joined": 11,
+   "day_outings": 1
   },
   {
    "name": "Kim",
@@ -471,6 +472,20 @@
    "role": "Engineer",
    "bio": "Kim is an electrician who's tagging along with wstonkiethsteward to keep the lights on.",
    "joined": 11
+  },
+  {
+   "name": "Archer",
+   "ig": "opeta.teo",
+   "role": "Sharpshooter",
+   "bio": "This archer would rather craft his own bow and arrows than buy them, and he never misses a shot.",
+   "joined": 12
+  },
+  {
+   "name": "Johnny",
+   "ig": "just_johnny_nguyen",
+   "role": "Engineer",
+   "bio": "Johnny keeps the town's gadgets running and fixes whatever breaks, usually before anyone notices.",
+   "joined": 12
   }
  ],
  "runs": [
@@ -1113,7 +1128,7 @@
    "reward": "+20 water now, then +10 clean water every night",
    "poi": "watertower",
    "from_day": 11,
-   "status": "open",
+   "status": "active",
    "days": 2,
    "squad": [
     "Frost",
@@ -1127,7 +1142,8 @@
    "income": {
     "Water": 10
    },
-   "done_note": "Water is running from the old tower in the woods, down a patched line to the laundromat. Clean water, every night."
+   "done_note": "Water is running from the old tower in the woods, down a patched line to the laundromat. Clean water, every night.",
+   "days_done": 1
   }
  ],
  "power": [
@@ -1355,25 +1371,25 @@
  "stock": [
   [
    "Food",
-   66,
+   55,
    200,
    "rations"
   ],
   [
    "Water",
-   4,
+   0,
    200,
    "rations"
   ],
   [
    "Fuel",
-   40,
+   42,
    200,
    "L"
   ],
   [
    "Ammo",
-   112,
+   106,
    500,
    "rds"
   ],
@@ -1385,13 +1401,13 @@
   ],
   [
    "Scrap",
-   31,
+   22,
    200,
    "units"
   ],
   [
    "Barricades",
-   81,
+   92,
    100,
    "%"
   ]
@@ -2255,16 +2271,96 @@
     "Weston & Toast → Hardware store (13:30): +1 scrap (a close call)",
     "Jeff & Frost → Maple Court (15:05): +1 water"
    ]
+  },
+  {
+   "day": 11,
+   "vote": {
+    "question": "Day 11. Food lasts one day, water is gone, and Sam is still out. The horde reaches the fence in three days. Where do we go?",
+    "results": {
+     "GUN SHOP": 1,
+     "WATER TOWER": 5,
+     "FAIR": 1
+    },
+    "winner": "WATER TOWER",
+    "tiebreak": null,
+    "second": null,
+    "reel": "https://www.instagram.com/reel/Df3FDV4SgBC/"
+   },
+   "outings": [
+    {
+     "target": "Tap the water tower",
+     "key": "watertower",
+     "first": true,
+     "kind": "mission",
+     "difficulty": "medium",
+     "squad": [
+      "Frost",
+      "Weston",
+      "Toast",
+      "Shawn"
+     ],
+     "results": [
+      {
+       "name": "Frost",
+       "ig": "sir_waffles45",
+       "outcome": "ok"
+      },
+      {
+       "name": "Weston",
+       "ig": "westonkeithsteward",
+       "outcome": "ok"
+      },
+      {
+       "name": "Toast",
+       "ig": "totally.am.toastyy",
+       "outcome": "ok"
+      },
+      {
+       "name": "Shawn",
+       "ig": "shawn_hohne",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": "active"
+    }
+   ],
+   "healed": [],
+   "joined": [
+    "Archer",
+    "Johnny"
+   ],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Food": -11,
+    "Water": -4,
+    "Ammo": -6,
+    "Fuel": 2,
+    "Barricades": 11,
+    "Scrap": -9
+   },
+   "camp": [
+    "Camp jobs: 4 of them (foraging the block): +4 food; Tanny and Marco (snares and hunting): +2 food; Mateen (the farm plots): +3 food; Artemis and Kim (rain catchers and pipe taps): +4 water; Victoria stretched every meal: +4 food.",
+    "The camp went to bed hungry."
+   ],
+   "horde": null,
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Steve & Bob → Hangar 2 (08:40): nothing",
+    "Officer Reyes & Ben → Hollow Creek Farm (11:50): +2 food",
+    "Marco & Spenz → Ranger station (15:05): +1 food"
+   ]
   }
  ],
- "hungry_days": 0,
+ "hungry_days": 1,
  "stock_change": {
-  "Food": 22,
-  "Water": 4,
-  "Scrap": 4,
-  "Ammo": -8,
-  "Fuel": 36,
-  "Barricades": 11
+  "Food": -11,
+  "Water": -4,
+  "Ammo": -6,
+  "Fuel": 2,
+  "Barricades": 11,
+  "Scrap": -9
  },
  "schedule": [],
  "broadcast": {
@@ -2421,15 +2517,15 @@
   75
  ],
  "undead": {
-  "count": 31615,
+  "count": 31607,
   "last": {
-   "day": 10,
-   "killed": 16,
-   "turned": 3,
+   "day": 11,
+   "killed": 14,
+   "turned": 6,
    "arrived": 0
   }
  },
- "last_run": 1794912938,
+ "last_run": 1794999558,
  "horde": {
   "day": 14,
   "week": 2,
@@ -2489,60 +2585,65 @@
   ]
  },
  "weather": {
-  "day": 11,
+  "day": 12,
   "kind": "clear"
  },
  "camp_bonus": [
   {
    "item": "Food",
-   "amt": 6,
+   "amt": 4,
    "why": "new survivors' packs"
   },
   {
    "item": "Water",
-   "amt": 6,
+   "amt": 4,
    "why": "new survivors' packs"
   }
  ],
  "day_runs": {
-  "day": 11,
+  "day": 12,
   "runs": [
    {
-    "time": "08:40",
+    "time": "10:15",
     "dest": "hangar",
     "crew": [
-     "Steve",
-     "Bob"
-    ],
-    "find": {},
-    "event": "ok",
-    "line": "Steve: Picked clean. Nothing worth carrying. Heading home."
-   },
-   {
-    "time": "11:50",
-    "dest": "farm",
-    "crew": [
-     "Officer Reyes",
-     "Ben"
-    ],
-    "find": {
-     "Food": 2
-    },
-    "event": "ok",
-    "line": "Officer Reyes: Found 2 cans of soup behind the counter. Heading home."
-   },
-   {
-    "time": "15:05",
-    "dest": "ranger",
-    "crew": [
-     "Marco",
-     "Spenz"
+     "Artemis",
+     "Johnny"
     ],
     "find": {
      "Food": 1
     },
     "event": "ok",
-    "line": "Marco: Found 1 jars of peanut butter in a back room. Heading home."
+    "line": "Artemis: Found 1 boxes of crackers nobody wanted. Heading home."
+   },
+   {
+    "time": "11:50",
+    "dest": "hardware",
+    "crew": [
+     "Amnic0re",
+     "Kim"
+    ],
+    "find": {
+     "Scrap": 3
+    },
+    "event": "ok",
+    "line": "Amnic0re: Found 3 car doors for the fence. Heading home."
+   },
+   {
+    "time": "13:30",
+    "dest": "hardware",
+    "crew": [
+     "Archer",
+     "Vic"
+    ],
+    "find": {
+     "Scrap": 1
+    },
+    "event": "hurt",
+    "line": "Archer: Found 1 car doors for the fence. Heading home.",
+    "hurt": "Vic",
+    "injury": "a twisted knee",
+    "scare": "Vic: Vic went down hard. A twisted knee. We're coming back slow."
    }
   ]
  }
