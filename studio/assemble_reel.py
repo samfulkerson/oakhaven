@@ -34,7 +34,7 @@ for i, s in enumerate(segs):
     ms = int(round((at - (s['from'] - a)) * 1000))
     parts.append(f"[1:a]atrim={a:.3f}:{b:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.04,afade=t=out:st={b - a - .06:.3f}:d=0.06,adelay={ms}|{ms}[s{i}]")
     labels.append(f'[s{i}]')
-flt = (';'.join(parts) + f";{''.join(labels)}amix=inputs={len(labels)}:normalize=0,apad,atrim=0:{total}[n];"
+flt = (';'.join(parts) + f";{''.join(labels)}amix=inputs={len(labels)}:normalize=0,apad=whole_dur={total},atrim=0:{total}[n];"
        f"[2:a]lowpass=f=300,volume=0.023,atrim=0:{total}[b];[n][b]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-17.5:TP=-1.5:LRA=7,alimiter=limit=0.84[m]")
 subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', out + '.v.mp4', '-i', narr, '-f', 'lavfi', '-i', f'anoisesrc=color=brown:d={total}:r=44100',
                 '-filter_complex', flt, '-map', '0:v', '-map', '[m]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-t', f'{total}',
