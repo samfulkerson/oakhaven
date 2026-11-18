@@ -107,7 +107,7 @@ def fetch_instagram(since=None):
             for c in page.get("data", []):          # replies count too: people change their vote, or give their name, in a reply
                 for x in [c] + (c.get("replies") or {}).get("data", []):
                     if x.get("username") and stamp(x.get("timestamp", "1970-01-01T00:00:00")) > since:
-                        comments.append({k: x.get(k) for k in ("username", "text", "timestamp")})
+                        comments.append({"username": x["username"], "text": x.get("text") or "", "timestamp": x.get("timestamp") or ""})
             url, params = page.get("paging", {}).get("next"), {}
     comments.sort(key=lambda c: c.get("timestamp", ""))
     log(f"Instagram: {followers} followers, {len(comments)} comments on {len(recent)} recent post(s); vote Reel {reel['permalink']}")
@@ -132,7 +132,7 @@ def count_vote(data, comments):
     for c in comments:
         if c["username"].lower() == owner:                 # your own replies on the Reel don't count as votes
             continue
-        raw = c.get("text", "")
+        raw = c.get("text") or ""
         text = " " + re.sub(r"[^A-Z0-9 ]", " ", raw.upper()) + " "
         at = {}
         for o in options:                                  # where in the comment each option is named, by word or by emoji
