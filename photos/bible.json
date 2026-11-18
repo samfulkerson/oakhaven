@@ -323,15 +323,6 @@
    "face": "a surgical mask, or head down over a patient",
    "auto": true
   },
-  "Archer": {
-   "role": "Sharpshooter",
-   "skin": "medium-brown skin",
-   "hair": "brown hair",
-   "outfit": "charcoal-gray jacket, khaki-brown pants, work gloves",
-   "signature": "a scoped rifle slung on the back",
-   "face": "from behind or over the shoulder",
-   "auto": true
-  },
   "Johnny": {
    "role": "Engineer",
    "skin": "medium-brown skin",
