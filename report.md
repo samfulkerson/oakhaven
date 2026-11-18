@@ -1,15 +1,18 @@
-# Oakhaven: Day 11 recap
+# Oakhaven: Day 10 recap
 
-**Vote:** GUN SHOP 1, WATER TOWER 5, FAIR 1. Winner: WATER TOWER.
-**Mission: Tap the water tower** (medium), squad: Frost, Weston, Toast, Shawn — mission active
+**Vote:** HANGAR 7, STORAGE UNITS 2, FARM 3. Winner: HANGAR.
+**Second group:** 3 of 12 voters asked for FARM as well, so a separate group went there too.
+**Run: Hangar 2** (medium), squad: Sam, Frost, Joseph
+- Sam (@surviveoakhaven) was hurt: a bad fall, out until Day 11
+**Second group run: Hollow Creek Farm** (easy), squad: Jeff, Weston
 - Everyone came back in one piece.
-**Small runs today:** Steve & Bob → Hangar 2 (08:40): nothing · Officer Reyes & Ben → Hollow Creek Farm (11:50): +2 food · Marco & Spenz → Ranger station (15:05): +1 food
-**Undead in Oakhaven:** 31,607 (−14 killed, +6 newly turned)
-**Stockpile:** Food 55 (+6 new survivors' packs, +3 small runs, +4 foraging the block, +2 snares and hunting, +3 the farm plots, +4 Victoria's cooking, +2 Mateen's roof garden, -35 eaten) · Water 0 (+6 new survivors' packs, +4 rain catchers and pipe taps, +4 The windmill pump, -18 drunk) · Ammo 106 (-6 Tap the water tower run) · Fuel 42 (+2 gas station pumps) · Barricades 92 (-4 the dead at the fence, +5 Francis rebuilt a section, +5 Weston rebuilt a section, +5 Amnic0re rebuilt a section) · Scrap 22 (-3 fence repairs, -3 fence repairs, -3 fence repairs)
-**Supplies left:** food for 1 day, water for 0 days, 106 rounds, fence at 92%
-**Camp:** Camp jobs: 4 of them (foraging the block): +4 food; Tanny and Marco (snares and hunting): +2 food; Mateen (the farm plots): +3 food; Artemis and Kim (rain catchers and pipe taps): +4 water; Victoria stretched every meal: +4 food.
-**Camp:** The camp went to bed hungry.
-**Horde:** reaches the fence in 2 days (Day 14).
-**New survivors (2):** Archer the Sharpshooter (@opeta.teo), Johnny the Engineer (@just_johnny_nguyen) (each brought a pack: +2 food, +2 water)
-**Followers:** 92  |  **Tomorrow is Day 12**
-**Tomorrow's vote:** Day 12. Water is at zero and the horde reaches the fence in two days. Where do we send a runner? 🚒 FIRE STATION (Never searched, so anything could be inside. It could also be empty.) / 🎡 FAIR (Never searched. A big unknown with no promise of food or water.) / 🔫 GUN SHOP (Never searched. Could mean more ammo, or nothing. We have 106 rounds now.)
+**Small runs today:** Joseph & John → Maple Court (11:50): nothing · Weston & Toast → Hardware store (13:30): +1 scrap (a close call) · Jeff & Frost → Maple Court (15:05): +1 water
+**Back on their feet:** Sam
+**Undead in Oakhaven:** 31,615 (−16 killed, +3 newly turned)
+**Stockpile:** Food 66 (+24 new survivors' packs, +16 Hollow Creek Farm, +2 snares and hunting, +3 foraging the block, +3 the farm plots, +4 Victoria's cooking, +2 Mateen's roof garden, -32 eaten) · Water 4 (+24 new survivors' packs, +1 small runs, +5 Hollow Creek Farm, +2 rain catchers and pipe taps, +4 The windmill pump, -32 drunk) · Scrap 31 (+1 small runs, +12 Hangar 2, -3 fence repairs, -3 fence repairs, -3 fence repairs) · Ammo 112 (-6 Hangar 2 run, -2 Hollow Creek Farm run) · Fuel 40 (+34 Hangar 2, +2 gas station pumps) · Barricades 81 (-4 the dead at the fence, +5 Francis rebuilt a section, +5 Weston rebuilt a section, +5 Amnic0re rebuilt a section)
+**Supplies left:** food for 1 day, water for 0 days, 112 rounds, fence at 81%
+**Camp:** Camp jobs: Tanny and Marco (snares and hunting): +2 food; 3 of them (foraging the block): +3 food; Mateen (the farm plots): +3 food; Artemis (rain catchers and pipe taps): +2 water; Victoria stretched every meal: +4 food.
+**Horde:** reaches the fence in 3 days (Day 14).
+**New survivors (3):** Vic the Gunsmith (@victorioussecrt), Steve the EMT (@samuelnathanael16), Kim the Engineer (@kim.cheyanne) (each brought a pack: +2 food, +2 water)
+**Followers:** 87  |  **Tomorrow is Day 11**
+**Tomorrow's vote:** Day 11. Food lasts one day, water is gone, and Sam is still out. The horde reaches the fence in three days. Where do we go? 🔫 GUN SHOP (Never searched. Could mean more ammo, or nothing left worth taking.) / 🎡 FAIR (Never searched. Food's nearly gone, but nothing here is promised.) / ⛽ GAS (Easy run. Gives the Laundromat generator its 10 L of gasoline.)

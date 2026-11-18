@@ -101,10 +101,13 @@ def fetch_instagram(since=None):
     reel = next((m for m in recent if "comment your pick" in (m.get("caption") or "").lower()), reels[0] if reels else media[0])
     comments = []
     for m in recent:
-        url, params = f"{GRAPH}/{m['id']}/comments", {"fields": "username,text,timestamp", "limit": 50}
+        url, params = f"{GRAPH}/{m['id']}/comments", {"fields": "username,text,timestamp,replies{username,text,timestamp}", "limit": 50}
         while url:
             page = ig_get(url, **params)
-            comments += [c for c in page.get("data", []) if c.get("username") and stamp(c.get("timestamp", "1970-01-01T00:00:00")) > since]
+            for c in page.get("data", []):          # replies count too: people change their vote, or give their name, in a reply
+                for x in [c] + (c.get("replies") or {}).get("data", []):
+                    if x.get("username") and stamp(x.get("timestamp", "1970-01-01T00:00:00")) > since:
+                        comments.append({k: x.get(k) for k in ("username", "text", "timestamp")})
             url, params = page.get("paging", {}).get("next"), {}
     comments.sort(key=lambda c: c.get("timestamp", ""))
     log(f"Instagram: {followers} followers, {len(comments)} comments on {len(recent)} recent post(s); vote Reel {reel['permalink']}")
@@ -133,7 +136,8 @@ def count_vote(data, comments):
         text = " " + re.sub(r"[^A-Z0-9 ]", " ", raw.upper()) + " "
         at = {}
         for o in options:                                  # where in the comment each option is named, by word or by emoji
-            pat = r"\s+".join(re.escape(w[:-1]) + "S?" if w.endswith("S") and len(w) > 3 else re.escape(w) for w in o.split())   # "storage unit" counts for STORAGE UNITS
+            word = lambda w: "(?:SHOP|STORE)" if w in ("SHOP", "STORE") else re.escape(w[:-1]) + "S?" if w.endswith("S") and len(w) > 3 else re.escape(w)
+            pat = r"\s*".join(word(w) for w in o.split())   # "storage unit", "gun store", "gunshop" and "watertower" all count
             m = re.search(rf"(?<![A-Z]){pat}(?![A-Z])", text)
             spots = [m.start()] if m else []
             if o in emojis and emojis[o] in plain(raw):
