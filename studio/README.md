@@ -224,6 +224,7 @@ dayN: {
 | `[t, 'clearHorde']` | everything left at the fence falls (use during a sunrise transition) |
 | `[t, 'brute', [x,y], [tx,ty]]` + `[t, 'hit', 'Name']` | a scripted dock brute walks to a spot; each `hit` is a sure blow from that survivor (needs 3) |
 | `[t, 'preview', true]` | the planned route of the next run, drawn on the map |
+| `[t, 'power', 'laundromat', true / false]` | a generator comes on (or goes dark) on cue, whatever data.json says. Put `[0, 'power', id, false]` first if it's running in data.json but the story turns it on later |
 | `[t, 'interior', true / false]` | show / hide the inside of the laundromat in close-ups. Off by default: only turn it on while the narration is about someone inside (Sam's rule) |
 | `[t, 'spin', ['Ryan'], seconds]` | Ryan (the Decoy) breaks into a spin on cue; he must be standing still (`defend`) |
 
