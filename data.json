@@ -519,7 +519,7 @@
    "day_outings": 1,
    "outings": 1,
    "status": "injured",
-   "injury": "burned hands",
+   "injury": "torn-up hands from the Tilt-A-Whirl's gears",
    "injured_until": 15,
    "injured_on": 12
   }
@@ -2539,7 +2539,7 @@
        "name": "Johnny",
        "ig": "just_johnny_nguyen",
        "outcome": "injured",
-       "detail": "burned hands, out until Day 15"
+       "detail": "hands torn up by the Tilt-A-Whirl's gears when the ride lurched while he was pulling springs, out until Day 15"
       },
       {
        "name": "Seth",
