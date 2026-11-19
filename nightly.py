@@ -117,6 +117,7 @@ def fetch_instagram(since=None):
 # ---------------------------------------------------------------- 1b. story questions: let an NPC in (YES/NO), name the dog
 YES_RE = re.compile(r"\b(yes|yeah|yep|yup|let him in|open the gate|trust him)\b", re.I)
 NO_RE = re.compile(r"\b(no(?! idea| clue)|nope|nah|keep him out|don'?t trust|leave him|shut the gate|turn him away)\b", re.I)
+ARM_RE = re.compile(r"\b(arms?|sleeves?|roll (it|that) up|check (him|his))\b", re.I)   # "show us your arm first": its own answer, ahead of yes/no
 NAME_RE = [re.compile(p, re.I) for p in (
     r"\b(?:name (?:him|her|it|the dog|that dog|the pup|our dog)|call (?:him|her|it|the dog))\s*[:\-]?\s*['\"]?([a-z][a-z'\-]{1,14})",
     r"\bdog(?:'s name)?\s*(?:is|should be|named|=|:|-)\s*['\"]?([a-z][a-z'\-]{1,14})",
@@ -133,19 +134,29 @@ def story_questions(data, comments, new_day):
     for n in data.get("npcs", []):
         if n.get("status") != "gate" or new_day - 1 < n.get("from_day", 0):
             continue
-        yes = no = 0
+        yes = no = arm = 0
+        asked = not n.get("shown_arm")                    # until he has shown it, "show your arm" is an answer of its own
         for c in latest.values():
             t = c.get("text") or ""
+            if asked and ARM_RE.search(t):
+                arm += 1; continue
             y, nn = bool(YES_RE.search(t)), bool(NO_RE.search(t))
             if y != nn:
                 yes, no = yes + y, no + nn
+        if asked and arm > max(yes, no):
+            n["shown_arm"] = {"day": new_day, "yes": yes, "no": no, "arm": arm}
+            lines.append(f"**{n['name']}:** SHOW YOUR ARM {arm}, YES {yes}, NO {no}. Reyes made him roll up the left sleeve, all the way, under the floodlight. "
+                         "The arm is burned from wrist to shoulder. Old burns, healed ugly. No bite. "
+                         "*\"House fire. First week. I went into the Tedeschi place after them. Didn't figure anyone needed to see that.\"* "
+                         "He rolled the sleeve back down and buttoned his collar. He waits at the gate one more night. **He showed you. LET HIM IN? Comment YES or NO.**")
+            continue
         if yes == no:
             lines.append(f"**{n['name']}:** YES {yes}, NO {no}. Nobody could decide. He waits at the gate another night.")
             continue
         n["status"] = "inside" if yes > no else "outside"
-        n["decided"] = {"day": new_day, "yes": yes, "no": no}
+        n["decided"] = {"day": new_day, "yes": yes, "no": no, **({"arm": arm} if asked else {})}
         hd = (data.get("horde") or {}).get("day")
-        if yes < no and hd and hd >= new_day:             # turned away: on the next horde night, the northeast floodlight goes dark (see horde_night)
+        if yes < no and hd and hd >= new_day - 1:             # turned away: on the next horde night, the northeast floodlight goes dark (see horde_night)
             n["cut_light"] = {"horde_day": hd, "lamp": 1}
         lines.append(f"**{n['name']}:** YES {yes}, NO {no}. " + ("The gate opened. He sleeps inside the fence tonight." if yes > no else
                      "The gate stays shut. He doesn't leave. He sets up across the road, where he can see the fence."))
