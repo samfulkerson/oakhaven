@@ -5,6 +5,7 @@
 - Kim (@kim.cheyanne) was hurt: a bad fall, out until Day 14
 **Run: Oakhaven Mall** (medium), squad: Jack, Opeta Teo, Bob
 - Everyone came back in one piece.
+- On the way back from the mall, Jack, Opeta Teo and Bob passed several crude traps along the side streets: sharpened rebar in a ditch, a car-door deadfall, wire strung between two poles. Zombies were stuck in most of them, still moving. Nobody at camp built them, and nobody knows who did.
 **Small runs today:** Artemis & Hudson → Rosie’s Diner (10:15): nothing · Vic & Johnny → Hardware store (13:30): +3 scrap · Larry & Amnic0re → Hardware store (15:05): +1 scrap · Amnic0re came back with a twisted knee and sat out tonight.
 **Back on their feet:** Amnic0re
 **Back from scouting:** Tanny made it back. Tanny and Marco watched the twins from a rooftop on Mill Street all night. The dead follow them in a column, and it is coming down toward the east side of the fence. Now we know where to hold. They weren't alone up there: a man named Elias had been on the next roof for weeks, watching the same two blue coats. He says he's the neighbor who made the first call. He followed them back and he's waiting outside the gate.
