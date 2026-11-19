@@ -1202,6 +1202,9 @@ def main():
         tiebreak = f"{' / '.join(tied)} tied. " + (f"Sam broke the tie: {winner}." if call in tied else f"A coin flip picked {winner}.")
     keys = {o[0].upper(): o[3] for o in (data.get("vote") or {}).get("opts", []) if len(o) > 3}
     split = second_group(data, winner, support, voters, keys)
+    called = str((data.get("vote") or {}).get("second", "")).upper()   # Sam can send a second group himself: data.json vote "second"
+    if not split and called and winner and called != winner:
+        split = {"word": called, "support": support.get(called, 0), "need": 0, "called": True}
     outings = todays_outing(data, keys.get(winner, winner), rng, keys.get(split["word"], split["word"]) if split else None)
     if split and not any(o.get("second") for o in outings):
         split = None                                       # not enough people to spare today
@@ -1250,7 +1253,8 @@ def main():
     if tiebreak:
         lines.append(f"**Tie:** {tiebreak}")
     if split:
-        lines.append(f"**Second group:** {split['support']} of {voters} voters asked for {split['word']} as well, so a separate group went there too.")
+        lines.append(f"**Second group:** Sam sent a small group to {split['word']} as well." if split.get("called") else
+                     f"**Second group:** {split['support']} of {voters} voters asked for {split['word']} as well, so a separate group went there too.")
     for o in outings:
         lines.append(f"**{'Second group run' if o.get('second') else o['kind'].title()}: {o['target']}** ({o['difficulty']}), squad: {', '.join(o['squad']) or 'nobody'}"
                      + (f" — mission {o['mission_status']}" if o.get("mission_status") else ""))
