@@ -87,7 +87,7 @@
    "status": "away",
    "away_until": 13,
    "away_note": "scouting Mill Street with Marco, to get eyes on the twins before the horde",
-   "away_back": "She and Marco watched the twins from a rooftop on Mill Street all night. The dead follow them in a column, and it is coming down toward the east side of the fence. Now we know where to hold.",
+   "away_back": "Tanny and Marco watched the twins from a rooftop on Mill Street all night. The dead follow them in a column, and it is coming down toward the east side of the fence. Now we know where to hold. They weren't alone up there: a man named Elias had been on the next roof for weeks, watching the same two blue coats. He says he's the neighbor who made the first call. He followed them back and he's waiting outside the gate.",
    "away_talk": [
     "Two blue coats. Not moving.",
     "They are gathering on Mill Street. A lot of them.",
@@ -1179,7 +1179,7 @@
    "income": {
     "Water": 10
    },
-   "done_note": "Water is running from the old tower in the woods, down a patched line to the laundromat. Clean water, every night.",
+   "done_note": "Water is running from the old tower in the woods, down a patched line to the laundromat. Clean water, every night. And the crew didn't come back alone: a skinny dog that had been living under the tower followed them all the way down the line, and won't leave Kim's side. It needs a name.",
    "days_done": 1
   }
  ],
