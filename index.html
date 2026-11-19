@@ -675,6 +675,7 @@ const shoreDist = (x, y) => (x >= BX0 && x < BX1 && y >= 0 && y < BY1) ? SD[y * 
 
 const FENCE = { x0: 390, y0: 452, x1: 458, y1: 514 };           // Sam's chain-link yard
 const GATE = { x0: 419, x1: 429 };
+let gateHold = 0;                                   // frames the camp gate stays open after someone walks through it
 const HOME = { box: [400, 456, 48, 36], door: [424, 492] };
 const BARREL = [405, 506];
 const HOME_CENTER = [424, 486];
@@ -3358,7 +3359,14 @@ function draw() {
   drawWeatherGround(inView, VX, VY, VW, VH);
   drawInterior(inView, dark);
   // gate
-  const gateOpen = people.some(m => !m.hidden && !(m.d && m.d.npc) && Math.abs(m.x - 424) < 8 && Math.abs(m.y - FENCE.y1) < 10);
+  // the gate only swings open for someone actually walking through it (moving across the fence line), not for anyone standing near it
+  for (const m of people) {
+    const near = !m.hidden && !(m.d && m.d.npc) && Math.abs(m.x - 424) < 8 && Math.abs(m.y - FENCE.y1) < 10;
+    if (near && m.gy != null && Math.abs(m.y - m.gy) > .02) gateHold = 24;      // walking in or out: hold it open a moment so it doesn't flicker
+    m.gy = m.y;
+  }
+  if (gateHold > 0) gateHold--;
+  const gateOpen = gateHold > 0;
   if (gateOpen) { P(f, GATE.x0, FENCE.y1 - 8, '#7a7e80', 1, 8); P(f, GATE.x1, FENCE.y1 - 8, '#7a7e80', 1, 8); }
   else for (let X = GATE.x0; X <= GATE.x1; X++) { P(f, X, FENCE.y1, (X + FENCE.y1) % 2 ? '#7a7e80' : '#55585a'); P(f, X, FENCE.y1 - 1, (X + FENCE.y1) % 2 ? '#55585a' : '#7a7e80'); if (X === 424) P(f, X, FENCE.y1 - 1, '#c9a24a', 1, 2); }
   // generators (bodies; their status lights are emissive)
