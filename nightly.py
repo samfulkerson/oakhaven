@@ -1253,7 +1253,7 @@ def main():
     if tiebreak:
         lines.append(f"**Tie:** {tiebreak}")
     if split:
-        lines.append(f"**Second group:** Sam sent a small group to {split['word']} as well." if split.get("called") else
+        lines.append((f"**Second group:** {tally[split['word']]} of you voted {split['word']}, so Sam sent a small group there as well." if tally.get(split['word']) else f"**Second group:** Sam sent a small group to {split['word']} as well.") if split.get("called") else
                      f"**Second group:** {split['support']} of {voters} voters asked for {split['word']} as well, so a separate group went there too.")
     for o in outings:
         lines.append(f"**{'Second group run' if o.get('second') else o['kind'].title()}: {o['target']}** ({o['difficulty']}), squad: {', '.join(o['squad']) or 'nobody'}"

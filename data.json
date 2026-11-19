@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 13,
- "followers": 94,
+ "day": 12,
+ "followers": 93,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 13. The horde reaches the fence tomorrow, and we have food and water for only one day. Three places are still unsearched. Where do we go?",
+  "q": "Day 12. Water is at zero, food lasts one day, and the horde reaches the fence in two. Where do we send the runners?",
   "opts": [
+   [
+    "GAS",
+    0,
+    "Easy run. Bottled water in the back, and more fuel.",
+    "gas",
+    "⛽"
+   ],
    [
     "FAIR",
     0,
-    "Never searched, medium run. It takes us away from the fence just as the horde closes in.",
+    "Never searched, so it could hold anything. Medium risk, no promises.",
     "fair",
     "🎡"
    ],
    [
-    "HARBOR",
+    "MALL",
     0,
-    "Never searched, medium run. We need supplies badly, but the waterfront is a gamble.",
-    "harbor",
-    "⛵"
-   ],
-   [
-    "FIRE STATION",
-    0,
-    "Never searched, medium run. Could hold what we need, but nobody knows what's inside.",
-    "firestation",
-    "🚒"
+    "Never searched. Medium risk, and it could be a haul or a trap.",
+    "mall",
+    "🛍"
    ]
   ],
-  "how": "Comment FAIR, HARBOR or FIRE STATION (or its emoji) on the Day 13 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well.",
+  "how": "Comment GAS, FAIR or MALL (or its emoji) on the Day 12 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well.",
   "second": "FAIR"
  },
  "survivors": [
@@ -84,6 +84,15 @@
      "name": "Revolver",
      "icon": "pistol"
     }
+   ],
+   "status": "away",
+   "away_until": 13,
+   "away_note": "scouting Mill Street with Marco, to get eyes on the twins before the horde",
+   "away_back": "Tanny and Marco watched the twins from a rooftop on Mill Street all night. The dead follow them in a column, and it is coming down toward the east side of the fence. Now we know where to hold. They weren't alone up there: a man named Elias had been on the next roof for weeks, watching the same two blue coats. He says he's the neighbor who made the first call. He followed them back and he's waiting outside the gate.",
+   "away_talk": [
+    "Two blue coats. Not moving.",
+    "They are gathering on Mill Street. A lot of them.",
+    "On a rooftop. We are fine. Stay off the radio."
    ]
   },
   {
@@ -229,7 +238,7 @@
    "bio": "Jack is a gunsmith who hammers out blades by day and fixes up guns by night, so the undead get a close look at his work before they go down.",
    "joined": 6,
    "day_outings": 1,
-   "outings": 4,
+   "outings": 3,
    "gear": [
     {
      "kind": "weapon",
@@ -314,7 +323,7 @@
      "icon": "pistol"
     }
    ],
-   "outings": 2
+   "outings": 1
   },
   {
    "name": "Ryan",
@@ -339,7 +348,7 @@
    "bio": "Toast shows up with an M240 machine gun and zero plans to be quiet about it.",
    "joined": 10,
    "day_outings": 1,
-   "outings": 2
+   "outings": 1
   },
   {
    "name": "Artemis",
@@ -347,8 +356,7 @@
    "role": "Engineer",
    "bio": "Artemis is an electrician who loves apocalypse vibes and can wire anything to anything.",
    "joined": 10,
-   "outings": 1,
-   "day_outings": 1
+   "outings": 1
   },
   {
    "name": "Weston",
@@ -381,7 +389,7 @@
    "bio": "Frost is a plumber who knows exactly where the water pipes run and how to make them useful.",
    "joined": 10,
    "day_outings": 1,
-   "outings": 3,
+   "outings": 2,
    "gear": [
     {
      "kind": "weapon",
@@ -430,7 +438,15 @@
    "role": "Scout",
    "bio": "Marco is an expert hunter who knows how to track anything, living or undead.",
    "joined": 10,
-   "day_outings": 1
+   "day_outings": 1,
+   "status": "away",
+   "away_until": 13,
+   "away_note": "scouting Mill Street with Tanny, to get eyes on the twins before the horde",
+   "away_back": "He counted them at dawn before they came down: hundreds, and more every hour.",
+   "away_talk": [
+    "Counting them now. Stop asking.",
+    "They looked up at us. I swear they looked up."
+   ]
   },
   {
    "name": "Bob",
@@ -438,16 +454,14 @@
    "role": "Scavenger",
    "bio": "Bob is old but wise, has seen it all, and knows exactly which places still have supplies.",
    "joined": 10,
-   "day_outings": 1,
-   "outings": 1
+   "day_outings": 1
   },
   {
    "name": "Amnic0re",
    "ig": "andrew_nelson99",
    "role": "Builder",
    "bio": "Amnic0re is a server repair tech who spent his spare time doomsday prepping, and now finally gets to use it.",
-   "joined": 10,
-   "day_outings": 1
+   "joined": 10
   },
   {
    "name": "John",
@@ -462,8 +476,7 @@
    "ig": "victorioussecrt",
    "role": "Gunsmith",
    "bio": "Vic is a blacksmith with a taste for big rewards, aiming for the Hangar and maybe the Farm on the way back.",
-   "joined": 11,
-   "day_outings": 1
+   "joined": 11
   },
   {
    "name": "Steve",
@@ -479,43 +492,35 @@
    "role": "Engineer",
    "bio": "Kim is an electrician who's tagging along with wstonkiethsteward to keep the lights on.",
    "joined": 11,
-   "outings": 2,
-   "status": "injured",
-   "injury": "a bad fall",
-   "injured_until": 14,
-   "injured_on": 12
+   "outings": 1
   },
   {
    "name": "Larry",
    "ig": "l.littlerw22",
    "role": "EMT",
    "bio": "Larry wants to be a firefighter, rushing toward the flames and the zombies alike.",
-   "joined": 12,
-   "day_outings": 1
+   "joined": 12
   },
   {
    "name": "Hudson",
    "ig": "hay_ant_hud",
    "role": "Engineer",
    "bio": "Hudson is an electrician who keeps the lights on, even when the dead come knocking.",
-   "joined": 12,
-   "day_outings": 1
+   "joined": 12
   },
   {
    "name": "Opeta Teo",
    "ig": "opeta.teo",
    "role": "Sharpshooter",
    "bio": "Opeta Teo is an archer who crafts his own bow and arrows and picks off the undead from a safe distance.",
-   "joined": 12,
-   "outings": 1
+   "joined": 12
   },
   {
    "name": "Johnny",
    "ig": "just_johnny_nguyen",
    "role": "Engineer",
    "bio": "Johnny is an engineer who can fix almost anything, including the apocalypse.",
-   "joined": 12,
-   "day_outings": 1
+   "joined": 12
   }
  ],
  "runs": [
@@ -699,8 +704,7 @@
     "Bob"
    ],
    "loot": "Batteries and walkie-talkies from the electronics store",
-   "place": "Oakhaven Mall",
-   "done_day": 12
+   "place": "Oakhaven Mall"
   },
   {
    "dest": "freight",
@@ -1165,10 +1169,11 @@
    "reward": "+20 water now, then +10 clean water every night",
    "poi": "watertower",
    "from_day": 11,
-   "status": "done",
+   "status": "active",
    "days": 2,
    "squad": [
     "Frost",
+    "Kim",
     "Toast",
     "Shawn"
    ],
@@ -1179,7 +1184,7 @@
     "Water": 10
    },
    "done_note": "Water is running from the old tower in the woods, down a patched line to the laundromat. Clean water, every night. And the crew didn't come back alone: a skinny dog that had been living under the tower followed them all the way down the line, and won't leave Kim's side. It needs a name.",
-   "days_done": 2
+   "days_done": 1
   }
  ],
  "power": [
@@ -1409,13 +1414,13 @@
  "stock": [
   [
    "Food",
-   49,
+   54,
    200,
    "rations"
   ],
   [
    "Water",
-   39,
+   0,
    200,
    "rations"
   ],
@@ -1427,7 +1432,7 @@
   ],
   [
    "Ammo",
-   122,
+   134,
    500,
    "rds"
   ],
@@ -1439,13 +1444,13 @@
   ],
   [
    "Scrap",
-   36,
+   22,
    200,
    "units"
   ],
   [
    "Barricades",
-   100,
+   92,
    100,
    "%"
   ]
@@ -2425,131 +2430,16 @@
     "Officer Reyes & Ben → Hollow Creek Farm (11:50): +2 food",
     "Marco & Spenz → Ranger station (15:05): +1 food"
    ]
-  },
-  {
-   "day": 12,
-   "vote": {
-    "question": "Day 12. Water is at zero, food lasts one day, and the horde reaches the fence in two. Where do we send the runners?",
-    "results": {
-     "MALL": 6,
-     "FAIR": 5
-    },
-    "winner": "MALL",
-    "tiebreak": null,
-    "second": null,
-    "reel": "https://www.instagram.com/reel/Df4nDpSSCDU/"
-   },
-   "outings": [
-    {
-     "target": "Tap the water tower",
-     "key": "watertower",
-     "first": true,
-     "kind": "mission",
-     "difficulty": "medium",
-     "squad": [
-      "Frost",
-      "Kim",
-      "Toast",
-      "Shawn"
-     ],
-     "results": [
-      {
-       "name": "Frost",
-       "ig": "sir_waffles45",
-       "outcome": "ok"
-      },
-      {
-       "name": "Kim",
-       "ig": "kim.cheyanne",
-       "outcome": "injured",
-       "detail": "a bad fall, out until Day 14"
-      },
-      {
-       "name": "Toast",
-       "ig": "totally.am.toastyy",
-       "outcome": "ok"
-      },
-      {
-       "name": "Shawn",
-       "ig": "shawn_hohne",
-       "outcome": "ok"
-      }
-     ],
-     "mission_status": "done"
-    },
-    {
-     "target": "Oakhaven Mall",
-     "key": "mall",
-     "first": true,
-     "kind": "run",
-     "difficulty": "medium",
-     "squad": [
-      "Jack",
-      "Opeta Teo",
-      "Bob"
-     ],
-     "results": [
-      {
-       "name": "Jack",
-       "ig": "rebelforce35",
-       "outcome": "ok"
-      },
-      {
-       "name": "Opeta Teo",
-       "ig": "opeta.teo",
-       "outcome": "ok"
-      },
-      {
-       "name": "Bob",
-       "ig": "_mjork.voldt_",
-       "outcome": "ok"
-      }
-     ],
-     "mission_status": null
-    }
-   ],
-   "healed": [
-    "Amnic0re"
-   ],
-   "joined": [],
-   "waiting": 0,
-   "power": [],
-   "stock": {
-    "Food": -5,
-    "Water": 39,
-    "Scrap": 14,
-    "Ammo": -12,
-    "Fuel": 0,
-    "Barricades": 8
-   },
-   "camp": [
-    "Water is running from the old tower in the woods, down a patched line to the laundromat. Clean water, every night. And the crew didn't come back alone: a skinny dog that had been living under the tower followed them all the way down the line, and won't leave Kim's side. It needs a name.",
-    "Camp jobs: 3 of them (foraging the block): +3 food; Mateen (the farm plots): +3 food; 3 of them (rain catchers and pipe taps): +6 water; Victoria stretched every meal: +4 food."
-   ],
-   "horde": null,
-   "returned": [
-    "Tanny made it back. Tanny and Marco watched the twins from a rooftop on Mill Street all night. The dead follow them in a column, and it is coming down toward the east side of the fence. Now we know where to hold. They weren't alone up there: a man named Elias had been on the next roof for weeks, watching the same two blue coats. He says he's the neighbor who made the first call. He followed them back and he's waiting outside the gate.",
-    "Marco made it back. He counted them at dawn before they came down: hundreds, and more every hour."
-   ],
-   "story": [
-    "On the way back from the mall, Jack, Opeta Teo and Bob passed several crude traps along the side streets: sharpened rebar in a ditch, a car-door deadfall, wire strung between two poles. Zombies were stuck in most of them, still moving. Nobody at camp built them, and nobody knows who did."
-   ],
-   "day_runs": [
-    "Artemis & Hudson → Rosie’s Diner (10:15): nothing",
-    "Vic & Johnny → Hardware store (13:30): +3 scrap",
-    "Larry & Amnic0re → Hardware store (15:05): +1 scrap",
-    "Amnic0re came back with a twisted knee and sat out tonight."
-   ]
   }
  ],
- "hungry_days": 0,
+ "hungry_days": 1,
  "stock_change": {
-  "Food": -5,
-  "Water": 39,
-  "Scrap": 14,
-  "Ammo": -12,
-  "Fuel": 0,
-  "Barricades": 8
+  "Food": -12,
+  "Water": -4,
+  "Ammo": 22,
+  "Fuel": 2,
+  "Barricades": 11,
+  "Scrap": -9
  },
  "schedule": [],
  "broadcast": {
@@ -2603,11 +2493,6 @@
    "item": "Fuel",
    "amt": 2,
    "why": "gas station pumps"
-  },
-  {
-   "item": "Water",
-   "amt": 10,
-   "why": "Tap the water tower"
   }
  ],
  "highlights": [
@@ -2711,15 +2596,15 @@
   75
  ],
  "undead": {
-  "count": 31578,
+  "count": 31597,
   "last": {
-   "day": 12,
-   "killed": 27,
-   "turned": 8,
+   "day": 11,
+   "killed": 23,
+   "turned": 5,
    "arrived": 0
   }
  },
- "last_run": 1795085738,
+ "last_run": 1795000455,
  "horde": {
   "day": 14,
   "week": 2,
@@ -2779,8 +2664,65 @@
   ]
  },
  "weather": {
-  "day": 13,
+  "day": 12,
   "kind": "clear"
+ },
+ "camp_bonus": [
+  {
+   "item": "Food",
+   "amt": 8,
+   "why": "new survivors' packs"
+  },
+  {
+   "item": "Water",
+   "amt": 8,
+   "why": "new survivors' packs"
+  }
+ ],
+ "day_runs": {
+  "day": 12,
+  "runs": [
+   {
+    "time": "10:15",
+    "dest": "diner",
+    "crew": [
+     "Artemis",
+     "Hudson"
+    ],
+    "find": {},
+    "event": "ok",
+    "line": "Artemis: Picked clean. Nothing worth carrying. Heading home."
+   },
+   {
+    "time": "13:30",
+    "dest": "hardware",
+    "crew": [
+     "Vic",
+     "Johnny"
+    ],
+    "find": {
+     "Scrap": 3
+    },
+    "event": "ok",
+    "line": "Vic: Found 3 car doors for the fence. Heading home."
+   },
+   {
+    "time": "15:05",
+    "dest": "hardware",
+    "crew": [
+     "Larry",
+     "Amnic0re"
+    ],
+    "find": {
+     "Scrap": 1
+    },
+    "event": "hurt",
+    "line": "Larry: Found 1 car doors for the fence. Heading home.",
+    "hurt": "Amnic0re",
+    "injury": "a twisted knee",
+    "scare": "Amnic0re: Amnic0re went down hard. A twisted knee. We're coming back slow."
+   }
+  ]
  },
  "intel": {
   "horde_day": 14,
@@ -2806,49 +2748,5 @@
    "Johnny"
   ],
   "note": "Hudson and Johnny's booby traps on the wall, built from fairground ride parts"
- },
- "day_runs": {
-  "day": 13,
-  "runs": [
-   {
-    "time": "08:40",
-    "dest": "gunshop",
-    "crew": [
-     "Opeta Teo",
-     "Artemis"
-    ],
-    "find": {
-     "Scrap": 3
-    },
-    "event": "ok",
-    "line": "Opeta Teo: Found 3 car doors for the fence. Heading home."
-   },
-   {
-    "time": "10:15",
-    "dest": "farm",
-    "crew": [
-     "Weston",
-     "Quinn"
-    ],
-    "find": {
-     "Water": 1
-    },
-    "event": "ok",
-    "line": "Weston: Found 1 jugs of water under a sink. Heading home."
-   },
-   {
-    "time": "15:05",
-    "dest": "pharmacy",
-    "crew": [
-     "Toast",
-     "Carl"
-    ],
-    "find": {
-     "Water": 2
-    },
-    "event": "ok",
-    "line": "Toast: Found 2 jugs of water under a sink. Heading home."
-   }
-  ]
  }
 }
