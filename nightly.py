@@ -462,6 +462,10 @@ def horde_night(data, rng, day):
     intel = data.get("intel") or {}
     scouted = intel.get("defense", 0) if intel.get("horde_day") == day else 0      # scouts who watched the horde gather: the camp knows where to hold
     defense += scouted
+    traps = data.get("traps") or {}
+    trap_run = next((r for r in data.get("runs", []) if r.get("dest") == traps.get("needs")), None)
+    trapped = traps.get("defense", 0) if traps.get("horde_day") == day and (not traps.get("needs") or (trap_run and trap_run.get("done_day"))) else 0
+    defense += trapped                                                              # booby traps on the wall, built from what a run brought back
     flood = 0
     if lit:                                               # the floodlights: the light draws more of them in, but now the shooters can see
         shooters = sum(1 for s in fit if s.get("role") == "Sharpshooter" or any(g.get("icon") in ("rifle", "pistol") for g in s.get("gear", [])))
@@ -503,7 +507,7 @@ def horde_night(data, rng, day):
     if stock_get(data, "Barricades") < 10:
         stock_row(data, "Barricades")[1] = 10
     res = {"day": day, "week": h.get("week", 1), "outcome": outcome, "strength": round(strength), "defense": round(defense),
-           "defenders": [s["name"] for s in fit], "hurt": hurt_list, "dead": dead, "lit": lit, "flood": flood, "intel": scouted, "intel_by": intel.get("by", []) if scouted else [],
+           "defenders": [s["name"] for s in fit], "hurt": hurt_list, "dead": dead, "lit": lit, "flood": flood, "intel": scouted, "intel_by": intel.get("by", []) if scouted else [], "traps": trapped, "traps_note": traps.get("note", "") if trapped else "",
            "fence": stock_get(data, "Barricades"), "ammo": stock_get(data, "Ammo")}
     if twins_here(data, day):        # the twins walk at the front of every horde: the story's, not the dice's. Same night, same odds, and they can't die.
         res["led"] = True
@@ -1263,7 +1267,8 @@ def main():
         lines.append(f"**Horde night (week {horde['week']}): the fence {horde['outcome'].upper()}.** {horde['strength']} of them against a defense of {horde['defense']}"
                      + (" — the twins at the front" if horde.get("led") else "")
                      + (f" (the floodlight drew more in, but it gave the shooters +{horde.get('flood', 0)} defense)" if horde["lit"] else "")
-                     + (f" ({' and '.join(horde['intel_by'])}'s scouting: +{horde['intel']} defense, the camp knew which side to hold)" if horde.get("intel") else "") + f". Defenders: {', '.join(horde['defenders']) or 'nobody'}.")
+                     + (f" ({' and '.join(horde['intel_by'])}'s scouting: +{horde['intel']} defense, the camp knew which side to hold)" if horde.get("intel") else "")
+                     + (f" ({horde['traps_note']}: +{horde['traps']} defense)" if horde.get("traps") else "") + f". Defenders: {', '.join(horde['defenders']) or 'nobody'}.")
         for d_ in horde["dead"]:
             lines.append(f"- † **{d_}** was pulled over the fence.")
         for h_ in horde["hurt"]:

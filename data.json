@@ -698,7 +698,9 @@
    "dest": "mall",
    "difficulty": "medium",
    "squad": [
-    "Sam"
+    "Jack",
+    "Opeta Teo",
+    "Bob"
    ],
    "loot": "Batteries and walkie-talkies from the electronics store",
    "place": "Oakhaven Mall"
@@ -731,7 +733,8 @@
    "dest": "fair",
    "difficulty": "medium",
    "squad": [
-    "Sam"
+    "Hudson",
+    "Johnny"
    ],
    "loot": "Candy, funnel cake mix and a megaphone",
    "place": "Fairground"
@@ -2734,5 +2737,15 @@
   "from_day": 13,
   "name": null,
   "found": "Living under the old water tower in the woods. Followed the tower crew home on Day 13 and won't leave Kim's side."
+ },
+ "traps": {
+  "horde_day": 14,
+  "defense": 15,
+  "needs": "fair",
+  "by": [
+   "Hudson",
+   "Johnny"
+  ],
+  "note": "Hudson and Johnny's booby traps on the wall, built from fairground ride parts"
  }
 }
