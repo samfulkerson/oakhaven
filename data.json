@@ -1192,7 +1192,7 @@
     394,
     497
    ],
-   "status": "repairing",
+   "status": "running",
    "clue": "Sam dragged it home from the auto shop. The carburetor is shot.",
    "crew": "1 mechanic",
    "fuel": "10 L gasoline",
@@ -1201,7 +1201,8 @@
     {
      "label": "10 L of gasoline",
      "dest": "gas",
-     "fuel": 10
+     "fuel": 10,
+     "done": true
     },
     {
      "label": "A new carburetor from the hardware store",
@@ -1421,7 +1422,7 @@
   ],
   [
    "Fuel",
-   42,
+   32,
    200,
    "L"
   ],
@@ -2727,5 +2728,11 @@
    "Marco"
   ],
   "note": "Tanny and Marco scouted the twins on Mill Street on Day 12."
+ },
+ "dog": {
+  "with": "Kim",
+  "from_day": 13,
+  "name": null,
+  "found": "Living under the old water tower in the woods. Followed the tower crew home on Day 13 and won't leave Kim's side."
  }
 }

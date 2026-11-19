@@ -587,7 +587,7 @@ const DATA = {
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
 if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
-if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log', 'weather', 'twins'])
+if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log', 'weather', 'twins', 'dog'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
@@ -2676,6 +2676,42 @@ for (let i = 0; i < visible; i++) {
   people.push(e); if (d) byName[d.name] = e;
 }
 
+// ------------------------------------------------------------------ the camp dog (data.json "dog"): follows its person around, sits when they stop
+const DOG_PAL = { b: '#b08850', d: '#4a3624', h: '#b8925a', e: '#4a3624', k: '#111', n: '#111', l: '#8a6a3a', t: '#b08850', m: '#d0aa70', w: '#d8bc88' };
+const DOG_ART = {
+  walk0: ['........e.e..', '........hhh..', '........hkhmn', 't......hhhm..', '.t.dddddhh...', '..bbbbbbbb...', '..bb....bb...', '..l.l...l.l..'],
+  walk1: ['........e.e..', '........hhh..', '........hkhmn', '.t.....hhhm..', 't..dddddhh...', '..bbbbbbbb...', '..bb....bb...', '...l.l...l.l.'],
+  sit:   ['.....e.e..', '.....hhh..', '.....hkhmn', '.....hhhm.', '....dhh...', '...ddbw...', '..bbbbw...', 't.bbbbl...', '.tbbb.l...', '..lll.ll..'],
+};
+const DOG_IMG = {};
+for (const [k, rows] of Object.entries(DOG_ART)) {
+  const W = rows[0].length + 2, H = rows.length + 2, on = (c, r) => rows[r] && rows[r][c] && rows[r][c] !== '.';
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
+  for (let r = -1; r <= rows.length; r++) for (let c = -1; c <= rows[0].length; c++) if (!on(c, r) && (on(c - 1, r) || on(c + 1, r) || on(c, r - 1) || on(c, r + 1))) { g.fillStyle = '#0e0c0a'; g.fillRect(c + 1, r + 1, 1, 1); }   // the same dark outline the people have
+  rows.forEach((row, r) => [...row].forEach((ch, c) => { if (ch !== '.') { g.fillStyle = DOG_PAL[ch]; g.fillRect(c + 1, r + 1, 1, 1); } }));
+  DOG_IMG[k] = cv;
+}
+const DOGCFG = DATA.dog && (DATA.day || 0) >= (DATA.dog.from_day || 0) ? DATA.dog : null;
+const dog = DOGCFG ? { kind: 'dog', x: 0, y: 0, flip: false, moving: false, step: 0, hidden: true, placed: false } : null;
+function dogStep() {
+  if (!dog) return;
+  const o = byName[DOGCFG.with];
+  if (!o || o.hidden) { dog.hidden = true; dog.placed = false; return; }       // inside with them, or out on a run with them
+  const side = o.flip ? 1 : -1, tx = o.x + side * 7, ty = o.y + 1;
+  if (!dog.placed || Math.hypot(tx - dog.x, ty - dog.y) > 40) { dog.x = tx; dog.y = ty; dog.placed = true; }
+  dog.hidden = false;
+  const dx = tx - dog.x, dy = ty - dog.y, dd = Math.hypot(dx, dy);
+  dog.moving = dd > 2.5;
+  if (dog.moving) { const v = Math.min(dd, (o.spd || .15) + .06); dog.x += dx / dd * v; dog.y += dy / dd * v; dog.step += v; if (Math.abs(dx) > .3) dog.flip = dx < 0; }
+  else dog.flip = o.x < dog.x;                                                   // sitting: it looks at its person
+}
+function drawDog(a) {
+  const img = a.moving ? ((a.step / 2.2 | 0) % 2 ? DOG_IMG.walk1 : DOG_IMG.walk0) : DOG_IMG.sit;
+  f.save(); f.translate(Math.round(a.x), Math.round(a.y)); if (a.flip) f.scale(-1, 1);
+  f.fillStyle = 'rgba(0,0,0,.22)'; f.fillRect(-Math.floor(img.width / 2) + 1, 0, img.width - 3, 1);
+  f.drawImage(img, -Math.floor(img.width / 2), -img.height + 2); f.restore();
+}
+
 // ------------------------------------------------------------------ zombies: most shuffle along the streets; some haunt the airport, the docks and the woods
 const zombies = [];
 let zId = 0;
@@ -3329,9 +3365,11 @@ function draw() {
   // actors
   const actors = [];
   for (const e of people) if (!e.hidden && inView(e.x, e.y)) actors.push(e);
+  dogStep(); if (dog && !dog.hidden && inView(dog.x, dog.y)) actors.push(dog);
   for (const z of zombies) if (inView(z.x, z.y)) actors.push(z);
   actors.sort((a, b) => a.y - b.y);
   for (const a of actors) {
+    if (a.kind === 'dog') { drawDog(a); continue; }
     if (a.kind === 'z') {
       const img = sprite(a.look, a.dying ? 'stand' : poseOf(a));
       if (a.dying) drawSprite(img, a.x, a.y, a.flip, a.brute ? BRUTE_SC : 1, a.dying < CORPSE - 600 ? .9 : Math.max(0, (CORPSE - a.dying) / 667), true);   // bodies lie where they fell, then fade
