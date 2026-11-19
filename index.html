@@ -587,8 +587,9 @@ const DATA = {
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
 if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
-if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log', 'weather', 'twins', 'dog', 'npcs'])
+if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log', 'weather', 'twins', 'dog', 'npcs', 'lamps_out'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
+function lampOut(i) { const d = DATA.day || 0; return (DATA.lamps_out || []).some(l => l.lamp === i && d > l.since && d < l.until); }   // a fence floodlight whose line was cut (data.json lamps_out)
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
 // a squad working a multi-night mission is inside that building: not in the yard, not on small runs
@@ -1264,9 +1265,10 @@ function buildBG() {
   SMOKE.push([BARREL[0], BARREL[1] - 6, 2]);
   LIGHTS.push([424, 489, 16, .9, '255,230,170', 'steady', 'laundromat'], [424, 502, 28, .7, '235,240,255', 'steady', 'laundromat']);
   // floodlights on the four fence corners, aimed out at the street (they run off the laundromat generator)
-  for (const [cx, cy, dx, dy] of FENCE_LAMPS) {
+  for (const [i, [cx, cy, dx, dy]] of FENCE_LAMPS.entries()) {
     P(x, cx, cy, '#2a2a2e', 2, 2); P(x, cx + (dx > 0 ? 1 : 0), cy + (dy > 0 ? 1 : 0), '#4a4a52');          // the lamp housing, dark until the generator runs
     const px = -dy, py = dx;                          // across the beam: a wide fan, not a spotlight
+    if (lampOut(i)) continue;                          // a cut line: this corner stays dark until it's spliced
     for (const [d, w, r, a] of [[7, 0, 13, .75], [19, -9, 17, .5], [19, 9, 17, .5], [32, -20, 19, .38], [32, 0, 19, .38], [32, 20, 19, .38]])
       LIGHTS.push([cx + dx * d + px * w, cy + dy * d + py * w, r, a, '235,240,255', 'steady', 'laundromat']);
   }
@@ -3266,7 +3268,7 @@ function drawEmissive(c, dark, inView, part) {
     if (powered('substation')) { P(c, 407, 355, '#3fbf6a', 5, 9); P(c, 405, 357, '#3fbf6a', 9, 5); P(c, 408, 356, '#8fe8a8', 3, 1); for (const [lx, ly] of STREETLIGHTS) P(c, lx, ly, '#fff2b8', 2, 1); P(c, 733, 488, 'rgba(255,90,70,.6)', 18, 1); }
     if (powered('diner')) { P(c, 534, 366, '#e04a8a', 40, 7); textC(c, 'DINER', 554, 367, '#ffe8f2'); P(c, 514, 374, 'rgba(255,230,170,.45)', 30, 4); P(c, 564, 374, 'rgba(255,230,170,.45)', 30, 4); }
     if (powered('gas')) { P(c, 504, 486, '#1a1a1a', 17, 7); text(c, '3.99', 506, 488, '#ffb84a'); P(c, 569, 479, 'rgba(255,235,190,.5)', 9, 4); P(c, 590, 479, 'rgba(255,235,190,.5)', 9, 4); }
-    if (powered('laundromat')) { for (const [cx, cy] of FENCE_LAMPS) P(c, cx, cy, '#fff8d8', 2, 2); P(c, 423, 486, '#fff2b8', 2, 2); P(c, 405, 488, '#f6d36a'); P(c, 409, 489, '#f6d36a'); P(c, 438, 488, '#f6d36a'); }
+    if (powered('laundromat')) { FENCE_LAMPS.forEach(([cx, cy], i) => { if (!lampOut(i)) P(c, cx, cy, '#fff8d8', 2, 2); }); P(c, 423, 486, '#fff2b8', 2, 2); P(c, 405, 488, '#f6d36a'); P(c, 409, 489, '#f6d36a'); P(c, 438, 488, '#f6d36a'); }
     if (powered('hospital')) { for (let X = 512; X < 608; X += 8) if (X < 550 || X > 568) P(c, X, 260, 'rgba(255,245,220,.6)', 5, 3); if ((frame >> 5) % 2) P(c, 608, 207, '#ff3a2a'); }
     if (powered('airport')) { P(c, 593, 104, 'rgba(200,235,255,.5)', 30, 8); P(c, 422, 159, 'rgba(255,240,200,.35)', 136, 6); if ((frame >> 5) % 2) P(c, 608, 90, '#ff3a2a'); for (let X = 232; X < 820; X += 20) { P(c, X, 28, '#fff2b8'); P(c, X, 61, '#fff2b8'); } }
     if (powered('lighthouse')) P(c, 994, 33, '#fffbe0', 5, 2);

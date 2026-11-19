@@ -144,6 +144,9 @@ def story_questions(data, comments, new_day):
             continue
         n["status"] = "inside" if yes > no else "outside"
         n["decided"] = {"day": new_day, "yes": yes, "no": no}
+        hd = (data.get("horde") or {}).get("day")
+        if yes < no and hd and hd >= new_day:             # turned away: on the next horde night, the northeast floodlight goes dark (see horde_night)
+            n["cut_light"] = {"horde_day": hd, "lamp": 1}
         lines.append(f"**{n['name']}:** YES {yes}, NO {no}. " + ("The gate opened. He sleeps inside the fence tonight." if yes > no else
                      "The gate stays shut. He doesn't leave. He sets up across the road, where he can see the fence."))
     dog = data.get("dog")
@@ -521,6 +524,11 @@ def horde_night(data, rng, day):
         shooters = sum(1 for s in fit if s.get("role") == "Sharpshooter" or any(g.get("icon") in ("rifle", "pistol") for g in s.get("gear", [])))
         flood = FLOOD_BASE + FLOOD_PER_SHOOTER * shooters
         defense += flood
+    cutter = next((n for n in data.get("npcs", []) if n.get("status") == "outside" and (n.get("cut_light") or {}).get("horde_day") == day), None)
+    cut_lost = 0
+    if cutter and lit:                                    # someone cut the northeast floodlight's line from outside the fence, partway through the night
+        cut_lost = max(1, round(flood / 4))               # that corner's share of the floodlight bonus is gone
+        defense -= cut_lost
     margin = round(defense - strength)
     ratio = defense / max(1, strength)                    # outcomes go by how far ahead or behind the camp is, so they work at any size
     def hurt(n, why):
@@ -553,11 +561,17 @@ def horde_night(data, rng, day):
             s.update(status="dead", died_day=day, died_at="the laundromat fence", cause="Pulled over the fence when the horde broke through.")
             dead.append(s["name"])
         hurt_list = hurt(2, "hurt holding the laundromat")
+    if cut_lost:                                          # the dark corner costs the fence and someone on watch, whatever else happens
+        fence_hit += 10
+        hurt_list += hurt(1, "caught in the dark at the northeast corner")
+        lamp = cutter["cut_light"].get("lamp", 1)
+        data["lamps_out"] = [l for l in data.get("lamps_out", []) if l.get("lamp") != lamp] + [{"lamp": lamp, "since": day, "until": day + 3}]
+        cutter["cut_light"]["done"] = True
     spend("Barricades", max(0, fence_hit)); spend("Ammo", ammo_hit)
     if stock_get(data, "Barricades") < 10:
         stock_row(data, "Barricades")[1] = 10
     res = {"day": day, "week": h.get("week", 1), "outcome": outcome, "strength": round(strength), "defense": round(defense),
-           "defenders": [s["name"] for s in fit], "hurt": hurt_list, "dead": dead, "lit": lit, "flood": flood, "intel": scouted, "intel_by": intel.get("by", []) if scouted else [], "traps": trapped, "traps_note": traps.get("note", "") if trapped else "",
+           "defenders": [s["name"] for s in fit], "hurt": hurt_list, "dead": dead, "lit": lit, "flood": flood, "intel": scouted, "intel_by": intel.get("by", []) if scouted else [], "traps": trapped, "traps_note": traps.get("note", "") if trapped else "", "cut": cut_lost,
            "fence": stock_get(data, "Barricades"), "ammo": stock_get(data, "Ammo")}
     if twins_here(data, day):        # the twins walk at the front of every horde: the story's, not the dice's. Same night, same odds, and they can't die.
         res["led"] = True
@@ -1287,6 +1301,9 @@ def main():
     unlocked = milestone_unlocks(data, new_day)
     undead = update_undead(data, outings, len(day_lines), horde, rng)
     question_lines = story_questions(data, comments, new_day)
+    if data.get("lamps_out"):                             # a cut floodlight stays dark until it's spliced (the map reads this too)
+        data["lamps_out"] = [l for l in data["lamps_out"] if l.get("until", 0) > new_day] or None
+        if data["lamps_out"] is None: data.pop("lamps_out")
     data["day"] = new_day
     entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner, "tiebreak": tiebreak,
                                   "second": {"place": split["word"], "asked": split["support"]} if split else None,
@@ -1325,6 +1342,10 @@ def main():
                      + (f" (the floodlight drew more in, but it gave the shooters +{horde.get('flood', 0)} defense)" if horde["lit"] else "")
                      + (f" ({' and '.join(horde['intel_by'])}'s scouting: +{horde['intel']} defense, the camp knew which side to hold)" if horde.get("intel") else "")
                      + (f" ({horde['traps_note']}: +{horde['traps']} defense)" if horde.get("traps") else "") + f". Defenders: {', '.join(horde['defenders']) or 'nobody'}.")
+        if horde.get("cut"):
+            lines.append(f"- Partway through the night, the **northeast floodlight went dark** (-{horde['cut']} defense, and the fence took more at that corner). "
+                         "In the morning Frost found the power line cut clean on the outside of the fence. Not chewed. Cut. Nobody saw who did it. "
+                         "Frost says he can splice it in two days.")
         for d_ in horde["dead"]:
             lines.append(f"- † **{d_}** was pulled over the fence.")
         for h_ in horde["hurt"]:
