@@ -2,6 +2,23 @@
   "note": "The Oakhaven scrapbook: every camera roll from every mission. Newest first. Each photo lives in scrapbook/<id>-<n>.jpg (1080x1350) with a 432x540 copy in scrapbook/thumbs/. 'who' lists the survivors in a photo; a photo without 'who' counts everyone in the roll's crew.",
   "rolls": [
     {
+      "id": "day13-tower",
+      "day": 13,
+      "place": "The Water Tower",
+      "by": "Kim",
+      "crew": ["Frost", "Toast", "Shawn"],
+      "intro": "You voted WATER TOWER. Frost, Toast and Shawn went into the woods off Elm Street. Kim carried the camera.",
+      "outro": "Clean water runs to the laundromat now. And the crew came home with a dog.",
+      "photos": [
+        {"time": "10:40", "note": "The old tower was still standing. Frost knew it would be."},
+        {"time": "11:15", "who": ["Frost", "Shawn"], "note": "Frost found the main valve. Shawn watched the trees."},
+        {"time": "19:40", "who": [], "note": "Something was living under the tower. It didn't run."},
+        {"time": "22:10", "who": ["Toast"], "note": "The pipes knocked all night, and they heard it. Toast kept them back."},
+        {"time": "09:32", "who": ["Kim"], "note": "Day 13. The ladder gave out under Kim. She says she's fine."},
+        {"time": "15:05", "note": "The water's running. And we came home with one more."}
+      ]
+    },
+    {
       "id": "day11-gunpawn",
       "day": 11,
       "place": "Gun & Pawn",
