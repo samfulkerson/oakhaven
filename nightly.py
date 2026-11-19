@@ -101,17 +101,67 @@ def fetch_instagram(since=None):
     reel = next((m for m in recent if "comment your pick" in (m.get("caption") or "").lower()), reels[0] if reels else media[0])
     comments = []
     for m in recent:
-        url, params = f"{GRAPH}/{m['id']}/comments", {"fields": "username,text,timestamp,replies{username,text,timestamp}", "limit": 50}
+        url, params = f"{GRAPH}/{m['id']}/comments", {"fields": "username,text,timestamp,like_count,replies{username,text,timestamp,like_count}", "limit": 50}
         while url:
             page = ig_get(url, **params)
             for c in page.get("data", []):          # replies count too: people change their vote, or give their name, in a reply
                 for x in [c] + (c.get("replies") or {}).get("data", []):
                     if x.get("username") and stamp(x.get("timestamp", "1970-01-01T00:00:00")) > since:
-                        comments.append({"username": x["username"], "text": x.get("text") or "", "timestamp": x.get("timestamp") or ""})
+                        comments.append({"username": x["username"], "text": x.get("text") or "", "timestamp": x.get("timestamp") or "", "likes": x.get("like_count") or 0})
             url, params = page.get("paging", {}).get("next"), {}
     comments.sort(key=lambda c: c.get("timestamp", ""))
     log(f"Instagram: {followers} followers, {len(comments)} comments on {len(recent)} recent post(s); vote Reel {reel['permalink']}")
     return {"followers": followers, "reel": reel, "comments": comments}
+
+
+# ---------------------------------------------------------------- 1b. story questions: let an NPC in (YES/NO), name the dog
+YES_RE = re.compile(r"\b(yes|yeah|yep|yup|let him in|open the gate|trust him)\b", re.I)
+NO_RE = re.compile(r"\b(no(?! idea| clue)|nope|nah|keep him out|don'?t trust|leave him|shut the gate|turn him away)\b", re.I)
+NAME_RE = [re.compile(p, re.I) for p in (
+    r"\b(?:name (?:him|her|it|the dog|that dog|the pup|our dog)|call (?:him|her|it|the dog))\s*[:\-]?\s*['\"]?([a-z][a-z'\-]{1,14})",
+    r"\bdog(?:'s name)?\s*(?:is|should be|named|=|:|-)\s*['\"]?([a-z][a-z'\-]{1,14})",
+    r"(?:🐶|🐕|🐾)\s*['\"]?([a-z][a-z'\-]{1,14})",
+    r"\b([a-z][a-z'\-]{1,14})\s+(?:for|as) the dog\b")]
+NOT_NAMES = {"him", "her", "it", "the", "a", "an", "dog", "should", "be", "is", "yes", "no", "something", "after", "maybe"}
+
+
+def story_questions(data, comments, new_day):
+    """Elias at the gate: the comments decide YES (let him in) or NO. The dog: the most-liked name in the comments."""
+    lines, latest = [], {}
+    for c in comments:                                    # one voice per person: their last word counts
+        latest[c["username"]] = c
+    for n in data.get("npcs", []):
+        if n.get("status") != "gate" or new_day - 1 < n.get("from_day", 0):
+            continue
+        yes = no = 0
+        for c in latest.values():
+            t = c.get("text") or ""
+            y, nn = bool(YES_RE.search(t)), bool(NO_RE.search(t))
+            if y != nn:
+                yes, no = yes + y, no + nn
+        if yes == no:
+            lines.append(f"**{n['name']}:** YES {yes}, NO {no}. Nobody could decide. He waits at the gate another night.")
+            continue
+        n["status"] = "inside" if yes > no else "outside"
+        n["decided"] = {"day": new_day, "yes": yes, "no": no}
+        lines.append(f"**{n['name']}:** YES {yes}, NO {no}. " + ("The gate opened. He sleeps inside the fence tonight." if yes > no else
+                     "The gate stays shut. He doesn't leave. He sets up across the road, where he can see the fence."))
+    dog = data.get("dog")
+    if dog and not dog.get("name") and new_day - 1 >= dog.get("from_day", 0):
+        votes = {}
+        for c in comments:
+            for rx in NAME_RE:
+                m = rx.search(c.get("text") or "")
+                if m and m.group(1).lower() not in NOT_NAMES:
+                    nm = m.group(1).strip("'-").capitalize()
+                    v = votes.setdefault(nm, [0, 0]); v[0] += 1 + (c.get("likes") or 0); v[1] += 1
+                    break
+        if votes:
+            best = max(votes.items(), key=lambda kv: (kv[1][0], kv[1][1]))
+            dog["name"] = best[0]; dog["named_day"] = new_day
+            others = ", ".join(f"{k} {v[0]}" for k, v in sorted(votes.items(), key=lambda kv: -kv[1][0])[:5])
+            lines.append(f"**The dog:** named **{best[0]}** ({others}; a name scores its comments plus their likes).")
+    return lines
 
 
 # ---------------------------------------------------------------- 1. the vote
@@ -1236,6 +1286,7 @@ def main():
         data["followers"] = ig["followers"]
     unlocked = milestone_unlocks(data, new_day)
     undead = update_undead(data, outings, len(day_lines), horde, rng)
+    question_lines = story_questions(data, comments, new_day)
     data["day"] = new_day
     entry = {"day": day, "vote": {"question": (data.get("vote") or {}).get("q"), "results": tally, "winner": winner, "tiebreak": tiebreak,
                                   "second": {"place": split["word"], "asked": split["support"]} if split else None,
@@ -1252,6 +1303,7 @@ def main():
         lines.append(f"**Vote:** {', '.join(f'{k} {v}' for k, v in tally.items())}. Winner: {winner or 'tie, no winner'}.")
     if tiebreak:
         lines.append(f"**Tie:** {tiebreak}")
+    lines += question_lines
     if split:
         lines.append((f"**Second group:** {tally[split['word']]} of you voted {split['word']}, so Sam sent a small group there as well." if tally.get(split['word']) else f"**Second group:** Sam sent a small group to {split['word']} as well.") if split.get("called") else
                      f"**Second group:** {split['support']} of {voters} voters asked for {split['word']} as well, so a separate group went there too.")

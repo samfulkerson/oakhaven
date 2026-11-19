@@ -2891,5 +2891,17 @@
     "line": "Toast: Found 1 jugs of water under a sink. Heading home."
    }
   ]
- }
+ },
+ "npcs": [
+  {
+   "name": "Elias",
+   "status": "gate",
+   "from_day": 13,
+   "spot": [
+    427,
+    525
+   ],
+   "bio": "Says he was the twins' neighbor on Mill Street, and that he made the first call. Watched them from the next roof for weeks. Followed Tanny and Marco home."
+  }
+ ]
 }

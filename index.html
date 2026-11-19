@@ -587,7 +587,7 @@ const DATA = {
 // nightly script's numbers replace the sample data above. With no data.json (or offline), the sample data is used as is.
 const LIVE = !!window.LIVE_DATA;
 if (LIVE) document.querySelectorAll('.sample').forEach(e => e.remove());   // real numbers: drop the 'Sample data' badge
-if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log', 'weather', 'twins', 'dog'])
+if (LIVE) for (const k of ['handle', 'day', 'followers', 'timezone', 'stock', 'stock_change', 'hungry_days', 'horde', 'broadcast', 'day_runs', 'features', 'highlights', 'zombie_types', 'milestones_hit', 'undead', 'survivors', 'runs', 'vote', 'power', 'missions', 'milestones', 'log', 'weather', 'twins', 'dog', 'npcs'])
   if (window.LIVE_DATA[k] != null) DATA[k] = window.LIVE_DATA[k];
 DATA.survivors = DATA.survivors.filter(d => d && d.name).map(d => ({ ig: '', role: 'Scavenger', bio: '', joined: 1, ...d }));
 const alive = d => d.status !== 'dead';
@@ -1157,6 +1157,7 @@ function buildBG() {
   for (let a = -16; a <= 16; a++) for (let b = -12; b <= 12; b++) if (a * a / 256 + b * b / 144 < 1 && hash2(a, b, 109) > .2) P(x, 996 + a, 62 + b, hash2(a, b, 110) > .5 ? '#5a5650' : '#6e6a64');
   P(x, 993, 36, '#e8e6de', 7, 26); for (let y = 40; y < 62; y += 8) P(x, 993, y, '#b8302a', 7, 3); P(x, 992, 32, '#2a2a2a', 9, 4); P(x, 994, 33, '#f6e8a0', 5, 2); P(x, 991, 31, '#1a1a1a', 11, 1);
   LIGHTS.push([996, 33, 10, .9, '255,240,170', 'steady', 'lighthouse'], [996, 33, 0, 1, '255,240,170', 'beam', 'lighthouse']);
+  LIGHTS.push([790, 941, 7, .55, '255,200,120', 'steady', null]);   // Elias's front window: the one light on Mill Street that never goes out
   for (const [px, pyy] of [[868, 300], [868, 600], [826, 372]]) LIGHTS.push([px, pyy, 24, .6, '220,230,255', 'steady', 'port']);
   LIGHTS.push([880, 462, 10, .7, '255,220,140', 'steady', 'port'], [880, 616, 10, .7, '255,220,140', 'steady', 'port']);
   LABELS.push(['PORT', 822, 196, 'area'], ['THE BAY', 1130, 640, 'area']);
@@ -1775,6 +1776,9 @@ function buildBG() {
   for (let i = 0; i < 12; i++) { home(780 + i * 40, 924, 6000 + i); home(780 + i * 40, 984, 7000 + i, true); }
   for (let i = 0; i <= 12; i++) { leafTree(780 + i * 40, 961, 7500 + i); if (i % 2) leafTree(798 + i * 40, 988, 7600 + i); }
   P(x, 772, 956, '#6e6c64', 1, 9); P(x, 768, 951, '#2a5a7a', 38, 7); text(x, 'HARBOR LN', 770, 952, '#f0ece2');
+  // Mill Street: the east-side street the twins walk. Their house is the burned one second from the corner on Harbor Lane; Elias lives on the corner, next door
+  P(x, 745, 957, '#6e6c64', 1, 8); P(x, 718, 951, '#2a6a3a', 28, 7); text(x, 'MILL ST', 720, 952, '#f0ece2');
+  for (const cx of [839, 844]) { P(x, cx, 946, '#6e6c64', 3, 1); P(x, cx, 947, '#2c4a8c', 3, 4); P(x, cx + 1, 947, '#d8d8d0', 1, 1); P(x, cx + 1, 948, '#5a1a14', 1, 2); }   // two blue sport coats on the twins' porch rail
   // sound wall along the interstate
   for (const [x0, x1] of [[224, 480], [496, 752], [776, 1272]]) for (let X = x0; X < x1; X++) { P(x, X, 1020, '#9a9a92'); P(x, X, 1021, '#7a7a74', 1, 3); if (X % 12 === 0) P(x, X, 1019, '#6a6a64', 1, 5); }
 
@@ -2548,7 +2552,7 @@ function lookFor(seed, role, zombie) {
 const ROLE_AS = { EMT: 'Medic' };     // roles that look and work like another: an EMT is a medic in the field
 const CACHE = new Map();
 function sprite(look, pose) {
-  const key = [look.zombie ? 'z' + (look.ztype || '') : 'h', look.skin, look.hair, look.jacket, look.pants, look.role || '', look.axe ? 'axe' : '', look.long ? 'long' : '', look.bun ? 'bun' : '', look.weapon || '', look.armor ? 'arm' : '', pose].join('|');
+  const key = [look.zombie ? 'z' + (look.ztype || '') : 'h', look.skin, look.hair, look.jacket, look.pants, look.role || '', look.axe ? 'axe' : '', look.long ? 'long' : '', look.bun ? 'bun' : '', look.weapon || '', look.armor ? 'arm' : '', look.px ? JSON.stringify(look.px) : '', pose].join('|');
   if (CACHE.has(key)) return CACHE.get(key);
   const g = Array.from({ length: GH }, () => Array(GW).fill(null));
   const set = (c, r, col) => { const X = c + OX, Y = r + OY; if (X >= 0 && X < GW && Y >= 0 && Y < GH) g[Y][X] = col; };
@@ -2583,6 +2587,7 @@ function sprite(look, pose) {
   if (role === 'Cook') { for (let c = 2; c <= 4; c++) { set(c, -1, '#e8e4da'); set(c, 0, '#e8e4da'); } set(1, 0, '#e8e4da'); set(5, 0, '#e8e4da'); }
   if (role === 'Decoy') { for (let c = 1; c <= 5; c++) set(c, 1, '#f2efe8'); set(0, 5, '#f2efe8'); set(0, 6, '#f2efe8'); set(6, 5, '#f2efe8'); set(6, 6, '#f2efe8'); }   // white headband, white stripes down the sleeves
   if (role === 'Engineer') { set(2, 3, '#8fd0e0'); set(4, 3, '#8fd0e0'); set(1, 2, '#2a2a2a'); set(5, 2, '#2a2a2a'); }
+  if (look.px) for (const [c, r, col] of look.px) set(c, r, col);       // hand-placed pixels for one-off characters (an NPC's glasses, buttons)
   const out = g.map(r => r.slice());
   for (let y = 0; y < GH; y++) for (let X = 0; X < GW; X++) if (!g[y][X]) {
     if ((g[y - 1] && g[y - 1][X]) || (g[y + 1] && g[y + 1][X]) || g[y][X - 1] || g[y][X + 1]) out[y][X] = '#0e0c0a';
@@ -2702,7 +2707,7 @@ function dogStep() {
   dog.hidden = false;
   const dx = tx - dog.x, dy = ty - dog.y, dd = Math.hypot(dx, dy);
   dog.moving = dd > 2.5;
-  if (dog.moving) { const v = Math.min(dd, (o.spd || .15) + .06); dog.x += dx / dd * v; dog.y += dy / dd * v; dog.step += v; if (Math.abs(dx) > .3) dog.flip = dx < 0; }
+  if (dog.moving) { const v = Math.min(dd, Math.max((o.spd || .15) + .06, dd * .09)); dog.x += dx / dd * v; dog.y += dy / dd * v; dog.step += v; if (Math.abs(dx) > .3) dog.flip = dx < 0; }
   else dog.flip = o.x < dog.x;                                                   // sitting: it looks at its person
 }
 function drawDog(a) {
@@ -2710,6 +2715,20 @@ function drawDog(a) {
   f.save(); f.translate(Math.round(a.x), Math.round(a.y)); if (a.flip) f.scale(-1, 1);
   f.fillStyle = 'rgba(0,0,0,.22)'; f.fillRect(-Math.floor(img.width / 2) + 1, 0, img.width - 3, 1);
   f.drawImage(img, -Math.floor(img.width / 2), -img.height + 2); f.restore();
+}
+
+// ------------------------------------------------------------------ NPCs (data.json "npcs"): people in the story who aren't players. Elias waits outside the gate
+for (const n of (DATA.npcs || [])) {
+  if ((DATA.day || 0) < (n.from_day || 0) || n.status === 'gone' || n.status === 'dead') continue;
+  const [x, y] = n.status === 'inside' ? yardSpot() : n.status === 'outside' ? (n.camp || [440, 538]) : (n.spot || [426, 521]);   // let in: he lives in the yard; turned away: across the road
+  const e = { kind: 's', d: { name: n.name, role: '', npc: true, bio: n.bio || '' }, x, y, tx: x, ty: y, hx: x, hy: y, wait: 200, step: 0, flip: false, spd: n.status === 'inside' ? .1 : .06, mode: n.status === 'inside' ? 'wander' : 'npc', cool: 0, inside: false,
+    look: { skin: '#e8c8a8', hair: '#cfcac0', jacket: '#6b2a36', pants: '#2f2b28', role: '', ...(n.look || {}),
+      px: n.name === 'Elias' ? [[1, 3, '#3a3a3a'], [3, 3, '#3a3a3a'], [5, 3, '#3a3a3a'], [2, 5, '#ece6da'], [4, 5, '#ece6da'], [3, 6, '#d8c890'], [3, 7, '#d8c890'], [1, 1, '#cfcac0'], [2, 1, '#e8e4dc']] : (n.look || {}).px } };
+  people.push(e); byName[n.name] = e;
+}
+function npcStep(e) {                                  // stands where he stands; now and then a step or two, then still again, facing the camp
+  if (e.wait > 0) { e.wait--; e.flip = e.x > 424; return; }
+  if (moveToward(e, e.tx, e.ty, e.spd)) { e.wait = 300 + rand() * 600 | 0; e.tx = e.hx + (rand() * 8 - 4); e.ty = e.hy + (rand() * 2 - 1); }
 }
 
 // ------------------------------------------------------------------ zombies: most shuffle along the streets; some haunt the airport, the docks and the woods
@@ -2904,7 +2923,7 @@ const crewOf = r => r.crew || [];
 const solo = r => crewOf(r).length === 1;
 const WALK = .55;
 // who can go out: alive, not injured, already moved in. Everyone takes turns; the ones who've been out least go first
-const fitToGo = d => !!d && d.status !== 'dead' && d.status !== 'injured' && d.status !== 'away' && !onMission(d) && (d.joined || 1) <= DATA.day;
+const fitToGo = d => !!d && !d.npc && d.status !== 'dead' && d.status !== 'injured' && d.status !== 'away' && !onMission(d) && (d.joined || 1) <= DATA.day;
 const CREW_N = { easy: 2, medium: 2, hard: 3, deadly: 4 };
 let nextCrew = null;
 function planCrew(r) {
@@ -3070,6 +3089,8 @@ function update() {
       if (e.inside) continue;
       if (e.wait > 0) { e.wait--; continue; }
       if (moveToward(e, e.tx, e.ty, e.spd)) { e.wait = 80 + rand() * 260 | 0; [e.tx, e.ty] = yardSpot(); }
+    } else if (e.mode === 'npc') {
+      npcStep(e); continue;
     } else if (e.mode === 'defend') {
       continue;                                       // a studio defender holds their spot at the fence
     } else if (e.mode === 'run') {
@@ -3335,7 +3356,7 @@ function draw() {
   drawWeatherGround(inView, VX, VY, VW, VH);
   drawInterior(inView, dark);
   // gate
-  const gateOpen = people.some(m => !m.hidden && Math.abs(m.x - 424) < 8 && Math.abs(m.y - FENCE.y1) < 10);
+  const gateOpen = people.some(m => !m.hidden && !(m.d && m.d.npc) && Math.abs(m.x - 424) < 8 && Math.abs(m.y - FENCE.y1) < 10);
   if (gateOpen) { P(f, GATE.x0, FENCE.y1 - 8, '#7a7e80', 1, 8); P(f, GATE.x1, FENCE.y1 - 8, '#7a7e80', 1, 8); }
   else for (let X = GATE.x0; X <= GATE.x1; X++) { P(f, X, FENCE.y1, (X + FENCE.y1) % 2 ? '#7a7e80' : '#55585a'); P(f, X, FENCE.y1 - 1, (X + FENCE.y1) % 2 ? '#55585a' : '#7a7e80'); if (X === 424) P(f, X, FENCE.y1 - 1, '#c9a24a', 1, 2); }
   // generators (bodies; their status lights are emissive)
@@ -3816,7 +3837,7 @@ function endDrag(ev) {
   if (!dragging && ev.type === 'pointerup') {
     const [x, y] = toWorld(ev.clientX, ev.clientY);
     let best = null, bd = 10 * Math.max(1, vw() / 300);
-    for (const e of people) if (e.d && !e.hidden) { const dd = Math.hypot(e.x - x, e.y - 5 - y); if (dd < bd) { bd = dd; best = e; } }
+    for (const e of people) if (e.d && !e.d.npc && !e.hidden) { const dd = Math.hypot(e.x - x, e.y - 5 - y); if (dd < bd) { bd = dd; best = e; } }
     if (best) select(best.d.name, false);
     else if (inRect(x, y, HOME.box)) { const s = people.find(e => e.d && e.inside); if (s) select(s.d.name, false); }
   }
@@ -4073,6 +4094,21 @@ requestAnimationFrame(loop);
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const EPISODES = {
+  fence: {
+    title: "The East Fence", dur: 25.8, audioOffset: 1.0, weather: "clear",
+    cam: [[0, 458.0, 480, 84], [7.81, 458.0, 480, 64], [18.32, 458.0, 480, 48], [19.63, 458.0, 480, 46], [22.2, 468.0, 480, 58], [25.8, 472.0, 480, 64]],
+    hour: [[0, 14.0], [25.8, 14.2]],
+    events: [[0, "away", ["Sam", "Jaylozy", "Tanny", "Seth", "Gary Finklestein", "Adam", "Asa", "Gabe", "Mateen", "Jeremy", "Victoria", "Francis", "Jack", "Carl", "Javier", "Quinn", "Elder", "Shawn", "Ryan", "Toast", "Artemis", "Weston", "Ben", "Frost", "Joseph", "Jeff", "Spenz", "Marco", "Bob", "Amnic0re", "John", "Vic", "Steve", "Kim", "Larry", "Hudson", "Opeta Teo", "Johnny"]], [0, "defend", [["Officer Reyes", 451, 484], ["Elias", 465, 484]]], [19.63, "walk", "Elias", [[465, 484], [473, 486]]], [20.83, "walk", "Elias", [[473, 486], [483, 487]]], [22.0, "walk", "Elias", [[483, 487], [493, 488]]], [23.6, "walk", "Elias", [[493, 488], [535, 488]]], [0, "calm", [318.0, 320, 598.0, 640]]],
+    captions: [[0.2, 1.6, "capTop", "THE EAST FENCE · DAY 13"], [1.2, 2.99, "cap", "REYES: YOU SAID YOU MADE THE FIRST CALL."], [3.23, 4.23, "cap", "ELIAS: I DID, FRIEND."], [4.61, 7.7, "cap", "ELIAS: NINE-FOURTEEN. THEY’RE PUNCTUAL BOYS."], [7.81, 9.16, "cap", "REYES: HOW’D YOU KNOW THEIR NAMES?"], [9.24, 12.39, "cap", "ELIAS: EVERYONE ON MILL STREET KNEW THE TEDESCHI TWINS."], [12.46, 15.23, "cap", "REYES: THEN WHY WATCH THEM FOR THREE WEEKS INSTEAD OF RUNNING?"], [15.76, 18.05, "cap", "ELIAS: SOMEBODY OUGHT TO KEEP WATCH."], [18.32, 19.71, "cap", "REYES: WHY’S YOUR SLEEVE DOWN?"], [19.93, 22.5, "cap", "ELIAS: IT’S A REAL SHAME WHAT HAPPENED TO YOUR PARTNER."], [22.5, 25.8, "vote", "LET HIM IN?", ["YES", "NO"]]]
+  },
+  day13: {
+    title: "Day 13 · Elias", dur: 70.8, audioOffset: 1.0, weather: "clear",
+    hook: { from: 52.1, lines: ["HE SAYS HE MADE", "THE FIRST CALL.", "HE'S AT OUR GATE."] },
+    cam: [[0, 425, 514, 150], [3.2, 426, 516, 132], [3.65, 624, 1112, 175], [6.55, 624, 1116, 150], [13.06, 624, 1120, 140], [13.55, "follow", "Jack", 150], [24.5, "follow", "Jack", 130], [25.05, 1330, 676, 190], [28.93, 1330, 680, 160], [35.49, 1330, 684, 150], [36.05, 176, 948, 170], [39.68, 176, 952, 150], [39.84, "follow", "Kim", 74], [43.85, "follow", "Kim", 64], [44.45, "follow", "Tanny", 150], [50.17, "follow", "Tanny", 130], [50.24, 427, 518, 110], [52.27, 427, 518, 80], [57.35, 427, 518, 56], [58.0, 470, 520, 640], [59.89, 470, 520, 600], [60.1, 427, 518, 64], [61.57, 427, 518, 56], [61.83, 822, 488, 160], [63.28, 140, 872, 160], [64.58, 1525, 990, 190], [65.94, 1525, 990, 175], [66.18, "follow", "Kim", 70], [70.8, "follow", "Kim", 62]],
+    hour: [[0, 9.0], [2.92, 9.6], [3.6, 12.6], [12.86, 13.4], [13.5, 14.4], [24.3, 15.4], [25.0, 14.0], [35.29, 15.0], [36.0, 15.8], [43.65, 16.6], [44.4, 17.6], [50.07, 18.4], [50.19, 18.6], [57.15, 19.1], [57.95, 18.6], [59.79, 18.8], [60.05, 19.15], [61.47, 19.2], [61.78, 15.6], [65.84, 16.0], [66.13, 16.2], [70.8, 16.6]],
+    events: [[0, "away", ["Tanny", "Marco"]], [0, "stand", ["Sam", "Jaylozy", "Gary Finklestein", "Adam", "Asa", "Gabe", "Mateen", "Jeremy", "Victoria", "Francis", "Carl", "Javier", "Quinn", "Elder", "Shawn", "Ryan", "Officer Reyes", "Toast", "Artemis", "Weston", "Ben", "Frost", "Joseph", "Jeff", "Spenz", "Amnic0re", "John", "Vic", "Steve", "Larry"]], [3.55, "run", ["Jack", "Opeta Teo", "Bob"], "mall", {"near": 120, "hold": 30}], [11.46, "leave", ["Jack", "Opeta Teo", "Bob"], "mall"], [24.95, "run", ["Hudson", "Johnny", "Seth"], "fair", {"near": 110, "hold": 30}], [31.78, "leave", ["Hudson", "Johnny", "Seth"], "fair"], [39.59, "walk", "Kim", [[330, 541], [360, 541], [392, 541], [414, 536], [424, 520], [424, 506], [410, 500]]], [65.93, "walk", "Kim", [[350, 541], [380, 541], [404, 540], [418, 534], [424, 520], [424, 506], [436, 500]]], [44.45, "walk", "Tanny", [[600, 552], [500, 552], [470, 528], [432, 528], [424, 512], [420, 500]]], [44.6, "walk", "Marco", [[606, 554], [506, 554], [474, 530], [436, 530], [426, 513], [428, 502]]], [57.9, "stand", ["Sam", "Jaylozy", "Gary Finklestein", "Adam", "Asa", "Gabe", "Mateen", "Jeremy", "Victoria", "Francis", "Carl", "Javier", "Quinn", "Elder", "Shawn", "Ryan", "Officer Reyes", "Toast", "Artemis", "Weston", "Ben", "Frost", "Joseph", "Jeff", "Spenz", "Amnic0re", "John", "Vic", "Steve", "Larry", "Jack", "Opeta Teo", "Bob", "Hudson", "Johnny", "Seth", "Tanny", "Marco"]]],
+    captions: [[1.0, 3.1, "title", "OAKHAVEN", "DAY 13"], [4.0, 6.23, "capTop", "THE VOTE: MALL, 6"], [6.55, 10.69, "capTop", "JACK · OPETA TEO · BOB"], [10.85, 13.16, "capTop", "+28 WATER"], [13.9, 22.61, "capTop", "TRAPS"], [22.97, 24.7, "capTop", "WHO SET THEM?"], [25.4, 28.76, "capTop", "A SECOND GROUP · THE FAIR"], [28.93, 32.1, "capTop", "HUDSON · JOHNNY · SETH"], [32.38, 35.59, "capTop", "+20 FOOD · SPRINGS"], [36.4, 39.78, "capTop", "WATER TOWER: RUNNING"], [39.99, 43.95, "capTop", "HE NEEDS A NAME"], [44.8, 47.3, "capTop", "TANNY · MARCO"], [47.1, 50.37, "capTop", "HUNDREDS"], [52.27, 57.45, "cap", "ELIAS"], [58.3, 59.99, "capTop", "HORDE: TOMORROW"], [60.05, 61.77, "vote", "LET ELIAS IN?", ["YES", "NO"]], [61.78, 66.04, "vote", "WHERE NEXT?", ["HARBOR", "CABIN", "RADIO"]], [66.13, 70.8, "card", "NAME THE DOG", "COMMENT YOUR NAME + JOB TO MOVE IN"]]
+  },
   day12: {
     title: "Day 12 · The Floodlight", dur: 77.6, audioOffset: 1.0, weather: "clear",
     hook: { from: 53.0, lines: ["WATER: ZERO.", "HORDE: 2 DAYS.", "TWINS IN FRONT."] },
@@ -4412,7 +4448,8 @@ function epEvent(ev) {
     for (const [n, x, y, gun] of ev[2]) { const e = byName[n]; if (!e) continue; e.goIn = null; e.emerge = 0; e.fade = 1; e.mode = 'defend'; e.hidden = false; e.inside = false; e.x = x; e.y = y; e.gun = !!gun; e.cool = rand() * 40 | 0; e.flip = x < HOME_CENTER[0]; }
   }
   else if (ev[1] === 'interior') EPI.interior = !!ev[2];
-  else if (ev[1] === 'power') (EPI.power = EPI.power || {})[ev[2]] = !!ev[3];     // [t, 'power', 'laundromat', true]: a generator comes on (or goes dark) on cue
+  else if (ev[1] === 'power') (EPI.power = EPI.power || {})[ev[2]] = !!ev[3];
+  else if (ev[1] === 'calm') EPI.calm = ev[2] || null;      // [t, 'calm', [x0, y0, x1, y1]]: keep the dead out of this box for the rest of the episode (a quiet two-hander)     // [t, 'power', 'laundromat', true]: a generator comes on (or goes dark) on cue
   else if (ev[1] === 'spin') who(ev[2]).forEach(e => { e.spinUntil = frame + (ev[3] || 1.2) * 60; });   // the decoy shows off, on cue
   else if (ev[1] === 'stand') who(ev[2]).forEach(e => { e.mode = 'wander'; e.gun = false; e.inside = false; e.hidden = false; e.wait = 60 + rand() * 200 | 0; [e.tx, e.ty] = yardSpot(); [e.x, e.y] = yardSpot(); })
   else if (ev[1] === 'horde') {                      // [t, 'horde', n, [[x, y] route...], side, seconds]: n of them come down the route and spread along one side of the fence
@@ -4457,6 +4494,7 @@ function epStartRun(names, dest, o = {}) {
   active.push({ r, d, members: ms, timer: 0, hold: o.hold }); r.crew = ms.map(e => e.d.name); r.status = 'leaving'; renderRuns();
 }
 function epPre() {
+  if (EPI.calm) { const [x0, y0, x1, y1] = EPI.calm; for (let k = zombies.length - 1; k >= 0; k--) { const z = zombies[k]; if (z.x > x0 && z.x < x1 && z.y > y0 && z.y < y1) zombies.splice(k, 1); } }
   const ep = EPI.ep, t = EPI.t;
   const [a, b] = keyAt(ep.cam, t), span = Math.max(.001, b[0] - a[0]), u = ease(clamp((t - a[0]) / span, 0, 1));
   const pa = camPoint(a), pb = camPoint(b);
@@ -4546,9 +4584,9 @@ function epPost() {
 // set the world up for an episode: its first hour, the dead settled, Sam home, camera on its first key
 function epPrepare(key) {
   if (EPI_WX_SET || EPISODES[key].weather) { const w = EPISODES[key].weather; WEATHER_OVR = Array.isArray(w) ? w[0][1] : w || null; EPI_WX_SET = true; }
-  EPI.ep = EPISODES[key]; EPI.t = 0; EPI.fired = new Set(); EPI.interior = false; EPI.power = {}; EPI_BRUTE = null; follow = false; selected = null;
+  EPI.ep = EPISODES[key]; EPI.t = 0; EPI.fired = new Set(); EPI.interior = false; EPI.power = {}; EPI.calm = null; EPI_BRUTE = null; follow = false; selected = null;
   HOUR_OVR = EPI.ep.hour[0][1]; active = []; runWait = 1e9;
-  for (const e of people) { e.mode = 'wander'; e.inside = true; e.hidden = true; e.x = HOME.door[0]; e.y = HOME.door[1] + 1; e.goIn = null; e.emerge = 0; e.fade = 1; }
+  for (const e of people) { if (e.d && e.d.npc) continue; e.mode = 'wander'; e.inside = true; e.hidden = true; e.x = HOME.door[0]; e.y = HOME.door[1] + 1; e.goIn = null; e.emerge = 0; e.fade = 1; }
   OPEN_DOORS.clear();
   for (let i = 0; i < 900; i++) update();
   EPI.on = true; twinsTo([[-60, -60]]); epPre();          // the twins stay off camera unless the script brings them in
