@@ -122,6 +122,17 @@ If a beat needs new game logic (nightly.py), make it a real, tested change (run 
 3. **The big event** of the night/day, in short concrete sentences. Name survivors with what they carry: *"Jaylozy's fire axe. Seth's maul."*
 4. **The vote result** and the outing: who went, what happened, injuries with how long they're out, what was found. If `report.md` has a **Second group** line (enough voters named a second place in one comment, so a separate group went there too), cover both groups and say it was the comments that asked for it.
 5. **Side beats** (Sam's notes, small runs worth telling).
+
+**Hooks: what the numbers say** (views on the first 15 Reels, checked Nov 18). Most views come from people who don't follow the account (94 followers, 1,200–1,800 views on a good Reel), so the first second decides the Reel.
+- **One person, one stake, one mystery.** The top Reels opened on a single moment: *"4 went in. 5 came out."* (Day 10, 1,605), *Tanny went into the Fresh Market alone* (Day 3, 1,598). The weak ones opened on a result or a recap: the vote count (Day 7, 617), *"you asked for two squads"* (Day 11, 723).
+- **Never open on the vote, the loot or a list of names.** Those go after "Oakhaven. Day N."
+- **Lead with the biggest thing on screen.** The horde Reel (Day 8, 850) undersold the biggest night yet. If something fought, broke or died, the cold open shows it and the hook says it.
+- **The hook lines on screen tease and don't tell.** Use a gap the viewer needs to close: *"4 WENT IN. / 5 CAME OUT."*, *"SHE WENT IN ALONE."*, *"THE CAGE WAS LOCKED / FROM THE INSIDE."*. Not *"+34 AMMO"*.
+- **Name a person when you can.** A face on screen and a name in the first line beat "we" and "the camp".
+- **Check before recording:** read only the first sentence aloud. If a stranger scrolling past wouldn't ask "wait, what?", rewrite it.
+- **One Reel a day.** Two on the same day split the views (Day 11 + Incident #0001 both landed low). Put a standalone story on its own day.
+- **The Welcome Reel (how the game works, how to join) is the best post so far** (1,801 views, 22 comments). Keep it pinned and post a fresh version every week or two.
+- **End every Reel on the ask** (vote + "comment your name and job"). The most-commented Reels are the ones built around an ask.
 6. **Milestone / new survivors** ("One more at the gate. Elder. A mechanic.").
 7. **Status**: "Seventeen survivors. Food for two days. Water for one." + the next threat.
 8. **Tease** (radio, a mystery).
