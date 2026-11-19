@@ -3362,7 +3362,9 @@ function draw() {
   // the gate only swings open for someone actually walking through it (moving across the fence line), not for anyone standing near it
   for (const m of people) {
     const near = !m.hidden && !(m.d && m.d.npc) && Math.abs(m.x - 424) < 8 && Math.abs(m.y - FENCE.y1) < 10;
-    if (near && m.gy != null && Math.abs(m.y - m.gy) > .02) gateHold = 24;      // walking in or out: hold it open a moment so it doesn't flicker
+    const inYard = m.y < FENCE.y1, dest = m.path && m.wp < m.path.length ? m.path[m.wp] : (m.tx != null ? [m.tx, m.ty] : null);
+    const crossing = (dest && (dest[1] < FENCE.y1) !== inYard) || (m.gy != null && (m.gy < FENCE.y1) !== inYard);   // headed for the other side, or just stepped across
+    if (near && crossing) gateHold = 24;                // walking in or out: hold it open a moment so it doesn't flicker
     m.gy = m.y;
   }
   if (gateHold > 0) gateHold--;
