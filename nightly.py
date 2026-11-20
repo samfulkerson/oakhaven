@@ -31,7 +31,9 @@ BUDDY_RISK = 0.7                        # buddies on the same outing cover each 
 # camp jobs: everyone who spends the day at the laundromat (not out on the vote's run, not on a mission, not hurt) works their job,
 # so a bigger camp feeds itself better. role -> (item, amount each, why)
 CAMP_JOBS = {"Farmer": ("Food", 3, "the farm plots"), "Scout": ("Food", 1, "snares and hunting"), "Scavenger": ("Food", 1, "foraging the block"),
-             "Engineer": ("Water", 2, "rain catchers and pipe taps")}
+             "Engineer": ("Water", 2, "pipe taps and filters")}
+RAIN_CATCH_PER = 4           # rain catchers on every roof and gutter: +1 water for every this many survivors in camp, once an engineer has set them up
+RAIN_CATCH_SKY = {"rain": 2, "storm": 2, "snow": 0.5}   # how the night's sky changes the catch (anything else: x1)
 CHEF_STRETCH = 0.1          # a chef at home stretches every meal: this share of the camp's food comes back
 PACK = {"Food": 2, "Water": 2}  # what each new survivor carries in; counted the next night, when they start eating
 ROLES = ["Scavenger", "Medic", "EMT", "Scout", "Sharpshooter", "Gunsmith", "Farmer", "Builder", "Radio Operator", "Mechanic", "Guard", "Cook", "Engineer"]
@@ -694,11 +696,7 @@ def roll_weather(data, new_day, rng):
     if data.get("season") == "winter" and kind in ("rain", "storm"):
         kind = "snow"
     data["weather"] = {"day": new_day, "kind": kind}
-    if kind in ("rain", "storm"):
-        amt = 4 if kind == "rain" else 6
-        data.setdefault("camp_bonus", []).append({"item": "Water", "amt": amt, "why": "rain in the barrels",
-            "note": ("It rained all night." if kind == "rain" else "A storm came through in the night.") + f" The barrels caught {amt} rations of water."})
-    return kind
+    return kind                                       # rain and storms now fill the rain catchers (see keep_stockpile), scaled to the camp
 
 
 # ---------------------------------------------------------------- 3e. follower milestones that change the world
@@ -1017,6 +1015,19 @@ def keep_stockpile(data, outings, rng, new_day):
             done.append(f"{chefs[0]} stretched every meal: +{got} food")
     if done:
         notes.append("Camp jobs: " + "; ".join(done) + ".")
+    # rain catchers: the engineers set barrels and tarps on every roof and gutter, so the catch grows with the camp; the sky decides how good a night it is
+    engineers = [s for s in present if role_of(s) == "Engineer" and s.get("status") != "dead"]
+    if engineers:
+        sky = (data.get("weather") or {}).get("kind", "clear")
+        catch = round(len(present) / RAIN_CATCH_PER * RAIN_CATCH_SKY.get(sky, 1))
+        got = add("Water", catch, "rain catchers") if catch else 0
+        if got:
+            who = [f"{s['name']} (@{s['ig']})" if s.get("ig") else s["name"] for s in engineers]
+            who = who[0] if len(who) == 1 else ", ".join(who[:-1]) + " and " + who[-1]
+            how = {"rain": "It rained all night and every barrel filled.", "storm": "A storm came through and the barrels overflowed.",
+                   "snow": "Most of it froze, but the barrels still caught some."}.get(sky, "")
+            notes.append(f"Rain catchers: {len(present)} of us, barrels on every roof and gutter: +{got} water. {how} "
+                         f"Shoutout to the engineers who set them up and keep them running: {who}.".replace("  ", " "))
 
     for inc in data.get("income", []):          # the windmill, the milk cows, Mateen's roof garden once it grows...
         if new_day >= inc.get("from_day", 0):
