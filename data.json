@@ -529,6 +529,11 @@
    "name": "Kathryn",
    "ig": "kat_catto",
    "role": "Scout",
+   "look": {
+    "skin": "#f1c9a5",
+    "long": 1,
+    "px": [[2, 0, "#e6c860"], [3, 0, "#e6c860"], [4, 0, "#e6c860"], [1, 1, "#e6c860"], [2, 1, "#e6c860"], [3, 1, "#e6c860"], [4, 1, "#e6c860"], [5, 1, "#e6c860"], [1, 2, "#e6c860"], [6, 2, "#e6c860"], [1, 3, "#e6c860"], [6, 3, "#e6c860"], [1, 4, "#c9a440"], [6, 4, "#c9a440"], [1, 5, "#c9a440"], [6, 5, "#c9a440"]]
+   },
    "bio": "Kathryn spent her days as a fitness instructor, so she can outrun the undead and still has energy to push for the radio tower.",
    "joined": 14
   }
