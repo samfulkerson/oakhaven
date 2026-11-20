@@ -358,6 +358,24 @@
    "signature": "a scoped rifle slung on the back",
    "face": "from behind or over the shoulder",
    "auto": true
+  },
+  "Albin Parson": {
+   "role": "Medic",
+   "skin": "brown skin",
+   "hair": "dark brown hair",
+   "outfit": "off-white medic jacket with a red cross on the chest, navy pants, work gloves",
+   "signature": "a red first-aid bag",
+   "face": "a surgical mask, or head down over a patient",
+   "auto": true
+  },
+  "Kathryn": {
+   "role": "Scout",
+   "skin": "light tan skin",
+   "hair": "gray hair, under an olive hood, always up",
+   "outfit": "olive-green field jacket, black jeans, an olive hood, always up, work gloves",
+   "signature": "binoculars on a strap",
+   "face": "hood up, from the side or behind",
+   "auto": true
   }
  },
  "places": {
