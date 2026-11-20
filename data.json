@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 13,
- "followers": 94,
+ "day": 14,
+ "followers": 95,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 13. Food lasts one day, water none, and the horde hits the fence tomorrow. Where do we send the crew?",
+  "q": "Day 14. The horde hits tonight, and we've got one day of food and water left. Where do we go?",
   "opts": [
-   [
-    "HARBOR",
-    0,
-    "Never searched. Maybe supplies, maybe a long walk for nothing.",
-    "harbor",
-    "⛵"
-   ],
    [
     "CABIN",
     0,
-    "Never searched. Could be quiet and useful, or a dead end in the woods.",
+    "Never searched. Medium risk, one day of food and water left.",
     "hunter",
     "🏕"
    ],
    [
-    "RADIO",
+    "GAS",
     0,
-    "Mission: power the KOAK tower and go on air. Risky, but loud.",
-    "radio",
-    ""
+    "Never searched, and easy. Low risk, but don't expect much.",
+    "gas",
+    "⛽"
+   ],
+   [
+    "COLD STORAGE",
+    0,
+    "Never searched, medium risk. Food is possible, nothing is promised.",
+    "cold",
+    "🧊"
    ]
   ],
-  "how": "Comment HARBOR, CABIN or RADIO (or its emoji) on the Day 13 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment CABIN, GAS or COLD STORAGE (or its emoji) on the Day 14 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -38,7 +38,7 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 8,
+   "outings": 9,
    "day_outings": 2,
    "gear": [
     {
@@ -249,7 +249,7 @@
    "role": "EMT",
    "bio": "Carl is an EMT (a Rettungssanitäter back home) who has seen every kind of disaster, and he's ready to patch up the survivors who are left.",
    "joined": 6,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 3,
    "gear": [
     {
@@ -281,7 +281,7 @@
    "role": "Sharpshooter",
    "bio": "Quinn is a hunter with a shotgun and a head full of survival knowledge, and the zombies have started avoiding the woods.",
    "joined": 7,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 3,
    "gear": [
     {
@@ -338,7 +338,7 @@
    "role": "Guard",
    "bio": "Toast shows up with an M240 machine gun and zero plans to be quiet about it.",
    "joined": 10,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 2
   },
   {
@@ -348,7 +348,7 @@
    "bio": "Artemis is an electrician who loves apocalypse vibes and can wire anything to anything.",
    "joined": 10,
    "outings": 1,
-   "day_outings": 1
+   "day_outings": 2
   },
   {
    "name": "Weston",
@@ -356,7 +356,7 @@
    "role": "Builder",
    "bio": "Weston is a carpenter who will build you a fortress, then argue about the door hinges.",
    "joined": 10,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 1,
    "gear": [
     {
@@ -372,7 +372,8 @@
    "role": "Radio Operator",
    "bio": "Ben is a military radio operator who will keep the group talking, even when nobody asked.",
    "joined": 10,
-   "day_outings": 1
+   "day_outings": 1,
+   "outings": 1
   },
   {
    "name": "Frost",
@@ -479,11 +480,7 @@
    "role": "Engineer",
    "bio": "Kim is an electrician who's tagging along with wstonkiethsteward to keep the lights on.",
    "joined": 11,
-   "outings": 2,
-   "status": "injured",
-   "injury": "a bad fall",
-   "injured_until": 14,
-   "injured_on": 12
+   "outings": 2
   },
   {
    "name": "Larry",
@@ -491,7 +488,8 @@
    "role": "EMT",
    "bio": "Larry wants to be a firefighter, rushing toward the flames and the zombies alike.",
    "joined": 12,
-   "day_outings": 1
+   "day_outings": 1,
+   "outings": 1
   },
   {
    "name": "Hudson",
@@ -508,7 +506,8 @@
    "role": "Sharpshooter",
    "bio": "Opeta Teo is an archer who crafts his own bow and arrows and picks off the undead from a safe distance.",
    "joined": 12,
-   "outings": 1
+   "outings": 1,
+   "day_outings": 1
   },
   {
    "name": "Johnny",
@@ -517,11 +516,21 @@
    "bio": "Johnny is an engineer who can fix almost anything, including the apocalypse.",
    "joined": 12,
    "day_outings": 1,
-   "outings": 1,
-   "status": "injured",
-   "injury": "torn-up hands from the Tilt-A-Whirl's gears",
-   "injured_until": 15,
-   "injured_on": 12
+   "outings": 1
+  },
+  {
+   "name": "Albin Parson",
+   "ig": "beniiioz",
+   "role": "Medic",
+   "bio": "Albin Parson wanted to be a General Surgeon, which makes him a medic with big ambitions and very strict rules about who gets through the door.",
+   "joined": 14
+  },
+  {
+   "name": "Kathryn",
+   "ig": "kat_catto",
+   "role": "Scout",
+   "bio": "Kathryn spent her days as a fitness instructor, so she can outrun the undead and still has energy to push for the radio tower.",
+   "joined": 14
   }
  ],
  "runs": [
@@ -748,10 +757,13 @@
    "dest": "harbor",
    "difficulty": "medium",
    "squad": [
-    "Sam"
+    "Sam",
+    "Larry",
+    "Ben"
    ],
    "loot": "A flare kit, binoculars and a harbor chart with the island marked",
-   "place": "Harbor Master"
+   "place": "Harbor Master",
+   "done_day": 13
   },
   {
    "dest": "hunter",
@@ -1417,13 +1429,13 @@
  "stock": [
   [
    "Food",
-   69,
+   61,
    200,
    "rations"
   ],
   [
    "Water",
-   33,
+   42,
    200,
    "rations"
   ],
@@ -1435,13 +1447,13 @@
   ],
   [
    "Ammo",
-   116,
+   110,
    500,
    "rds"
   ],
   [
    "Medicine",
-   6,
+   5,
    50,
    "doses"
   ],
@@ -2583,16 +2595,94 @@
     "Larry & Amnic0re → Hardware store (15:05): +1 scrap",
     "Amnic0re came back with a twisted knee and sat out tonight."
    ]
+  },
+  {
+   "day": 13,
+   "vote": {
+    "question": "Day 13. Food lasts one day, water none, and the horde hits the fence tomorrow. Where do we send the crew?",
+    "results": {
+     "CABIN": 2,
+     "RADIO": 4,
+     "HARBOR": 5
+    },
+    "winner": "HARBOR",
+    "tiebreak": null,
+    "second": null,
+    "reel": "https://www.instagram.com/reel/Df7WqoaSs8k/"
+   },
+   "outings": [
+    {
+     "target": "Harbor Master",
+     "key": "harbor",
+     "first": true,
+     "kind": "run",
+     "difficulty": "medium",
+     "squad": [
+      "Sam",
+      "Larry",
+      "Ben"
+     ],
+     "results": [
+      {
+       "name": "Sam",
+       "ig": "surviveoakhaven",
+       "outcome": "ok"
+      },
+      {
+       "name": "Larry",
+       "ig": "l.littlerw22",
+       "outcome": "ok"
+      },
+      {
+       "name": "Ben",
+       "ig": "bennyliebs",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    }
+   ],
+   "healed": [
+    "Kim",
+    "Johnny"
+   ],
+   "joined": [
+    "Albin Parson",
+    "Kathryn"
+   ],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Scrap": 0,
+    "Water": 9,
+    "Ammo": -6,
+    "Food": -8,
+    "Fuel": 0,
+    "Medicine": -1,
+    "Barricades": 0
+   },
+   "camp": [
+    "Camp jobs: Tanny and Marco (snares and hunting): +2 food; 3 of them (foraging the block): +3 food; Mateen (the farm plots): +3 food; 3 of them (rain catchers and pipe taps): +6 water; Victoria stretched every meal: +4 food."
+   ],
+   "horde": null,
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Opeta Teo & Artemis → Fairground (08:40): nothing",
+    "Weston & Quinn → Fairground (11:50): +3 scrap",
+    "Toast & Carl → Hollow Creek Farm (15:05): +1 water"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": 15,
-  "Water": 33,
-  "Scrap": 22,
-  "Ammo": -18,
+  "Scrap": 0,
+  "Water": 9,
+  "Ammo": -6,
+  "Food": -8,
   "Fuel": 0,
-  "Barricades": 8
+  "Medicine": -1,
+  "Barricades": 0
  },
  "schedule": [],
  "broadcast": {
@@ -2754,15 +2844,15 @@
   75
  ],
  "undead": {
-  "count": 31575,
+  "count": 31567,
   "last": {
-   "day": 12,
-   "killed": 29,
-   "turned": 7,
+   "day": 13,
+   "killed": 12,
+   "turned": 4,
    "arrived": 0
   }
  },
- "last_run": 1795086330,
+ "last_run": 1795171995,
  "horde": {
   "day": 14,
   "week": 2,
@@ -2822,7 +2912,7 @@
   ]
  },
  "weather": {
-  "day": 13,
+  "day": 14,
   "kind": "clear"
  },
  "intel": {
@@ -2837,8 +2927,9 @@
  "dog": {
   "with": "Kim",
   "from_day": 13,
-  "name": null,
-  "found": "Living under the old water tower in the woods. Followed the tower crew home on Day 13 and won't leave Kim's side."
+  "name": "Tex",
+  "found": "Living under the old water tower in the woods. Followed the tower crew home on Day 13 and won't leave Kim's side.",
+  "named_day": 14
  },
  "traps": {
   "horde_day": 14,
@@ -2850,59 +2941,76 @@
   ],
   "note": "Hudson and Johnny's booby traps on the wall, built from fairground ride parts"
  },
- "day_runs": {
-  "day": 13,
-  "runs": [
-   {
-    "time": "08:40",
-    "dest": "fair",
-    "crew": [
-     "Opeta Teo",
-     "Artemis"
-    ],
-    "find": {},
-    "event": "ok",
-    "line": "Opeta Teo: Picked clean. Nothing worth carrying. Heading home."
-   },
-   {
-    "time": "11:50",
-    "dest": "fair",
-    "crew": [
-     "Weston",
-     "Quinn"
-    ],
-    "find": {
-     "Scrap": 3
-    },
-    "event": "ok",
-    "line": "Weston: Found 3 car doors for the fence. Heading home."
-   },
-   {
-    "time": "15:05",
-    "dest": "farm",
-    "crew": [
-     "Toast",
-     "Carl"
-    ],
-    "find": {
-     "Water": 1
-    },
-    "event": "ok",
-    "line": "Toast: Found 1 jugs of water under a sink. Heading home."
-   }
-  ]
- },
  "npcs": [
   {
    "name": "Elias",
    "status": "gate",
-   "call": "arm",
    "from_day": 13,
    "spot": [
     427,
     525
    ],
-   "bio": "Says he was the twins' neighbor on Mill Street, and that he made the first call. Watched them from the next roof for weeks. Followed Tanny and Marco home."
+   "bio": "Says he was the twins' neighbor on Mill Street, and that he made the first call. Watched them from the next roof for weeks. Followed Tanny and Marco home.",
+   "shown_arm": {
+    "day": 14,
+    "yes": 3,
+    "no": 2,
+    "arm": 3
+   }
   }
- ]
+ ],
+ "camp_bonus": [
+  {
+   "item": "Food",
+   "amt": 4,
+   "why": "new survivors' packs"
+  },
+  {
+   "item": "Water",
+   "amt": 4,
+   "why": "new survivors' packs"
+  }
+ ],
+ "day_runs": {
+  "day": 14,
+  "runs": [
+   {
+    "time": "08:40",
+    "dest": "pharmacy",
+    "crew": [
+     "Kim",
+     "Albin Parson"
+    ],
+    "find": {
+     "Water": 1
+    },
+    "event": "ok",
+    "line": "Kim: Found 1 jugs of water under a sink. Heading home."
+   },
+   {
+    "time": "10:15",
+    "dest": "mall",
+    "crew": [
+     "Kathryn",
+     "Steve"
+    ],
+    "find": {
+     "Food": 2
+    },
+    "event": "ok",
+    "line": "Kathryn: Found 2 cans of soup behind the counter. Heading home."
+   },
+   {
+    "time": "15:05",
+    "dest": "hardware",
+    "crew": [
+     "Ben",
+     "Amnic0re"
+    ],
+    "find": {},
+    "event": "ok",
+    "line": "Ben: Picked clean. Nothing worth carrying. Heading home."
+   }
+  ]
+ }
 }
