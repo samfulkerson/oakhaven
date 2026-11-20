@@ -155,6 +155,12 @@ Revise until he says go. Changes after the voice is generated cost a full regene
 
 ## 6. The narration (ElevenLabs)
 
+**Use the API first (since Day 14).** After Sam approves the script, write `studio/narration/<name>.json`:
+`{"lines": [{"voice": "atlas", "text": "..."}, {"voice": "wayne", "text": "..."}]}` (voices: `atlas` narrator, `wayne` Elias, `lasean` Reyes; add new ones to `VOICES` in `studio/narrate.py`).
+Commit it, then Actions > **Record narration** > Run workflow > the path. The MP3 lands on the `narration` branch (never on the website):
+`git fetch origin narration && git show FETCH_HEAD:studio/narration/<name>.mp3 > work/take.mp3`. Exact voice IDs, model `eleven_v4`, stability 0.5, similarity 0.75, same credits per character as the web app.
+The key is the repo secret `ELEVENLABS_API_KEY` (Sam added it; never ask for it). The web-app steps below are the fallback.
+
 1. Make the TTS text: the approved script as plain sentences, **no** stage directions, **no** `...` (pauses are made later in the edit, and dots cost credits), numbers as words. Save it as `work/script.txt`. Count characters (`wc -c`); it must be less than the remaining credits.
 2. Browser: `https://elevenlabs.io/app/speech-synthesis/text-to-speech`. Dismiss any upgrade popup ("Remind Me Later").
 3. Check the settings panel: **Voice: Atlas - Deep, Gravelly Narrator**, **Model: Eleven v4**, Stability about the middle (50), Similarity about 75%. Don't touch "Auto-tag".
