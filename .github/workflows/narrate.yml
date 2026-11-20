@@ -1,0 +1,44 @@
+name: Record narration
+
+# Records an approved script with the ElevenLabs API and saves the MP3 on the "narration" branch
+# (not main, so unreleased narration never goes out on the website).
+# Run it from the Actions tab: "Record narration" > Run workflow > the request file, e.g. studio/narration/day15.json
+
+on:
+  workflow_dispatch:
+    inputs:
+      request:
+        description: "Request file (studio/narration/<name>.json)"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: narration
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Record
+        run: python studio/narrate.py "${{ inputs.request }}"
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      - name: Save to the narration branch
+        run: |
+          OUT="${{ inputs.request }}"; OUT="${OUT%.json}.mp3"
+          cp "$OUT" /tmp/take.mp3 && rm -f "$OUT"
+          git config user.name "oakhaven-bot"
+          git config user.email "oakhaven-bot@users.noreply.github.com"
+          git fetch origin narration && git checkout narration || git checkout --orphan narration
+          git rm -rq --cached . 2>/dev/null || true
+          mkdir -p "$(dirname "$OUT")"; cp /tmp/take.mp3 "$OUT"
+          git add -f "$OUT"
+          git commit -m "Narration: $OUT"
+          git push origin narration
