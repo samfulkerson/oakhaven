@@ -129,11 +129,12 @@ If a beat needs new game logic (nightly.py), make it a real, tested change (run 
 - **Lead with the biggest thing on screen.** The horde Reel (Day 8, 850) undersold the biggest night yet. If something fought, broke or died, the cold open shows it and the hook says it.
 - **The hook lines on screen tease and don't tell.** Use a gap the viewer needs to close: *"4 WENT IN. / 5 CAME OUT."*, *"SHE WENT IN ALONE."*, *"THE CAGE WAS LOCKED / FROM THE INSIDE."*. Not *"+34 AMMO"*.
 - **Name a person when you can.** A face on screen and a name in the first line beat "we" and "the camp".
+- **Always open with "Oakhaven. Day N."** in the narration, under the title card, after the cold open line.
 - **Check before recording:** read only the first sentence aloud. If a stranger scrolling past wouldn't ask "wait, what?", rewrite it.
 - **One Reel a day.** Two on the same day split the views (Day 11 + Incident #0001 both landed low). Put a standalone story on its own day.
 - **The Welcome Reel (how the game works, how to join) is the best post so far** (1,801 views, 22 comments). Keep it pinned and post a fresh version every week or two.
 - **End every Reel on the ask** (vote + "comment your name and job"). The most-commented Reels are the ones built around an ask.
-6. **Milestone / new survivors** ("One more at the gate. Elder. A mechanic.").
+6. **Milestone / new survivors**: the narrator always says every new arrival's name and job ("Two more at the gate today. Albin Parson, a medic. And Kathryn, a scout."), not just "a medic and a scout". Sam's rule.
 7. **Status**: "Seventeen survivors. Food for two days. Water for one." + the next threat.
 8. **Tease** (radio, a mystery).
 9. **Vote**: name the options in plain words. Every few days, remind people they can name a second place in the same comment ("HANGAR, and send a few to the FARM"): if at least 3 people and 15% of voters ask for the same second place, a separate group goes there too. **End**: one question to drive comments + "Comment your name and your job, to move in."
