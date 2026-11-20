@@ -162,7 +162,7 @@ def story_questions(data, comments, new_day):
         lines.append(f"**{n['name']}:** YES {yes}, NO {no}. " + ("The gate opened. He sleeps inside the fence tonight." if yes > no else
                      "The gate stays shut. He doesn't leave. He sets up across the road, where he can see the fence."))
     dog = data.get("dog")
-    if dog and not dog.get("name") and new_day - 1 >= dog.get("from_day", 0):
+    if dog and not dog.get("name") and not dog.get("poll") and new_day - 1 >= dog.get("from_day", 0):   # "poll": Sam is naming it by Instagram poll
         votes = {}
         for c in comments:
             for rx in NAME_RE:
