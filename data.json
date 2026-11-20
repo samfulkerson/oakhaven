@@ -2896,6 +2896,7 @@
   {
    "name": "Elias",
    "status": "gate",
+   "call": "arm",
    "from_day": 13,
    "spot": [
     427,

@@ -143,7 +143,8 @@ def story_questions(data, comments, new_day):
             y, nn = bool(YES_RE.search(t)), bool(NO_RE.search(t))
             if y != nn:
                 yes, no = yes + y, no + nn
-        if asked and arm > max(yes, no):
+        call = str(n.pop("call", "") or "").lower()       # Sam can call the arm route himself ("arm"); the real counts still show
+        if asked and (arm > max(yes, no) or call == "arm"):
             n["shown_arm"] = {"day": new_day, "yes": yes, "no": no, "arm": arm}
             lines.append(f"**{n['name']}:** SHOW YOUR ARM {arm}, YES {yes}, NO {no}. Reyes made him roll up the left sleeve, all the way, under the floodlight. "
                          "The arm is burned from wrist to shoulder. Old burns, healed ugly. No bite. "
