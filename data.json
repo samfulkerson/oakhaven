@@ -2932,8 +2932,8 @@
  "dog": {
   "with": "Kim",
   "from_day": 13,
-  "name": null,
-  "poll": true,
+  "name": "Tex",
+  "named_day": 15,
   "found": "Living under the old water tower in the woods. Followed the tower crew home on Day 13 and won't leave Kim's side."
  },
  "traps": {
