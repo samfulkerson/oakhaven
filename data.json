@@ -3274,5 +3274,25 @@
     "line": "Marco: Found 2 boxes of crackers nobody wanted. Heading home."
    }
   ]
- }
+ },
+ "story_queue": [
+  {
+   "day": 16,
+   "who": "Asa",
+   "item": "Fuel",
+   "amt": -2,
+   "why": "Asa ran the generator for the radio at 3 a.m.",
+   "text": "3 a.m.: Seth woke up to the radio hissing. Asa was at the table with the handset. \"Millbrook, Millbrook, this is Oakhaven. Quick question.\" Static, then the same voice from Day 4: \"Oakhaven? Is someone hurt? Is it the horde?\" \"No ma'am. Do you have a museum.\" A long pause. \"Son, we're in the museum. It's the only building in town with a generator.\" Her name is Dottie. Second floor, next to the longship: a Danish greataxe, about a thousand years old. Still in its case. Asa kept the generator running two hours to keep her on the line. Seth has padlocked the radio. There is masking tape across the handset now. It says NO AXE QUESTIONS."
+  },
+  {
+   "day": 17,
+   "who": "Asa",
+   "text": "Asa has asked Seth for the radio key eleven times today. Seth has started sleeping with it. Asa spent the evening sharpening his fire axe. \"For practice.\""
+  },
+  {
+   "day": 18,
+   "who": "Asa",
+   "text": "Asa drew a map to Millbrook on the back of a laundromat price list. It is sixty miles long and mostly arrows. He has asked every new arrival if they have ever been north."
+  }
+ ]
 }

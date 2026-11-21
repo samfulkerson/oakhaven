@@ -942,6 +942,24 @@ def keep_stockpile(data, outings, rng, new_day):
         if b.get("note"):
             notes.append(b["note"])
 
+    # story beats written ahead and queued by day in data.json "story_queue":
+    #   {"day": 17, "text": "...", "who": "Asa", "item": "Fuel", "amt": -2, "why": "..."}
+    # "who" (optional) must be alive and with the camp or the beat waits a night; "item"/"amt" is an optional cost or gain
+    queue = data.get("story_queue") or []
+    for b in [b for b in queue if b.get("day") == new_day]:
+        who = next((s for s in present if s["name"] == b["who"]), None) if b.get("who") else None
+        if b.get("who") and (not who or who.get("status") == "dead"):
+            b["day"] = new_day + 1
+            continue
+        if b.get("item") and b.get("amt"):
+            add(b["item"], b["amt"], b.get("why", "story"))
+        notes.append(b["text"])
+    left = [b for b in queue if b.get("day", 0) > new_day]
+    if left:
+        data["story_queue"] = left
+    else:
+        data.pop("story_queue", None)
+
     # loot and ammo from today's outings
     for o in outings:
         if not o.get("squad"):
