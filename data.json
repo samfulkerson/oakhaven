@@ -4,7 +4,7 @@
  "followers": 96,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 15. Water is gone and food lasts one day. The horde reaches the fence in six. Where do we go?",
+  "q": "Day 15. Food and water last one more day. The horde reaches the fence in six. Where do we go?",
   "opts": [
    [
     "GAS",
@@ -273,7 +273,10 @@
      "name": "Riot shotgun",
      "icon": "rifle"
     }
-   ]
+   ],
+   "status": "injured",
+   "injury": "scratched through the fence during the horde",
+   "injured_until": 17
   },
   {
    "name": "Quinn",
@@ -864,7 +867,7 @@
     "Albin Parson",
     "John"
    ],
-   "loot": "A crossbow, a quiver of bolts and a strip of dried venison",
+   "loot": "A crossbow, a quiver of bolts, a strip of dried venison, and two full rain barrels behind the cabin",
    "place": "Hunter’s cabin",
    "done_day": 14
   },
@@ -1529,7 +1532,7 @@
   ],
   [
    "Water",
-   40,
+   55,
    200,
    "rations"
   ],
@@ -2795,8 +2798,7 @@
       {
        "name": "Sam",
        "ig": "surviveoakhaven",
-       "outcome": "injured",
-       "detail": "cracked ribs, out until Day 15"
+       "outcome": "ok"
       },
       {
        "name": "Albin Parson",
@@ -2812,15 +2814,13 @@
      "mission_status": null
     }
    ],
-   "healed": [
-    "Sam"
-   ],
+   "healed": [],
    "joined": [],
    "waiting": 0,
    "power": [],
    "stock": {
     "Food": -5,
-    "Water": -2,
+    "Water": 13,
     "Ammo": 6,
     "Fuel": 0,
     "Barricades": 0,
@@ -2878,7 +2878,9 @@
      "Albin Parson",
      "Kathryn"
     ],
-    "hurt": [],
+    "hurt": [
+     "Javier (scratched through the fence during the horde, out until Day 17)"
+    ],
     "dead": [],
     "lit": true,
     "flood": 46,
@@ -2906,7 +2908,7 @@
  "hungry_days": 0,
  "stock_change": {
   "Food": -5,
-  "Water": -2,
+  "Water": 13,
   "Ammo": 6,
   "Fuel": 0,
   "Barricades": 0,
@@ -3132,7 +3134,9 @@
     "Albin Parson",
     "Kathryn"
    ],
-   "hurt": [],
+   "hurt": [
+    "Javier (scratched through the fence during the horde, out until Day 17)"
+   ],
    "dead": [],
    "lit": true,
    "flood": 46,
