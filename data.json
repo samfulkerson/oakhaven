@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 14,
- "followers": 95,
+ "day": 15,
+ "followers": 96,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 14. The horde hits tonight, and we've got one day of food and water left. Where do we go?",
+  "q": "Day 15. Water is gone and food lasts one day. The horde reaches the fence in six. Where do we go?",
   "opts": [
-   [
-    "CABIN",
-    0,
-    "Never searched. Medium risk, one day of food and water left.",
-    "hunter",
-    "🏕"
-   ],
    [
     "GAS",
     0,
-    "Never searched, and easy. Low risk, but don't expect much.",
+    "Easy run, never searched. The safest bet, but it may not give us what we need.",
     "gas",
     "⛽"
    ],
    [
     "COLD STORAGE",
     0,
-    "Never searched, medium risk. Food is possible, nothing is promised.",
+    "Medium run, never searched. Harder odds, and we don't know what's inside.",
     "cold",
     "🧊"
+   ],
+   [
+    "CATTLE",
+    0,
+    "A mission into the woods to round up strays. Medium risk, uncertain payoff.",
+    "cattle",
+    "🐄"
    ]
   ],
-  "how": "Comment CABIN, GAS or COLD STORAGE (or its emoji) on the Day 14 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment GAS, COLD STORAGE or CATTLE (or its emoji) on the Day 15 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -38,7 +38,7 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 9,
+   "outings": 10,
    "day_outings": 2,
    "gear": [
     {
@@ -372,7 +372,7 @@
    "role": "Radio Operator",
    "bio": "Ben is a military radio operator who will keep the group talking, even when nobody asked.",
    "joined": 10,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 1
   },
   {
@@ -448,7 +448,7 @@
    "role": "Builder",
    "bio": "Amnic0re is a server repair tech who spent his spare time doomsday prepping, and now finally gets to use it.",
    "joined": 10,
-   "day_outings": 1
+   "day_outings": 2
   },
   {
    "name": "John",
@@ -456,7 +456,8 @@
    "role": "Scavenger",
    "bio": "John is a paranoid mushroom grower and canning expert with a spear, a fear of the dead, and a lot of jars.",
    "joined": 10,
-   "day_outings": 1
+   "day_outings": 1,
+   "outings": 1
   },
   {
    "name": "Vic",
@@ -472,7 +473,7 @@
    "role": "EMT",
    "bio": "Steve is a firefighter who discovered the fire truck still has water in it and shared the news with the scavengers.",
    "joined": 11,
-   "day_outings": 1
+   "day_outings": 2
   },
   {
    "name": "Kim",
@@ -480,7 +481,8 @@
    "role": "Engineer",
    "bio": "Kim is an electrician who's tagging along with wstonkiethsteward to keep the lights on.",
    "joined": 11,
-   "outings": 2
+   "outings": 2,
+   "day_outings": 1
   },
   {
    "name": "Larry",
@@ -523,7 +525,9 @@
    "ig": "beniiioz",
    "role": "Medic",
    "bio": "Albin Parson wanted to be a General Surgeon, which makes him a medic with big ambitions and very strict rules about who gets through the door.",
-   "joined": 14
+   "joined": 14,
+   "day_outings": 1,
+   "outings": 1
   },
   {
    "name": "Kathryn",
@@ -532,10 +536,92 @@
    "look": {
     "skin": "#f1c9a5",
     "long": 1,
-    "px": [[2, 0, "#e6c860"], [3, 0, "#e6c860"], [4, 0, "#e6c860"], [1, 1, "#e6c860"], [2, 1, "#e6c860"], [3, 1, "#e6c860"], [4, 1, "#e6c860"], [5, 1, "#e6c860"], [1, 2, "#e6c860"], [6, 2, "#e6c860"], [1, 3, "#e6c860"], [6, 3, "#e6c860"], [1, 4, "#c9a440"], [6, 4, "#c9a440"], [1, 5, "#c9a440"], [6, 5, "#c9a440"]]
+    "px": [
+     [
+      2,
+      0,
+      "#e6c860"
+     ],
+     [
+      3,
+      0,
+      "#e6c860"
+     ],
+     [
+      4,
+      0,
+      "#e6c860"
+     ],
+     [
+      1,
+      1,
+      "#e6c860"
+     ],
+     [
+      2,
+      1,
+      "#e6c860"
+     ],
+     [
+      3,
+      1,
+      "#e6c860"
+     ],
+     [
+      4,
+      1,
+      "#e6c860"
+     ],
+     [
+      5,
+      1,
+      "#e6c860"
+     ],
+     [
+      1,
+      2,
+      "#e6c860"
+     ],
+     [
+      6,
+      2,
+      "#e6c860"
+     ],
+     [
+      1,
+      3,
+      "#e6c860"
+     ],
+     [
+      6,
+      3,
+      "#e6c860"
+     ],
+     [
+      1,
+      4,
+      "#c9a440"
+     ],
+     [
+      6,
+      4,
+      "#c9a440"
+     ],
+     [
+      1,
+      5,
+      "#c9a440"
+     ],
+     [
+      6,
+      5,
+      "#c9a440"
+     ]
+    ]
    },
    "bio": "Kathryn spent her days as a fitness instructor, so she can outrun the undead and still has energy to push for the radio tower.",
-   "joined": 14
+   "joined": 14,
+   "day_outings": 1
   }
  ],
  "runs": [
@@ -774,10 +860,13 @@
    "dest": "hunter",
    "difficulty": "medium",
    "squad": [
-    "Sam"
+    "Sam",
+    "Albin Parson",
+    "John"
    ],
    "loot": "A crossbow, a quiver of bolts and a strip of dried venison",
-   "place": "Hunter’s cabin"
+   "place": "Hunter’s cabin",
+   "done_day": 14
   },
   {
    "dest": "cold",
@@ -1434,13 +1523,13 @@
  "stock": [
   [
    "Food",
-   61,
+   56,
    200,
    "rations"
   ],
   [
    "Water",
-   42,
+   40,
    200,
    "rations"
   ],
@@ -1452,7 +1541,7 @@
   ],
   [
    "Ammo",
-   110,
+   96,
    500,
    "rds"
   ],
@@ -1464,13 +1553,13 @@
   ],
   [
    "Scrap",
-   44,
+   41,
    200,
    "units"
   ],
   [
    "Barricades",
-   100,
+   85,
    100,
    "%"
   ]
@@ -2677,17 +2766,151 @@
     "Weston & Quinn → Fairground (11:50): +3 scrap",
     "Toast & Carl → Hollow Creek Farm (15:05): +1 water"
    ]
+  },
+  {
+   "day": 14,
+   "vote": {
+    "question": "Day 14. The horde hits tonight, and we've got one day of food and water left. Where do we go?",
+    "results": {
+     "CABIN": 6
+    },
+    "winner": "CABIN",
+    "tiebreak": null,
+    "second": null,
+    "reel": "https://www.instagram.com/reel/Df7WqoaSs8k/"
+   },
+   "outings": [
+    {
+     "target": "Hunter’s cabin",
+     "key": "hunter",
+     "first": true,
+     "kind": "run",
+     "difficulty": "medium",
+     "squad": [
+      "Sam",
+      "Albin Parson",
+      "John"
+     ],
+     "results": [
+      {
+       "name": "Sam",
+       "ig": "surviveoakhaven",
+       "outcome": "injured",
+       "detail": "cracked ribs, out until Day 15"
+      },
+      {
+       "name": "Albin Parson",
+       "ig": "beniiioz",
+       "outcome": "ok"
+      },
+      {
+       "name": "John",
+       "ig": "linguistic_syllable",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    }
+   ],
+   "healed": [
+    "Sam"
+   ],
+   "joined": [],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Food": -5,
+    "Water": -2,
+    "Ammo": 6,
+    "Fuel": 0,
+    "Barricades": 0,
+    "Scrap": -3
+   },
+   "camp": [
+    "Camp jobs: 3 of them (snares and hunting): +3 food; Gary Finklestein and Bob (foraging the block): +2 food; Mateen (the farm plots): +3 food; 5 of them (pipe taps and filters): +10 water; Victoria stretched every meal: +5 food.",
+    "Rain catchers: 41 of us, barrels on every roof and gutter: +10 water. Shoutout to the engineers who set them up and keep them running: Artemis (@artemistheproto), Frost (@sir_waffles45), Kim (@kim.cheyanne), Hudson (@hay_ant_hud) and Johnny (@just_johnny_nguyen)."
+   ],
+   "horde": {
+    "day": 14,
+    "week": 2,
+    "outcome": "held",
+    "strength": 432,
+    "defense": 496,
+    "defenders": [
+     "Jaylozy",
+     "Tanny",
+     "Seth",
+     "Gary Finklestein",
+     "Adam",
+     "Asa",
+     "Gabe",
+     "Mateen",
+     "Jeremy",
+     "Victoria",
+     "Francis",
+     "Jack",
+     "Carl",
+     "Javier",
+     "Quinn",
+     "Elder",
+     "Shawn",
+     "Ryan",
+     "Officer Reyes",
+     "Toast",
+     "Artemis",
+     "Weston",
+     "Ben",
+     "Frost",
+     "Joseph",
+     "Jeff",
+     "Spenz",
+     "Marco",
+     "Bob",
+     "Amnic0re",
+     "John",
+     "Vic",
+     "Steve",
+     "Kim",
+     "Larry",
+     "Hudson",
+     "Opeta Teo",
+     "Johnny",
+     "Albin Parson",
+     "Kathryn"
+    ],
+    "hurt": [],
+    "dead": [],
+    "lit": true,
+    "flood": 46,
+    "intel": 25,
+    "intel_by": [
+     "Tanny",
+     "Marco"
+    ],
+    "traps": 15,
+    "traps_note": "Hudson and Johnny's booby traps on the wall, built from fairground ride parts",
+    "cut": 0,
+    "fence": 85,
+    "ammo": 96,
+    "led": true
+   },
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Kim & Albin Parson → Pharmacy (08:40): +1 water",
+    "Kathryn & Steve → Oakhaven Mall (10:15): +2 food",
+    "Ben & Amnic0re → Hardware store (15:05): nothing"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Scrap": 0,
-  "Water": 9,
-  "Ammo": -6,
-  "Food": -8,
+  "Food": -5,
+  "Water": -2,
+  "Ammo": 6,
   "Fuel": 0,
-  "Medicine": -1,
-  "Barricades": 0
+  "Barricades": 0,
+  "Scrap": -3
  },
  "schedule": [],
  "broadcast": {
@@ -2849,24 +3072,24 @@
   75
  ],
  "undead": {
-  "count": 31567,
+  "count": 46246,
   "last": {
-   "day": 13,
-   "killed": 12,
+   "day": 14,
+   "killed": 2605,
    "turned": 4,
-   "arrived": 0
+   "arrived": 17280
   }
  },
- "last_run": 1795171995,
+ "last_run": 1795267004,
  "horde": {
-  "day": 14,
-  "week": 2,
+  "day": 21,
+  "week": 3,
   "last": {
-   "day": 7,
-   "week": 1,
+   "day": 14,
+   "week": 2,
    "outcome": "held",
-   "strength": 97,
-   "defense": 187,
+   "strength": 432,
+   "defense": 496,
    "defenders": [
     "Jaylozy",
     "Tanny",
@@ -2874,19 +3097,56 @@
     "Gary Finklestein",
     "Adam",
     "Asa",
+    "Gabe",
     "Mateen",
     "Jeremy",
     "Victoria",
     "Francis",
     "Jack",
     "Carl",
-    "Quinn"
+    "Javier",
+    "Quinn",
+    "Elder",
+    "Shawn",
+    "Ryan",
+    "Officer Reyes",
+    "Toast",
+    "Artemis",
+    "Weston",
+    "Ben",
+    "Frost",
+    "Joseph",
+    "Jeff",
+    "Spenz",
+    "Marco",
+    "Bob",
+    "Amnic0re",
+    "John",
+    "Vic",
+    "Steve",
+    "Kim",
+    "Larry",
+    "Hudson",
+    "Opeta Teo",
+    "Johnny",
+    "Albin Parson",
+    "Kathryn"
    ],
    "hurt": [],
    "dead": [],
-   "lit": false,
-   "fence": 60,
-   "ammo": 25
+   "lit": true,
+   "flood": 46,
+   "intel": 25,
+   "intel_by": [
+    "Tanny",
+    "Marco"
+   ],
+   "traps": 15,
+   "traps_note": "Hudson and Johnny's booby traps on the wall, built from fairground ride parts",
+   "cut": 0,
+   "fence": 85,
+   "ammo": 96,
+   "led": true
   }
  },
  "twins": {
@@ -2917,7 +3177,7 @@
   ]
  },
  "weather": {
-  "day": 14,
+  "day": 15,
   "kind": "clear"
  },
  "intel": {
@@ -2949,7 +3209,7 @@
  "npcs": [
   {
    "name": "Elias",
-   "status": "gate",
+   "status": "inside",
    "from_day": 13,
    "spot": [
     427,
@@ -2961,60 +3221,53 @@
     "yes": 3,
     "no": 2,
     "arm": 3
+   },
+   "decided": {
+    "day": 15,
+    "yes": 6,
+    "no": 1
    }
   }
  ],
- "camp_bonus": [
-  {
-   "item": "Food",
-   "amt": 4,
-   "why": "new survivors' packs"
-  },
-  {
-   "item": "Water",
-   "amt": 4,
-   "why": "new survivors' packs"
-  }
- ],
  "day_runs": {
-  "day": 14,
+  "day": 15,
   "runs": [
    {
     "time": "08:40",
-    "dest": "pharmacy",
+    "dest": "ranger",
     "crew": [
-     "Kim",
-     "Albin Parson"
+     "Vic",
+     "Larry"
     ],
     "find": {
-     "Water": 1
+     "Scrap": 3
     },
     "event": "ok",
-    "line": "Kim: Found 1 jugs of water under a sink. Heading home."
+    "line": "Vic: Found 3 armfuls of planks and bolts. Heading home."
    },
    {
-    "time": "10:15",
-    "dest": "mall",
+    "time": "13:30",
+    "dest": "market",
     "crew": [
-     "Kathryn",
-     "Steve"
+     "Shawn",
+     "Johnny"
+    ],
+    "find": {},
+    "event": "ok",
+    "line": "Shawn: Picked clean. Nothing worth carrying. Heading home."
+   },
+   {
+    "time": "15:05",
+    "dest": "maple",
+    "crew": [
+     "Marco",
+     "Opeta Teo"
     ],
     "find": {
      "Food": 2
     },
     "event": "ok",
-    "line": "Kathryn: Found 2 cans of soup behind the counter. Heading home."
-   },
-   {
-    "time": "15:05",
-    "dest": "hardware",
-    "crew": [
-     "Ben",
-     "Amnic0re"
-    ],
-    "find": {},
-    "event": "ok",
-    "line": "Ben: Picked clean. Nothing worth carrying. Heading home."
+    "line": "Marco: Found 2 boxes of crackers nobody wanted. Heading home."
    }
   ]
  }

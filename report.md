@@ -1,15 +1,18 @@
-# Oakhaven: Day 13 recap
+# Oakhaven: Day 14 recap
 
-**Vote:** CABIN 2, RADIO 4, HARBOR 5. Winner: HARBOR.
-**Elias:** SHOW YOUR ARM 3, YES 3, NO 2. Reyes made him roll up the left sleeve, all the way, under the floodlight. The arm is burned from wrist to shoulder. Old burns, healed ugly. No bite. *"House fire. First week. I went into the Tedeschi place after them. Didn't figure anyone needed to see that."* He rolled the sleeve back down and buttoned his collar. He waits at the gate one more night. **He showed you. LET HIM IN? Comment YES or NO.**
-**Run: Harbor Master** (medium), squad: Sam, Larry, Ben
-- Everyone came back in one piece.
-**Small runs today:** Opeta Teo & Artemis → Fairground (08:40): nothing · Weston & Quinn → Fairground (11:50): +3 scrap · Toast & Carl → Hollow Creek Farm (15:05): +1 water
-**Undead in Oakhaven:** 31,567 (−12 killed, +4 newly turned)
-**Stockpile:** Scrap 44 (+3 small runs, -3 fence repairs) · Water 42 (+1 small runs, +27 Harbor Master, +6 rain catchers and pipe taps, +4 The windmill pump, +10 Tap the water tower, -39 drunk) · Ammo 110 (-6 Harbor Master run) · Food 61 (+17 Harbor Master, +2 snares and hunting, +3 foraging the block, +3 the farm plots, +4 Victoria's cooking, +2 Mateen's roof garden, -39 eaten) · Fuel 32 (+2 gas station pumps, -2 Laundromat generator) · Medicine 5 (-1 Johnny's injury) · Barricades 100 (-2 the dead at the fence (the floodlight keeps them back), +2 Francis rebuilt a section)
-**Supplies left:** food for 1 day, water for 1 day, 110 rounds, fence at 100%
-**Camp:** Camp jobs: Tanny and Marco (snares and hunting): +2 food; 3 of them (foraging the block): +3 food; Mateen (the farm plots): +3 food; 3 of them (rain catchers and pipe taps): +6 water; Victoria stretched every meal: +4 food.
-**Horde:** arrives TONIGHT (Day 14). Fence 100%, 110 rounds.
-**New survivors (2):** Albin Parson the Medic (@beniiioz), Kathryn the Scout (@kat_catto) (each brought a pack: +2 food, +2 water)
-**Followers:** 95  |  **Tomorrow is Day 14**
-**Tomorrow's vote:** Day 14. The horde hits tonight, and we've got one day of food and water left. Where do we go? 🏕 CABIN (Never searched. Medium risk, one day of food and water left.) / ⛽ GAS (Never searched, and easy. Low risk, but don't expect much.) / 🧊 COLD STORAGE (Never searched, medium risk. Food is possible, nothing is promised.)
+**Vote:** CABIN 6. Winner: CABIN.
+**Elias:** YES 6, NO 1. The gate opened. He sleeps inside the fence tonight.
+**Run: Hunter’s cabin** (medium), squad: Sam, Albin Parson, John
+- Sam (@surviveoakhaven) was hurt: cracked ribs, out until Day 15
+**Horde night (week 2): the fence HELD.** 432 of them against a defense of 496 — the twins at the front (the floodlight drew more in, but it gave the shooters +46 defense) (Tanny and Marco's scouting: +25 defense, the camp knew which side to hold) (Hudson and Johnny's booby traps on the wall, built from fairground ride parts: +15 defense). Defenders: Jaylozy, Tanny, Seth, Gary Finklestein, Adam, Asa, Gabe, Mateen, Jeremy, Victoria, Francis, Jack, Carl, Javier, Quinn, Elder, Shawn, Ryan, Officer Reyes, Toast, Artemis, Weston, Ben, Frost, Joseph, Jeff, Spenz, Marco, Bob, Amnic0re, John, Vic, Steve, Kim, Larry, Hudson, Opeta Teo, Johnny, Albin Parson, Kathryn.
+**Small runs today:** Kim & Albin Parson → Pharmacy (08:40): +1 water · Kathryn & Steve → Oakhaven Mall (10:15): +2 food · Ben & Amnic0re → Hardware store (15:05): nothing
+**Back on their feet:** Sam
+**Undead in Oakhaven:** 46,246 (−2605 killed, +4 newly turned, +17,280 arrived with the horde)
+**Stockpile:** Food 56 (+4 new survivors' packs, +2 small runs, +15 Hunter’s cabin, +3 snares and hunting, +2 foraging the block, +3 the farm plots, +5 Victoria's cooking, +2 Mateen's roof garden, -41 eaten) · Water 40 (+4 new survivors' packs, +1 small runs, +10 pipe taps and filters, +10 rain catchers, +4 The windmill pump, +10 Tap the water tower, -41 drunk) · Ammo 96 (-6 Hunter’s cabin run, +12 Hunter’s cabin) · Fuel 32 (+2 gas station pumps, -2 Laundromat generator) · Barricades 85 (-2 the dead at the fence (the floodlight keeps them back), +2 Francis rebuilt a section) · Scrap 41 (-3 fence repairs)
+**Supplies left:** food for 1 day, water for 0 days, 96 rounds, fence at 85%
+**Camp:** Camp jobs: 3 of them (snares and hunting): +3 food; Gary Finklestein and Bob (foraging the block): +2 food; Mateen (the farm plots): +3 food; 5 of them (pipe taps and filters): +10 water; Victoria stretched every meal: +5 food.
+**Camp:** Rain catchers: 41 of us, barrels on every roof and gutter: +10 water. Shoutout to the engineers who set them up and keep them running: Artemis (@artemistheproto), Frost (@sir_waffles45), Kim (@kim.cheyanne), Hudson (@hay_ant_hud) and Johnny (@just_johnny_nguyen).
+**Horde:** reaches the fence in 6 days (Day 21).
+**New survivors (0):** none
+**Followers:** 96  |  **Tomorrow is Day 15**
+**Tomorrow's vote:** Day 15. Water is gone and food lasts one day. The horde reaches the fence in six. Where do we go? ⛽ GAS (Easy run, never searched. The safest bet, but it may not give us what we need.) / 🧊 COLD STORAGE (Medium run, never searched. Harder odds, and we don't know what's inside.) / 🐄 CATTLE (A mission into the woods to round up strays. Medium risk, uncertain payoff.)
