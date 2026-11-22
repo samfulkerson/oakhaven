@@ -59,11 +59,11 @@
   },
   "Tanny": {
    "role": "Scout",
-   "skin": "dark brown skin",
-   "hair": "hidden — hood always up",
-   "outfit": "olive-green field jacket with the hood always up, a green shemagh scarf over the lower face",
-   "signature": "binoculars on a strap, a small handheld radio",
-   "face": "scarf and hood together — never seen, even in profile"
+   "skin": "fair, weathered skin",
+   "hair": "long white hair to the shoulders and a long white beard, under a beat-up brown wide-brim ranger hat",
+   "outfit": "olive-green scout field jacket and pants, empty hands",
+   "signature": "the brown wide-brim hat and the long white beard, like an old wizard gone ranger",
+   "face": "shadowed under the hat brim, from the side or behind"
   },
   "Seth": {
    "role": "Radio operator",
