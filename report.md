@@ -15,4 +15,4 @@
 **Horde:** reaches the fence in 5 days (Day 21).
 **New survivors (2):** Caleb the Sharpshooter (@calebcravens10), Officer John the Guard (@randommeyhem2) (each brought a pack: +2 food, +2 water)
 **Followers:** 106  |  **Tomorrow is Day 16**
-**Tomorrow's vote:** Day 16. The horde reaches our fence in five days, and supplies are running low. Where do we send the squad? 🛫 AIR FREIGHT (Medium risk, and nobody has ever searched the terminal.) / 🌱 GREENHOUSE (Easy run, never searched. Low risk, but nothing is promised.) / FORT (Deadly. Mission: get through the gate. Smoke rising from inside.)
+**Tomorrow's vote:** Day 16. The horde reaches our fence in five days, and supplies are running low. Where do we send the squad? 🛫 AIR FREIGHT (Medium risk, and nobody has ever searched the terminal.) / 🌱 GREENHOUSE (Easy run, never searched. Low risk, but nothing is promised.) / 🚒 FIRE STATION (Medium risk, never searched. Water in the tanks, medicine on the trucks.)
