@@ -1324,6 +1324,7 @@ def main():
 
     living_ig = {s.get("ig", "").lower() for s in data["survivors"] if s.get("status") != "dead"}
     living_ig |= {str(p.get("ig", "")).lower() for p in data.get("waitlist", [])}
+    living_ig |= {str(i).lower() for i in (data.get("twins") or {}).get("ig", [])}   # the twins' players are already in the story; their comments never sign them up
     try:
         parsed = read_joins(comments, living_ig, list(keys)) if comments else []
         if DRY and not comments:

@@ -631,13 +631,6 @@
    "role": "Sharpshooter",
    "bio": "Caleb hunts and traps for a living, so the zombies never see him coming.",
    "joined": 16
-  },
-  {
-   "name": "Scott Tedeschi",
-   "ig": "scotty_knows_nu2028",
-   "role": "Guard",
-   "bio": "Scott and Ryan Tedeschi want a zombie bodyguard horde that follows them everywhere, which is either brilliant or a terrible idea.",
-   "joined": 16
   }
  ],
  "runs": [
@@ -2970,8 +2963,7 @@
     "Javier"
    ],
    "joined": [
-    "Caleb",
-    "Scott Tedeschi"
+    "Caleb"
    ],
    "waiting": 0,
    "power": [],
@@ -3350,12 +3342,12 @@
  "camp_bonus": [
   {
    "item": "Food",
-   "amt": 4,
+   "amt": 2,
    "why": "new survivors' packs"
   },
   {
    "item": "Water",
-   "amt": 4,
+   "amt": 2,
    "why": "new survivors' packs"
   },
   {
@@ -3371,14 +3363,14 @@
     "time": "08:40",
     "dest": "harbor",
     "crew": [
-     "Scott Tedeschi",
+     "Shawn",
      "Caleb"
     ],
     "find": {
      "Scrap": 1
     },
     "event": "ok",
-    "line": "Scott Tedeschi: Found 1 loads of sheet metal and wire. Heading home."
+    "line": "Shawn: Found 1 loads of sheet metal and wire. Heading home."
    },
    {
     "time": "13:30",
