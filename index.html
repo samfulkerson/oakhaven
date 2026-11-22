@@ -2667,10 +2667,17 @@ function flyTo(key) { const p = POIS[key]; follow = false; setZoom(Math.max(zi, 
 // ------------------------------------------------------------------ survivors: they live in the laundromat yard by day and sleep inside at night
 const byName = {};
 const people = [];
+const hasFeature = id => (DATA.features || []).some(f => f.id === id);
+const YARD_BLOCKS = [[399, 454, 449, 491],                                             // the laundromat
+  ...((DATA.power || []).filter(g => g.id === 'laundromat' && g.status !== 'rumor').map(g => [g.at[0] - 7, g.at[1] - 8, g.at[0] + 7, g.at[1] + 3])),   // its generator
+  ...(hasFeature('victoria_kitchen') ? [[395, 504, 410, 513], [411, 499, 419, 506]] : []),   // the grill and counter, the sign
+  [390, 477, 400, 488],                                                                // the woodpile
+  [390, 454, 401, 474]];                                                               // the water barrels
+const inBlock = (x, y, m = 0) => YARD_BLOCKS.some(([a, b, c, d]) => x > a - m && x < c + m && y > b - m && y < d + m);
 function yardSpot() {
   for (let i = 0; i < 30; i++) {
     const [x, y] = WALLED ? [FENCE.x0 + 5 + rand() * (FENCE.x1 - FENCE.x0 - 10), FENCE.y0 + 6 + rand() * (FENCE.y1 - FENCE.y0 - 12)] : [396 + rand() * 56, 496 + rand() * 14];
-    if (WALLED && x > 396 && x < 452 && y < 497) continue;                                   // not on the laundromat
+    if ((WALLED && x > 396 && x < 452 && y < 497) || inBlock(x, y, 3)) continue;              // not on the laundromat, the generator or the kitchen
     const clear = WALLED ? !(x > 434 && x < 450 && y > 502 && y < 514) : !(x > 435 && y > 504) && !(x > 443 && y < 504);   // keep off the workbench and the tent
     if (Math.hypot(x - BARREL[0], y - BARREL[1]) > 5 && clear) return [x, y];
   }
@@ -3038,24 +3045,48 @@ function moveToward(e, tx, ty, spd) {
   e.x += dx / dist * spd; e.y += dy / dist * spd; if (Math.abs(dx) > .3) e.flip = dx < 0; e.step += spd; e.moving = true;
   return false;
 }
-// in the walled yard, people walk round the laundromat instead of over its roof: if the straight line to where they're going
-// crosses the building, they head for whichever corner makes the shortest way round first
-const HOME_BOX = [399, 454, 449, 491], HOME_CORNERS = [[396, 451], [452, 451], [396, 495], [452, 495]];
-function crossesHome(x0, y0, x1, y1) {
-  const [bx0, by0, bx1, by1] = HOME_BOX; let a = 0, b = 1; const dx = x1 - x0, dy = y1 - y0;
+// in the yard, people walk round things instead of over them (the laundromat, the generator, Victoria's kitchen, the woodpile, the
+// water barrels): if the straight line to where they're going crosses one, they head for whichever corner of it makes the shortest way round
+function crossesBox([bx0, by0, bx1, by1], x0, y0, x1, y1) {
+  let a = 0, b = 1; const dx = x1 - x0, dy = y1 - y0;
   for (const [p, q] of [[-dx, x0 - bx0], [dx, bx1 - x0], [-dy, y0 - by0], [dy, by1 - y0]]) {
     if (p === 0) { if (q < 0) return false; continue; }
     const r = q / p; if (p < 0) { if (r > b) return false; if (r > a) a = r; } else { if (r < a) return false; if (r < b) b = r; }
   }
   return a < b;
 }
-function yardMove(e, tx, ty, spd) {
-  if (WALLED && crossesHome(e.x, e.y, tx, ty)) {
-    let best = null, bd = 1e9;
-    for (const c of HOME_CORNERS) { if (crossesHome(e.x, e.y, c[0], c[1])) continue; const d = Math.hypot(c[0] - e.x, c[1] - e.y) + Math.hypot(tx - c[0], ty - c[1]); if (d < bd) { bd = d; best = c; } }
-    if (best) { moveToward(e, best[0], best[1], spd); return false; }
+const yardClear = (x0, y0, x1, y1) => !YARD_BLOCKS.some(B => crossesBox(B, x0, y0, x1, y1));
+// a walkable grid of the yard (2 px cells); a breadth-first search finds the way round, then it's pulled tight to a few corners
+const YG = 2, YGW = Math.ceil((FENCE.x1 - FENCE.x0) / YG), YGH = Math.ceil((FENCE.y1 - FENCE.y0) / YG);
+const ygFree = new Uint8Array(YGW * YGH).map((_, i) => { const x = FENCE.x0 + (i % YGW) * YG + 1, y = FENCE.y0 + (i / YGW | 0) * YG + 1; return x > FENCE.x0 + 1 && x < FENCE.x1 - 1 && y > FENCE.y0 + 1 && y < FENCE.y1 - 1 && !inBlock(x, y, 1) ? 1 : 0; });
+const ygCell = (x, y) => clamp((x - FENCE.x0) / YG | 0, 0, YGW - 1) + clamp((y - FENCE.y0) / YG | 0, 0, YGH - 1) * YGW;
+const ygPt = c => [FENCE.x0 + (c % YGW) * YG + 1, FENCE.y0 + (c / YGW | 0) * YG + 1];
+function ygNearFree(c) { if (ygFree[c]) return c; let best = -1, bd = 1e9; const [x, y] = ygPt(c); for (let i = 0; i < ygFree.length; i++) if (ygFree[i]) { const [a, b] = ygPt(i), d = (a - x) ** 2 + (b - y) ** 2; if (d < bd) { bd = d; best = i; } } return best; }
+function yardPath(x0, y0, x1, y1) {
+  const s = ygNearFree(ygCell(x0, y0)), g = ygNearFree(ygCell(x1, y1)); if (s < 0 || g < 0) return null;
+  const prev = new Int32Array(ygFree.length).fill(-2); prev[s] = -1; const q = [s];
+  for (let h = 0; h < q.length && prev[g] === -2; h++) {
+    const c = q[h], cx = c % YGW, cy = c / YGW | 0;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+      const nx = cx + dx, ny = cy + dy; if (nx < 0 || ny < 0 || nx >= YGW || ny >= YGH) continue;
+      const n = nx + ny * YGW; if (!ygFree[n] || prev[n] !== -2) continue;
+      if (dx && dy && (!ygFree[cx + dx + cy * YGW] || !ygFree[cx + (cy + dy) * YGW])) continue;   // no cutting corners
+      prev[n] = c; q.push(n);
+    }
   }
-  return moveToward(e, tx, ty, spd);
+  if (prev[g] === -2) return null;
+  const cells = []; for (let c = g; c !== -1; c = prev[c]) cells.push(ygPt(c)); cells.reverse(); cells.push([x1, y1]);
+  const out = []; let from = [x0, y0], i = 0;                                         // pull it tight: walk straight to the furthest point still in sight
+  while (i < cells.length) { let j = cells.length - 1; while (j > i && !yardClear(from[0], from[1], cells[j][0], cells[j][1])) j--; out.push(cells[j]); from = cells[j]; i = j + 1; }
+  return out;
+}
+function yardMove(e, tx, ty, spd) {
+  if (!inFence(e.x, e.y) || !inFence(tx, ty) || yardClear(e.x, e.y, tx, ty)) { e.yk = null; return moveToward(e, tx, ty, spd); }
+  const key = tx + ',' + ty;
+  if (e.yk !== key) { e.yk = key; e.yp = yardPath(e.x, e.y, tx, ty) || [[tx, ty]]; }
+  const p = e.yp[0] || [tx, ty];
+  if (moveToward(e, p[0], p[1], spd)) { e.yp.shift(); if (!e.yp.length) { e.yk = null; return true; } }
+  return false;
 }
 // the lookout tower: one person at a time takes a 3-4 minute shift on the roof, then climbs down and someone else goes up
 const LOOK_UP = [[453, 500], [453, 482], [452, 470], [449, 462], [444, 459], [441, 457]], LOOK_CLIMB = 3;   // around the side, up the ladder, onto the platform
