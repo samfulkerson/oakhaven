@@ -494,7 +494,6 @@ footer a{color:var(--muted)}
 </main>
 
 <script type="text/plain" id="game">
-const FENCE_LAMPS = [[390, 452, -.71, -.71], [457, 452, .71, -.71], [390, 513, -.71, .71], [457, 513, .71, .71]];   // [x, y, aim x, aim y]
 'use strict';
 // ------------------------------------------------------------------ data (sample; in production this is a JSON file the daily script rewrites)
 const DATA = {
@@ -673,7 +672,9 @@ const DRY = [];   // piers, jetties, boats: no water shimmer under them
 })();
 const shoreDist = (x, y) => (x >= BX0 && x < BX1 && y >= 0 && y < BY1) ? SD[y * BW + x - BX0] : 255;
 
-const FENCE = { x0: 390, y0: 452, x1: 458, y1: 514 };           // Sam's chain-link yard
+const WALLED = (DATA.features || []).some(f => f.id === 'wall');   // 100 followers: the chain-link moved out to the edge of the whole block
+const FENCE = WALLED ? { x0: 364, y0: 444, x1: 476, y1: 540 } : { x0: 390, y0: 452, x1: 458, y1: 514 };   // Sam's chain-link yard
+const FENCE_LAMPS = [[FENCE.x0, FENCE.y0, -.71, -.71], [FENCE.x1 - 1, FENCE.y0, .71, -.71], [FENCE.x0, FENCE.y1 - 1, -.71, .71], [FENCE.x1 - 1, FENCE.y1 - 1, .71, .71]];   // [x, y, aim x, aim y]
 const GATE = { x0: 419, x1: 429 };
 let gateHold = 0;                                   // frames the camp gate stays open after someone walks through it
 const HOME = { box: [400, 456, 48, 36], door: [424, 492] };
@@ -1226,7 +1227,8 @@ function buildBG() {
 
   // ---- Sam's laundromat (old 128,112 -> 360,440)
   at(x, 232, 328, () => {
-    for (let y = 124; y <= 186; y++) for (let X = 158; X <= 226; X++) { const n = hash2(X, y, 51); P(x, X, y, n < .5 ? '#463d2e' : n < .9 ? '#4b4232' : '#3f3628'); }
+    const fx0 = FENCE.x0 - 232, fy0 = FENCE.y0 - 328, fx1 = FENCE.x1 - 232, fy1 = FENCE.y1 - 328;
+    for (let y = fy0; y <= fy1; y++) for (let X = fx0; X <= fx1; X++) { const n = hash2(X, y, 51); P(x, X, y, n < .5 ? '#463d2e' : n < .9 ? '#4b4232' : '#3f3628'); }
     bldg(x, [168, 128, 48, 36], { roof: '#3a3632', roof2: '#4a4640', wall: '#6e3b2c', wall2: '#4e2a20', trim: '#2a2220', brick: true, face: 14 });
     for (let r = 0; r < 8; r++) P(x, 177 + Math.abs(3.5 - r) * .5 | 0, 133 + r, r % 3 === 0 ? '#4a3624' : '#6b5034', 9 - (Math.abs(3.5 - r) | 0), 1);
     P(x, 176, 141, '#2f241a', 1, 3); P(x, 185, 141, '#2f241a', 1, 3);
@@ -1241,12 +1243,12 @@ function buildBG() {
     P(x, 204, 178, '#6b5034', 6, 5); P(x, 205, 179, '#4a3624', 4, 1); P(x, 210, 180, '#6b5034', 5, 4);
     P(x, 171, 174, '#5e3922', 5, 5); P(x, 171, 176, '#3a2216', 5, 1);
     const mesh = (X, y) => P(x, X, y, (X + y) % 2 ? '#7a7e80' : '#55585a');
-    for (let X = 158; X <= 226; X++) { mesh(X, 124); mesh(X, 125); if (X % 2) P(x, X, 123, '#a6aaac'); if (X < 187 || X > 197) { mesh(X, 186); mesh(X, 185); if (X % 2) P(x, X, 184, '#a6aaac'); } }
-    for (let y = 124; y <= 186; y++) { mesh(158, y); mesh(226, y); if (y % 2) { P(x, 157, y, '#a6aaac'); P(x, 227, y, '#a6aaac'); } }
-    for (let X = 158; X <= 226; X += 7) { P(x, X, 122, '#3e4144', 1, 4); if (X < 186 || X > 198) P(x, X, 183, '#3e4144', 1, 4); }
-    for (let y = 124; y <= 186; y += 7) { P(x, 158, y - 2, '#3e4144', 1, 3); P(x, 226, y - 2, '#3e4144', 1, 3); }
-    P(x, 186, 181, '#3e4144', 1, 6); P(x, 198, 181, '#3e4144', 1, 6);
-    for (let y = 188; y < 222; y++) for (let X = 189; X < 196; X++) if (hash2(X, y, 52) > .4) P(x, X, y, '#4a463e');
+    for (let X = fx0; X <= fx1; X++) { mesh(X, fy0); mesh(X, fy0 + 1); if (X % 2) P(x, X, fy0 - 1, '#a6aaac'); if (X < 187 || X > 197) { mesh(X, fy1); mesh(X, fy1 - 1); if (X % 2) P(x, X, fy1 - 2, '#a6aaac'); } }
+    for (let y = fy0; y <= fy1; y++) { mesh(fx0, y); mesh(fx1, y); if (y % 2) { P(x, fx0 - 1, y, '#a6aaac'); P(x, fx1 + 1, y, '#a6aaac'); } }
+    for (let X = fx0; X <= fx1; X += 7) { P(x, X, fy0 - 2, '#3e4144', 1, 4); if (X < 186 || X > 198) P(x, X, fy1 - 3, '#3e4144', 1, 4); }
+    for (let y = fy0; y <= fy1; y += 7) { P(x, fx0, y - 2, '#3e4144', 1, 3); P(x, fx1, y - 2, '#3e4144', 1, 3); }
+    P(x, 186, fy1 - 5, '#3e4144', 1, 6); P(x, 198, fy1 - 5, '#3e4144', 1, 6);
+    for (let y = fy1 + 2; y < 222; y++) for (let X = 189; X < 196; X++) if (hash2(X, y, 52) > .4) P(x, X, y, '#4a463e');
     car(x, 230, 142, '#4a4f3a'); car(x, 136, 190, '#3a2a22', '#141210'); trash(x, 138, 116, 12, 7); trash(x, 228, 190, 10, 8);
     streetlight(x, 246, 198);
     // camp improvements from the spotlight posts
@@ -2667,8 +2669,10 @@ const byName = {};
 const people = [];
 function yardSpot() {
   for (let i = 0; i < 30; i++) {
-    const x = 396 + rand() * 56, y = 496 + rand() * 14;
-    if (Math.hypot(x - BARREL[0], y - BARREL[1]) > 5 && !(x > 435 && y > 504) && !(x > 443 && y < 504)) return [x, y];
+    const [x, y] = WALLED ? [FENCE.x0 + 5 + rand() * (FENCE.x1 - FENCE.x0 - 10), FENCE.y0 + 6 + rand() * (FENCE.y1 - FENCE.y0 - 12)] : [396 + rand() * 56, 496 + rand() * 14];
+    if (WALLED && x > 396 && x < 452 && y < 497) continue;                                   // not on the laundromat
+    const clear = WALLED ? !(x > 434 && x < 450 && y > 502 && y < 514) : !(x > 435 && y > 504) && !(x > 443 && y < 504);   // keep off the workbench and the tent
+    if (Math.hypot(x - BARREL[0], y - BARREL[1]) > 5 && clear) return [x, y];
   }
   return [424, 502];
 }
@@ -3565,21 +3569,6 @@ const AFTERMATH = [];        // where bodies lie (flies gather there by day)
     P(x, 398, 506, '#3a3a3a', 4, 2); P(x, 398, 506, '#6e7276', 4, 1); P(x, 397, 507, '#3a3a3a'); P(x, 402, 507, '#3a3a3a');                   // the stock pot
     P(x, 404, 511, 'rgba(0,0,0,.3)', 4, 1); P(x, 404, 508, '#8a6a44', 4, 3); P(x, 404, 508, '#a8865a', 4, 1); P(x, 405, 507, '#c9a24a'); P(x, 407, 507, '#e8e4da');   // crate counter: a can, a plate
     P(x, 414, 504, '#5a4128', 1, 7); P(x, 412, 500, '#e8e4da', 6, 5); P(x, 413, 501, '#2a2622', 2, 3); P(x, 415, 503, '#2a2622'); P(x, 412, 500, '#c0392e'); P(x, 413, 501, '#c0392e'); P(x, 414, 502, '#c0392e'); P(x, 415, 503, '#c0392e'); P(x, 416, 504, '#c0392e'); P(x, 417, 500, '#c0392e');   // the sign: a G, struck through in red
-  }
-  if (built('wall')) {            // 100 followers: the whole block walled off. Wrecked cars, sheet metal and pallets end to end, the gate on the south side
-    const X0 = 362, X1 = 477, Y0 = 442, Y1 = 541, CAR = ['#7a2e26', '#3f5466', '#5a5e3a', '#8a8478', '#2e3a2e'];
-    const piece = (px, py, i, vert) => {
-      const k = i % 5, w = vert ? 4 : 7, h = vert ? 7 : 4;
-      P(x, px, py + h, 'rgba(0,0,0,.35)', w, 1);                                                                     // shadow
-      if (k === 0 || k === 3) { const c = CAR[(i * 7) % 5]; P(x, px, py, c, w, h); P(x, px + 1, py + 1, '#1c2128', w - 2, h - 2); P(x, px + (vert ? 1 : 2), py + (vert ? 2 : 1), c, vert ? 2 : 3, vert ? 3 : 2); P(x, px, py, 'rgba(255,255,255,.12)', w, 1); }   // a wrecked car, roof caved
-      else if (k === 1 || k === 4) { P(x, px, py, '#7c8084', w, h); P(x, px, py, '#a4a8ac', w, 1); P(x, px + 1, py + 1, '#5e6266'); P(x, px + w - 2, py + h - 2, '#5e6266'); P(x, px + (w >> 1), py + 1, '#8a5a3a', 1, h - 2); }   // sheet metal, rusted seam
-      else { P(x, px, py, '#8a6a44', w, h); for (let j = 0; j < (vert ? h : w); j += 2) vert ? P(x, px, py + j, '#5a4128', w, 1) : P(x, px + j, py, '#5a4128', 1, h); }   // pallets on end
-    };
-    let i = 0;
-    for (let X = X0; X <= X1 - 7; X += 7) piece(X, Y0, i++, false);                                      // north
-    for (let X = X0; X <= X1 - 7; X += 7) { if (X + 7 > 414 && X < 434) continue; piece(X, Y1 - 4, i++, false); }   // south, with the gate gap
-    for (let Y = Y0 + 4; Y <= Y1 - 11; Y += 7) { piece(X0, Y, i++, true); piece(X1 - 4, Y, i++, true); }   // west and east
-    P(x, 413, Y1 - 6, '#5a4128', 1, 6); P(x, 434, Y1 - 6, '#5a4128', 1, 6);                              // gate posts
   }
   if (built('antenna')) {         // a radio mast on the roof's north-west corner, guyed, with a red lamp on top
     P(x, 404, 446, '#8a8e92', 1, 15); P(x, 402, 449, '#8a8e92', 5, 1); P(x, 403, 452, '#8a8e92', 3, 1); P(x, 404, 445, '#e0392e');
