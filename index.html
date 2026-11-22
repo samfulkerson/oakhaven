@@ -3038,6 +3038,25 @@ function moveToward(e, tx, ty, spd) {
   e.x += dx / dist * spd; e.y += dy / dist * spd; if (Math.abs(dx) > .3) e.flip = dx < 0; e.step += spd; e.moving = true;
   return false;
 }
+// in the walled yard, people walk round the laundromat instead of over its roof: if the straight line to where they're going
+// crosses the building, they head for whichever corner makes the shortest way round first
+const HOME_BOX = [399, 454, 449, 491], HOME_CORNERS = [[396, 451], [452, 451], [396, 495], [452, 495]];
+function crossesHome(x0, y0, x1, y1) {
+  const [bx0, by0, bx1, by1] = HOME_BOX; let a = 0, b = 1; const dx = x1 - x0, dy = y1 - y0;
+  for (const [p, q] of [[-dx, x0 - bx0], [dx, bx1 - x0], [-dy, y0 - by0], [dy, by1 - y0]]) {
+    if (p === 0) { if (q < 0) return false; continue; }
+    const r = q / p; if (p < 0) { if (r > b) return false; if (r > a) a = r; } else { if (r < a) return false; if (r < b) b = r; }
+  }
+  return a < b;
+}
+function yardMove(e, tx, ty, spd) {
+  if (WALLED && crossesHome(e.x, e.y, tx, ty)) {
+    let best = null, bd = 1e9;
+    for (const c of HOME_CORNERS) { if (crossesHome(e.x, e.y, c[0], c[1])) continue; const d = Math.hypot(c[0] - e.x, c[1] - e.y) + Math.hypot(tx - c[0], ty - c[1]); if (d < bd) { bd = d; best = c; } }
+    if (best) { moveToward(e, best[0], best[1], spd); return false; }
+  }
+  return moveToward(e, tx, ty, spd);
+}
 // the lookout tower: one person at a time takes a 3-4 minute shift on the roof, then climbs down and someone else goes up
 const LOOK_UP = [[453, 500], [453, 482], [452, 470], [449, 462], [444, 459], [441, 457]], LOOK_CLIMB = 3;   // around the side, up the ladder, onto the platform
 const look = { e: null, phase: '', wp: 0, until: 0, next: performance.now() + 6000 };
@@ -3091,11 +3110,11 @@ function update() {
     if (e.mode === 'wander') {
       // everyone is in for the night; by day some stay in too (it changes every so often), and anyone hurt rests inside
       const stayIn = dark > .5 || (dark < .3 && wantsIn(e));
-      if (stayIn && !e.inside) { if (moveToward(e, HOME.door[0], HOME.door[1] + 1, e.spd + .05)) { e.inside = true; e.hidden = true; e.ix = 0; } continue; }
+      if (stayIn && !e.inside) { if (yardMove(e, HOME.door[0], HOME.door[1] + 1, e.spd + .05)) { e.inside = true; e.hidden = true; e.ix = 0; } continue; }
       if (dark < .3 && e.inside && !stayIn) { e.inside = false; e.hidden = false; e.x = HOME.door[0]; e.y = HOME.door[1] + 2; e.wait = 40 + rand() * 120 | 0; [e.tx, e.ty] = yardSpot(); }
       if (e.inside) continue;
       if (e.wait > 0) { e.wait--; continue; }
-      if (moveToward(e, e.tx, e.ty, e.spd)) { e.wait = 80 + rand() * 260 | 0; [e.tx, e.ty] = yardSpot(); }
+      if (yardMove(e, e.tx, e.ty, e.spd)) { e.wait = 80 + rand() * 260 | 0; [e.tx, e.ty] = yardSpot(); }
     } else if (e.mode === 'npc') {
       npcStep(e); continue;
     } else if (e.mode === 'defend') {
