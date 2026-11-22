@@ -636,7 +636,14 @@
    "role": "EMT",
    "bio": "Steve is a firefighter who discovered the fire truck still has water in it and shared the news with the scavengers.",
    "joined": 11,
-   "day_outings": 2
+   "day_outings": 2,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Halligan bar",
+     "icon": "club"
+    }
+   ]
   },
   {
    "name": "Kim",
@@ -654,7 +661,14 @@
    "bio": "Larry wants to be a firefighter, rushing toward the flames and the zombies alike.",
    "joined": 12,
    "day_outings": 2,
-   "outings": 1
+   "outings": 1,
+   "gear": [
+    {
+     "kind": "armor",
+     "name": "Turnout coat",
+     "icon": "vest"
+    }
+   ]
   },
   {
    "name": "Hudson",
