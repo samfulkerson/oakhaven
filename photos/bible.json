@@ -385,6 +385,15 @@
    "signature": "a scoped rifle slung on the back",
    "face": "from behind or over the shoulder",
    "auto": true
+  },
+  "Officer John": {
+   "role": "Guard",
+   "skin": "fair skin",
+   "hair": "gray hair",
+   "outfit": "dusty purple jacket, navy pants, work gloves",
+   "signature": "a long wooden club",
+   "face": "from behind, shoulders squared to the fence",
+   "auto": true
   }
  },
  "places": {
