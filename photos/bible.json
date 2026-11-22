@@ -376,6 +376,15 @@
    "signature": "binoculars on a strap",
    "face": "hood up, from the side or behind",
    "auto": true
+  },
+  "Caleb": {
+   "role": "Sharpshooter",
+   "skin": "fair skin",
+   "hair": "sandy blonde hair",
+   "outfit": "dark green jacket, dark brown pants, work gloves",
+   "signature": "a scoped rifle slung on the back",
+   "face": "from behind or over the shoulder",
+   "auto": true
   }
  },
  "places": {
