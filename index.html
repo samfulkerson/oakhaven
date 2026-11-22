@@ -2713,9 +2713,9 @@ function dogStep() {
   if (!dog.placed || Math.hypot(tx - dog.x, ty - dog.y) > 40) { dog.x = tx; dog.y = ty; dog.placed = true; }
   dog.hidden = false;
   const dx = tx - dog.x, dy = ty - dog.y, dd = Math.hypot(dx, dy);
-  dog.moving = dd > 2.5;
-  if (dog.moving) { const v = Math.min(dd, Math.max((o.spd || .15) + .06, dd * .09)); dog.x += dx / dd * v; dog.y += dy / dd * v; dog.step += v; if (Math.abs(dx) > .3) dog.flip = dx < 0; }
-  else dog.flip = o.x < dog.x;                                                   // sitting: it looks at its person
+  dog.moving = dog.moving ? dd > 1 : dd > 4;                                     // a little slack both ways, so it doesn't flicker between sitting and walking at its person's heel
+  if (dog.moving) { dog.still = 0; const v = Math.min(dd, Math.max((o.spd || .15) + .06, dd * .09)); dog.x += dx / dd * v; dog.y += dy / dd * v; dog.step += v; if (Math.abs(dx) > .6) dog.flip = dx < 0; }
+  else if (++dog.still > 40) dog.flip = o.x < dog.x;                             // sat down for a moment: it turns to look at its person
 }
 function drawDog(a) {
   const img = a.moving ? ((a.step / 2.2 | 0) % 2 ? DOG_IMG.walk1 : DOG_IMG.walk0) : DOG_IMG.sit;
