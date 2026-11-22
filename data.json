@@ -631,6 +631,13 @@
    "role": "Sharpshooter",
    "bio": "Caleb hunts and traps for a living, so the zombies never see him coming.",
    "joined": 16
+  },
+  {
+   "name": "Officer John",
+   "ig": "randommeyhem2",
+   "role": "Guard",
+   "bio": "John was a riot-control cop before the fall. He knows how to move a crowd, even a dead one.",
+   "joined": 16
   }
  ],
  "runs": [
@@ -2963,7 +2970,8 @@
     "Javier"
    ],
    "joined": [
-    "Caleb"
+    "Caleb",
+    "Officer John"
    ],
    "waiting": 0,
    "power": [],
@@ -3342,12 +3350,12 @@
  "camp_bonus": [
   {
    "item": "Food",
-   "amt": 2,
+   "amt": 4,
    "why": "new survivors' packs"
   },
   {
    "item": "Water",
-   "amt": 2,
+   "amt": 4,
    "why": "new survivors' packs"
   },
   {

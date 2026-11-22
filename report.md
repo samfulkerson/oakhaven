@@ -13,6 +13,6 @@
 **Camp:** Camp jobs: Tanny (snares and hunting): +1 food; 3 of them (foraging the block): +3 food; Mateen (the farm plots): +3 food; 5 of them (pipe taps and filters): +10 water; Victoria stretched every meal: +5 food.
 **Camp:** Rain catchers: 41 of us, barrels on every roof and gutter: +10 water. Shoutout to the engineers who set them up and keep them running: Artemis (@artemistheproto), Frost (@sir_waffles45), Kim (@kim.cheyanne), Hudson (@hay_ant_hud) and Johnny (@just_johnny_nguyen).
 **Horde:** reaches the fence in 5 days (Day 21).
-**New survivor (1):** Caleb the Sharpshooter (@calebcravens10) (brought a pack: +2 food, +2 water)
+**New survivors (2):** Caleb the Sharpshooter (@calebcravens10), Officer John the Guard (@randommeyhem2) (each brought a pack: +2 food, +2 water)
 **Followers:** 106  |  **Tomorrow is Day 16**
 **Tomorrow's vote:** Day 16. The horde reaches our fence in five days, and supplies are running low. Where do we send the squad? 🛫 AIR FREIGHT (Medium risk, and nobody has ever searched the terminal.) / 🌱 GREENHOUSE (Easy run, never searched. Low risk, but nothing is promised.) / FORT (Deadly. Mission: get through the gate. Smoke rising from inside.)
