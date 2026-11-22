@@ -2,6 +2,24 @@
   "note": "The Oakhaven scrapbook: every camera roll from every mission. Newest first. Each photo lives in scrapbook/<id>-<n>.jpg (1080x1350) with a 432x540 copy in scrapbook/thumbs/. 'who' lists the survivors in a photo; a photo without 'who' counts everyone in the roll's crew.",
   "rolls": [
     {
+      "id": "day15-horde",
+      "day": 15,
+      "place": "Horde night at the laundromat",
+      "by": "Tanny",
+      "crew": ["Officer Reyes", "Jaylozy", "Jeremy", "Jack", "Toast", "Javier"],
+      "intro": "You voted LET HIM IN, 6–1, with the dead already on Mill Street. Tanny kept his hands free and carried the camera.",
+      "outro": "The dead piled up everywhere along the fence. The fence held. Nobody lost.",
+      "photos": [
+        {"time": "18:42", "who": ["Officer Reyes"], "note": "Day 14. Reyes held the gate. Elias walked in like he'd been invited to dinner."},
+        {"time": "19:26", "who": ["Jaylozy", "Jeremy", "Jack", "Officer Reyes"], "note": "The floodlights came on. Jaylozy's fire axe, Jeremy's bayonet spear, Jack's rifle. Nobody talked much."},
+        {"time": "21:58", "who": [], "note": "Here they come. The twins out in front, like always."},
+        {"time": "22:31", "who": ["Toast"], "note": "Toast on the machine gun, northeast corner. The dead pressed so hard on the wire it sang."},
+        {"time": "23:52", "who": [], "note": "The twins came right up to the fence and stopped. They didn't look at us. They looked at Elias."},
+        {"time": "01:14", "who": ["Javier"], "note": "Day 15. One of them got an arm through. Javier took a scratch. Out until Day 17."},
+        {"time": "06:47", "who": [], "note": "Fog. The dead were piled up everywhere. The fence held."}
+      ]
+    },
+    {
       "id": "day13-tower",
       "day": 13,
       "place": "The Water Tower",
