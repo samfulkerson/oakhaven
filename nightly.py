@@ -329,7 +329,7 @@ def resolve_outing(data, kind, item, rng, busy=(), at_least=1):
     if not squad:
         return {"target": place, "key": item.get("dest") or item.get("poi"), "first": first, "kind": kind, "difficulty": diff, "squad": [], "results": [], "note": "Nobody was fit to go."}
     roles = {role_of(s) for s in squad}
-    inj, die = RISK.get(diff, RISK["medium"])
+    inj, die = item.get("risk") or RISK.get(diff, RISK["medium"])   # a run or mission can set its own [injury, death] odds in data.json
     if "Medic" in roles:
         die *= 0.5; inj *= 0.85
     if "Sharpshooter" in roles:

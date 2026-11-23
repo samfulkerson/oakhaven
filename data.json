@@ -1119,7 +1119,11 @@
     "Sam"
    ],
    "loot": "A radio log, two MREs and a box of 5.56 rounds under a cot",
-   "place": "Army checkpoint"
+   "place": "Army checkpoint",
+   "risk": [
+    0.4,
+    0.05
+   ]
   },
   {
    "dest": "surplus",
