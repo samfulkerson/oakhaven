@@ -2495,6 +2495,47 @@ function buildBG() {
     DRY.push([x0 - 9, Y - 14, len + 12, 29]);
   };
   pierW(700, 50);
+  // ---- the east shore, between the water and the fairground road: a strip of little beach places and trees
+  {
+    const S = Y => shoreX(Y) + 14;                       // first dry, grassy pixel past the rocks
+    const cottage = (X, Y, w, h, roof, wall, seed) => {   // a small shore cottage seen from above: roof, a porch, a window lit by nothing
+      P(x, X + 1, Y + h, 'rgba(0,0,0,.35)', w, 2);
+      P(x, X, Y, wall, w, h); P(x, X, Y, roof, w, h - 4); P(x, X, Y + (h - 4 >> 1), 'rgba(0,0,0,.18)', w, 1);   // two roof slopes
+      P(x, X, Y, 'rgba(255,255,255,.12)', w, 1); P(x, X + 2, Y + h - 3, '#1c2a34', 3, 2); P(x, X + w - 5, Y + h - 3, '#1c2a34', 3, 2);
+      P(x, X + (w >> 1) - 1, Y + h - 4, '#3a2a1a', 3, 4);                                                   // the door
+      for (let i = 0; i < w; i += 2) P(x, X + i, Y + h + 2, i % 4 ? '#7a5a3a' : '#6a4a2e', 2, 3);             // porch boards
+      if (hash2(X, Y, seed) > .5) { P(x, X + w - 4, Y - 2, '#6a6a64', 2, 3); }                              // a chimney
+    };
+    const table = (X, Y) => { P(x, X, Y + 3, 'rgba(0,0,0,.3)', 7, 1); P(x, X, Y, '#8a6a44', 7, 3); P(x, X, Y - 1, '#6a4a2e', 7, 1); P(x, X, Y + 3, '#6a4a2e', 7, 1); };
+    const rowboat = (X, Y, c) => { P(x, X + 1, Y + 4, 'rgba(0,0,0,.3)', 10, 1); P(x, X + 1, Y, c, 9, 4); P(x, X, Y + 1, c, 11, 2); P(x, X + 2, Y + 1, '#2a2a2a', 7, 2); P(x, X + 4, Y + 1, c, 1, 2); P(x, X + 7, Y + 1, c, 1, 2); };
+    const path = (X0, X1, Y) => { for (let X = X0; X < X1; X++) if (hash2(X, Y, 401) > .15) P(x, X, Y, hash2(X, Y, 402) > .5 ? '#7a6a4a' : '#6a5a3e', 1, 2); };
+    // cottages up and down the strip, each with a sandy path out to the road
+    const homes = [[452, '#7a3a2e', '#d8d0bc'], [528, '#3f5a6a', '#c8c0aa'], [606, '#5a6a3a', '#d0c8b4'], [782, '#6a4a6a', '#d8d2c0'], [858, '#8a5a2e', '#c8c0b0']];
+    homes.forEach(([Y, roof, wall], i) => {
+      const X = S(Y) + 4 + (i % 2) * 6; cottage(X, Y, 18, 13, roof, wall, i + 3);
+      path(X + 18, 1270, Y + 10);
+      if (i % 2) table(X - 2 < S(Y) ? X : X + 4, Y + 20); else P(x, X + 20, Y + 4, '#5a5a5a', 3, 4);       // a picnic table, or a trash can
+    });
+    // the boat rental at the foot of the pier: a shed, an overturned rowboat, a hand-painted sign
+    { const Y = 700, X = S(Y) - 4;
+      P(x, X + 1, Y - 6, 'rgba(0,0,0,.35)', 16, 2); P(x, X, Y - 18, '#2e5a7a', 15, 12); P(x, X, Y - 18, 'rgba(255,255,255,.15)', 15, 1);
+      rowboat(X + 2, Y + 8, '#c8c0aa'); rowboat(X + 16, Y + 14, '#3f6a8a');
+      P(x, X + 20, Y - 14, '#e8e4da', 1, 10); for (let k = 0; k < 4; k++) P(x, X + 21, Y - 14 + k * 2, k % 2 ? '#c03a2e' : '#e8e4da', 4, 2);   // a ring buoy on a post
+      path(X + 15, 1270, Y - 2);
+    }
+    // a bench and a broken streetlamp along the seawall, and a few washed-up crates
+    for (const Y of [490, 568, 650, 742, 822]) { const X = S(Y) + 1; P(x, X, Y, '#6a4a2e', 2, 6); P(x, X - 1, Y - 1, '#8a6a44', 4, 1); }
+    for (const [Y, k] of [[640, 0], [760, 1], [900, 2]]) { const X = shoreX(Y) + 6 + k; P(x, X, Y, '#8a6a44', 4, 3); P(x, X, Y, '#6a4a2e', 4, 1); }
+    // autumn trees, tucked between the cottages and along the road
+    const taken = Y => homes.some(([hy]) => Y > hy - 8 && Y < hy + 26) || (Y > 676 && Y < 724);
+    for (let Y = 440; Y < 905; Y += 9) {
+      if (hash2(Y, 3, 411) < .35) continue;
+      const nearRoad = hash2(Y, 4, 412) > .45 || taken(Y);
+      const X = nearRoad ? 1258 + (hash2(Y, 5, 413) * 8 | 0) : S(Y) + 6 + (hash2(Y, 6, 414) * 22 | 0);
+      if (!nearRoad && taken(Y)) continue;
+      fallTree(x, X, Y, Y * 7 + 3);
+    }
+  }
   for (let X = 852; X < 896; X++) { P(x, X, 63, X % 2 ? '#7a5a3a' : '#6a4a2e', 1, 6); if (X % 6 === 0) { P(x, X, 60, '#1a120c', 2, 2); P(x, X, 69, '#1a120c', 2, 2); } } P(x, 852, 62, '#4a3420', 44, 1); P(x, 852, 69, '#4a3420', 44, 1); rod(896, 66, 1); DRY.push([846, 56, 60, 18]);
   // lifeguard tower and a tipped umbrella on the beach
   { const ly = shoreY(1010) + 2; P(x, 1006, ly + 2, '#8a6a44', 1, 7); P(x, 1013, ly + 2, '#8a6a44', 1, 7); P(x, 1005, ly - 4, '#d8d6cc', 10, 6); P(x, 1004, ly - 6, '#b8302a', 12, 2); P(x, 1007, ly - 3, '#1c2a34', 6, 2); }
