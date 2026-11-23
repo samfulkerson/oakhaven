@@ -1012,6 +1012,8 @@ def keep_stockpile(data, outings, rng, new_day):
                     notes.append(f"{p['name']} came home with the squad: {p.get('bio', '')}".strip())
             if m.get("broadcast"):
                 data["broadcast"] = {"day": new_day, **m["broadcast"]}
+            if m.get("feature") and not has_feat(data, m["feature"].get("id")):     # something they built, drawn on the map from now on
+                data.setdefault("features", []).append({**m["feature"], "day": new_day})
             have = data.setdefault("zombie_types", ["walker"])
             for z in m.get("unlock_zombies", []):
                 if z not in have:

@@ -9,7 +9,7 @@
    [
     "GREENHOUSE",
     0,
-    "Easiest run, never searched. Low risk, unknown reward.",
+    "Easy run. Strip the glass panels off the Hollow Creek greenhouse and build our own in the yard: food every night.",
     "greenhouse",
     "🌱"
    ],
@@ -1511,6 +1511,36 @@
    },
    "done_note": "Water is running from the old tower in the woods, down a patched line to the laundromat. Clean water, every night. And the crew didn't come back alone: a skinny dog that had been living under the tower followed them all the way down the line, and won't leave Kim's side. It needs a name.",
    "days_done": 2
+  },
+  {
+   "poi": "greenhouse",
+   "name": "Greenhouse salvage",
+   "area": "Farmland",
+   "at": [
+    173,
+    1165
+   ],
+   "difficulty": "easy",
+   "status": "open",
+   "days": 1,
+   "squad": [
+    "Weston"
+   ],
+   "goal": "Pull every unbroken glass panel off the Hollow Creek greenhouse, carry them home, and build a small greenhouse in the yard.",
+   "crew": "Weston the carpenter and anyone with steady hands",
+   "reward": "A greenhouse in the yard: +3 food every night from then on",
+   "gain": {
+    "Food": 2
+   },
+   "income": {
+    "Food": 3
+   },
+   "feature": {
+    "id": "camp_greenhouse",
+    "name": "Yard greenhouse",
+    "note": "Glass panels from Hollow Creek on a scrap-wood frame, in the corner of the yard."
+   },
+   "done_note": "They carried the glass home one panel at a time. There's a greenhouse in the corner of the yard now, and Mateen has already moved half his seedlings into it."
   }
  ],
  "power": [
