@@ -38,7 +38,7 @@
    "protected": true,
    "bio": "Holed up in the old laundromat on 3rd Street. Hasn’t seen another living person in weeks.",
    "joined": 1,
-   "outings": 12,
+   "outings": 11,
    "day_outings": 2,
    "gear": [
     {
@@ -274,8 +274,15 @@
    "role": "Scavenger",
    "bio": "Gary ran a very specialty shop downtown. He knows every back door on Main Street and won't say how.",
    "joined": 2,
-   "outings": 1,
-   "day_outings": 3
+   "outings": 2,
+   "day_outings": 3,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Fire axe",
+     "icon": "axe"
+    }
+   ]
   },
   {
    "name": "Adam",
@@ -383,7 +390,7 @@
     }
    ],
    "day_outings": 2,
-   "outings": 1
+   "outings": 0
   },
   {
    "name": "Jack",
@@ -613,7 +620,7 @@
    "bio": "Amnic0re is a server repair tech who spent his spare time doomsday prepping, and now finally gets to use it.",
    "joined": 10,
    "day_outings": 2,
-   "outings": 1
+   "outings": 0
   },
   {
    "name": "John",
@@ -630,7 +637,15 @@
    "role": "Gunsmith",
    "bio": "Vic is a blacksmith with a taste for big rewards, aiming for the Hangar and maybe the Farm on the way back.",
    "joined": 11,
-   "day_outings": 2
+   "day_outings": 2,
+   "outings": 1,
+   "gear": [
+    {
+     "kind": "weapon",
+     "name": "Fire axe",
+     "icon": "axe"
+    }
+   ]
   },
   {
    "name": "Steve",
@@ -645,7 +660,8 @@
      "name": "Halligan bar",
      "icon": "club"
     }
-   ]
+   ],
+   "outings": 1
   },
   {
    "name": "Kim",
@@ -3202,24 +3218,24 @@
      "kind": "run",
      "difficulty": "medium",
      "squad": [
-      "Sam",
-      "Francis",
-      "Amnic0re"
+      "Steve",
+      "Gary Finklestein",
+      "Vic"
      ],
      "results": [
       {
-       "name": "Sam",
-       "ig": "surviveoakhaven",
+       "name": "Steve",
+       "ig": "samuelnathanael16",
        "outcome": "ok"
       },
       {
-       "name": "Francis",
-       "ig": "ihateedison",
+       "name": "Gary Finklestein",
+       "ig": "jhurm",
        "outcome": "ok"
       },
       {
-       "name": "Amnic0re",
-       "ig": "andrew_nelson99",
+       "name": "Vic",
+       "ig": "victorioussecrt",
        "outcome": "ok"
       }
      ],

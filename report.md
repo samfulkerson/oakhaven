@@ -1,8 +1,9 @@
 # Oakhaven: Day 16 recap
 
 **Vote:** AIR FREIGHT 1, FIRE STATION 6, GREENHOUSE 1. Winner: FIRE STATION.
-**Run: Fire Station 3** (medium), squad: Sam, Francis, Amnic0re
+**Run: Fire Station 3** (medium), squad: Steve, Gary Finklestein, Vic
 - Everyone came back in one piece.
+- Steve knew right where the gear room was. They came home with two fire axes off the trucks: Gary and Vic carry them now. Asa was not consulted.
 **Small runs today:** Shawn & Caleb → Harbor Master (08:40): +1 scrap · Officer Reyes & Bob → Hollow Creek Farm (13:30): +1 food · Tanny & Kathryn → Ranger station (15:05): +2 food
 **Undead in Oakhaven:** 46,225 (−15 killed, +4 newly turned)
 **Stockpile:** Food 102 (+4 new survivors' packs, +3 small runs, +3 snares and hunting, +3 foraging the block, +3 the farm plots, +5 Victoria's cooking, +2 Mateen's roof garden, -43 eaten) · Water 71 (+4 new survivors' packs, +27 Fire Station 3, +10 pipe taps and filters, +11 rain catchers, +4 The windmill pump, +10 Tap the water tower, -43 drunk) · Barricades 100 (+2 the block wall, -2 the dead at the fence (the floodlight keeps them back), +2 Francis rebuilt a section) · Scrap 48 (+1 small runs, +15 Fire Station 3, -3 fence repairs) · Ammo 84 (-6 Fire Station 3 run) · Medicine 9 (+5 Fire Station 3) · Fuel 30 (+2 gas station pumps, -2 Laundromat generator)
