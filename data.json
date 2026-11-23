@@ -9,7 +9,7 @@
    [
     "GREENHOUSE",
     0,
-    "Easy run. Strip the glass panels off the Hollow Creek greenhouse and build our own in the yard: food every night.",
+    "Weston's idea. Easy run: strip the glass panels off the Hollow Creek greenhouse and build our own in the yard, for food every night.",
     "greenhouse",
     "🌱"
    ],
@@ -1526,7 +1526,7 @@
    "squad": [
     "Weston"
    ],
-   "goal": "Pull every unbroken glass panel off the Hollow Creek greenhouse, carry them home, and build a small greenhouse in the yard.",
+   "goal": "Weston's idea: pull every unbroken glass panel off the Hollow Creek greenhouse, carry them home, and build a small greenhouse in the yard.",
    "crew": "Weston the carpenter and anyone with steady hands",
    "reward": "A greenhouse in the yard: +3 food every night from then on",
    "gain": {
@@ -1538,9 +1538,10 @@
    "feature": {
     "id": "camp_greenhouse",
     "name": "Yard greenhouse",
-    "note": "Glass panels from Hollow Creek on a scrap-wood frame, in the corner of the yard."
+    "note": "Weston's idea: Hollow Creek's glass panels on a scrap-wood frame, in the corner of the yard.",
+    "by": "Weston"
    },
-   "done_note": "They carried the glass home one panel at a time. There's a greenhouse in the corner of the yard now, and Mateen has already moved half his seedlings into it."
+   "done_note": "Weston's idea worked. They carried the glass home one panel at a time, and Weston framed it in scrap wood. There's a greenhouse in the corner of the yard now, and Mateen has already moved half his seedlings into it."
   }
  ],
  "power": [

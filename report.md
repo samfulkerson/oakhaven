@@ -14,4 +14,4 @@
 **Horde:** reaches the fence in 4 days (Day 21).
 **New survivors (0):** none
 **Followers:** 106  |  **Tomorrow is Day 17**
-**Tomorrow's vote:** Day 17. Water runs out in a day and food lasts two. The horde reaches the fence in four. Where do we go? 🌱 GREENHOUSE (Easy run. Strip the glass panels off the Hollow Creek greenhouse and build our own in the yard: food every night.) / 🛫 AIR FREIGHT (Medium risk, never searched. Bigger unknown than the greenhouse.) / 🪖 CHECKPOINT (Hardest run, never searched. Biggest risk with 84 rounds left.)
+**Tomorrow's vote:** Day 17. Water runs out in a day and food lasts two. The horde reaches the fence in four. Where do we go? 🌱 GREENHOUSE (Weston's idea. Easy run: strip the glass panels off the Hollow Creek greenhouse and build our own in the yard, for food every night.) / 🛫 AIR FREIGHT (Medium risk, never searched. Bigger unknown than the greenhouse.) / 🪖 CHECKPOINT (Hardest run, never searched. Biggest risk with 84 rounds left.)
