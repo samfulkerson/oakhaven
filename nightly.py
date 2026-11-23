@@ -275,7 +275,11 @@ def mission_crew(data):
 def pick_squad(data, kind, item, rng, busy=(), at_least=1):
     living = [s for s in data["survivors"] if s.get("status") not in ("dead", "injured", "away") and s.get("joined", 1) <= data["day"] and s["name"] not in busy]
     by_name = {s["name"]: s for s in living}
-    squad = [by_name[n] for n in item.get("squad", []) if n in by_name]
+    fixed_names = list(item.get("squad", []))
+    if kind == "run" and "Sam" in fixed_names and not item.get("sam") and len(living) > 1:
+        fixed_names.remove("Sam")                             # Sam doesn't lead every ordinary run any more: he goes into the rotation like
+                                                              # everyone else (fewest outings first). A run or mission with "sam": true keeps him.
+    squad = [by_name[n] for n in fixed_names if n in by_name]
     want = max(at_least, SQUAD_SIZE.get(item.get("difficulty", "medium"), 2))
     if kind == "run" and item.get("squad") == ["Sam"] and len(living) == 1:
         want = 1
@@ -291,7 +295,7 @@ def pick_squad(data, kind, item, rng, busy=(), at_least=1):
     while len(squad) < want and rest:
         squad.append(rest.pop(0))
     # buddies go out together when they can: one swap, for the last person picked who isn't there for their role or their own buddy
-    fixed = set(item.get("squad", []))
+    fixed = set(fixed_names)
     for s in list(squad):
         pal = next((r for r in rest if r["name"] in s.get("buddies", [])), None)
         if not pal or any(m["name"] in s.get("buddies", []) for m in squad):
