@@ -1542,6 +1542,29 @@
     "by": "Weston"
    },
    "done_note": "Weston's idea worked. They carried the glass home one panel at a time, and Weston framed it in scrap wood. There's a greenhouse in the corner of the yard now, and Mateen has already moved half his seedlings into it."
+  },
+  {
+   "poi": "firestation",
+   "name": "Fire truck water",
+   "area": "Southside",
+   "at": [
+    282,
+    848
+   ],
+   "difficulty": "easy",
+   "status": "open",
+   "days": 1,
+   "from_day": 18,
+   "squad": [
+    "Frost"
+   ],
+   "goal": "Go back to Fire Station 3 with a plumber and free the rusted valves on Engine 3 to drain the rest of its water tank.",
+   "crew": "Frost the plumber and someone to watch his back",
+   "reward": "+40 water",
+   "gain": {
+    "Water": 40
+   },
+   "done_note": "Frost got the valves on Engine 3 open with a pipe wrench and a lot of swearing. Every jug we own came home full."
   }
  ],
  "power": [
