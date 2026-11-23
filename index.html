@@ -2562,6 +2562,21 @@ function buildBG() {
   P(x, 500, 186, '#6e6c64', 1, 6); P(x, 506, 180, '#2a3a6a', 22, 7);
   P(x, 772, 418, '#6e6c64', 1, 10); P(x, 762, 410, '#2a3a6a', 26, 7); text(x, 'PORT', 764, 411, '#f0ece2');
 
+  // ---- trees scattered over the bare grass: anywhere a patch of plain ground is still empty after everything else is drawn,
+  //      an autumn tree (now and then a dead one) takes root. Lawns, fields, lots and roads aren't plain ground, so they stay as they are.
+  {
+    const img = x.getImageData(0, 0, W, H).data, GR = new Set(['58,64,48', '63,70,52', '68,75,56']);
+    const bare = new Uint8Array(W * H);
+    for (let i = 0; i < W * H; i++) bare[i] = GR.has(img[i * 4] + ',' + img[i * 4 + 1] + ',' + img[i * 4 + 2]) ? 1 : 0;
+    const clear = (X, Y) => { for (let y = Y - 14; y <= Y + 4; y++) for (let x0 = X - 7; x0 <= X + 9; x0++) if (x0 < 0 || y < 0 || x0 >= W || y >= H || !bare[y * W + x0]) return false; return true; };
+    const take = (X, Y) => { for (let y = Y - 16; y <= Y + 6; y++) for (let x0 = X - 9; x0 <= X + 11; x0++) if (x0 >= 0 && y >= 0 && x0 < W && y < H) bare[y * W + x0] = 0; };
+    for (let Y = 8; Y < H - 6; Y += 11) for (let X = 8; X < W - 10; X += 11) {
+      const jx = X + ((hash2(X, Y, 501) - .5) * 8 | 0), jy = Y + ((hash2(X, Y, 502) - .5) * 8 | 0);
+      if (hash2(X, Y, 503) > .42 || !clear(jx, jy) || inSolid(jx, jy) || (jx >= FENCE.x0 - 4 && jx <= FENCE.x1 + 4 && jy >= FENCE.y0 - 4 && jy <= FENCE.y1 + 4)) continue;
+      fallTree(x, jx, jy, jx * 31 + jy * 7); take(jx, jy);
+    }
+  }
+
   // solids for the named places and Sam's fence
   for (const p of Object.values(POIS)) if (!p.nosolid) solid(p.box);
   solid([FENCE.x0, FENCE.y0, FENCE.x1 - FENCE.x0 + 1, FENCE.y1 - FENCE.y0 + 1]);
