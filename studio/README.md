@@ -454,3 +454,6 @@ Two real followers (@scotty_knows_nu2028 and @oldpatriot2) play Oakhaven's first
 - **In Reels:** they stay off camera unless the script brings them in: `[t, 'twins', [[x, y], ...], speed, face]` places them at the first point and walks the rest (`face` 'w' or 'e' once they stop; `[[-60, -60]]` hides them). A `horde` event puts them at the front of the column automatically.
 - **On the map:** by day they walk the east side (the street at x 760); after dark they come down and stand at the front of the dead outside the fence. Their cards sit above the survivors on the Survivors tab.
 
+
+## Per-run risk
+A run or mission in data.json can set its own odds with `"risk": [injury, death]` (before the medic / sharpshooter / gear modifiers). Without it, the difficulty's defaults in `RISK` apply. The Checkpoint uses `[0.40, 0.05]`.
