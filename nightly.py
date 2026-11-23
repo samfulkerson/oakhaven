@@ -378,7 +378,7 @@ def resolve_outing(data, kind, item, rng, busy=(), at_least=1):
             "mission_status": item.get("status") if kind == "mission" else None}
 
 
-def todays_outing(data, winner, rng, second=None):
+def todays_outing(data, winner, rng, second=None, day_crew=()):
     # 1) anything planned by hand in data.json "outings"; 2) an active multi-day mission; 3) the vote winner; 4) the next run
     planned = data.pop("outings", None) or []
     targets = []
@@ -406,7 +406,7 @@ def todays_outing(data, winner, rng, second=None):
         targets.append(("run", nxt))
     out = []
     for k, it, *tag in targets:
-        busy = {n for o in out for n in o["squad"]}       # nobody goes out twice in one day
+        busy = {n for o in out for n in o["squad"]} | set(day_crew)   # nobody goes out twice in one day (small runs included)
         o = resolve_outing(data, k, it, rng, busy, 2 if tag else 1)     # a second group is never one person alone
         if tag:
             o["second"] = True
@@ -1300,6 +1300,7 @@ def main():
         ig = None
     comments = ig["comments"] if ig else []
 
+    day_crew = {n for r in (data.get("day_runs") or {}).get("runs", []) for n in r.get("crew", [])}
     day_lines, day_finds = settle_day_runs(data, day, rng)
     winner, tally, support, voters = count_vote(data, comments)
     tiebreak = None
@@ -1314,7 +1315,7 @@ def main():
     called = str((data.get("vote") or {}).get("second", "")).upper()   # Sam can send a second group himself: data.json vote "second"
     if not split and called and winner and called != winner:
         split = {"word": called, "support": support.get(called, 0), "need": 0, "called": True}
-    outings = todays_outing(data, keys.get(winner, winner), rng, keys.get(split["word"], split["word"]) if split else None)
+    outings = todays_outing(data, keys.get(winner, winner), rng, keys.get(split["word"], split["word"]) if split else None, day_crew)
     if split and not any(o.get("second") for o in outings):
         split = None                                       # not enough people to spare today
     new_day = day + 1
