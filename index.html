@@ -2185,6 +2185,51 @@ function buildBG() {
   P(x, 1340, 190, '#c8b84a', 3, 1); P(x, 1394, 190, '#c8b84a', 3, 1);
   LIGHTS.push([1450, 46, 12, .75, '255,50,40', 'blink', 'fort'], [1376, 246, 40, .5, '255,240,210', 'steady', 'fort'], [1565, 132, 30, .45, '255,240,210', 'steady', 'fort'], [1302, 240, 18, .6, '255,235,190', 'steady', 'fort'], [1470, 168, 26, .45, '255,225,170', 'steady', 'fort']);
 
+  // ---- Fort Corran, lived in and lost: the fort took in civilians before it fell. A fenced quarantine camp of white tents
+  //      and a red-cross tent in the middle of the post, an HQ with its door chained and a warning sprayed on the roof,
+  //      CONEX boxes and porta-johns along the north wall, a hoop by the barracks, pallets of bottled water nobody came back for,
+  //      a burned-out Humvee and wire strung across the south yard
+  {
+    const tentW = (X, Y, torn) => {                       // a white relief tent, ridge down the middle
+      P(x, X + 1, Y + 9, 'rgba(0,0,0,.35)', 16, 2);
+      if (torn) { for (let a = 0; a < 16; a++) for (let b = 0; b < 8; b++) if (hash2(X + a, Y + b, 601) > .35) P(x, X + a, Y + 2 + (b >> 1), hash2(X + a, Y + b, 602) > .5 ? '#c8c4b8' : '#a8a498'); P(x, X + 7, Y + 4, '#5a5a52', 1, 4); return; }
+      P(x, X, Y, '#d8d4c8', 16, 4); P(x, X, Y + 4, '#b8b4a8', 16, 5); P(x, X, Y + 4, '#9a968a', 16, 1);
+      P(x, X + 6, Y + 6, '#2a2a26', 4, 3); P(x, X, Y, '#eeeae0', 16, 1); P(x, X, Y, '#8a867c', 1, 9); P(x, X + 15, Y, '#8a867c', 1, 9);
+    };
+    const cot = (X, Y, tipped) => tipped ? (P(x, X, Y, '#4a5a34', 2, 6), P(x, X + 2, Y + 1, '#2a2a22', 1, 4)) : (P(x, X, Y, '#5a6a3e', 7, 3), P(x, X, Y + 3, '#2a2a22', 7, 1));
+    const flood = (X, Y) => { P(x, X, Y - 14, '#5a5e62', 1, 14); P(x, X - 2, Y - 16, '#7a7e80', 5, 2); P(x, X - 1, Y - 15, '#e8ecee', 3, 1); P(x, X - 2, Y, 'rgba(0,0,0,.3)', 5, 1); LIGHTS.push([X, Y - 14, 34, .55, '235,240,255', 'steady', 'fort']); };
+    // the quarantine camp: chain-link with a gate facing the parade ground, rows of tents, cots dragged outside, a medical tent
+    for (let y = 190; y < 278; y++) for (let X = 1430; X < 1536; X++) if (hash2(X, y, 603) > .82) P(x, X, y, '#40423a');
+    fChainH(189, 1428, 1537); fChainH(278, 1428, 1537); fChainV(1428, 189, 279, [226, 242]); fChainV(1536, 189, 279);
+    for (const [X, Y, torn] of [[1484, 194, 0], [1506, 194, 1], [1436, 214, 0], [1458, 214, 0], [1480, 214, 1], [1502, 214, 0], [1436, 258, 0], [1458, 258, 1], [1480, 260, 0]]) tentW(X, Y, torn);
+    // the red-cross tent: bigger, a stretcher out front
+    P(x, 1507, 266, 'rgba(0,0,0,.35)', 26, 2); P(x, 1506, 252, '#e2ded2', 26, 6); P(x, 1506, 258, '#c0bcb0', 26, 7); P(x, 1506, 252, '#f2eee4', 26, 1);
+    P(x, 1517, 253, '#c03a2e', 4, 10); P(x, 1514, 256, '#c03a2e', 10, 4); P(x, 1516, 262, '#2a2a26', 6, 3);
+    P(x, 1512, 270, '#5a6a3e', 9, 3); P(x, 1511, 270, '#2a2a22', 1, 3); P(x, 1521, 270, '#2a2a22', 1, 3);
+    for (const [X, Y, tp] of [[1446, 234, 0], [1462, 236, 1], [1488, 238, 0], [1500, 232, 1], [1520, 228, 0], [1452, 248, 1]]) cot(X, Y, tp);
+    for (let i = 0; i < 40; i++) P(x, 1432 + (hash2(i, 1, 604) * 100 | 0), 192 + (hash2(i, 2, 604) * 84 | 0), hash2(i, 3, 604) > .5 ? '#d8d4c8' : '#a8a498');   // paper, wrappers, a lost shoe
+    for (let X = 1438; X < 1530; X += 2) P(x, X, 231 + ((X >> 3) % 2), hash2(X, 5, 605) > .5 ? '#c8c4b8' : '#4a6a8a');     // a clothesline across the camp
+    P(x, 1459, 279, '#e8e4da', 45, 7); P(x, 1459, 279, '#c03a2e', 45, 1); text(x, 'QUARANTINE', 1462, 281, '#c03a2e');
+    for (const [X, Y] of [[1430, 191], [1534, 191], [1430, 276], [1534, 276]]) flood(X, Y);
+    // HQ: door chained, a warning sprayed across the roof in red
+    { const hY = bldg(x, [1500, 133, 38, 15], { roof: '#6a6e66', roof2: '#5a5e56', wall: '#8a8a7c', wall2: '#7a7a6c', trim: '#2a2a22', face: 5 }); solid([1500, 133, 38, 15]);
+      P(x, 1516, hY + 1, '#141210', 5, 4); chains(x, 1515, hY + 2, 7);
+      textC(x, 'KEEP OUT', 1519, 136, '#b8302a'); P(x, 1503, 142, 'rgba(184,48,42,.6)', 1, 2); P(x, 1529, 142, 'rgba(184,48,42,.6)', 1, 3); }   // sprayed, with drips
+    // CONEX boxes along the north wall, porta-johns by the pads
+    for (const [i, col] of ['#5a6a3e', '#8a7a5a', '#7a4a32', '#5a6a3e'].entries()) { const X = 1342 + i * 20; P(x, X + 1, 59, 'rgba(0,0,0,.35)', 18, 2); P(x, X, 51, col, 18, 8); for (let k = 1; k < 18; k += 2) P(x, X + k, 52, 'rgba(0,0,0,.18)', 1, 6); P(x, X, 51, 'rgba(255,255,255,.15)', 18, 1); P(x, X + 16, 53, '#2a2a22', 1, 4); }
+    for (let i = 0; i < 5; i++) { const X = 1480 + i * 6; P(x, X, 58, 'rgba(0,0,0,.35)', 5, 1); P(x, X, 50, '#2a5a8a', 5, 8); P(x, X, 50, '#e8e4da', 5, 1); P(x, X + 1, 53, '#1c2a34', 3, 4); }
+    // company numbers stencilled on the barracks roofs, and a hoop and half-court beside them
+    for (let i = 0; i < 4; i++) text(x, String(i + 1), 1400, 74 + i * 36, '#e8dcb0');
+    for (let y = 118; y < 150; y++) for (let X = 1318; X < 1337; X++) P(x, X, y, hash2(X, y, 606) > .5 ? '#5a5a54' : '#55554f');
+    rect(x, 1318, 118, 19, 32, '#c8c4b8'); P(x, 1318, 134, '#c8c4b8', 19, 1); P(x, 1326, 119, '#8a8e90', 3, 1); P(x, 1327, 120, '#c0602a', 1, 2); P(x, 1331, 142, '#c0602a', 2, 2);
+    // pallets of bottled water, still shrink-wrapped
+    for (let i = 0; i < 6; i++) { const X = 1488 + (i % 3) * 10, Y = 326 + Math.floor(i / 3) * 10; P(x, X, Y + 7, '#8a6a44', 9, 2); P(x, X, Y, '#4a7aa8', 9, 7); P(x, X, Y, '#8ab4d4', 9, 1); for (let k = 1; k < 9; k += 2) P(x, X + k, Y + 2, '#6a9ac4', 1, 4); }
+    // a burned-out Humvee and its scorch mark, and concertina wire strung across the south yard
+    for (let a = -10; a <= 10; a++) for (let b = -6; b <= 6; b++) if (a * a / 100 + b * b / 36 < 1 && hash2(a, b, 607) > .3) P(x, 1342 + a, 350 + b, 'rgba(20,16,12,.55)');
+    P(x, 1336, 347, '#1a1a18', 13, 7); P(x, 1337, 348, '#2e2a26', 11, 5); P(x, 1339, 348, '#0b0b0b', 4, 3); P(x, 1345, 349, '#5a3a2a', 3, 2);
+    for (let X = 1330; X < 1398; X++) { P(x, X, 361 + Math.round(Math.sin(X * .9) * 1.5), (X % 3) ? '#8a8e90' : '#c8ccce'); if (X % 5 === 0) P(x, X, 359, '#5a5e62', 1, 4); }
+  }
+
   // ---- outside the fort, west of the road: an Army checkpoint and an army surplus store
   for (let y = 258; y < 296; y++) for (let X = 1218; X < 1272; X++) if (hash2(X, y, 313) > .2) P(x, X, y, hash2(X, y, 314) > .5 ? '#5e574a' : '#57504a');
   const fckY = bldg(x, POIS.checkpoint.box, { roof: '#4a5a34', roof2: '#3e4c2c', wall: '#8a8a76', wall2: '#7a7a68', trim: '#2a2a22', face: 10 });
