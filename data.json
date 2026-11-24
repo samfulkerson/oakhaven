@@ -7,16 +7,16 @@
   "q": "Day 18. Water lasts one more day and food for two. The horde reaches the fence in three. Where do we send the squad?",
   "opts": [
    [
-    "GAS",
+    "FIRE TRUCK",
     0,
-    "Never searched and easy. Nothing promised, and it's the lowest risk.",
-    "gas",
-    "⛽"
+    "Frost goes back to Fire Station 3 to free the rusted valves on Engine 3. Easy, and the rest of the water.",
+    "firestation",
+    "🚒"
    ],
    [
     "GREENHOUSE",
     0,
-    "Never searched and easy. Tempting with water low, but no promises.",
+    "Weston's idea. Easy run: strip the glass panels off the Hollow Creek greenhouse and build our own in the yard, for food every night.",
     "greenhouse",
     "🌱"
    ],
@@ -28,7 +28,7 @@
     "🌽"
    ]
   ],
-  "how": "Comment GAS, GREENHOUSE or HARVEST (or its emoji) on the Day 18 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment FIRE TRUCK, GREENHOUSE or HARVEST (or its emoji) on the Day 18 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -666,7 +666,11 @@
      "icon": "club"
     }
    ],
-   "outings": 2
+   "outings": 2,
+   "status": "injured",
+   "injury": "a dislocated shoulder hauling Reyes back out of a car window",
+   "injured_until": 21,
+   "injured_on": 17
   },
   {
    "name": "Kim",
@@ -831,11 +835,7 @@
    "bio": "Caleb hunts and traps for a living, so the zombies never see him coming.",
    "joined": 16,
    "day_outings": 1,
-   "outings": 1,
-   "status": "injured",
-   "injury": "burned hands",
-   "injured_until": 21,
-   "injured_on": 17
+   "outings": 1
   },
   {
    "name": "Officer John",
@@ -3372,13 +3372,13 @@
       {
        "name": "Steve",
        "ig": "samuelnathanael16",
-       "outcome": "ok"
+       "outcome": "injured",
+       "detail": "a dislocated shoulder hauling Reyes back out of a car window, out until Day 21"
       },
       {
        "name": "Caleb",
        "ig": "calebcravens10",
-       "outcome": "injured",
-       "detail": "burned hands, out until Day 21"
+       "outcome": "ok"
       },
       {
        "name": "Francis",
@@ -3600,7 +3600,7 @@
   100
  ],
  "undead": {
-  "count": 46206,
+  "count": 28300,
   "last": {
    "day": 17,
    "killed": 25,

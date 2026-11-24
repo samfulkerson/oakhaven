@@ -766,8 +766,9 @@ def update_undead(data, outings, day_runs, horde, rng):
     turned = rng.randint(2, 9)
     arrived = 0
     if horde:
-        arrived = horde["strength"] * 40                     # the whole column, not just the ones that hit the fence
-        killed += int(min(horde["strength"], horde["defense"]) * 6)
+        arrived = horde["strength"]                          # the dead who came to the fence stay in town
+        held = horde.get("defense", 0) >= horde["strength"]
+        killed += int(horde["strength"] * (rng.uniform(.75, .95) if held else rng.uniform(.3, .55)))   # a held fence kills most of them, a broken one fewer
     U["count"] = max(0, U["count"] - killed + turned + arrived)
     U["last"] = {"day": data["day"], "killed": killed, "turned": turned, "arrived": arrived}
     return U
