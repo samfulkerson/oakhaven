@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 17,
+ "day": 18,
  "followers": 106,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 17. Water runs out in a day and food lasts two. The horde reaches the fence in four. Where do we go?",
+  "q": "Day 18. Water lasts one more day and food for two. The horde reaches the fence in three. Where do we send the squad?",
   "opts": [
+   [
+    "GAS",
+    0,
+    "Never searched and easy. Nothing promised, and it's the lowest risk.",
+    "gas",
+    "⛽"
+   ],
    [
     "GREENHOUSE",
     0,
-    "Weston's idea. Easy run: strip the glass panels off the Hollow Creek greenhouse and build our own in the yard, for food every night.",
+    "Never searched and easy. Tempting with water low, but no promises.",
     "greenhouse",
     "🌱"
    ],
    [
-    "AIR FREIGHT",
+    "HARVEST",
     0,
-    "Medium risk, never searched. Bigger unknown than the greenhouse.",
-    "airfreight",
-    "🛫"
-   ],
-   [
-    "CHECKPOINT",
-    0,
-    "Hardest run, never searched. Biggest risk with 84 rounds left.",
-    "checkpoint",
-    "🪖"
+    "Corn and wheat before frost, with guards on the barn roof. Real risk.",
+    "harvest",
+    "🌽"
    ]
   ],
-  "how": "Comment GREENHOUSE, AIR FREIGHT or CHECKPOINT (or its emoji) on the Day 17 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment GAS, GREENHOUSE or HARVEST (or its emoji) on the Day 18 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -390,7 +390,11 @@
     }
    ],
    "day_outings": 2,
-   "outings": 0
+   "outings": 1,
+   "status": "injured",
+   "injury": "a deep cut from broken glass",
+   "injured_until": 20,
+   "injured_on": 17
   },
   {
    "name": "Jack",
@@ -398,7 +402,7 @@
    "role": "Gunsmith",
    "bio": "Jack is a gunsmith who hammers out blades by day and fixes up guns by night, so the undead get a close look at his work before they go down.",
    "joined": 6,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 4,
    "gear": [
     {
@@ -435,7 +439,7 @@
    "role": "Guard",
    "bio": "Javier was a soldier left behind from the evacuation, and he still wears his gas mask like the war never ended.",
    "joined": 7,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 1,
    "gear": [
     {
@@ -492,7 +496,7 @@
    "role": "Decoy",
    "bio": "Ryan is a professional break dancer who can outmove any zombie, though the undead may still challenge him to a dance-off.",
    "joined": 9,
-   "day_outings": 1
+   "day_outings": 2
   },
   {
    "name": "Officer Reyes",
@@ -500,7 +504,8 @@
    "role": "Guard",
    "bio": "Reyes chained the station doors in week two and lived in the basement on evidence-room rations. Still wears the badge.",
    "joined": 10,
-   "day_outings": 2
+   "day_outings": 2,
+   "outings": 1
   },
   {
    "name": "Toast",
@@ -576,7 +581,7 @@
    "role": "Mechanic",
    "bio": "Jeff is a mechanic who can fix any vehicle, as long as it isn't on fire.",
    "joined": 10,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 1,
    "gear": [
     {
@@ -661,7 +666,7 @@
      "icon": "club"
     }
    ],
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Kim",
@@ -721,7 +726,7 @@
    "role": "Medic",
    "bio": "Albin Parson wanted to be a General Surgeon, which makes him a medic with big ambitions and very strict rules about who gets through the door.",
    "joined": 14,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 1
   },
   {
@@ -825,14 +830,20 @@
    "role": "Sharpshooter",
    "bio": "Caleb hunts and traps for a living, so the zombies never see him coming.",
    "joined": 16,
-   "day_outings": 1
+   "day_outings": 1,
+   "outings": 1,
+   "status": "injured",
+   "injury": "burned hands",
+   "injured_until": 21,
+   "injured_on": 17
   },
   {
    "name": "Officer John",
    "ig": "randommeyhem2",
    "role": "Guard",
    "bio": "John was a riot-control cop before the fall. He knows how to move a crowd, even a dead one.",
-   "joined": 16
+   "joined": 16,
+   "day_outings": 1
   }
  ],
  "runs": [
@@ -1116,14 +1127,18 @@
    "dest": "checkpoint",
    "difficulty": "hard",
    "squad": [
-    "Sam"
+    "Steve",
+    "Caleb",
+    "Francis",
+    "Officer Reyes"
    ],
    "loot": "A radio log, two MREs and a box of 5.56 rounds under a cot",
    "place": "Army checkpoint",
    "risk": [
     0.4,
     0.05
-   ]
+   ],
+   "done_day": 17
   },
   {
    "dest": "surplus",
@@ -1798,13 +1813,13 @@
  "stock": [
   [
    "Food",
-   102,
+   96,
    200,
    "rations"
   ],
   [
    "Water",
-   71,
+   65,
    200,
    "rations"
   ],
@@ -1816,19 +1831,19 @@
   ],
   [
    "Ammo",
-   84,
+   135,
    500,
    "rds"
   ],
   [
    "Medicine",
-   9,
+   13,
    50,
    "doses"
   ],
   [
    "Scrap",
-   48,
+   45,
    200,
    "units"
   ],
@@ -3326,17 +3341,97 @@
     "Officer Reyes & Bob → Hollow Creek Farm (13:30): +1 food",
     "Tanny & Kathryn → Ranger station (15:05): +2 food"
    ]
+  },
+  {
+   "day": 17,
+   "vote": {
+    "question": "Day 17. Water runs out in a day and food lasts two. The horde reaches the fence in four. Where do we go?",
+    "results": {
+     "CHECKPOINT": 7,
+     "GREENHOUSE": 1
+    },
+    "winner": "CHECKPOINT",
+    "tiebreak": null,
+    "second": null,
+    "reel": "https://www.instagram.com/reel/DgFqhnuSx69/"
+   },
+   "outings": [
+    {
+     "target": "Army checkpoint",
+     "key": "checkpoint",
+     "first": true,
+     "kind": "run",
+     "difficulty": "hard",
+     "squad": [
+      "Steve",
+      "Caleb",
+      "Francis",
+      "Officer Reyes"
+     ],
+     "results": [
+      {
+       "name": "Steve",
+       "ig": "samuelnathanael16",
+       "outcome": "ok"
+      },
+      {
+       "name": "Caleb",
+       "ig": "calebcravens10",
+       "outcome": "injured",
+       "detail": "burned hands, out until Day 21"
+      },
+      {
+       "name": "Francis",
+       "ig": "ihateedison",
+       "outcome": "injured",
+       "detail": "a deep cut from broken glass, out until Day 20"
+      },
+      {
+       "name": "Officer Reyes",
+       "ig": "",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null
+    }
+   ],
+   "healed": [],
+   "joined": [],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Food": -6,
+    "Water": -6,
+    "Ammo": 51,
+    "Medicine": 4,
+    "Fuel": 0,
+    "Barricades": 0,
+    "Scrap": -3
+   },
+   "camp": [
+    "Asa drew a map to Millbrook on the back of a laundromat price list. It is sixty miles long and mostly arrows. He has asked every new arrival if they have ever been north.",
+    "Camp jobs: 4 of them (foraging the block): +4 food; 3 of them (snares and hunting): +3 food; Mateen (the farm plots): +3 food; 5 of them (pipe taps and filters): +10 water; Victoria stretched every meal: +5 food.",
+    "Rain catchers: 43 of us, barrels on every roof and gutter: +11 water. Shoutout to the engineers who set them up and keep them running: Artemis (@artemistheproto), Frost (@sir_waffles45), Kim (@kim.cheyanne), Hudson (@hay_ant_hud) and Johnny (@just_johnny_nguyen)."
+   ],
+   "horde": null,
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Officer John & Jeff → Fresh Market (08:40): +1 food",
+    "Javier & Jack → Oakhaven Mall (13:30): +2 water",
+    "Ryan & Albin Parson → Fresh Market (15:05): +2 food"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": -20,
-  "Water": 23,
-  "Barricades": 2,
-  "Scrap": 13,
-  "Ammo": -6,
-  "Medicine": 5,
-  "Fuel": 0
+  "Food": -6,
+  "Water": -6,
+  "Ammo": 51,
+  "Medicine": 4,
+  "Fuel": 0,
+  "Barricades": 0,
+  "Scrap": -3
  },
  "schedule": [],
  "broadcast": {
@@ -3505,15 +3600,15 @@
   100
  ],
  "undead": {
-  "count": 46225,
+  "count": 46206,
   "last": {
-   "day": 16,
-   "killed": 15,
-   "turned": 4,
+   "day": 17,
+   "killed": 25,
+   "turned": 6,
    "arrived": 0
   }
  },
- "last_run": 1795431504,
+ "last_run": 1795517585,
  "horde": {
   "day": 21,
   "week": 3,
@@ -3612,8 +3707,8 @@
   ]
  },
  "weather": {
-  "day": 17,
-  "kind": "clear"
+  "day": 18,
+  "kind": "wind"
  },
  "intel": {
   "horde_day": 14,
@@ -3664,54 +3759,45 @@
    }
   }
  ],
- "story_queue": [
-  {
-   "day": 18,
-   "who": "Asa",
-   "text": "Asa drew a map to Millbrook on the back of a laundromat price list. It is sixty miles long and mostly arrows. He has asked every new arrival if they have ever been north."
-  }
- ],
  "day_runs": {
-  "day": 17,
+  "day": 18,
   "runs": [
    {
     "time": "08:40",
-    "dest": "market",
+    "dest": "maple",
     "crew": [
-     "Officer John",
-     "Jeff"
+     "Joseph",
+     "Kim"
     ],
     "find": {
-     "Food": 1
+     "Water": 1
     },
     "event": "ok",
-    "line": "Officer John: Found 1 boxes of crackers nobody wanted. Heading home."
+    "line": "Joseph: Found 1 cases of bottled water in a stockroom. Heading home."
+   },
+   {
+    "time": "10:15",
+    "dest": "gunshop",
+    "crew": [
+     "John",
+     "Spenz"
+    ],
+    "find": {
+     "Ammo": 2
+    },
+    "event": "ok",
+    "line": "John: Found a box with 2 rounds left in it. Heading home."
    },
    {
     "time": "13:30",
-    "dest": "mall",
+    "dest": "gunshop",
     "crew": [
-     "Javier",
-     "Jack"
+     "Hudson",
+     "Officer John"
     ],
-    "find": {
-     "Water": 2
-    },
+    "find": {},
     "event": "ok",
-    "line": "Javier: Found 2 containers of rainwater worth boiling. Heading home."
-   },
-   {
-    "time": "15:05",
-    "dest": "market",
-    "crew": [
-     "Ryan",
-     "Albin Parson"
-    ],
-    "find": {
-     "Food": 2
-    },
-    "event": "ok",
-    "line": "Ryan: Found 2 cans of soup behind the counter. Heading home."
+    "line": "Hudson: Picked clean. Nothing worth carrying. Heading home."
    }
   ]
  }
