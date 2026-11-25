@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 18,
- "followers": 106,
+ "day": 19,
+ "followers": 107,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 18. Water lasts one more day and food for two. The horde reaches the fence in three. Where do we send the squad?",
+  "q": "Day 19. Food and water last one more day, and the horde reaches the fence in two. Where do we go?",
   "opts": [
    [
-    "FIRE TRUCK",
+    "SURPLUS",
     0,
-    "Frost goes back to Fire Station 3 to free the rusted valves on Engine 3. Easy, and the rest of the water.",
-    "firestation",
-    "🚒"
+    "Easy, never searched. Army stock could be anything, or nothing.",
+    "surplus",
+    "🎒"
+   ],
+   [
+    "AIR FREIGHT",
+    0,
+    "Medium risk, never searched. Bigger site, more ways to get caught.",
+    "airfreight",
+    "🛫"
    ],
    [
     "GREENHOUSE",
     0,
-    "Weston's idea. Easy run: strip the glass panels off the Hollow Creek greenhouse and build our own in the yard, for food every night.",
+    "Easy, never searched. Fresh produce, with food down to one day.",
     "greenhouse",
     "🌱"
-   ],
-   [
-    "HARVEST",
-    0,
-    "Corn and wheat before frost, with guards on the barn roof. Real risk.",
-    "harvest",
-    "🌽"
    ]
   ],
-  "how": "Comment FIRE TRUCK, GREENHOUSE or HARVEST (or its emoji) on the Day 18 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment SURPLUS, AIR FREIGHT or GREENHOUSE (or its emoji) on the Day 19 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -390,11 +390,7 @@
     }
    ],
    "day_outings": 2,
-   "outings": 1,
-   "status": "injured",
-   "injury": "a deep cut from broken glass",
-   "injured_until": 20,
-   "injured_on": 17
+   "outings": 1
   },
   {
    "name": "Jack",
@@ -532,7 +528,7 @@
    "bio": "Weston is a carpenter who will build you a fortress, then argue about the door hinges.",
    "joined": 10,
    "day_outings": 2,
-   "outings": 1,
+   "outings": 2,
    "gear": [
     {
      "kind": "weapon",
@@ -572,7 +568,7 @@
    "role": "Medic",
    "bio": "Joseph is a military medic who stays calm while everyone else panics.",
    "joined": 10,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 1
   },
   {
@@ -597,7 +593,7 @@
    "role": "Sharpshooter",
    "bio": "Spenz is a sniper who never misses, mostly because nobody sees them coming.",
    "joined": 10,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 1
   },
   {
@@ -633,7 +629,7 @@
    "role": "Scavenger",
    "bio": "John is a paranoid mushroom grower and canning expert with a spear, a fear of the dead, and a lot of jars.",
    "joined": 10,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 1
   },
   {
@@ -669,7 +665,7 @@
    "outings": 2,
    "status": "injured",
    "injury": "a dislocated shoulder hauling Reyes back out of a car window",
-   "injured_until": 21,
+   "injured_until": 20,
    "injured_on": 17
   },
   {
@@ -679,7 +675,7 @@
    "bio": "Kim is an electrician who's tagging along with wstonkiethsteward to keep the lights on.",
    "joined": 11,
    "outings": 2,
-   "day_outings": 1
+   "day_outings": 2
   },
   {
    "name": "Larry",
@@ -703,7 +699,7 @@
    "role": "Engineer",
    "bio": "Hudson is an electrician who keeps the lights on, even when the dead come knocking.",
    "joined": 12,
-   "day_outings": 1,
+   "day_outings": 2,
    "outings": 1
   },
   {
@@ -843,7 +839,7 @@
    "role": "Guard",
    "bio": "John was a riot-control cop before the fall. He knows how to move a crowd, even a dead one.",
    "joined": 16,
-   "day_outings": 1
+   "day_outings": 2
   }
  ],
  "runs": [
@@ -1540,7 +1536,7 @@
     1165
    ],
    "difficulty": "easy",
-   "status": "open",
+   "status": "done",
    "days": 1,
    "squad": [
     "Weston"
@@ -1560,7 +1556,8 @@
     "note": "Weston's idea: Hollow Creek's glass panels on a scrap-wood frame, in the corner of the yard.",
     "by": "Weston"
    },
-   "done_note": "Weston's idea worked. They carried the glass home one panel at a time, and Weston framed it in scrap wood. There's a greenhouse in the corner of the yard now, and Mateen has already moved half his seedlings into it."
+   "done_note": "Weston's idea worked. They carried the glass home one panel at a time, and Weston framed it in scrap wood. There's a greenhouse in the corner of the yard now, and Mateen has already moved half his seedlings into it.",
+   "days_done": 1
   },
   {
    "poi": "firestation",
@@ -1813,13 +1810,13 @@
  "stock": [
   [
    "Food",
-   96,
+   75,
    200,
    "rations"
   ],
   [
    "Water",
-   65,
+   69,
    200,
    "rations"
   ],
@@ -1837,13 +1834,13 @@
   ],
   [
    "Medicine",
-   13,
+   11,
    50,
    "doses"
   ],
   [
    "Scrap",
-   45,
+   42,
    200,
    "units"
   ],
@@ -3421,15 +3418,77 @@
     "Javier & Jack → Oakhaven Mall (13:30): +2 water",
     "Ryan & Albin Parson → Fresh Market (15:05): +2 food"
    ]
+  },
+  {
+   "day": 18,
+   "vote": {
+    "question": "Day 18. Water lasts one more day and food for two. The horde reaches the fence in three. Where do we send the squad?",
+    "results": {
+     "GREENHOUSE": 5,
+     "HARVEST": 1
+    },
+    "winner": "GREENHOUSE",
+    "tiebreak": null,
+    "second": null,
+    "reel": "https://www.instagram.com/reel/DgIYvxaSeOW/"
+   },
+   "outings": [
+    {
+     "target": "Greenhouse salvage",
+     "key": "greenhouse",
+     "first": true,
+     "kind": "mission",
+     "difficulty": "easy",
+     "squad": [
+      "Weston"
+     ],
+     "results": [
+      {
+       "name": "Weston",
+       "ig": "westonkeithsteward",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": "done"
+    }
+   ],
+   "healed": [
+    "Francis"
+   ],
+   "joined": [],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Water": 4,
+    "Ammo": 0,
+    "Food": -21,
+    "Fuel": 0,
+    "Medicine": -2,
+    "Barricades": 0,
+    "Scrap": -3
+   },
+   "camp": [
+    "Weston's idea worked. They carried the glass home one panel at a time, and Weston framed it in scrap wood. There's a greenhouse in the corner of the yard now, and Mateen has already moved half his seedlings into it.",
+    "Camp jobs: 4 of them (foraging the block): +4 food; 3 of them (snares and hunting): +3 food; Mateen (the farm plots): +3 food; 5 of them (pipe taps and filters): +10 water; Victoria stretched every meal: +5 food.",
+    "Rain catchers: 43 of us, barrels on every roof and gutter: +22 water. It rained all night and every barrel filled. Shoutout to the engineers who set them up and keep them running: Artemis (@artemistheproto), Frost (@sir_waffles45), Kim (@kim.cheyanne), Hudson (@hay_ant_hud) and Johnny (@just_johnny_nguyen)."
+   ],
+   "horde": null,
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Joseph & Kim → Maple Court (08:40): +1 water",
+    "John & Spenz → Gun & Pawn (10:15): +2 rounds",
+    "Hudson & Officer John → Gun & Pawn (13:30): nothing"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": -6,
-  "Water": -6,
-  "Ammo": 51,
-  "Medicine": 4,
+  "Water": 4,
+  "Ammo": 0,
+  "Food": -21,
   "Fuel": 0,
+  "Medicine": -2,
   "Barricades": 0,
   "Scrap": -3
  },
@@ -3473,6 +3532,13 @@
    "name": "Block wall",
    "day": 16,
    "defense": 10
+  },
+  {
+   "id": "camp_greenhouse",
+   "name": "Yard greenhouse",
+   "note": "Weston's idea: Hollow Creek's glass panels on a scrap-wood frame, in the corner of the yard.",
+   "by": "Weston",
+   "day": 19
   }
  ],
  "income": [
@@ -3496,6 +3562,11 @@
    "item": "Water",
    "amt": 10,
    "why": "Tap the water tower"
+  },
+  {
+   "item": "Food",
+   "amt": 3,
+   "why": "Greenhouse salvage"
   }
  ],
  "highlights": [
@@ -3600,15 +3671,15 @@
   100
  ],
  "undead": {
-  "count": 28300,
+  "count": 28303,
   "last": {
-   "day": 17,
-   "killed": 25,
-   "turned": 6,
+   "day": 18,
+   "killed": 2,
+   "turned": 5,
    "arrived": 0
   }
  },
- "last_run": 1795517585,
+ "last_run": 1795615351,
  "horde": {
   "day": 21,
   "week": 3,
@@ -3707,8 +3778,8 @@
   ]
  },
  "weather": {
-  "day": 18,
-  "kind": "wind"
+  "day": 19,
+  "kind": "rain"
  },
  "intel": {
   "horde_day": 14,
@@ -3760,44 +3831,46 @@
   }
  ],
  "day_runs": {
-  "day": 18,
+  "day": 19,
   "runs": [
    {
-    "time": "08:40",
-    "dest": "maple",
+    "time": "11:50",
+    "dest": "harbor",
     "crew": [
-     "Joseph",
-     "Kim"
+     "Frost",
+     "Gabe"
     ],
     "find": {
-     "Water": 1
+     "Food": 2
     },
     "event": "ok",
-    "line": "Joseph: Found 1 cases of bottled water in a stockroom. Heading home."
-   },
-   {
-    "time": "10:15",
-    "dest": "gunshop",
-    "crew": [
-     "John",
-     "Spenz"
-    ],
-    "find": {
-     "Ammo": 2
-    },
-    "event": "ok",
-    "line": "John: Found a box with 2 rounds left in it. Heading home."
+    "line": "Frost: Found 2 cans of soup behind the counter. Heading home."
    },
    {
     "time": "13:30",
+    "dest": "hardware",
+    "crew": [
+     "Caleb",
+     "Javier"
+    ],
+    "find": {
+     "Scrap": 3
+    },
+    "event": "ok",
+    "line": "Caleb: Found 3 armfuls of planks and bolts. Heading home."
+   },
+   {
+    "time": "15:05",
     "dest": "gunshop",
     "crew": [
-     "Hudson",
-     "Officer John"
+     "Joseph",
+     "Victoria"
     ],
-    "find": {},
+    "find": {
+     "Scrap": 1
+    },
     "event": "ok",
-    "line": "Hudson: Picked clean. Nothing worth carrying. Heading home."
+    "line": "Joseph: Found 1 car doors for the fence. Heading home."
    }
   ]
  }
