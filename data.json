@@ -21,14 +21,14 @@
     "🛫"
    ],
    [
-    "GREENHOUSE",
+    "FIRE TRUCK",
     0,
-    "Easy, never searched. Fresh produce, with food down to one day.",
-    "greenhouse",
-    "🌱"
+    "Easy. Frost frees Engine 3's rusted valves for the rest of the water.",
+    "firestation",
+    "🚒"
    ]
   ],
-  "how": "Comment SURPLUS, AIR FREIGHT or GREENHOUSE (or its emoji) on the Day 19 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment SURPLUS, AIR FREIGHT or FIRE TRUCK (or its emoji) on the Day 19 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -1108,7 +1108,8 @@
     "Sam"
    ],
    "loot": "Seed trays, a sack of fertilizer and a hand pump",
-   "place": "Hollow Creek greenhouse"
+   "place": "Hollow Creek greenhouse",
+   "done_day": 18
   },
   {
    "dest": "airfreight",

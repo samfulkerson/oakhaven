@@ -14,4 +14,4 @@
 **Horde:** reaches the fence in 2 days (Day 21).
 **New survivors (0):** none
 **Followers:** 107  |  **Tomorrow is Day 19**
-**Tomorrow's vote:** Day 19. Food and water last one more day, and the horde reaches the fence in two. Where do we go? 🎒 SURPLUS (Easy, never searched. Army stock could be anything, or nothing.) / 🛫 AIR FREIGHT (Medium risk, never searched. Bigger site, more ways to get caught.) / 🌱 GREENHOUSE (Easy, never searched. Fresh produce, with food down to one day.)
+**Tomorrow's vote:** Day 19. Food and water last one more day, and the horde reaches the fence in two. Where do we go? 🎒 SURPLUS (Easy, never searched. Army stock could be anything, or nothing.) / 🛫 AIR FREIGHT (Medium risk, never searched. Bigger site, more ways to get caught.) / 🚒 FIRE TRUCK (Easy. Frost frees Engine 3's rusted valves for the rest of the water.)
