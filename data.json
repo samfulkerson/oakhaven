@@ -1580,6 +1580,52 @@
     "Water": 40
    },
    "done_note": "Frost got the valves on Engine 3 open with a pipe wrench and a lot of swearing. Every jug we own came home full."
+  },
+  {
+   "poi": "surplus",
+   "name": "Surplus stockroom",
+   "area": "Eastside",
+   "at": [
+    1246,
+    345
+   ],
+   "difficulty": "medium",
+   "status": "open",
+   "days": 1,
+   "from_day": 20,
+   "squad": [
+    "Ryan"
+   ],
+   "goal": "Go back to the army surplus store for the military gear Ryan had to leave in the stockroom when the dead showed up: plate carriers, helmets, ammo pouches.",
+   "crew": "Ryan and two fighters to hold the front door",
+   "reward": "4 plate-carrier vests for the runners, and the rest of the stockroom",
+   "gain": {
+    "Ammo": 10,
+    "Scrap": 4
+   },
+   "gear": [
+    {
+     "kind": "armor",
+     "name": "Plate carrier",
+     "icon": "vest"
+    },
+    {
+     "kind": "armor",
+     "name": "Plate carrier",
+     "icon": "vest"
+    },
+    {
+     "kind": "armor",
+     "name": "Plate carrier",
+     "icon": "vest"
+    },
+    {
+     "kind": "armor",
+     "name": "Plate carrier",
+     "icon": "vest"
+    }
+   ],
+   "done_note": "The rack was still there, plastic and all. Four plate carriers, ammo pouches and a crate of field kits came home on Ryan's back and two borrowed shoulders."
   }
  ],
  "power": [

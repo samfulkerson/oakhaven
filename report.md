@@ -2,7 +2,7 @@
 
 **Vote:** SURPLUS 6, AIR FREIGHT 1. Winner: SURPLUS.
 **Run: Army surplus store** (easy), squad: Ryan
-- Everyone came back in one piece.
+- Everyone came back in one piece, but not with everything. Ryan was halfway through the stockroom when the dead started showing up at the front windows: a few, then a dozen, then more, drawn in by the noise. He grabbed what he could carry and went out the back. He had to leave a whole rack of military gear behind: plate-carrier vests, helmets and ammo pouches, some still in the plastic. Ryan's going back for the rest.
 **Small runs today:** Frost & Gabe → Harbor Master (11:50): +2 food · Caleb & Javier → Hardware store (13:30): +3 scrap · Joseph & Victoria → Gun & Pawn (15:05): +1 scrap
 **Back on their feet:** Steve
 **Undead in Oakhaven:** 28,303 (−4 killed, +4 newly turned)
