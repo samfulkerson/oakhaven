@@ -21,14 +21,14 @@
     "🐄"
    ],
    [
-    "FORT",
+    "SURPLUS",
     0,
-    "Deadly. Smoke has been rising from inside. Someone's in there.",
-    "fort",
-    ""
+    "Medium risk. Ryan goes back for the plate carriers he had to leave in the stockroom.",
+    "surplus",
+    "🪖"
    ]
   ],
-  "how": "Comment ARCADE, SHOW BARN or FORT (or its emoji) on the Day 21 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment ARCADE, SHOW BARN or SURPLUS (or its emoji) on the Day 21 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -724,7 +724,7 @@
    "bio": "Albin Parson wanted to be a General Surgeon, which makes him a medic with big ambitions and very strict rules about who gets through the door.",
    "joined": 14,
    "day_outings": 2,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Kathryn",
@@ -3619,6 +3619,7 @@
       "Mateen",
       "Victoria",
       "Asa",
+      "Officer John",
       "Officer Reyes",
       "Javier",
       "Spenz",
@@ -3645,6 +3646,11 @@
        "outcome": "ok"
       },
       {
+       "name": "Officer John",
+       "ig": "randommeyhem2",
+       "outcome": "ok"
+      },
+      {
        "name": "Officer Reyes",
        "ig": "",
        "outcome": "ok"
@@ -3657,14 +3663,12 @@
       {
        "name": "Spenz",
        "ig": "its_spencerist",
-       "outcome": "injured",
-       "detail": "a dislocated shoulder, out until Day 21"
+       "outcome": "ok"
       },
       {
        "name": "Opeta Teo",
        "ig": "opeta.teo",
-       "outcome": "injured",
-       "detail": "a dislocated shoulder, out until Day 21"
+       "outcome": "ok"
       },
       {
        "name": "Marco",
@@ -3690,10 +3694,7 @@
      "mission_status": "done"
     }
    ],
-   "healed": [
-    "Spenz",
-    "Opeta Teo"
-   ],
+   "healed": [],
    "joined": [],
    "waiting": 0,
    "power": [],
@@ -3707,6 +3708,7 @@
    },
    "camp": [
     "The harvest is in. Victoria's already planning the menu.",
+    "Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them. One came out of the rows right under the barn roof as Spenz (@its_spencerist) dropped down, and missed his ankle by inches. Another caught Opeta Teo (@opeta.teo) by the boot and started pulling him into the corn; he kicked free before anyone else even saw it. Twelve went out, and twelve came home.",
     "Camp jobs: 3 of them (foraging the block): +3 food; Tanny and Kathryn (snares and hunting): +2 food; 5 of them (pipe taps and filters): +10 water.",
     "Rain catchers: 43 of us, barrels on every roof and gutter: +11 water. Shoutout to the engineers who set them up and keep them running: Artemis (@artemistheproto), Frost (@sir_waffles45), Kim (@kim.cheyanne), Hudson (@hay_ant_hud) and Johnny (@just_johnny_nguyen)."
    ],
@@ -3714,7 +3716,7 @@
    "returned": [],
    "story": [],
    "day_runs": [
-    "Officer John & Quinn → Ranger station (08:40): +1 water",
+    "Albin Parson & Quinn → Ranger station (08:40): +1 water",
     "Ben & Tanny → Hollow Creek Farm (11:50): nothing (a close call)",
     "Johnny & Toast → Fairground (15:05): +1 food"
    ]
