@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 20,
- "followers": 107,
+ "day": 21,
+ "followers": 109,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 20. Food lasts one more day, water two, and the horde reaches the fence tomorrow. Where do we send the runs? Vote below.",
+  "q": "Day 21. The horde hits tonight. Food and water last two days, and 127 rounds won't last forever. Where do we go?",
   "opts": [
    [
     "ARCADE",
     0,
-    "Never searched, medium risk. Unknown ground, unknown payoff.",
+    "Medium risk, never searched. Nobody knows what's still inside.",
     "arcade",
     "🕹"
    ],
    [
     "SHOW BARN",
     0,
-    "Never searched, medium risk. Nobody knows what's inside yet.",
+    "Medium risk, never searched. Another blank page on the map.",
     "showbarn",
     "🐄"
    ],
    [
-    "HARVEST",
+    "FORT",
     0,
-    "Easy run, but it's a mission: corn and wheat in before the frost.",
-    "harvest",
-    "🌽"
+    "Deadly. Smoke has been rising from inside. Someone's in there.",
+    "fort",
+    ""
    ]
   ],
-  "how": "Comment ARCADE, SHOW BARN or HARVEST (or its emoji) on the Day 20 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment ARCADE, SHOW BARN or FORT (or its emoji) on the Day 21 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -76,7 +76,7 @@
    "bio": "Tanny is a professional hiker who knows every trail, making them a natural Scout.",
    "joined": 2,
    "outings": 1,
-   "day_outings": 2,
+   "day_outings": 3,
    "gear": [
     {
      "kind": "weapon",
@@ -315,7 +315,7 @@
      "icon": "vest"
     }
    ],
-   "outings": 3
+   "outings": 4
   },
   {
    "name": "Gabe",
@@ -339,7 +339,7 @@
    "role": "Farmer",
    "bio": "Mateen swapped spreadsheets for seed packets and intends to keep the entire camp fed and green.",
    "joined": 4,
-   "outings": 1,
+   "outings": 2,
    "day_outings": 2
   },
   {
@@ -370,7 +370,7 @@
     "long": 1
    },
    "day_outings": 3,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Francis",
@@ -436,7 +436,7 @@
    "bio": "Javier was a soldier left behind from the evacuation, and he still wears his gas mask like the war never ended.",
    "joined": 7,
    "day_outings": 3,
-   "outings": 1,
+   "outings": 2,
    "gear": [
     {
      "kind": "weapon",
@@ -451,7 +451,7 @@
    "role": "Sharpshooter",
    "bio": "Quinn is a hunter with a shotgun and a head full of survival knowledge, and the zombies have started avoiding the woods.",
    "joined": 7,
-   "day_outings": 2,
+   "day_outings": 3,
    "outings": 3,
    "gear": [
     {
@@ -502,7 +502,7 @@
    "bio": "Reyes chained the station doors in week two and lived in the basement on evidence-room rations. Still wears the badge.",
    "joined": 10,
    "day_outings": 2,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Toast",
@@ -510,7 +510,7 @@
    "role": "Guard",
    "bio": "Toast shows up with an M240 machine gun and zero plans to be quiet about it.",
    "joined": 10,
-   "day_outings": 2,
+   "day_outings": 3,
    "outings": 2
   },
   {
@@ -544,7 +544,7 @@
    "role": "Radio Operator",
    "bio": "Ben is a military radio operator who will keep the group talking, even when nobody asked.",
    "joined": 10,
-   "day_outings": 2,
+   "day_outings": 3,
    "outings": 1
   },
   {
@@ -570,7 +570,7 @@
    "bio": "Joseph is a military medic who stays calm while everyone else panics.",
    "joined": 10,
    "day_outings": 3,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Jeff",
@@ -595,7 +595,7 @@
    "bio": "Spenz is a sniper who never misses, mostly because nobody sees them coming.",
    "joined": 10,
    "day_outings": 2,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Marco",
@@ -604,7 +604,7 @@
    "bio": "Marco is an expert hunter who knows how to track anything, living or undead.",
    "joined": 10,
    "day_outings": 2,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Bob",
@@ -613,7 +613,7 @@
    "bio": "Bob is old but wise, has seen it all, and knows exactly which places still have supplies.",
    "joined": 10,
    "day_outings": 2,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Amnic0re",
@@ -622,7 +622,7 @@
    "bio": "Amnic0re is a server repair tech who spent his spare time doomsday prepping, and now finally gets to use it.",
    "joined": 10,
    "day_outings": 2,
-   "outings": 0
+   "outings": 1
   },
   {
    "name": "John",
@@ -705,7 +705,7 @@
    "role": "Sharpshooter",
    "bio": "Opeta Teo is an archer who crafts his own bow and arrows and picks off the undead from a safe distance.",
    "joined": 12,
-   "outings": 1,
+   "outings": 2,
    "day_outings": 2
   },
   {
@@ -714,7 +714,7 @@
    "role": "Engineer",
    "bio": "Johnny is an engineer who can fix almost anything, including the apocalypse.",
    "joined": 12,
-   "day_outings": 2,
+   "day_outings": 3,
    "outings": 1
   },
   {
@@ -836,7 +836,7 @@
    "role": "Guard",
    "bio": "John was a riot-control cop before the fall. He knows how to move a crowd, even a dead one.",
    "joined": 16,
-   "day_outings": 2
+   "day_outings": 3
   }
  ],
  "runs": [
@@ -1340,17 +1340,14 @@
    "crew": "A big group: Mateen and Victoria on the harvest, guards working the rows, two sharpshooters on the barn roof, a scout on point and a medic",
    "reward": "+60 food: enough to get through the winter",
    "poi": "harvest",
-   "status": "open",
+   "status": "done",
    "days": 1,
    "squad": [
     "Mateen",
     "Victoria",
     "Asa",
-    "Officer John",
     "Officer Reyes",
     "Javier",
-    "Spenz",
-    "Opeta Teo",
     "Marco",
     "Joseph",
     "Amnic0re",
@@ -1363,7 +1360,8 @@
    "unlock_zombies": [
     "crawler"
    ],
-   "unlock_note": "Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them."
+   "unlock_note": "Something was waiting in the corn. Crawlers: no legs, and you don't see them until you're on top of them.",
+   "days_done": 1
   },
   {
    "name": "The windmill pump",
@@ -1864,13 +1862,13 @@
  "stock": [
   [
    "Food",
-   67,
+   95,
    200,
    "rations"
   ],
   [
    "Water",
-   107,
+   100,
    200,
    "rations"
   ],
@@ -1882,7 +1880,7 @@
   ],
   [
    "Ammo",
-   133,
+   127,
    500,
    "rds"
   ],
@@ -1894,7 +1892,7 @@
   ],
   [
    "Scrap",
-   43,
+   40,
    200,
    "units"
   ],
@@ -3595,17 +3593,141 @@
     "Caleb & Javier → Hardware store (13:30): +3 scrap",
     "Joseph & Victoria → Gun & Pawn (15:05): +1 scrap"
    ]
+  },
+  {
+   "day": 20,
+   "vote": {
+    "question": "Day 20. Food lasts one more day, water two, and the horde reaches the fence tomorrow. Where do we send the runs? Vote below.",
+    "results": {
+     "SHOW BARN": 1,
+     "HARVEST": 2,
+     "ARCADE": 1
+    },
+    "winner": "HARVEST",
+    "tiebreak": null,
+    "second": null,
+    "reel": "https://www.instagram.com/reel/DgNrVIGSu8f/"
+   },
+   "outings": [
+    {
+     "target": "Hollow Creek harvest",
+     "key": "harvest",
+     "first": true,
+     "kind": "mission",
+     "difficulty": "medium",
+     "squad": [
+      "Mateen",
+      "Victoria",
+      "Asa",
+      "Officer Reyes",
+      "Javier",
+      "Spenz",
+      "Opeta Teo",
+      "Marco",
+      "Joseph",
+      "Amnic0re",
+      "Bob"
+     ],
+     "results": [
+      {
+       "name": "Mateen",
+       "ig": "mateenegml",
+       "outcome": "ok"
+      },
+      {
+       "name": "Victoria",
+       "ig": "",
+       "outcome": "ok"
+      },
+      {
+       "name": "Asa",
+       "ig": "asa_von_carstein",
+       "outcome": "ok"
+      },
+      {
+       "name": "Officer Reyes",
+       "ig": "",
+       "outcome": "ok"
+      },
+      {
+       "name": "Javier",
+       "ig": "javimty97",
+       "outcome": "ok"
+      },
+      {
+       "name": "Spenz",
+       "ig": "its_spencerist",
+       "outcome": "injured",
+       "detail": "a dislocated shoulder, out until Day 21"
+      },
+      {
+       "name": "Opeta Teo",
+       "ig": "opeta.teo",
+       "outcome": "injured",
+       "detail": "a dislocated shoulder, out until Day 21"
+      },
+      {
+       "name": "Marco",
+       "ig": "isaiahfs21",
+       "outcome": "ok"
+      },
+      {
+       "name": "Joseph",
+       "ig": "chamra_universal",
+       "outcome": "ok"
+      },
+      {
+       "name": "Amnic0re",
+       "ig": "andrew_nelson99",
+       "outcome": "ok"
+      },
+      {
+       "name": "Bob",
+       "ig": "_mjork.voldt_",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": "done"
+    }
+   ],
+   "healed": [
+    "Spenz",
+    "Opeta Teo"
+   ],
+   "joined": [],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Water": -7,
+    "Food": 28,
+    "Ammo": -6,
+    "Fuel": 0,
+    "Barricades": 0,
+    "Scrap": -3
+   },
+   "camp": [
+    "The harvest is in. Victoria's already planning the menu.",
+    "Camp jobs: 3 of them (foraging the block): +3 food; Tanny and Kathryn (snares and hunting): +2 food; 5 of them (pipe taps and filters): +10 water.",
+    "Rain catchers: 43 of us, barrels on every roof and gutter: +11 water. Shoutout to the engineers who set them up and keep them running: Artemis (@artemistheproto), Frost (@sir_waffles45), Kim (@kim.cheyanne), Hudson (@hay_ant_hud) and Johnny (@just_johnny_nguyen)."
+   ],
+   "horde": null,
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Officer John & Quinn → Ranger station (08:40): +1 water",
+    "Ben & Tanny → Hollow Creek Farm (11:50): nothing (a close call)",
+    "Johnny & Toast → Fairground (15:05): +1 food"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Food": -8,
-  "Scrap": 1,
-  "Ammo": -2,
-  "Water": 38,
-  "Medicine": 2,
+  "Water": -7,
+  "Food": 28,
+  "Ammo": -6,
   "Fuel": 0,
-  "Barricades": 0
+  "Barricades": 0,
+  "Scrap": -3
  },
  "schedule": [],
  "broadcast": {
@@ -3786,15 +3908,15 @@
   100
  ],
  "undead": {
-  "count": 28303,
+  "count": 28269,
   "last": {
-   "day": 19,
-   "killed": 4,
+   "day": 20,
+   "killed": 38,
    "turned": 4,
    "arrived": 0
   }
  },
- "last_run": 1795702084,
+ "last_run": 1795776827,
  "horde": {
   "day": 21,
   "week": 3,
@@ -3893,8 +4015,8 @@
   ]
  },
  "weather": {
-  "day": 20,
-  "kind": "clear"
+  "day": 21,
+  "kind": "fog"
  },
  "intel": {
   "horde_day": 14,
@@ -3946,45 +4068,44 @@
   }
  ],
  "day_runs": {
-  "day": 20,
+  "day": 21,
   "runs": [
    {
     "time": "08:40",
-    "dest": "ranger",
+    "dest": "port",
     "crew": [
-     "Officer John",
-     "Quinn"
+     "Artemis",
+     "Francis"
     ],
-    "find": {
-     "Water": 1
-    },
+    "find": {},
     "event": "ok",
-    "line": "Officer John: Found 1 jugs of water under a sink. Heading home."
+    "line": "Artemis: Picked clean. Nothing worth carrying. Heading home."
    },
    {
     "time": "11:50",
-    "dest": "farm",
+    "dest": "maple",
     "crew": [
-     "Ben",
-     "Tanny"
+     "Carl",
+     "Jack"
     ],
-    "find": {},
-    "event": "scare",
-    "line": "Ben: Picked clean. Nothing worth carrying. Heading home.",
-    "scare": "Tanny: Something knocked over a shelf in the back. We didn't wait to see what."
+    "find": {
+     "Food": 2
+    },
+    "event": "ok",
+    "line": "Carl: Found 2 cans of soup behind the counter. Heading home."
    },
    {
-    "time": "15:05",
-    "dest": "fair",
+    "time": "13:30",
+    "dest": "market",
     "crew": [
-     "Johnny",
-     "Toast"
+     "Larry",
+     "Gabe"
     ],
     "find": {
      "Food": 1
     },
     "event": "ok",
-    "line": "Johnny: Found 1 cans of soup behind the counter. Heading home."
+    "line": "Larry: Found 1 cans of soup behind the counter. Heading home."
    }
   ]
  }
