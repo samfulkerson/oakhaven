@@ -1330,14 +1330,14 @@
   },
   {
    "name": "Hollow Creek harvest",
-   "difficulty": "easy",
+   "difficulty": "medium",
    "area": "Farmland",
    "at": [
     304,
     1092
    ],
-   "goal": "Bring in the corn and wheat before the frost, with guards on the barn roof.",
-   "crew": "Mateen, Victoria and a guard on the barn roof",
+   "goal": "Bring in the corn and wheat before the frost. Something moves low in the rows, so nobody works alone.",
+   "crew": "A big group: Mateen and Victoria on the harvest, guards working the rows, two sharpshooters on the barn roof, a scout on point and a medic",
    "reward": "+60 food: enough to get through the winter",
    "poi": "harvest",
    "status": "open",
@@ -1345,7 +1345,16 @@
    "squad": [
     "Mateen",
     "Victoria",
-    "Asa"
+    "Asa",
+    "Officer John",
+    "Officer Reyes",
+    "Javier",
+    "Spenz",
+    "Opeta Teo",
+    "Marco",
+    "Joseph",
+    "Amnic0re",
+    "Bob"
    ],
    "gain": {
     "Food": 60
