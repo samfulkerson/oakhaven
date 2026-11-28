@@ -873,6 +873,7 @@ def add_survivors(data, parsed):
 # Past that, runs alone fall behind again and the camp needs lasting sources (the water tower, harvests, cattle, the kitchen).
 # Ammo, fuel, scrap and medicine never scale; repeat visits still give half.
 SCALED_LOOT, HAUL_PER, HAUL_CAP = ("Food", "Water"), 15, 2.5
+WHEELBARROW = 1.15                                   # runs bring home 15% more once the camp has a wheelbarrow
 
 
 def haul_scale(people):
@@ -971,8 +972,9 @@ def keep_stockpile(data, outings, rng, new_day):
             continue
         add("Ammo", -AMMO_USE.get(o.get("difficulty"), 6), f"{o['target']} run")
         if o.get("kind") == "run" and any(r["outcome"] != "dead" for r in o["results"]):
+            wb = WHEELBARROW if has_feat(data, "wheelbarrow") else 1                 # Hudson's wheelbarrow from the 4-H show barn: more comes home
             for item, amt in LOOT.get(o.get("key"), {}).items():
-                mult = haul_scale(len(present)) if item in SCALED_LOOT else 1      # a bigger camp sends bigger squads with more packs
+                mult = (haul_scale(len(present)) if item in SCALED_LOOT else 1) * wb    # a bigger camp sends bigger squads with more packs
                 add(item, round(amt * mult * (1 if o.get("first") else .5) * rng.uniform(.75, 1.25)), o["target"])
             run = next((r for r in data.get("runs", []) if r["dest"] == o.get("key")), {})
             haul = run.get("haul")

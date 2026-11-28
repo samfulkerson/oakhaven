@@ -13,6 +13,7 @@
 **Supplies left:** food for 2 days, water for 2 days, 105 rounds, fence at 85%
 **Camp:** The rack was still there, plastic and all. Four plate carriers, ammo pouches and a crate of field kits came home on Ryan's back and two borrowed shoulders.
 **Camp:** Handed out: Ryan gets the plate carrier, Officer John gets the plate carrier, Sam gets the plate carrier, Jaylozy gets the plate carrier.
+**Camp:** Hudson (@hay_ant_hud) found a pitchfork hanging in the show barn; Ben took it as a weapon. He also found a wheelbarrow, so the runs can bring back more than they can carry.
 **Camp:** Camp jobs: 4 of them (foraging the block): +4 food; 3 of them (snares and hunting): +3 food; Mateen (the farm plots): +3 food; 3 of them (pipe taps and filters): +6 water; Victoria stretched every meal: +5 food.
 **Camp:** Rain catchers: 43 of us, barrels on every roof and gutter: +11 water. Shoutout to the engineers who set them up and keep them running: Artemis (@artemistheproto), Frost (@sir_waffles45), Kim (@kim.cheyanne), Hudson (@hay_ant_hud) and Johnny (@just_johnny_nguyen).
 **Horde:** reaches the fence in 6 days (Day 28).
