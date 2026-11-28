@@ -2962,7 +2962,13 @@ function spawnZombie(brute, nearOk, edge) {
 // They can't be hurt: survivors leave them alone, and nothing on the map can kill them.
 const TW = DATA.twins || null;
 const twinsOn = () => !!TW && DATA.day >= (TW.reveal_day ?? 1e9);
-const TWIN_ZONE = [752, 230, 16, 540], TWIN_ROUTE = [[760, 552], [488, 552], [488, 500], [468, 492]];
+const TWIN_ZONE = [752, 230, 16, 540], TWIN_ROUTE = [[760, 552], [FENCE.x1 + 14, 552], [FENCE.x1 + 14, 500], [FENCE.x1 + 14, 492]];   // they stand outside the east fence, facing in
+function twinKeepOut(z) {                              // the twins never cross the fence, whatever walks them there
+  const m = 5;
+  if (z.x <= FENCE.x0 - m || z.x >= FENCE.x1 + m || z.y <= FENCE.y0 - m || z.y >= FENCE.y1 + m) return;
+  const d = [[z.x - (FENCE.x0 - m), 'w'], [(FENCE.x1 + m) - z.x, 'e'], [z.y - (FENCE.y0 - m), 'n'], [(FENCE.y1 + m) - z.y, 's']].sort((a, b) => a[0] - b[0])[0][1];
+  if (d === 'w') z.x = FENCE.x0 - m; else if (d === 'e') z.x = FENCE.x1 + m; else if (d === 'n') z.y = FENCE.y0 - m; else z.y = FENCE.y1 + m;
+}
 const TWINS = [];
 function spawnTwins() {
   if (!twinsOn() || TWINS.length) return;
@@ -3334,7 +3340,7 @@ function update() {
   }
   for (const z of zombies) {
     z.moving = false;
-    if (z.twin != null) { twinStep(z, dark); continue; }
+    if (z.twin != null) { twinStep(z, dark); twinKeepOut(z); continue; }
     if (z.dying) { z.dying++; continue; }
     if (z.horde) {
       if (z.delay > 0) { z.delay--; continue; }
