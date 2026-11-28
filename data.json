@@ -1,34 +1,34 @@
 {
  "handle": "@surviveoakhaven",
- "day": 21,
- "followers": 109,
+ "day": 22,
+ "followers": 110,
  "timezone": "America/Chicago",
  "vote": {
-  "q": "Day 21. The horde hits tonight. Food and water last two days, and 127 rounds won't last forever. Where do we go?",
+  "q": "Day 22. Two days of food, two days of water, and the horde reaches the fence in six. Where do the squads go?",
   "opts": [
    [
     "ARCADE",
     0,
-    "Medium risk, never searched. Nobody knows what's still inside.",
+    "Medium danger and never searched. Anything could be inside, or nothing at all.",
     "arcade",
     "🕹"
    ],
    [
-    "SHOW BARN",
+    "MARKET",
     0,
-    "Medium risk, never searched. Another blank page on the map.",
-    "showbarn",
-    "🐄"
+    "Easy run, but we've been here before. Safer ground, and likely picked over.",
+    "market",
+    "🛒"
    ],
    [
-    "SURPLUS",
+    "GAS",
     0,
-    "Medium risk. Ryan goes back for the plate carriers he had to leave in the stockroom.",
-    "surplus",
-    "🪖"
+    "Easy run, never searched. Low risk, and fuel is down to 30.",
+    "gas",
+    "⛽"
    ]
   ],
-  "how": "Comment ARCADE, SHOW BARN or SURPLUS (or its emoji) on the Day 21 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
+  "how": "Comment ARCADE, MARKET or GAS (or its emoji) on the Day 22 Reel. One vote per account, your last comment counts. Name a second place too, and if enough of you ask for it, a separate group goes there as well."
  },
  "survivors": [
   {
@@ -50,6 +50,11 @@
      "kind": "weapon",
      "name": "Machete",
      "icon": "blade"
+    },
+    {
+     "kind": "armor",
+     "name": "Plate carrier",
+     "icon": "vest"
     }
    ]
   },
@@ -66,6 +71,11 @@
      "kind": "weapon",
      "name": "Pulaski fire axe",
      "icon": "axe"
+    },
+    {
+     "kind": "armor",
+     "name": "Plate carrier",
+     "icon": "vest"
     }
    ]
   },
@@ -323,7 +333,7 @@
    "role": "Medic",
    "bio": "Gabe is a doctor who plans to keep the whole camp patched up, since the apocalypse is just a bad case of Monday.",
    "joined": 4,
-   "day_outings": 2,
+   "day_outings": 3,
    "outings": 1,
    "gear": [
     {
@@ -389,7 +399,7 @@
      "name": "Digital camera"
     }
    ],
-   "day_outings": 2,
+   "day_outings": 3,
    "outings": 1
   },
   {
@@ -398,7 +408,7 @@
    "role": "Gunsmith",
    "bio": "Jack is a gunsmith who hammers out blades by day and fixes up guns by night, so the undead get a close look at his work before they go down.",
    "joined": 6,
-   "day_outings": 2,
+   "day_outings": 3,
    "outings": 4,
    "gear": [
     {
@@ -419,7 +429,7 @@
    "role": "EMT",
    "bio": "Carl is an EMT (a Rettungssanitäter back home) who has seen every kind of disaster, and he's ready to patch up the survivors who are left.",
    "joined": 6,
-   "day_outings": 2,
+   "day_outings": 3,
    "outings": 3,
    "gear": [
     {
@@ -493,7 +503,14 @@
    "bio": "Ryan is a professional break dancer who can outmove any zombie, though the undead may still challenge him to a dance-off.",
    "joined": 9,
    "day_outings": 2,
-   "outings": 1
+   "outings": 2,
+   "gear": [
+    {
+     "kind": "armor",
+     "name": "Plate carrier",
+     "icon": "vest"
+    }
+   ]
   },
   {
    "name": "Officer Reyes",
@@ -520,7 +537,7 @@
    "bio": "Artemis is an electrician who loves apocalypse vibes and can wire anything to anything.",
    "joined": 10,
    "outings": 1,
-   "day_outings": 2
+   "day_outings": 3
   },
   {
    "name": "Weston",
@@ -545,7 +562,7 @@
    "bio": "Ben is a military radio operator who will keep the group talking, even when nobody asked.",
    "joined": 10,
    "day_outings": 3,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Frost",
@@ -579,7 +596,7 @@
    "bio": "Jeff is a mechanic who can fix any vehicle, as long as it isn't on fire.",
    "joined": 10,
    "day_outings": 2,
-   "outings": 1,
+   "outings": 2,
    "gear": [
     {
      "kind": "armor",
@@ -680,7 +697,7 @@
    "role": "EMT",
    "bio": "Larry wants to be a firefighter, rushing toward the flames and the zombies alike.",
    "joined": 12,
-   "day_outings": 2,
+   "day_outings": 3,
    "outings": 1,
    "gear": [
     {
@@ -697,7 +714,7 @@
    "bio": "Hudson is an electrician who keeps the lights on, even when the dead come knocking.",
    "joined": 12,
    "day_outings": 2,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Opeta Teo",
@@ -715,7 +732,7 @@
    "bio": "Johnny is an engineer who can fix almost anything, including the apocalypse.",
    "joined": 12,
    "day_outings": 3,
-   "outings": 1
+   "outings": 2
   },
   {
    "name": "Albin Parson",
@@ -836,7 +853,15 @@
    "role": "Guard",
    "bio": "John was a riot-control cop before the fall. He knows how to move a crowd, even a dead one.",
    "joined": 16,
-   "day_outings": 3
+   "day_outings": 3,
+   "outings": 1,
+   "gear": [
+    {
+     "kind": "armor",
+     "name": "Plate carrier",
+     "icon": "vest"
+    }
+   ]
   }
  ],
  "runs": [
@@ -1166,10 +1191,13 @@
    "dest": "showbarn",
    "difficulty": "medium",
    "squad": [
-    "Sam"
+    "Hudson",
+    "Johnny",
+    "Ben"
    ],
    "loot": "Bags of feed, a stock trailer hitch and three goats that followed him home",
-   "place": "4-H show barn"
+   "place": "4-H show barn",
+   "done_day": 21
   }
  ],
  "missions": [
@@ -1597,11 +1625,13 @@
     345
    ],
    "difficulty": "medium",
-   "status": "open",
+   "status": "done",
    "days": 1,
    "from_day": 20,
    "squad": [
-    "Ryan"
+    "Ryan",
+    "Officer John",
+    "Jeff"
    ],
    "goal": "Go back to the army surplus store for the military gear Ryan had to leave in the stockroom when the dead showed up: plate carriers, helmets, ammo pouches.",
    "crew": "Ryan and two fighters to hold the front door",
@@ -1632,7 +1662,8 @@
      "icon": "vest"
     }
    ],
-   "done_note": "The rack was still there, plastic and all. Four plate carriers, ammo pouches and a crate of field kits came home on Ryan's back and two borrowed shoulders."
+   "done_note": "The rack was still there, plastic and all. Four plate carriers, ammo pouches and a crate of field kits came home on Ryan's back and two borrowed shoulders.",
+   "days_done": 1
   }
  ],
  "power": [
@@ -1862,13 +1893,13 @@
  "stock": [
   [
    "Food",
-   95,
+   111,
    200,
    "rations"
   ],
   [
    "Water",
-   100,
+   88,
    200,
    "rations"
   ],
@@ -1880,7 +1911,7 @@
   ],
   [
    "Ammo",
-   127,
+   105,
    500,
    "rds"
   ],
@@ -1892,13 +1923,13 @@
   ],
   [
    "Scrap",
-   40,
+   41,
    200,
    "units"
   ],
   [
    "Barricades",
-   100,
+   85,
    100,
    "%"
   ]
@@ -3720,16 +3751,185 @@
     "Ben & Tanny → Hollow Creek Farm (11:50): nothing (a close call)",
     "Johnny & Toast → Fairground (15:05): +1 food"
    ]
+  },
+  {
+   "day": 21,
+   "vote": {
+    "question": "Day 21. The horde hits tonight. Food and water last two days, and 127 rounds won't last forever. Where do we go?",
+    "results": {
+     "ARCADE": 1,
+     "SURPLUS": 7
+    },
+    "winner": "SURPLUS",
+    "tiebreak": null,
+    "second": {
+     "place": "SHOW BARN",
+     "asked": 3
+    },
+    "reel": "https://www.instagram.com/reel/DgP9j_3SL77/"
+   },
+   "outings": [
+    {
+     "target": "Surplus stockroom",
+     "key": "surplus",
+     "first": true,
+     "kind": "mission",
+     "difficulty": "medium",
+     "squad": [
+      "Ryan",
+      "Officer John",
+      "Jeff"
+     ],
+     "results": [
+      {
+       "name": "Ryan",
+       "ig": "justryan_16",
+       "outcome": "ok"
+      },
+      {
+       "name": "Officer John",
+       "ig": "randommeyhem2",
+       "outcome": "ok"
+      },
+      {
+       "name": "Jeff",
+       "ig": "zigos1229",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": "done"
+    },
+    {
+     "target": "4-H show barn",
+     "key": "showbarn",
+     "first": true,
+     "kind": "run",
+     "difficulty": "medium",
+     "squad": [
+      "Hudson",
+      "Johnny",
+      "Ben"
+     ],
+     "results": [
+      {
+       "name": "Hudson",
+       "ig": "hay_ant_hud",
+       "outcome": "ok"
+      },
+      {
+       "name": "Johnny",
+       "ig": "just_johnny_nguyen",
+       "outcome": "ok"
+      },
+      {
+       "name": "Ben",
+       "ig": "bennyliebs",
+       "outcome": "ok"
+      }
+     ],
+     "mission_status": null,
+     "second": true
+    }
+   ],
+   "healed": [],
+   "joined": [],
+   "waiting": 0,
+   "power": [],
+   "stock": {
+    "Food": 16,
+    "Ammo": -2,
+    "Scrap": 1,
+    "Water": -12,
+    "Fuel": 0,
+    "Barricades": 0
+   },
+   "camp": [
+    "The rack was still there, plastic and all. Four plate carriers, ammo pouches and a crate of field kits came home on Ryan's back and two borrowed shoulders.",
+    "Handed out: Ryan gets the plate carrier, Officer John gets the plate carrier, Sam gets the plate carrier, Jaylozy gets the plate carrier.",
+    "Camp jobs: 4 of them (foraging the block): +4 food; 3 of them (snares and hunting): +3 food; Mateen (the farm plots): +3 food; 3 of them (pipe taps and filters): +6 water; Victoria stretched every meal: +5 food.",
+    "Rain catchers: 43 of us, barrels on every roof and gutter: +11 water. Shoutout to the engineers who set them up and keep them running: Artemis (@artemistheproto), Frost (@sir_waffles45), Kim (@kim.cheyanne), Hudson (@hay_ant_hud) and Johnny (@just_johnny_nguyen)."
+   ],
+   "horde": {
+    "day": 21,
+    "week": 3,
+    "outcome": "held",
+    "strength": 441,
+    "defense": 513,
+    "defenders": [
+     "Sam",
+     "Jaylozy",
+     "Tanny",
+     "Seth",
+     "Gary Finklestein",
+     "Adam",
+     "Asa",
+     "Gabe",
+     "Mateen",
+     "Jeremy",
+     "Victoria",
+     "Francis",
+     "Jack",
+     "Carl",
+     "Javier",
+     "Quinn",
+     "Elder",
+     "Shawn",
+     "Ryan",
+     "Officer Reyes",
+     "Toast",
+     "Artemis",
+     "Weston",
+     "Ben",
+     "Frost",
+     "Joseph",
+     "Jeff",
+     "Spenz",
+     "Marco",
+     "Bob",
+     "Amnic0re",
+     "John",
+     "Vic",
+     "Steve",
+     "Kim",
+     "Larry",
+     "Hudson",
+     "Opeta Teo",
+     "Johnny",
+     "Albin Parson",
+     "Kathryn",
+     "Caleb",
+     "Officer John"
+    ],
+    "hurt": [],
+    "dead": [],
+    "lit": true,
+    "flood": 54,
+    "intel": 0,
+    "intel_by": [],
+    "traps": 0,
+    "traps_note": "",
+    "cut": 0,
+    "fence": 85,
+    "ammo": 105,
+    "led": true
+   },
+   "returned": [],
+   "story": [],
+   "day_runs": [
+    "Artemis & Francis → Pier 9 warehouse (08:40): nothing",
+    "Carl & Jack → Maple Court (11:50): +2 food",
+    "Larry & Gabe → Fresh Market (13:30): +1 food"
+   ]
   }
  ],
  "hungry_days": 0,
  "stock_change": {
-  "Water": -7,
-  "Food": 28,
-  "Ammo": -6,
+  "Food": 16,
+  "Ammo": -2,
+  "Scrap": 1,
+  "Water": -12,
   "Fuel": 0,
-  "Barricades": 0,
-  "Scrap": -3
+  "Barricades": 0
  },
  "schedule": [],
  "broadcast": {
@@ -3910,25 +4110,26 @@
   100
  ],
  "undead": {
-  "count": 28269,
+  "count": 28322,
   "last": {
-   "day": 20,
-   "killed": 38,
-   "turned": 4,
-   "arrived": 0
+   "day": 21,
+   "killed": 394,
+   "turned": 6,
+   "arrived": 441
   }
  },
- "last_run": 1795776827,
+ "last_run": 1795866534,
  "horde": {
-  "day": 21,
-  "week": 3,
+  "day": 28,
+  "week": 4,
   "last": {
-   "day": 14,
-   "week": 2,
+   "day": 21,
+   "week": 3,
    "outcome": "held",
-   "strength": 432,
-   "defense": 496,
+   "strength": 441,
+   "defense": 513,
    "defenders": [
+    "Sam",
     "Jaylozy",
     "Tanny",
     "Seth",
@@ -3968,24 +4169,21 @@
     "Opeta Teo",
     "Johnny",
     "Albin Parson",
-    "Kathryn"
+    "Kathryn",
+    "Caleb",
+    "Officer John"
    ],
-   "hurt": [
-    "Javier (scratched through the fence during the horde, out until Day 17)"
-   ],
+   "hurt": [],
    "dead": [],
    "lit": true,
-   "flood": 46,
-   "intel": 25,
-   "intel_by": [
-    "Tanny",
-    "Marco"
-   ],
-   "traps": 15,
-   "traps_note": "Hudson and Johnny's booby traps on the wall, built from fairground ride parts",
+   "flood": 54,
+   "intel": 0,
+   "intel_by": [],
+   "traps": 0,
+   "traps_note": "",
    "cut": 0,
    "fence": 85,
-   "ammo": 96,
+   "ammo": 105,
    "led": true
   }
  },
@@ -4017,8 +4215,8 @@
   ]
  },
  "weather": {
-  "day": 21,
-  "kind": "fog"
+  "day": 22,
+  "kind": "clear"
  },
  "intel": {
   "horde_day": 14,
@@ -4070,44 +4268,44 @@
   }
  ],
  "day_runs": {
-  "day": 21,
+  "day": 22,
   "runs": [
    {
     "time": "08:40",
-    "dest": "port",
+    "dest": "cold",
     "crew": [
-     "Artemis",
-     "Francis"
+     "Marco",
+     "Weston"
     ],
-    "find": {},
+    "find": {
+     "Scrap": 3
+    },
     "event": "ok",
-    "line": "Artemis: Picked clean. Nothing worth carrying. Heading home."
+    "line": "Marco: Found 3 armfuls of planks and bolts. Heading home."
    },
    {
     "time": "11:50",
-    "dest": "maple",
+    "dest": "cold",
     "crew": [
-     "Carl",
-     "Jack"
-    ],
-    "find": {
-     "Food": 2
-    },
-    "event": "ok",
-    "line": "Carl: Found 2 cans of soup behind the counter. Heading home."
-   },
-   {
-    "time": "13:30",
-    "dest": "market",
-    "crew": [
-     "Larry",
-     "Gabe"
+     "Bob",
+     "Opeta Teo"
     ],
     "find": {
      "Food": 1
     },
     "event": "ok",
-    "line": "Larry: Found 1 cans of soup behind the counter. Heading home."
+    "line": "Bob: Found 1 boxes of crackers nobody wanted. Heading home."
+   },
+   {
+    "time": "15:05",
+    "dest": "mall",
+    "crew": [
+     "Adam",
+     "Sam"
+    ],
+    "find": {},
+    "event": "ok",
+    "line": "Adam: Picked clean. Nothing worth carrying. Heading home."
    }
   ]
  }
